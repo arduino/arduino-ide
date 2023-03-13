@@ -5,12 +5,12 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import {
+  AuthOptions,
   AuthenticationService,
   AuthenticationServiceClient,
   AuthenticationSession,
 } from '../../common/protocol/authentication-service';
 import { ArduinoAuthenticationProvider } from './arduino-auth-provider';
-import { AuthOptions } from './types';
 
 @injectable()
 export class AuthenticationServiceImpl
@@ -19,7 +19,7 @@ export class AuthenticationServiceImpl
   protected readonly delegate = new ArduinoAuthenticationProvider();
   protected readonly clients: AuthenticationServiceClient[] = [];
   protected readonly toDispose = new DisposableCollection();
-  
+
   private initialized = false;
 
   async onStart(): Promise<void> {

@@ -1,16 +1,9 @@
 import * as React from '@theia/core/shared/react';
+import type { Props, StylesConfig, ThemeConfig } from 'react-select';
 import Select from 'react-select';
-import type { StylesConfig } from 'react-select/dist/declarations/src/styles';
-import type { ThemeConfig } from 'react-select/dist/declarations/src/theme';
-import type { GroupBase } from 'react-select/dist/declarations/src/types';
-import type { StateManagerProps } from 'react-select/dist/declarations/src/useStateManager';
 
-export class ArduinoSelect<
-  Option,
-  IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
-> extends React.Component<StateManagerProps<Option, IsMulti, Group>> {
-  constructor(props: StateManagerProps<Option, IsMulti, Group>) {
+export class ArduinoSelect extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
   }
 

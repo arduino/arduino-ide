@@ -1,7 +1,7 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
 import { nls } from '@theia/core/lib/common/nls';
 import URI from '@theia/core/lib/common/uri';
-import * as dateFormat from 'dateformat';
+import dateFormat from 'dateformat';
 const filenameReservedRegex = require('filename-reserved-regex');
 
 export namespace SketchesError {

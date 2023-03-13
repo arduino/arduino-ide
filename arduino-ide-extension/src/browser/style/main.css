@@ -137,24 +137,6 @@
     color: var(--theia-titleBar-activeForeground);
 }
 
-.p-TabBar-toolbar .item > div.arduino-toggle-advanced-mode {
-    display: flex;
-    width: 24px;
-    height: 24px;
-    justify-content: center;
-    align-items: center;
-}
-
-.arduino-toggle-advanced-mode-icon {
-    mask: none;
-    -webkit-mask: none;
-    background: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--theia-titleBar-activeBackground);
-}
-
 .arduino-open-boards-control-icon {
     mask: none;
     -webkit-mask: none;
@@ -200,61 +182,6 @@
 .theia-output .monaco-editor .margin {
     border-right: none;
     background-color: var(--theia-terminal-background);
-}
-
-
-/* High Contrast Theme rules */
-/* TODO: Remove it when the Theia version is upgraded to 1.27.0 and use Theia APIs to implement it*/
-.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div {
-    background: var(--theia-arduino-toolbar-button-background);
-    outline: 1px dashed var(--theia-focusBorder);
-}
-
-.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div.toggle-serial-plotter,
-.hc-black.hc-theia.theia-hc .p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div.toggle-serial-monitor {
-    background: transparent;
-}
-
-.hc-black.hc-theia.theia-hc .item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar,
-.hc-black.hc-theia.theia-hc .item.arduino-tool-item.toggled .arduino-upload-sketch--toolbar {
-    background-color: var(--theia-arduino-toolbar-button-background) !important;
-    outline: 1px solid var(--theia-focusBorder);
-}
-
-.hc-black.hc-theia.theia-hc .arduino-boards-dropdown-item:hover {
-    background: var(--theia-dropdown-background);
-}
-
-.hc-black.hc-theia.theia-hc .arduino-boards-dropdown-item:hover {
-    outline: 1px dashed var(--theia-focusBorder);
-    outline-offset: -2px;
-}
-
-.hc-black.hc-theia.theia-hc #theia-main-content-panel .p-TabBar .p-TabBar-tab.p-mod-current {
-    outline: 1px solid var(--theia-focusBorder);
-    outline-offset: -4px;
-}
-
-.hc-black.hc-theia.theia-hc #theia-main-content-panel .p-TabBar .p-TabBar-tab:hover {
-    outline: 1px dashed var(--theia-focusBorder);
-    outline-offset: -4px;
-}
-
-.hc-black.hc-theia.theia-hc .p-TabBar.theia-app-centers .p-TabBar-tab.p-mod-closable > .p-TabBar-tabCloseIcon:hover {
-    outline: 1px dashed var(--theia-focusBorder);
-}
-
-.hc-black.hc-theia.theia-hc .quick-input-list .monaco-list-row.focused {
-    outline: 1px dotted var(--theia-focusBorder);
-}
-
-.hc-black.hc-theia.theia-hc .quick-input-list .monaco-list-row:hover {
-    outline: 1px dashed var(--theia-focusBorder);
-}
-
-.hc-black.hc-theia.theia-hc .quick-input-widget {
-    outline: 1px solid var(--theia-contrastBorder);
-    outline-offset: -1px;
 }
 
 .monaco-hover .hover-row.markdown-hover:first-child p {

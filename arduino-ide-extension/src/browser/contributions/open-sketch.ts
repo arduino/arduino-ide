@@ -1,4 +1,3 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import { nls } from '@theia/core/lib/common/nls';
 import { injectable } from '@theia/core/shared/inversify';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
@@ -18,6 +17,7 @@ import {
   SketchContribution,
   URI,
 } from './contribution';
+import { DialogService } from '../dialog-service';
 
 export type SketchLocation = string | URI | SketchRef;
 export namespace SketchLocation {
@@ -83,19 +83,16 @@ export class OpenSketch extends SketchContribution {
 
   private async selectSketch(): Promise<Sketch | undefined> {
     const defaultPath = await this.defaultPath();
-    const { filePaths } = await remote.dialog.showOpenDialog(
-      remote.getCurrentWindow(),
-      {
-        defaultPath,
-        properties: ['createDirectory', 'openFile'],
-        filters: [
-          {
-            name: nls.localize('arduino/sketch/sketch', 'Sketch'),
-            extensions: ['ino', 'pde'],
-          },
-        ],
-      }
-    );
+    const { filePaths } = await this.dialogService.showOpenDialog({
+      defaultPath,
+      properties: ['createDirectory', 'openFile'],
+      filters: [
+        {
+          name: nls.localize('arduino/sketch/sketch', 'Sketch'),
+          extensions: ['ino', 'pde'],
+        },
+      ],
+    });
     if (!filePaths.length) {
       return undefined;
     }
@@ -115,6 +112,7 @@ export class OpenSketch extends SketchContribution {
         fileService: this.fileService,
         sketchesService: this.sketchesService,
         labelProvider: this.labelProvider,
+        dialogService: this.dialogService,
       });
     }
   }
@@ -134,14 +132,16 @@ export async function promptMoveSketch(
     fileService: FileService;
     sketchesService: SketchesService;
     labelProvider: LabelProvider;
+    dialogService: DialogService;
   }
 ): Promise<Sketch | undefined> {
-  const { fileService, sketchesService, labelProvider } = options;
+  const { fileService, sketchesService, labelProvider, dialogService } =
+    options;
   const uri =
     sketchFileUri instanceof URI ? sketchFileUri : new URI(sketchFileUri);
   const name = uri.path.name;
   const nameWithExt = labelProvider.getName(uri);
-  const { response } = await remote.dialog.showMessageBox({
+  const { response } = await dialogService.showMessageBox({
     title: nls.localize('arduino/sketch/moving', 'Moving'),
     type: 'question',
     buttons: [
@@ -160,7 +160,7 @@ export async function promptMoveSketch(
     const newSketchUri = uri.parent.resolve(name);
     const exists = await fileService.exists(newSketchUri);
     if (exists) {
-      await remote.dialog.showMessageBox({
+      await dialogService.showMessageBox({
         type: 'error',
         title: nls.localize('vscode/dialog/dialogErrorMessage', 'Error'),
         message: nls.localize(

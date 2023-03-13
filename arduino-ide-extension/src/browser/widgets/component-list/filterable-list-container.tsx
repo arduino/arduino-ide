@@ -1,5 +1,5 @@
 import * as React from '@theia/core/shared/react';
-import debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 import { Event } from '@theia/core/lib/common/event';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';

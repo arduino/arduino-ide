@@ -2,7 +2,7 @@ import * as React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
-import dateFormat = require('dateformat');
+import dateFormat from 'dateformat';
 import { messagesToLines, truncateLines } from './monitor-utils';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';

@@ -1,5 +1,5 @@
-import * as psTree from 'ps-tree';
-const kill = require('tree-kill');
+import psTree from 'ps-tree';
+import kill from 'tree-kill';
 const [theiaPid, daemonPid] = process.argv
   .slice(2)
   .map((id) => Number.parseInt(id, 10));
@@ -11,7 +11,10 @@ setInterval(() => {
   } catch {
     psTree(daemonPid, function (_, children) {
       for (const { PID } of children) {
-        kill(PID);
+        const parsedPid = Number.parseInt(PID, 10);
+        if (!Number.isNaN(parsedPid)) {
+          kill(parsedPid);
+        }
       }
       kill(daemonPid, () => process.exit());
     });

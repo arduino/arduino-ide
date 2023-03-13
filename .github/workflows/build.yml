@@ -42,7 +42,7 @@ jobs:
           - os: windows-2019
             certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
             certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
-            certificate-extension: pfx  # File extension for the certificate.
+            certificate-extension: pfx # File extension for the certificate.
           - os: ubuntu-20.04
           - os: macos-latest
             # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
@@ -57,10 +57,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Node.js 16.x
+      - name: Install Node.js 16.14
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '16.14'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Python 3.x

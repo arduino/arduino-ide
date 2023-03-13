@@ -8,7 +8,7 @@ import {
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CommandRegistry, MaybePromise, nls } from '@theia/core/lib/common';
 import { Settings } from '../dialogs/settings/settings';
-import debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 
 @injectable()
 export class InterfaceScale extends Contribution {

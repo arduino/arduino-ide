@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import { join } from 'path';
+import * as fs from 'node:fs';
+import { join } from 'node:path';
 import {
   injectable,
   inject,
@@ -8,16 +8,14 @@ import {
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { promisify } from 'util';
-import {
-  PluggableMonitorSettings,
-  MonitorSettingsProvider,
-} from './monitor-settings-provider';
+import { MonitorSettingsProvider } from './monitor-settings-provider';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
   longestPrefixMatch,
   reconcileSettings,
 } from './monitor-settings-utils';
 import { ILogger } from '@theia/core';
+import { PluggableMonitorSettings } from '../../common/protocol';
 
 const MONITOR_SETTINGS_FILE = 'pluggable-monitor-settings.json';
 

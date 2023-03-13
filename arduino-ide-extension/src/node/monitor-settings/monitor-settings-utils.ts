@@ -1,4 +1,4 @@
-import { PluggableMonitorSettings } from './monitor-settings-provider';
+import { PluggableMonitorSettings } from '../../common/protocol';
 
 export function longestPrefixMatch(
   id: string,

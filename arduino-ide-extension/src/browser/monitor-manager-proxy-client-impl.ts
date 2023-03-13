@@ -14,11 +14,9 @@ import {
   Monitor,
   MonitorManagerProxyClient,
   MonitorManagerProxyFactory,
-} from '../common/protocol/monitor-service';
-import {
-  PluggableMonitorSettings,
   MonitorSettings,
-} from '../node/monitor-settings/monitor-settings-provider';
+  PluggableMonitorSettings,
+} from '../common/protocol/monitor-service';
 import { BoardsConfig } from './boards/boards-config';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 

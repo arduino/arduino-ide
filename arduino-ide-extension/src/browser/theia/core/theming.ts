@@ -25,8 +25,8 @@ const builtInThemeIds = new Set(
   [
     ArduinoThemes.light,
     ArduinoThemes.dark,
+    BuiltinThemeProvider.hcLightTheme,
     BuiltinThemeProvider.hcTheme,
-    // TODO: add the HC light theme after Theia 1.36
   ].map(({ id }) => id)
 );
 const deprecatedThemeIds = new Set(
@@ -37,7 +37,14 @@ const deprecatedThemeIds = new Set(
 
 export const lightThemeLabel = nls.localize('arduino/theme/light', 'Light');
 export const darkThemeLabel = nls.localize('arduino/theme/dark', 'Dark');
-export const hcThemeLabel = nls.localize('arduino/theme/hc', 'High Contrast');
+export const hcLightThemeLabel = nls.localize(
+  'arduino/theme/hcLight',
+  'Light High Contrast'
+);
+export const hcThemeLabel = nls.localize(
+  'arduino/theme/hc',
+  'Dark High Contrast'
+);
 export function userThemeLabel(theme: Theme): string {
   return nls.localize('arduino/theme/user', '{0} (user)', theme.label);
 }
@@ -57,6 +64,8 @@ export function themeLabelForSettings(theme: Theme): string {
       return darkThemeLabel;
     case BuiltinThemeProvider.hcTheme.id:
       return hcThemeLabel;
+    case BuiltinThemeProvider.hcLightTheme.id:
+      return hcLightThemeLabel;
     case BuiltinThemeProvider.lightTheme.id: // fall-through
     case BuiltinThemeProvider.darkTheme.id:
       return deprecatedThemeLabel(theme);
@@ -73,6 +82,8 @@ export function compatibleBuiltInTheme(theme: Theme): Theme {
       return ArduinoThemes.dark;
     case 'hc':
       return BuiltinThemeProvider.hcTheme;
+    case 'hcLight':
+      return BuiltinThemeProvider.hcLightTheme;
     default: {
       console.warn(
         `Unhandled theme type: ${theme.type}. Theme ID: ${theme.id}, label: ${theme.label}`
@@ -91,7 +102,7 @@ interface ThemeProvider {
 /**
  * Returns with a list of built-in themes officially supported by IDE2 (https://github.com/arduino/arduino-ide/issues/1283).
  * The themes in the array follow the following order:
- *  - built-in themes first (in `Light`, `Dark`, `High Contrast`), // TODO -> High Contrast will be split up to HC Dark and HC Light after the Theia version uplift
+ *  - built-in themes first (in `Light`, `Dark`, `Light High Contrast`, and `Dark High Contrast`),
  *  - followed by user installed (VSIX) themes grouped by theme type, then alphabetical order,
  *  - if the `currentTheme` is either Light (Theia) or Dark (Theia), the last item of the array will be the selected theme with `(deprecated)` suffix.
  */
@@ -171,7 +182,8 @@ const arduinoThemeTypeOrder: Record<ArduinoThemeType, number> = {
 const themeTypeOrder: Record<ThemeType, number> = {
   light: 0,
   dark: 1,
-  hc: 2,
+  hcLight: 2,
+  hc: 3,
 };
 
 export function arduinoThemeTypeOf(theme: Theme | string): ArduinoThemeType {

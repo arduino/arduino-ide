@@ -22,10 +22,10 @@ import {
   injectable,
   interfaces,
 } from '@theia/core/shared/inversify';
-import * as deepmerge from 'deepmerge';
-import { promises as fs, mkdirSync } from 'fs';
+import deepmerge from 'deepmerge';
+import { promises as fs, mkdirSync } from 'node:fs';
 import { dump as dumpYaml } from 'js-yaml';
-import { join } from 'path';
+import { join } from 'node:path';
 import { path as tempPath, track } from 'temp';
 import {
   ArduinoDaemon,

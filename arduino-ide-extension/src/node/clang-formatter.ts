@@ -1,10 +1,10 @@
-import * as os from 'os';
+import * as os from 'node:os';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { constants, promises as fs } from 'fs';
-import { join } from 'path';
+import { constants, promises as fs } from 'node:fs';
+import { join } from 'node:path';
 import { ConfigService } from '../common/protocol';
 import { Formatter, FormatterOptions } from '../common/protocol/formatter';
 import { getExecPath, spawnCommand } from './exec-util';

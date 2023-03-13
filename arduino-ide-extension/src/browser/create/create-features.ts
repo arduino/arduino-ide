@@ -4,7 +4,7 @@ import { Emitter, Event } from '@theia/core/lib/common/event';
 import URI from '@theia/core/lib/common/uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Sketch } from '../../common/protocol';
-import { AuthenticationSession } from '../../node/auth/types';
+import { AuthenticationSession } from '../../common/protocol/authentication-service';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';

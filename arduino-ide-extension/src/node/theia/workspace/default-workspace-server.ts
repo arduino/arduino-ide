@@ -1,4 +1,4 @@
-import { promises as fs, constants } from 'fs';
+import { promises as fs, constants } from 'node:fs';
 import { injectable, inject } from '@theia/core/shared/inversify';
 import { DefaultWorkspaceServer as TheiaDefaultWorkspaceServer } from '@theia/workspace/lib/node/default-workspace-server';
 import { SketchesService } from '../../../common/protocol';

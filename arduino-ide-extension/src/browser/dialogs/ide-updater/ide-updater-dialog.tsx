@@ -18,8 +18,6 @@ import {
 import { LocalStorageService } from '@theia/core/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 
-const DOWNLOAD_PAGE_URL = 'https://www.arduino.cc/en/software';
-
 @injectable()
 export class IDEUpdaterDialogProps extends DialogProps {}
 
@@ -76,10 +74,14 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
         <IDEUpdaterComponent
           updateInfo={this.updateInfo}
           updateProgress={this.updateProgress}
+          openExternal={this.openExternal}
         />
       )
     );
   }
+
+  private readonly openExternal = (url: string) =>
+    this.windowService.openNewWindow(url, { external: true });
 
   get value(): UpdateInfo | undefined {
     return this.updateInfo;
@@ -164,7 +166,7 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
   }
 
   private openDownloadPage(): void {
-    this.windowService.openNewWindow(DOWNLOAD_PAGE_URL, { external: true });
+    this.openExternal('https://www.arduino.cc/en/software');
     this.close();
   }
 

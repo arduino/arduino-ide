@@ -43,7 +43,8 @@ export class DefaultDebugSessionFactory extends TheiaDefaultDebugSessionFactory 
       this.messages,
       this.fileService,
       this.debugContributionProvider,
-      this.workspaceService
+      this.workspaceService,
+      2_000
     );
   }
 }

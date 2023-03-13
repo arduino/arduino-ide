@@ -1,9 +1,11 @@
 import { ApplicationError, Event, JsonRpcServer, nls } from '@theia/core';
-import {
-  PluggableMonitorSettings,
-  MonitorSettings,
-} from '../../node/monitor-settings/monitor-settings-provider';
 import { Board, Port } from './boards-service';
+
+export type PluggableMonitorSettings = Record<string, PluggableMonitorSetting>;
+export interface MonitorSettings {
+  pluggableMonitorSettings?: PluggableMonitorSettings;
+  monitorUISettings?: Partial<MonitorState>;
+}
 
 export const MonitorManagerProxyFactory = Symbol('MonitorManagerProxyFactory');
 export type MonitorManagerProxyFactory = () => MonitorManagerProxy;

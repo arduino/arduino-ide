@@ -1,8 +1,8 @@
-import * as os from 'os';
-import * as which from 'which';
-import * as semver from 'semver';
-import { join } from 'path';
-import { spawn } from 'child_process';
+import os from 'node:os';
+import which from 'which';
+import semver from 'semver';
+import { join } from 'node:path';
+import { spawn } from 'node:child_process';
 
 export async function getExecPath(
   commandName: string,
@@ -38,7 +38,11 @@ export async function getExecPath(
     onError
   );
   const pathShortVersion = (pathVersion.match(versionRegexp) || [])[0];
-  if (semver.gt(pathShortVersion, buildShortVersion)) {
+  if (
+    pathShortVersion &&
+    buildShortVersion &&
+    semver.gt(pathShortVersion, buildShortVersion)
+  ) {
     return pathCommand;
   }
   return buildCommand;

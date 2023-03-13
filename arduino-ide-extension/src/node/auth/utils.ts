@@ -1,7 +1,7 @@
 import jwt_decode from 'jwt-decode';
 import { sha256 } from 'hash.js';
-import { randomBytes } from 'crypto';
-import btoa = require('btoa'); // TODO: check why we cannot
+import { randomBytes } from 'node:crypto';
+import btoa from 'btoa';
 import { AuthenticationSession } from './types';
 import { Unknown } from '../../common/nls';
 

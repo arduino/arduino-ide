@@ -1,5 +1,4 @@
-import { injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { isOSX } from '@theia/core/lib/common/os';
 import {
   Contribution,
@@ -9,14 +8,18 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
+import { AppService } from '../app-service';
 
 @injectable()
 export class QuitApp extends Contribution {
+  @inject(AppService)
+  private readonly appService: AppService;
+
   override registerCommands(registry: CommandRegistry): void {
     if (!isOSX) {
       registry.registerCommand(QuitApp.Commands.QUIT_APP, {
-        execute: () => remote.app.quit(),
+        execute: () => this.appService.quit(),
       });
     }
   }

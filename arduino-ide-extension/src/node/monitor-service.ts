@@ -7,7 +7,6 @@ import {
   nls,
 } from '@theia/core';
 import { inject, named, postConstruct } from '@theia/core/shared/inversify';
-import { diff, Operation } from 'just-diff';
 import {
   Board,
   Port,
@@ -17,6 +16,8 @@ import {
   createNotConnectedError,
   createConnectionFailedError,
   isMonitorConnected,
+  MonitorSettings,
+  PluggableMonitorSettings,
 } from '../common/protocol';
 import {
   EnumerateMonitorPortSettingsRequest,
@@ -29,11 +30,7 @@ import {
 import { CoreClientAware } from './core-client-provider';
 import { WebSocketProvider } from './web-socket/web-socket-provider';
 import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import {
-  MonitorSettings,
-  PluggableMonitorSettings,
-  MonitorSettingsProvider,
-} from './monitor-settings/monitor-settings-provider';
+import { MonitorSettingsProvider } from './monitor-settings/monitor-settings-provider';
 import {
   Deferred,
   retry,
@@ -583,7 +580,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       return;
     }
 
-    const diffConfig = this.maybeUpdatePortConfigSnapshot(config);
+    const diffConfig = await this.maybeUpdatePortConfigSnapshot(config);
     if (!diffConfig) {
       this.logger.info(
         `No port configuration changes have been detected. No need to send configure commands to the running monitor ${this.port.protocol}:${this.port.address}.`
@@ -614,9 +611,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * representing only the difference between the two snapshot configs to avoid sending unnecessary monitor to configure commands to the CLI.
    * See [#1703 (comment)](https://github.com/arduino/arduino-ide/pull/1703#issuecomment-1327913005) for more details.
    */
-  private maybeUpdatePortConfigSnapshot(
+  private async maybeUpdatePortConfigSnapshot(
     otherPortConfig: MonitorPortConfiguration
-  ): MonitorPortConfiguration | undefined {
+  ): Promise<MonitorPortConfiguration | undefined> {
     const otherPortConfigSnapshot = MonitorPortConfiguration.toObject(
       false,
       otherPortConfig
@@ -629,7 +626,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
       );
     }
 
-    const snapshotDiff = diff(
+    const justDiff = await import('just-diff');
+    const snapshotDiff = justDiff.diff(
       this.currentPortConfigSnapshot,
       otherPortConfigSnapshot
     );
@@ -676,7 +674,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   }
 
   private isValidMonitorPortSettingChange(entry: {
-    op: Operation;
+    op: string;
     path: (string | number)[];
     value: unknown;
   }): entry is {

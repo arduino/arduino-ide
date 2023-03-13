@@ -1,5 +1,4 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
 import URI from '@theia/core/lib/common/uri';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { ArduinoMenus } from '../menu/arduino-menus';
@@ -42,23 +41,20 @@ export class AddZipLibrary extends SketchContribution {
   private async addZipLibrary(): Promise<void> {
     const homeUri = await this.envVariableServer.getHomeDirUri();
     const defaultPath = await this.fileService.fsPath(new URI(homeUri));
-    const { canceled, filePaths } = await remote.dialog.showOpenDialog(
-      remote.getCurrentWindow(),
-      {
-        title: nls.localize(
-          'arduino/selectZip',
-          "Select a zip file containing the library you'd like to add"
-        ),
-        defaultPath,
-        properties: ['openFile'],
-        filters: [
-          {
-            name: nls.localize('arduino/library/zipLibrary', 'Library'),
-            extensions: ['zip'],
-          },
-        ],
-      }
-    );
+    const { canceled, filePaths } = await this.dialogService.showOpenDialog({
+      title: nls.localize(
+        'arduino/selectZip',
+        "Select a zip file containing the library you'd like to add"
+      ),
+      defaultPath,
+      properties: ['openFile'],
+      filters: [
+        {
+          name: nls.localize('arduino/library/zipLibrary', 'Library'),
+          extensions: ['zip'],
+        },
+      ],
+    });
     if (!canceled && filePaths.length) {
       const zipUri = await this.fileSystemExt.getUri(filePaths[0]);
       try {

@@ -1,5 +1,3 @@
-import * as remote from '@theia/core/electron-shared/@electron/remote';
-import { ipcRenderer } from '@theia/core/electron-shared/electron';
 import { Dialog } from '@theia/core/lib/browser/dialogs';
 import { NavigatableWidget } from '@theia/core/lib/browser/navigatable-types';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
@@ -10,11 +8,11 @@ import URI from '@theia/core/lib/common/uri';
 import type { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { SketchesError } from '../../common/protocol';
-import { SCHEDULE_DELETION_SIGNAL } from '../../electron-common/electron-messages';
 import { Sketch } from '../contributions/contribution';
 import { isNotFound } from '../create/typings';
 import { Command, CommandRegistry } from './contribution';
 import { CloudSketchContribution } from './cloud-contribution';
+import { AppService } from '../app-service';
 
 export interface DeleteSketchParams {
   /**
@@ -38,6 +36,8 @@ export class DeleteSketch extends CloudSketchContribution {
   private readonly shell: ApplicationShell;
   @inject(WindowService)
   private readonly windowService: WindowService;
+  @inject(AppService)
+  private readonly appService: AppService;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(DeleteSketch.Commands.DELETE_SKETCH, {
@@ -66,7 +66,7 @@ export class DeleteSketch extends CloudSketchContribution {
     }
     const cloudUri = this.createFeatures.cloudUri(sketch);
     if (willNavigateAway !== 'force') {
-      const { response } = await remote.dialog.showMessageBox({
+      const { response } = await this.dialogService.showMessageBox({
         title: nls.localizeByDefault('Delete'),
         type: 'question',
         buttons: [Dialog.CANCEL, Dialog.OK],
@@ -120,7 +120,7 @@ export class DeleteSketch extends CloudSketchContribution {
   }
 
   private scheduleDeletion(sketch: Sketch): void {
-    ipcRenderer.send(SCHEDULE_DELETION_SIGNAL, sketch);
+    this.appService.scheduleDeletion(sketch);
   }
 
   private async loadSketch(uri: string): Promise<Sketch | undefined> {

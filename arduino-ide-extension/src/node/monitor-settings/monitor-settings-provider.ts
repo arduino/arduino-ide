@@ -1,10 +1,4 @@
-import { MonitorState, PluggableMonitorSetting } from '../../common/protocol';
-
-export type PluggableMonitorSettings = Record<string, PluggableMonitorSetting>;
-export interface MonitorSettings {
-  pluggableMonitorSettings?: PluggableMonitorSettings;
-  monitorUISettings?: Partial<MonitorState>;
-}
+import { PluggableMonitorSettings } from '../../common/protocol';
 
 export const MonitorSettingsProvider = Symbol('MonitorSettingsProvider');
 export interface MonitorSettingsProvider {

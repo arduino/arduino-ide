@@ -1,22 +1,21 @@
+import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import * as remote from '@theia/core/electron-shared/@electron/remote';
+import { FileDialogService } from '@theia/filesystem/lib/browser';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import {
-  SketchContribution,
   Command,
   CommandRegistry,
   MenuModelRegistry,
-  URI,
   Sketch,
+  SketchContribution,
+  URI,
 } from './contribution';
-import { FileDialogService } from '@theia/filesystem/lib/browser';
-import { nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class AddFile extends SketchContribution {
   @inject(FileDialogService)
-  private readonly fileDialogService: FileDialogService;
+  private readonly fileDialogService: FileDialogService; // TODO: use dialogService
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddFile.Commands.ADD_FILE, {
@@ -50,7 +49,7 @@ export class AddFile extends SketchContribution {
     const { uri: targetUri, filename } = this.resolveTarget(sketch, toAddUri);
     const exists = await this.fileService.exists(targetUri);
     if (exists) {
-      const { response } = await remote.dialog.showMessageBox({
+      const { response } = await this.dialogService.showMessageBox({
         type: 'question',
         title: nls.localize('arduino/contributions/replaceTitle', 'Replace'),
         buttons: [

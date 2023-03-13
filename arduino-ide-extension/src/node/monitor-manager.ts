@@ -4,15 +4,13 @@ import {
   AlreadyConnectedError,
   Board,
   BoardsService,
+  MonitorSettings,
+  PluggableMonitorSettings,
   Port,
 } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
 import { MonitorServiceFactory } from './monitor-service-factory';
-import {
-  MonitorSettings,
-  PluggableMonitorSettings,
-} from './monitor-settings/monitor-settings-provider';
 
 type MonitorID = string;
 

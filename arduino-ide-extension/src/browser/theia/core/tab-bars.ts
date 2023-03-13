@@ -4,7 +4,7 @@ import {
   TabBarRenderer as TheiaTabBarRenderer,
   ToolbarAwareTabBar as TheiaToolbarAwareTabBar,
 } from '@theia/core/lib/browser/shell/tab-bars';
-import debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 
 export class TabBarRenderer extends TheiaTabBarRenderer {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

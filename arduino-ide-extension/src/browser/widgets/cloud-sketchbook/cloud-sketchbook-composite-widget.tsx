@@ -12,8 +12,8 @@ import { AuthenticationClientService } from '../../auth/authentication-client-se
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { BaseSketchbookCompositeWidget } from '../sketchbook/sketchbook-composite-widget';
 import { CreateNew } from '../sketchbook/create-new';
-import { AuthenticationSession } from '../../../node/auth/types';
 import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
+import { AuthenticationSession } from '../../../common/protocol/authentication-service';
 
 @injectable()
 export class CloudSketchbookCompositeWidget extends BaseSketchbookCompositeWidget<CloudSketchbookTreeWidget> {

@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { injectable } from '@theia/core/shared/inversify';
-
 import { createServer, startServer } from './authentication-server';
 import { Keychain } from './keychain';
 import {
@@ -16,10 +15,10 @@ import {
   AuthenticationProviderAuthenticationSessionsChangeEvent,
   AuthenticationSession,
   AuthenticationProvider,
-  AuthOptions,
 } from './types';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import * as open from 'open';
+import open from 'open';
+import { AuthOptions } from '../../common/protocol/authentication-service';
 
 const LOGIN_TIMEOUT = 30 * 1000;
 const REFRESH_INTERVAL = 10 * 60 * 1000;

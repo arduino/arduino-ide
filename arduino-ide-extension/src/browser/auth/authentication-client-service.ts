@@ -9,13 +9,13 @@ import {
   CommandContribution,
 } from '@theia/core/lib/common/command';
 import {
+  AuthOptions,
   AuthenticationService,
   AuthenticationServiceClient,
   AuthenticationSession,
+  authServerPort,
 } from '../../common/protocol/authentication-service';
 import { CloudUserCommands } from './cloud-user-commands';
-import { serverPort } from '../../node/auth/authentication-server';
-import { AuthOptions } from '../../node/auth/types';
 import { ArduinoPreferences } from '../arduino-preferences';
 
 @injectable()
@@ -61,7 +61,7 @@ export class AuthenticationClientService
 
   setOptions(): Promise<void> {
     return this.service.setOptions({
-      redirectUri: `http://localhost:${serverPort}/callback`,
+      redirectUri: `http://localhost:${authServerPort}/callback`,
       responseType: 'code',
       clientID: this.arduinoPreferences['arduino.auth.clientID'],
       domain: this.arduinoPreferences['arduino.auth.domain'],
