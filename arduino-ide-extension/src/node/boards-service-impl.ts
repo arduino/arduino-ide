@@ -402,8 +402,8 @@ export class BoardsServiceImpl
       }
     }
 
-    const filter = this.typePredicate(options);
-    const boardsPackages = [...packages.values()].filter(filter);
+    const typeFilter = this.typePredicate(options);
+    const boardsPackages = [...packages.values()].filter(typeFilter);
     return sortComponents(boardsPackages, boardsPackageSortGroup);
   }
 
@@ -415,6 +415,8 @@ export class BoardsServiceImpl
       return () => true;
     }
     switch (options.type) {
+      case 'Installed':
+        return Installable.Installed;
       case 'Updatable':
         return Installable.Updateable;
       case 'Arduino':

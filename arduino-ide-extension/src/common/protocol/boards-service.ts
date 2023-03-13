@@ -6,6 +6,7 @@ import { nls } from '@theia/core/lib/common/nls';
 import {
   All,
   Contributed,
+  Installed,
   Partner,
   Type as TypeLabel,
   Updatable,
@@ -174,6 +175,7 @@ export namespace BoardSearch {
   export const TypeLiterals = [
     'All',
     'Updatable',
+    'Installed',
     'Arduino',
     'Contributed',
     'Arduino Certified',
@@ -189,6 +191,7 @@ export namespace BoardSearch {
   export const TypeLabels: Record<Type, string> = {
     All: All,
     Updatable: Updatable,
+    Installed: Installed,
     Arduino: 'Arduino',
     Contributed: Contributed,
     'Arduino Certified': nls.localize(

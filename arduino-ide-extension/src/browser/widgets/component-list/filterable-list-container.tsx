@@ -9,12 +9,11 @@ import { ExecuteWithProgress } from '../../../common/protocol/progressible';
 import { Installable } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { SearchBar } from './search-bar';
-import { ListWidget } from './list-widget';
+import { ListWidget, ListWidgetSearchOptions } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceClient } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
-import { FilterRenderer } from './filter-renderer';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 
 export class FilterableListContainer<
@@ -29,7 +28,7 @@ export class FilterableListContainer<
   constructor(props: Readonly<FilterableListContainer.Props<T, S>>) {
     super(props);
     this.state = {
-      searchOptions: props.defaultSearchOptions,
+      searchOptions: props.searchOptions.options,
       items: [],
     };
     this.toDispose = new DisposableCollection();
@@ -39,7 +38,7 @@ export class FilterableListContainer<
     this.search = debounce(this.search, 500, { trailing: true });
     this.search(this.state.searchOptions);
     this.toDispose.pushAll([
-      this.props.searchOptionsDidChange((newSearchOptions) => {
+      this.props.searchOptions.onDidChange((newSearchOptions) => {
         const { searchOptions } = this.state;
         this.setSearchOptionsAndUpdate({
           ...searchOptions,
@@ -64,22 +63,10 @@ export class FilterableListContainer<
     return (
       <div className={'filterable-list-container'}>
         {this.renderSearchBar()}
-        {this.renderSearchFilter()}
         <div className="filterable-list-container">
           {this.renderComponentList()}
         </div>
       </div>
-    );
-  }
-
-  protected renderSearchFilter(): React.ReactNode {
-    return (
-      <>
-        {this.props.filterRenderer.render(
-          this.state.searchOptions,
-          this.handlePropChange.bind(this)
-        )}
-      </>
     );
   }
 
@@ -115,7 +102,7 @@ export class FilterableListContainer<
       ...this.state.searchOptions,
       [prop]: value,
     };
-    this.setSearchOptionsAndUpdate(searchOptions);
+    this.props.searchOptions.update(searchOptions);
   };
 
   private setSearchOptionsAndUpdate(searchOptions: S) {
@@ -180,14 +167,12 @@ export namespace FilterableListContainer {
     T extends ArduinoComponent,
     S extends Searchable.Options
   > {
-    readonly defaultSearchOptions: S;
+    readonly searchOptions: ListWidgetSearchOptions<S>;
     readonly container: ListWidget<T, S>;
     readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
     readonly itemRenderer: ListItemRenderer<T>;
-    readonly filterRenderer: FilterRenderer<S>;
     readonly resolveFocus: (element: HTMLElement | undefined) => void;
-    readonly searchOptionsDidChange: Event<Partial<S> | undefined>;
     readonly messageService: MessageService;
     readonly responseService: ResponseServiceClient;
     readonly onDidShow: Event<void>;

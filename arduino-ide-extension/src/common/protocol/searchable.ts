@@ -1,6 +1,8 @@
 import URI from '@theia/core/lib/common/uri';
 import type { ArduinoComponent } from './arduino-component';
 
+export const Updatable = { type: 'Updatable' } as const;
+
 export interface Searchable<T, O extends Searchable.Options> {
   search(options: O): Promise<T[]>;
 }

@@ -6,7 +6,7 @@ import {
 } from '@theia/core/shared/inversify';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { Emitter } from '@theia/core/lib/common/event';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandService } from '@theia/core/lib/common/command';
@@ -20,13 +20,16 @@ import {
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
-import { FilterRenderer } from './filter-renderer';
+import { StatefulWidget } from '@theia/core/lib/browser';
 
 @injectable()
 export abstract class ListWidget<
-  T extends ArduinoComponent,
-  S extends Searchable.Options
-> extends ReactWidget {
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  >
+  extends ReactWidget
+  implements StatefulWidget
+{
   @inject(MessageService)
   protected readonly messageService: MessageService;
   @inject(NotificationCenter)
@@ -41,9 +44,7 @@ export abstract class ListWidget<
    */
   private focusNode: HTMLElement | undefined;
   private readonly didReceiveFirstFocus = new Deferred();
-  private readonly searchOptionsChangeEmitter = new Emitter<
-    Partial<S> | undefined
-  >();
+  private readonly searchOptions: ListWidgetSearchOptions<S>;
   private readonly onDidShowEmitter = new Emitter<void>();
   /**
    * Instead of running an `update` from the `postConstruct` `init` method,
@@ -53,7 +54,7 @@ export abstract class ListWidget<
 
   constructor(protected options: ListWidget.Options<T, S>) {
     super();
-    const { id, label, iconClass } = options;
+    const { id, label, iconClass, searchOptions } = options;
     this.id = id;
     this.title.label = label;
     this.title.caption = label;
@@ -62,10 +63,8 @@ export abstract class ListWidget<
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
     this.scrollOptions = undefined;
-    this.toDispose.pushAll([
-      this.searchOptionsChangeEmitter,
-      this.onDidShowEmitter,
-    ]);
+    this.searchOptions = searchOptions;
+    this.toDispose.push(this.onDidShowEmitter);
   }
 
   @postConstruct()
@@ -77,6 +76,16 @@ export abstract class ListWidget<
       this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
       this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
+  }
+
+  storeState(): S | undefined {
+    return this.searchOptions.options;
+  }
+
+  restoreState(oldState: unknown): void {
+    if (oldState) {
+      this.searchOptions.update(oldState as S);
+    }
   }
 
   protected override onAfterShow(message: Message): void {
@@ -141,7 +150,7 @@ export abstract class ListWidget<
   override render(): React.ReactNode {
     return (
       <FilterableListContainer<T, S>
-        defaultSearchOptions={this.options.defaultSearchOptions}
+        searchOptions={this.searchOptions}
         container={this}
         resolveFocus={this.onFocusResolved}
         searchable={this.options.searchable}
@@ -149,8 +158,6 @@ export abstract class ListWidget<
         uninstall={this.uninstall.bind(this)}
         itemLabel={this.options.itemLabel}
         itemRenderer={this.options.itemRenderer}
-        filterRenderer={this.options.filterRenderer}
-        searchOptionsDidChange={this.searchOptionsChangeEmitter.event}
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
@@ -164,9 +171,13 @@ export abstract class ListWidget<
    * If it is `undefined`, updates the view state by re-running the search with the current `filterText` term.
    */
   refresh(searchOptions: Partial<S> | undefined): void {
-    this.didReceiveFirstFocus.promise.then(() =>
-      this.searchOptionsChangeEmitter.fire(searchOptions)
-    );
+    this.didReceiveFirstFocus.promise.then(() => {
+      if (searchOptions) {
+        this.searchOptions.update(searchOptions);
+      } else {
+        this.searchOptions.options = this.searchOptions.options; // triggers a refresh. TODO fix this!
+      }
+    });
   }
 
   updateScrollBar(): void {
@@ -188,8 +199,7 @@ export namespace ListWidget {
     readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
     readonly itemRenderer: ListItemRenderer<T>;
-    readonly filterRenderer: FilterRenderer<S>;
-    readonly defaultSearchOptions: S;
+    readonly searchOptions: ListWidgetSearchOptions<S>;
   }
 }
 
@@ -198,4 +208,58 @@ export class UserAbortError extends Error {
     super(message);
     Object.setPrototypeOf(this, UserAbortError.prototype);
   }
+}
+
+@injectable()
+export abstract class ListWidgetSearchOptions<S extends Searchable.Options> {
+  private readonly onDidChangeEmitter = new Emitter<Required<S>>();
+  protected _options: Required<S>;
+
+  @postConstruct()
+  protected init(): void {
+    this.options = this.defaultOptions;
+  }
+
+  get onDidChange(): Event<Required<S>> {
+    return this.onDidChangeEmitter.event;
+  }
+
+  get options(): Required<S> {
+    return this._options;
+  }
+
+  set options(options: Required<S>) {
+    this._options = options;
+    this.onDidChangeEmitter.fire({ ...this._options });
+  }
+
+  update(options: Partial<S>): void {
+    this.options = { ...this.options, ...options };
+  }
+
+  clearFilters(): void {
+    const { query } = this.options;
+    this.options = { ...this.defaultOptions, query };
+  }
+
+  /**
+   * `true` if all property values of the `options` object equals with the `defaultOptions` property values. The `query` property is ignored in the comparison.
+   */
+  hasFilters(): boolean {
+    const defaultOptions = this.defaultOptions;
+    const currentOptions = this.options;
+    for (const key of Object.keys(currentOptions)) {
+      if (key === 'query') {
+        continue;
+      }
+      const defaultValue = (defaultOptions as Record<string, unknown>)[key];
+      const currentValue = (currentOptions as Record<string, unknown>)[key];
+      if (defaultValue !== currentValue) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  abstract get defaultOptions(): Required<S>;
 }

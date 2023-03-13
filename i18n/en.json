@@ -46,6 +46,9 @@
       "typeOfPorts": "{0} ports",
       "unknownBoard": "Unknown board"
     },
+    "boards": {
+      "filterBoards": "Filter Boards..."
+    },
     "boardsManager": "Boards Manager",
     "boardsType": {
       "arduinoCertified": "Arduino Certified"
@@ -81,6 +84,10 @@
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "showBoardsUpdates": "Boards Updates",
+      "showInstalledBoards": "Installed Boards",
+      "showInstalledLibraries": "Installed Libraries",
+      "showLibraryUpdates": "Library Updates",
       "updatingBoards": "Updating boards...",
       "updatingLibraries": "Updating libraries..."
     },
@@ -169,7 +176,6 @@
       "moreInfo": "More info",
       "otherVersions": "Other Versions",
       "remove": "Remove",
-      "title": "{0} by {1}",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
       "update": "Update"
@@ -242,6 +248,9 @@
       "forAny": "Examples for any board",
       "menu": "Examples"
     },
+    "filter": {
+      "clearAll": "Clear All Filters"
+    },
     "firmware": {
       "checkUpdates": "Check Updates",
       "failedInstall": "Installation failed. Please try again.",
@@ -281,6 +290,9 @@
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "libraries": {
+      "filterLibraries": "Filter Libraries..."
     },
     "library": {
       "addZip": "Add .ZIP Library...",

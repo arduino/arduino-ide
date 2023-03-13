@@ -1,45 +1,55 @@
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import type { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { InstallManually, Later } from '../../common/nls';
 import {
   ArduinoComponent,
+  BoardSearch,
   BoardsPackage,
   BoardsService,
   LibraryPackage,
+  LibrarySearch,
   LibraryService,
   ResponseServiceClient,
   Searchable,
+  Updatable,
 } from '../../common/protocol';
 import { Installable } from '../../common/protocol/installable';
 import { ExecuteWithProgress } from '../../common/protocol/progressible';
 import { BoardsListWidgetFrontendContribution } from '../boards/boards-widget-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from '../library/library-widget-frontend-contribution';
+import { NotificationCenter } from '../notification-center';
 import { WindowServiceExt } from '../theia/core/window-service-ext';
 import type { ListWidget } from '../widgets/component-list/list-widget';
 import { Command, CommandRegistry, Contribution } from './contribution';
+import { Emitter } from '@theia/core';
+import debounce = require('lodash.debounce');
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { ArduinoPreferences } from '../arduino-preferences';
 
-const NoUpdates = nls.localize(
+const noUpdates = nls.localize(
   'arduino/checkForUpdates/noUpdates',
   'There are no recent updates available.'
 );
-const PromptUpdateBoards = nls.localize(
+const promptUpdateBoards = nls.localize(
   'arduino/checkForUpdates/promptUpdateBoards',
   'Updates are available for some of your boards.'
 );
-const PromptUpdateLibraries = nls.localize(
+const promptUpdateLibraries = nls.localize(
   'arduino/checkForUpdates/promptUpdateLibraries',
   'Updates are available for some of your libraries.'
 );
-const UpdatingBoards = nls.localize(
+const updatingBoards = nls.localize(
   'arduino/checkForUpdates/updatingBoards',
   'Updating boards...'
 );
-const UpdatingLibraries = nls.localize(
+const updatingLibraries = nls.localize(
   'arduino/checkForUpdates/updatingLibraries',
   'Updating libraries...'
 );
-const InstallAll = nls.localize(
+const installAll = nls.localize(
   'arduino/checkForUpdates/installAll',
   'Install All'
 );
@@ -49,7 +59,24 @@ interface Task<T extends ArduinoComponent> {
   readonly item: T;
 }
 
-const Updatable = { type: 'Updatable' } as const;
+const updatableLibrariesSearchOption: LibrarySearch = {
+  query: '',
+  topic: 'All',
+  ...Updatable,
+};
+const updatableBoardsSearchOption: BoardSearch = {
+  query: '',
+  ...Updatable,
+};
+const installedLibrariesSearchOptions: LibrarySearch = {
+  query: '',
+  topic: 'All',
+  type: 'Installed',
+};
+const installedBoardsSearchOptions: BoardSearch = {
+  query: '',
+  type: 'Installed',
+};
 
 @injectable()
 export class CheckForUpdates extends Contribution {
@@ -70,6 +97,37 @@ export class CheckForUpdates extends Contribution {
     register.registerCommand(CheckForUpdates.Commands.CHECK_FOR_UPDATES, {
       execute: () => this.checkForUpdates(false),
     });
+    register.registerCommand(CheckForUpdates.Commands.SHOW_BOARDS_UPDATES, {
+      execute: () =>
+        this.showUpdatableItems(
+          this.boardsContribution,
+          updatableBoardsSearchOption
+        ),
+    });
+    register.registerCommand(CheckForUpdates.Commands.SHOW_LIBRARY_UPDATES, {
+      execute: () =>
+        this.showUpdatableItems(
+          this.librariesContribution,
+          updatableLibrariesSearchOption
+        ),
+    });
+    register.registerCommand(CheckForUpdates.Commands.SHOW_INSTALLED_BOARDS, {
+      execute: () =>
+        this.showUpdatableItems(
+          this.boardsContribution,
+          installedBoardsSearchOptions
+        ),
+    });
+    register.registerCommand(
+      CheckForUpdates.Commands.SHOW_INSTALLED_LIBRARIES,
+      {
+        execute: () =>
+          this.showUpdatableItems(
+            this.librariesContribution,
+            installedLibrariesSearchOptions
+          ),
+      }
+    );
   }
 
   override async onReady(): Promise<void> {
@@ -85,13 +143,13 @@ export class CheckForUpdates extends Contribution {
 
   private async checkForUpdates(silent = true) {
     const [boardsPackages, libraryPackages] = await Promise.all([
-      this.boardsService.search(Updatable),
-      this.libraryService.search(Updatable),
+      this.boardsService.search(updatableBoardsSearchOption),
+      this.libraryService.search(updatableLibrariesSearchOption),
     ]);
     this.promptUpdateBoards(boardsPackages);
     this.promptUpdateLibraries(libraryPackages);
     if (!libraryPackages.length && !boardsPackages.length && !silent) {
-      this.messageService.info(NoUpdates);
+      this.messageService.info(noUpdates);
     }
   }
 
@@ -100,9 +158,9 @@ export class CheckForUpdates extends Contribution {
       items,
       installable: this.boardsService,
       viewContribution: this.boardsContribution,
-      viewSearchOptions: { query: '', ...Updatable },
-      promptMessage: PromptUpdateBoards,
-      updatingMessage: UpdatingBoards,
+      viewSearchOptions: updatableBoardsSearchOption,
+      promptMessage: promptUpdateBoards,
+      updatingMessage: updatingBoards,
     });
   }
 
@@ -111,9 +169,9 @@ export class CheckForUpdates extends Contribution {
       items,
       installable: this.libraryService,
       viewContribution: this.librariesContribution,
-      viewSearchOptions: { query: '', topic: 'All', ...Updatable },
-      promptMessage: PromptUpdateLibraries,
-      updatingMessage: UpdatingLibraries,
+      viewSearchOptions: updatableLibrariesSearchOption,
+      promptMessage: promptUpdateLibraries,
+      updatingMessage: updatingLibraries,
     });
   }
 
@@ -141,19 +199,28 @@ export class CheckForUpdates extends Contribution {
       return;
     }
     this.messageService
-      .info(message, Later, InstallManually, InstallAll)
+      .info(message, Later, InstallManually, installAll)
       .then((answer) => {
-        if (answer === InstallAll) {
+        if (answer === installAll) {
           const tasks = items.map((item) =>
             this.createInstallTask(item, installable)
           );
-          this.executeTasks(updatingMessage, tasks);
+          return this.executeTasks(updatingMessage, tasks);
         } else if (answer === InstallManually) {
-          viewContribution
-            .openView({ reveal: true })
-            .then((widget) => widget.refresh(viewSearchOptions));
+          return this.showUpdatableItems(viewContribution, viewSearchOptions);
         }
       });
+  }
+
+  private async showUpdatableItems<
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  >(
+    viewContribution: AbstractViewContribution<ListWidget<T, S>>,
+    viewSearchOptions: S
+  ): Promise<void> {
+    const widget = await viewContribution.openView({ reveal: true });
+    widget.refresh(viewSearchOptions);
   }
 
   private async executeTasks(
@@ -217,5 +284,127 @@ export namespace CheckForUpdates {
       },
       'arduino/checkForUpdates/checkForUpdates'
     );
+    export const SHOW_BOARDS_UPDATES: Command & { label: string } = {
+      id: 'arduino-show-boards-updates',
+      label: nls.localize(
+        'arduino/checkForUpdates/showBoardsUpdates',
+        'Boards Updates'
+      ),
+      category: 'Arduino',
+    };
+    export const SHOW_LIBRARY_UPDATES: Command & { label: string } = {
+      id: 'arduino-show-library-updates',
+      label: nls.localize(
+        'arduino/checkForUpdates/showLibraryUpdates',
+        'Library Updates'
+      ),
+      category: 'Arduino',
+    };
+    export const SHOW_INSTALLED_BOARDS: Command & { label: string } = {
+      id: 'arduino-show-installed-boards',
+      label: nls.localize(
+        'arduino/checkForUpdates/showInstalledBoards',
+        'Installed Boards'
+      ),
+      category: 'Arduino',
+    };
+    export const SHOW_INSTALLED_LIBRARIES: Command & { label: string } = {
+      id: 'arduino-show-installed-libraries',
+      label: nls.localize(
+        'arduino/checkForUpdates/showInstalledLibraries',
+        'Installed Libraries'
+      ),
+      category: 'Arduino',
+    };
+  }
+}
+
+@injectable()
+abstract class ComponentUpdates<T extends ArduinoComponent>
+  implements FrontendApplicationContribution
+{
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+  @inject(ArduinoPreferences)
+  private readonly preferences: ArduinoPreferences;
+  @inject(NotificationCenter)
+  protected readonly notificationCenter: NotificationCenter;
+  private _updates: T[] | undefined;
+  private readonly onDidChangeEmitter = new Emitter<T[]>();
+  protected readonly toDispose = new DisposableCollection(
+    this.onDidChangeEmitter
+  );
+
+  readonly onDidChange = this.onDidChangeEmitter.event;
+  readonly refresh = debounce(() => this.refreshDebounced(), 200);
+
+  onStart(): void {
+    this.appStateService.reachedState('ready').then(() => this.refresh());
+    this.toDispose.push(
+      this.preferences.onPreferenceChanged(({ preferenceName, newValue }) => {
+        if (
+          preferenceName === 'arduino.checkForUpdates' &&
+          typeof newValue === 'boolean'
+        ) {
+          this.refresh();
+        }
+      })
+    );
+  }
+
+  onStop(): void {
+    this.toDispose.dispose();
+  }
+
+  get updates(): T[] | undefined {
+    return this._updates;
+  }
+
+  /**
+   * Search updatable components (libraries and platforms) via the CLI.
+   */
+  abstract searchUpdates(): Promise<T[]>;
+
+  private async refreshDebounced(): Promise<void> {
+    const checkForUpdates = this.preferences['arduino.checkForUpdates'];
+    this._updates = checkForUpdates ? await this.searchUpdates() : [];
+    this.onDidChangeEmitter.fire(this._updates.slice());
+  }
+}
+
+@injectable()
+export class LibraryUpdates extends ComponentUpdates<LibraryPackage> {
+  @inject(LibraryService)
+  private readonly libraryService: LibraryService;
+
+  override onStart(): void {
+    super.onStart();
+    this.toDispose.pushAll([
+      this.notificationCenter.onLibraryDidInstall(() => this.refresh()),
+      this.notificationCenter.onLibraryDidUninstall(() => this.refresh()),
+    ]);
+  }
+
+  override searchUpdates(): Promise<LibraryPackage[]> {
+    return this.libraryService.search(updatableLibrariesSearchOption);
+  }
+}
+
+@injectable()
+export class BoardsUpdates extends ComponentUpdates<BoardsPackage> {
+  @inject(BoardsService)
+  private readonly boardsService: BoardsService;
+
+  override onStart(): void {
+    super.onStart();
+    this.toDispose.pushAll([
+      this.notificationCenter.onPlatformDidInstall(() => this.refresh()),
+      this.notificationCenter.onPlatformDidUninstall(() => this.refresh()),
+      this.notificationCenter.onIndexUpdateDidComplete(() => this.refresh()),
+    ]);
+  }
+
+  override searchUpdates(): Promise<BoardsPackage[]> {
+    return this.boardsService.search(updatableBoardsSearchOption);
   }
 }

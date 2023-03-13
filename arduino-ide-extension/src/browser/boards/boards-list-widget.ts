@@ -1,3 +1,4 @@
+import { nls } from '@theia/core/lib/common';
 import {
   inject,
   injectable,
@@ -8,10 +9,18 @@ import {
   BoardsPackage,
   BoardsService,
 } from '../../common/protocol/boards-service';
-import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
-import { nls } from '@theia/core/lib/common';
-import { BoardsFilterRenderer } from '../widgets/component-list/filter-renderer';
+import {
+  ListWidget,
+  ListWidgetSearchOptions,
+} from '../widgets/component-list/list-widget';
+
+@injectable()
+export class BoardsListWidgetSearchOptions extends ListWidgetSearchOptions<BoardSearch> {
+  get defaultOptions(): Required<BoardSearch> {
+    return { query: '', type: 'All' };
+  }
+}
 
 @injectable()
 export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
@@ -21,7 +30,8 @@ export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
   constructor(
     @inject(BoardsService) service: BoardsService,
     @inject(ListItemRenderer) itemRenderer: ListItemRenderer<BoardsPackage>,
-    @inject(BoardsFilterRenderer) filterRenderer: BoardsFilterRenderer
+    @inject(BoardsListWidgetSearchOptions)
+    searchOptions: BoardsListWidgetSearchOptions
   ) {
     super({
       id: BoardsListWidget.WIDGET_ID,
@@ -31,8 +41,7 @@ export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
       installable: service,
       itemLabel: (item: BoardsPackage) => item.name,
       itemRenderer,
-      filterRenderer,
-      defaultSearchOptions: { query: '', type: 'All' },
+      searchOptions,
     });
   }
 

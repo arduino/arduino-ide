@@ -9,7 +9,10 @@ import {
   FrontendApplicationContribution,
   FrontendApplication as TheiaFrontendApplication,
 } from '@theia/core/lib/browser/frontend-application';
-import { LibraryListWidget } from './library/library-list-widget';
+import {
+  LibraryListWidget,
+  LibraryListWidgetSearchOptions,
+} from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
 import {
   LibraryService,
@@ -25,7 +28,10 @@ import {
 } from '../common/protocol/sketches-service';
 import { SketchesServiceClientImpl } from './sketches-service-client-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
-import { BoardsListWidget } from './boards/boards-list-widget';
+import {
+  BoardsListWidget,
+  BoardsListWidgetSearchOptions,
+} from './boards/boards-list-widget';
 import { BoardsListWidgetFrontendContribution } from './boards/boards-widget-frontend-contribution';
 import { BoardsServiceProvider } from './boards/boards-service-provider';
 import { WorkspaceService as TheiaWorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
@@ -73,7 +79,10 @@ import {
 } from '../common/protocol/config-service';
 import { MonitorWidget } from './serial/monitor/monitor-widget';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
-import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
+import {
+  TabBarDecorator,
+  TabBarDecoratorService as TheiaTabBarDecoratorService,
+} from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
 import { ProblemManager } from './theia/markers/problem-manager';
@@ -313,10 +322,10 @@ import { PreferencesEditorWidget } from './theia/preferences/preference-editor-w
 import { PreferencesWidget } from '@theia/preferences/lib/browser/views/preference-widget';
 import { createPreferencesWidgetContainer } from '@theia/preferences/lib/browser/views/preference-widget-bindings';
 import {
-  BoardsFilterRenderer,
-  LibraryFilterRenderer,
-} from './widgets/component-list/filter-renderer';
-import { CheckForUpdates } from './contributions/check-for-updates';
+  CheckForUpdates,
+  BoardsUpdates,
+  LibraryUpdates,
+} from './contributions/check-for-updates';
 import { OutputEditorFactory } from './theia/output/output-editor-factory';
 import { StartupTaskProvider } from '../electron-common/startup-task';
 import { DeleteSketch } from './contributions/delete-sketch';
@@ -356,6 +365,11 @@ import { Account } from './contributions/account';
 import { SidebarBottomMenuWidget } from './theia/core/sidebar-bottom-menu-widget';
 import { SidebarBottomMenuWidget as TheiaSidebarBottomMenuWidget } from '@theia/core/lib/browser/shell/sidebar-bottom-menu-widget';
 import { CreateCloudCopy } from './contributions/create-cloud-copy';
+import {
+  BoardsListWidgetTabBarDecorator,
+  LibraryListWidgetTabBarDecorator,
+} from './widgets/component-list/list-widget-tabbar-decorator';
+import { HoverService } from './theia/core/hover-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -371,8 +385,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Renderer for both the library and the core widgets.
   bind(ListItemRenderer).toSelf().inSingletonScope();
-  bind(LibraryFilterRenderer).toSelf().inSingletonScope();
-  bind(BoardsFilterRenderer).toSelf().inSingletonScope();
 
   // Library service
   bind(LibraryService)
@@ -395,6 +407,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     LibraryListWidgetFrontendContribution
   );
   bind(OpenHandler).toService(LibraryListWidgetFrontendContribution);
+  bind(TabBarToolbarContribution).toService(
+    LibraryListWidgetFrontendContribution
+  );
+  bind(CommandContribution).toService(LibraryListWidgetFrontendContribution);
+  bind(LibraryListWidgetSearchOptions).toSelf().inSingletonScope();
 
   // Sketch list service
   bind(SketchesService)
@@ -464,6 +481,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     BoardsListWidgetFrontendContribution
   );
   bind(OpenHandler).toService(BoardsListWidgetFrontendContribution);
+  bind(TabBarToolbarContribution).toService(
+    BoardsListWidgetFrontendContribution
+  );
+  bind(CommandContribution).toService(BoardsListWidgetFrontendContribution);
+  bind(BoardsListWidgetSearchOptions).toSelf().inSingletonScope();
 
   // Board select dialog
   bind(BoardsConfigDialogWidget).toSelf().inSingletonScope();
@@ -1034,4 +1056,20 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(FrontendApplicationContribution).toService(DaemonPort);
   bind(IsOnline).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(IsOnline);
+
+  bind(HoverService).toSelf().inSingletonScope();
+  bind(LibraryUpdates).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(LibraryUpdates);
+  bind(LibraryListWidgetTabBarDecorator).toSelf().inSingletonScope();
+  bind(TabBarDecorator).toService(LibraryListWidgetTabBarDecorator);
+  bind(FrontendApplicationContribution).toService(
+    LibraryListWidgetTabBarDecorator
+  );
+  bind(BoardsUpdates).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(BoardsUpdates);
+  bind(BoardsListWidgetTabBarDecorator).toSelf().inSingletonScope();
+  bind(TabBarDecorator).toService(BoardsListWidgetTabBarDecorator);
+  bind(FrontendApplicationContribution).toService(
+    BoardsListWidgetTabBarDecorator
+  );
 });

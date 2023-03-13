@@ -5,6 +5,7 @@ import { nls } from '@theia/core/lib/common/nls';
 import {
   All,
   Contributed,
+  Installed,
   Partner,
   Recommended,
   Retired,
@@ -12,6 +13,11 @@ import {
   Updatable,
 } from '../nls';
 import URI from '@theia/core/lib/common/uri';
+
+export const TopicLabel = nls.localize(
+  'arduino/librarySearchProperty/topic',
+  'Topic'
+);
 
 export const LibraryServicePath = '/services/library-service';
 export const LibraryService = Symbol('LibraryService');
@@ -76,7 +82,7 @@ export namespace LibrarySearch {
   export const TypeLabels: Record<Type, string> = {
     All: All,
     Updatable: Updatable,
-    Installed: nls.localize('arduino/libraryType/installed', 'Installed'),
+    Installed: Installed,
     Arduino: 'Arduino',
     Partner: Partner,
     Recommended: Recommended,
@@ -137,7 +143,7 @@ export namespace LibrarySearch {
     keyof Omit<LibrarySearch, 'query'>,
     string
   > = {
-    topic: nls.localize('arduino/librarySearchProperty/topic', 'Topic'),
+    topic: TopicLabel,
     type: TypeLabel,
   };
   export namespace UriParser {

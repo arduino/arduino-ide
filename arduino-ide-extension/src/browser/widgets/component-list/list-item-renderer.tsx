@@ -1,4 +1,3 @@
-import { ApplicationError } from '@theia/core';
 import {
   Anchor,
   ContextMenuRenderer,
@@ -6,20 +5,14 @@ import {
 import { TabBarToolbar } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { codicon } from '@theia/core/lib/browser/widgets/widget';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
 import {
-  CommandHandler,
   CommandRegistry,
   CommandService,
 } from '@theia/core/lib/common/command';
-import {
-  Disposable,
-  DisposableCollection,
-} from '@theia/core/lib/common/disposable';
-import {
-  MenuModelRegistry,
-  MenuPath,
-  SubMenuOptions,
-} from '@theia/core/lib/common/menu';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { MarkdownStringImpl } from '@theia/core/lib/common/markdown-rendering';
+import { MenuModelRegistry, MenuPath } from '@theia/core/lib/common/menu';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
@@ -33,6 +26,7 @@ import {
   SketchContainer,
   SketchesService,
   SketchRef,
+  TopicLabel,
 } from '../../../common/protocol';
 import type { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { Installable } from '../../../common/protocol/installable';
@@ -40,8 +34,14 @@ import { openClonedExample } from '../../contributions/examples';
 import {
   ArduinoMenus,
   examplesLabel,
-  unregisterSubmenu,
+  showDisabledContextMenuOptions,
 } from '../../menu/arduino-menus';
+import {
+  MenuActionTemplate,
+  registerMenus,
+  SubmenuTemplate,
+} from '../../menu/register-menu';
+import { HoverService } from '../../theia/core/hover-service';
 
 const moreInfoLabel = nls.localize('arduino/component/moreInfo', 'More info');
 const otherVersionsLabel = nls.localize(
@@ -63,9 +63,6 @@ function installVersionLabel(selectedVersion: string) {
 const updateLabel = nls.localize('arduino/component/update', 'Update');
 const removeLabel = nls.localize('arduino/component/remove', 'Remove');
 const byLabel = nls.localize('arduino/component/by', 'by');
-function nameAuthorLabel(name: string, author: string) {
-  return nls.localize('arduino/component/title', '{0} by {1}', name, author);
-}
 function installedLabel(installedVersion: string) {
   return nls.localize(
     'arduino/component/installed',
@@ -81,39 +78,6 @@ function clickToOpenInBrowserLabel(href: string): string | undefined {
   );
 }
 
-interface MenuTemplate {
-  readonly menuLabel: string;
-}
-interface MenuActionTemplate extends MenuTemplate {
-  readonly menuPath: MenuPath;
-  readonly handler: CommandHandler;
-  /**
-   * If not defined the insertion oder will be the order string.
-   */
-  readonly order?: string;
-}
-interface SubmenuTemplate extends MenuTemplate {
-  readonly menuLabel: string;
-  readonly submenuPath: MenuPath;
-  readonly options?: SubMenuOptions;
-}
-function isMenuTemplate(arg: unknown): arg is MenuTemplate {
-  return (
-    typeof arg === 'object' &&
-    (arg as MenuTemplate).menuLabel !== undefined &&
-    typeof (arg as MenuTemplate).menuLabel === 'string'
-  );
-}
-function isMenuActionTemplate(arg: MenuTemplate): arg is MenuActionTemplate {
-  return (
-    isMenuTemplate(arg) &&
-    (arg as MenuActionTemplate).handler !== undefined &&
-    typeof (arg as MenuActionTemplate).handler === 'object' &&
-    (arg as MenuActionTemplate).menuPath !== undefined &&
-    Array.isArray((arg as MenuActionTemplate).menuPath)
-  );
-}
-
 @injectable()
 export class ArduinoComponentContextMenuRenderer {
   @inject(CommandRegistry)
@@ -124,53 +88,25 @@ export class ArduinoComponentContextMenuRenderer {
   private readonly contextMenuRenderer: ContextMenuRenderer;
 
   private readonly toDisposeBeforeRender = new DisposableCollection();
-  private menuIndexCounter = 0;
 
   async render(
     anchor: Anchor,
-    ...templates: (MenuActionTemplate | SubmenuTemplate)[]
+    ...templates: Array<MenuActionTemplate | SubmenuTemplate>
   ): Promise<void> {
     this.toDisposeBeforeRender.dispose();
-    this.toDisposeBeforeRender.pushAll([
-      Disposable.create(() => (this.menuIndexCounter = 0)),
-      ...templates.map((template) => this.registerMenu(template)),
-    ]);
-    const options = {
+    this.toDisposeBeforeRender.push(
+      registerMenus({
+        contextId: 'component',
+        commandRegistry: this.commandRegistry,
+        menuRegistry: this.menuRegistry,
+        templates,
+      })
+    );
+    const options = showDisabledContextMenuOptions({
       menuPath: ArduinoMenus.ARDUINO_COMPONENT__CONTEXT,
       anchor,
-      showDisabled: true,
-    };
+    });
     this.contextMenuRenderer.render(options);
-  }
-
-  private registerMenu(
-    template: MenuActionTemplate | SubmenuTemplate
-  ): Disposable {
-    if (isMenuActionTemplate(template)) {
-      const { menuLabel, menuPath, handler, order } = template;
-      const id = this.generateCommandId(menuLabel, menuPath);
-      const index = this.menuIndexCounter++;
-      return new DisposableCollection(
-        this.commandRegistry.registerCommand({ id }, handler),
-        this.menuRegistry.registerMenuAction(menuPath, {
-          commandId: id,
-          label: menuLabel,
-          order: typeof order === 'string' ? order : String(index).padStart(4),
-        })
-      );
-    } else {
-      const { menuLabel, submenuPath, options } = template;
-      return new DisposableCollection(
-        this.menuRegistry.registerSubmenu(submenuPath, menuLabel, options),
-        Disposable.create(() =>
-          unregisterSubmenu(submenuPath, this.menuRegistry)
-        )
-      );
-    }
-  }
-
-  private generateCommandId(menuLabel: string, menuPath: MenuPath): string {
-    return `arduino--component-context-${menuPath.join('-')}-${menuLabel}`;
   }
 }
 
@@ -201,6 +137,8 @@ export class ListItemRenderer<T extends ArduinoComponent> {
   private readonly messageService: MessageService;
   @inject(CommandService)
   private readonly commandService: CommandService;
+  @inject(HoverService)
+  private readonly hoverService: HoverService;
   @inject(CoreService)
   private readonly coreService: CoreService;
   @inject(ExamplesService)
@@ -216,12 +154,26 @@ export class ListItemRenderer<T extends ArduinoComponent> {
     }
   };
 
+  private readonly showHover = (
+    event: React.MouseEvent<HTMLElement>,
+    markdown: string
+  ) => {
+    this.hoverService.requestHover({
+      content: new MarkdownStringImpl(markdown),
+      target: event.currentTarget,
+      position: 'right',
+    });
+  };
+
   renderItem(params: ListItemRendererParams<T>): React.ReactNode {
     const action = this.action(params);
     return (
       <>
         <Separator />
-        <div className="component-list-item noselect">
+        <div
+          className="component-list-item noselect"
+          onMouseEnter={(event) => this.showHover(event, this.markdown(params))}
+        >
           <Header
             params={params}
             action={action}
@@ -245,6 +197,30 @@ export class ListItemRenderer<T extends ArduinoComponent> {
       available: availableVersions,
       selected: selectedVersion,
     });
+  }
+
+  private markdown(params: ListItemRendererParams<T>): string {
+    // TODO: dedicated library and boards services for the markdown content generation
+    const {
+      item,
+      item: { name, author, description, summary, installedVersion },
+    } = params;
+    let title = `__${name}__ ${byLabel} ${author}`;
+    if (installedVersion) {
+      title += `\n\n(${installedLabel(`\`${installedVersion}\``)})`;
+    }
+    if (LibraryPackage.is(item)) {
+      let content = `\n\n${summary}`;
+      // do not repeat the same info if paragraph and sentence are the same
+      // example: https://github.com/arduino-libraries/ArduinoCloudThing/blob/8cbcee804e99fed614366c1b87143b1f1634c45f/library.properties#L5-L6
+      if (description !== summary) {
+        content += `\n_____\n\n${description}`;
+      }
+      return `${title}\n\n____${content}\n\n____\n${TopicLabel}: \`${item.category}\``;
+    }
+    return `${title}\n\n____\n\n${summary}\n\n - ${description
+      .split(',')
+      .join('\n - ')}`;
   }
 
   private get services(): ListItemRendererServices {
@@ -361,7 +337,7 @@ class Toolbar<T extends ArduinoComponent> extends React.Component<
     };
   }
 
-  private get examples(): Promise<(MenuActionTemplate | SubmenuTemplate)[]> {
+  private get examples(): Promise<Array<MenuActionTemplate | SubmenuTemplate>> {
     const {
       params: {
         item,
@@ -394,8 +370,8 @@ class Toolbar<T extends ArduinoComponent> extends React.Component<
     container: SketchContainer,
     menuPath: MenuPath,
     depth = 0
-  ): (MenuActionTemplate | SubmenuTemplate)[] {
-    const templates: (MenuActionTemplate | SubmenuTemplate)[] = [];
+  ): Array<MenuActionTemplate | SubmenuTemplate> {
+    const templates: Array<MenuActionTemplate | SubmenuTemplate> = [];
     const { label } = container;
     if (depth > 0) {
       menuPath = [...menuPath, label];
@@ -464,7 +440,7 @@ class Toolbar<T extends ArduinoComponent> extends React.Component<
     };
   }
 
-  private get otherVersions(): (MenuActionTemplate | SubmenuTemplate)[] {
+  private get otherVersions(): Array<MenuActionTemplate | SubmenuTemplate> {
     const {
       params: {
         item: { availableVersions },
@@ -566,10 +542,8 @@ class Title<T extends ArduinoComponent> extends React.Component<
 > {
   override render(): React.ReactNode {
     const { name, author } = this.props.params.item;
-    const title =
-      name && author ? nameAuthorLabel(name, author) : name ? name : Unknown;
     return (
-      <div className="title" title={title}>
+      <div className="title">
         {name && author ? (
           <>
             {<span className="name">{name}</span>}{' '}
@@ -627,7 +601,7 @@ class Content<T extends ArduinoComponent> extends React.Component<
     } = this.props;
     const content = [summary, description].filter(Boolean).join(' ');
     return (
-      <div className="content" title={content}>
+      <div className="content">
         <p>{content}</p>
         <MoreInfo {...this.props} />
       </div>

@@ -1,3 +1,4 @@
+import { RenderContextMenuOptions } from '@theia/core/lib/browser';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
 import {
   MAIN_MENU_BAR,
@@ -244,3 +245,13 @@ export class PlaceholderMenuNode implements MenuNode {
 }
 
 export const examplesLabel = nls.localize('arduino/examples/menu', 'Examples');
+
+/**
+ * Helper function to optionally show disabled context menu items in IDE2. They're invisible in Theia.
+ * See `ElectronContextMenuRenderer#showDisabled` for more details.
+ */
+export function showDisabledContextMenuOptions(
+  options: RenderContextMenuOptions
+): RenderContextMenuOptions {
+  return Object.assign(options, { showDisabled: true });
+}

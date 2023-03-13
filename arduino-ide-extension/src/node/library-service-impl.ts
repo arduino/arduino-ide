@@ -221,8 +221,8 @@ export class LibraryServiceImpl
           {
             name: library.getName(),
             installedVersion,
-            description: library.getSentence(),
-            summary: library.getParagraph(),
+            description: library.getParagraph(),
+            summary: library.getSentence(),
             moreInfoLink: library.getWebsite(),
             includes: library.getProvidesIncludesList(),
             location: this.mapLocation(library.getLocation()),
@@ -462,9 +462,9 @@ function toLibrary(
     author: lib.getAuthor(),
     availableVersions,
     includes: lib.getProvidesIncludesList(),
-    description: lib.getSentence(),
+    description: lib.getParagraph(),
     moreInfoLink: lib.getWebsite(),
-    summary: lib.getParagraph(),
+    summary: lib.getSentence(),
     category: lib.getCategory(),
     types: lib.getTypesList(),
   };

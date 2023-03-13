@@ -22,6 +22,7 @@
 
 :root {
   --arduino-button-height: 28px;
+  --arduino-side-panel-min-width: 220px;
 }
 
 /* Revive of the `--theia-icon-loading`. The variable has been removed from Theia while IDE2 still uses is. */
@@ -68,9 +69,9 @@ body.theia-dark {
 
 /* Makes the sidepanel a bit wider when opening the widget */
 .p-DockPanel-widget {
-  min-width: 220px;
+  min-width: var(--arduino-side-panel-min-width);
   min-height: 20px;
-  height: 220px;
+  height: var(--arduino-side-panel-min-width);
 }
 
 /* Overrule the default Theia CSS button styles. */

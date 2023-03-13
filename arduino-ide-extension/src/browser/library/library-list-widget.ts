@@ -1,25 +1,32 @@
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { addEventListener } from '@theia/core/lib/browser/widgets/widget';
+import { nls } from '@theia/core/lib/common/nls';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import {
+  inject,
   injectable,
   postConstruct,
-  inject,
 } from '@theia/core/shared/inversify';
-import { Message } from '@theia/core/shared/@phosphor/messaging';
-import { addEventListener } from '@theia/core/lib/browser/widgets/widget';
-import { DialogProps } from '@theia/core/lib/browser/dialogs';
-import { AbstractDialog } from '../theia/dialogs/dialogs';
+import { Installable } from '../../common/protocol';
 import {
   LibraryPackage,
   LibrarySearch,
   LibraryService,
 } from '../../common/protocol/library-service';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
+import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import {
   ListWidget,
+  ListWidgetSearchOptions,
   UserAbortError,
 } from '../widgets/component-list/list-widget';
-import { Installable } from '../../common/protocol';
-import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
-import { nls } from '@theia/core/lib/common';
-import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
+
+@injectable()
+export class LibraryListWidgetSearchOptions extends ListWidgetSearchOptions<LibrarySearch> {
+  get defaultOptions(): Required<LibrarySearch> {
+    return { query: '', type: 'All', topic: 'All' };
+  }
+}
 
 @injectable()
 export class LibraryListWidget extends ListWidget<
@@ -35,7 +42,8 @@ export class LibraryListWidget extends ListWidget<
   constructor(
     @inject(LibraryService) private service: LibraryService,
     @inject(ListItemRenderer) itemRenderer: ListItemRenderer<LibraryPackage>,
-    @inject(LibraryFilterRenderer) filterRenderer: LibraryFilterRenderer
+    @inject(LibraryListWidgetSearchOptions)
+    searchOptions: LibraryListWidgetSearchOptions
   ) {
     super({
       id: LibraryListWidget.WIDGET_ID,
@@ -45,8 +53,7 @@ export class LibraryListWidget extends ListWidget<
       installable: service,
       itemLabel: (item: LibraryPackage) => item.name,
       itemRenderer,
-      filterRenderer,
-      defaultSearchOptions: { query: '', type: 'All', topic: 'All' },
+      searchOptions,
     });
   }
 

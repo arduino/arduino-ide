@@ -8,7 +8,10 @@ import {
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
-import { ArduinoMenus } from '../menu/arduino-menus';
+import {
+  ArduinoMenus,
+  showDisabledContextMenuOptions,
+} from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import {
   Command,
@@ -119,7 +122,7 @@ export class SketchControl extends SketchContribution {
               )
             );
           }
-          const options = {
+          const options = showDisabledContextMenuOptions({
             menuPath: ArduinoMenus.SKETCH_CONTROL__CONTEXT,
             anchor: {
               x: parentElement.getBoundingClientRect().left,
@@ -127,8 +130,7 @@ export class SketchControl extends SketchContribution {
                 parentElement.getBoundingClientRect().top +
                 parentElement.offsetHeight,
             },
-            showDisabled: true,
-          };
+          });
           this.contextMenuRenderer.render(options);
         },
       }
