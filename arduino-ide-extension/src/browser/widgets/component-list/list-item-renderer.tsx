@@ -213,7 +213,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
       let content = `\n\n${summary}`;
       // do not repeat the same info if paragraph and sentence are the same
       // example: https://github.com/arduino-libraries/ArduinoCloudThing/blob/8cbcee804e99fed614366c1b87143b1f1634c45f/library.properties#L5-L6
-      if (description !== summary) {
+      if (description && description !== summary) {
         content += `\n_____\n\n${description}`;
       }
       return `${title}\n\n____${content}\n\n____\n${TopicLabel}: \`${item.category}\``;
