@@ -21,6 +21,7 @@ import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
 import { StatefulWidget } from '@theia/core/lib/browser';
+import { HoverService } from '../../theia/core/hover-service';
 
 @injectable()
 export abstract class ListWidget<
@@ -38,6 +39,8 @@ export abstract class ListWidget<
   private readonly commandService: CommandService;
   @inject(ResponseServiceClient)
   private readonly responseService: ResponseServiceClient;
+  @inject(HoverService)
+  private readonly hoverService: HoverService;
 
   /**
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
@@ -162,6 +165,7 @@ export abstract class ListWidget<
         commandService={this.commandService}
         responseService={this.responseService}
         onDidShow={this.onDidShowEmitter.event}
+        hoverService={this.hoverService}
       />
     );
   }

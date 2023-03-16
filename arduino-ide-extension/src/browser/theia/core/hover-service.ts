@@ -144,7 +144,7 @@ export class HoverService {
     const documentWidth = document.body.getBoundingClientRect().width;
     // document.body.getBoundingClientRect().height doesn't work as expected
     // scrollHeight will always be accurate here: https://stackoverflow.com/a/44077777
-    const documentHeight = document.documentElement.scrollHeight;
+    const documentHeight = document.documentElement.scrollHeight - 22; // --theia-statusBar-height: 22px;
     position = HoverPosition.invertIfNecessary(
       position,
       targetDimensions,

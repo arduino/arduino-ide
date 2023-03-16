@@ -4,7 +4,7 @@
 /* Adapted from https://github.com/microsoft/vscode/blob/7d9b1c37f8e5ae3772782ba3b09d827eb3fdd833/src/vs/workbench/services/hover/browser/hoverService.ts */
 
 :root {
-    --theia-hover-max-width: 200px;
+    --theia-hover-max-width: 200px; /* customized */
 }
 
 .theia-hover {
@@ -29,10 +29,13 @@
 
 .theia-hover a {
     color: var(--theia-textLink-foreground);
+    word-wrap: break-word; /* customized */
+    cursor: pointer; /* customized */
 }
 
 .theia-hover a:hover {
-    color: var(--theia-textLink-active-foreground);
+    /* color: var(--theia-textLink-active-foreground); */
+    text-decoration: underline; /* customized */
 }
 
 .theia-hover .hover-row .actions {

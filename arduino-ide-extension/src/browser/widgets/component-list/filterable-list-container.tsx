@@ -15,6 +15,7 @@ import { ListItemRenderer } from './list-item-renderer';
 import { ResponseServiceClient } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { HoverService } from '../../theia/core/hover-service';
 
 export class FilterableListContainer<
   T extends ArduinoComponent,
@@ -93,6 +94,7 @@ export class FilterableListContainer<
         uninstall={this.uninstall.bind(this)}
         edited={this.state.edited}
         onItemEdit={this.onItemEdit.bind(this)}
+        hoverService={this.props.hoverService}
       />
     );
   }
@@ -193,6 +195,7 @@ export namespace FilterableListContainer {
       progressId: string;
     }) => Promise<void>;
     readonly commandService: CommandService;
+    readonly hoverService: HoverService;
   }
 
   export interface State<T, S extends Searchable.Options> {

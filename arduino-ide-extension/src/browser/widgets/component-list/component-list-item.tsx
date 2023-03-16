@@ -24,6 +24,7 @@ export class ComponentListItem<
           item,
           selectedVersion,
           inProgress: this.state.inProgress,
+          isScrolling: this.props.isScrolling,
           install: (item) => this.install(item),
           uninstall: (item) => this.uninstall(item),
           onVersionChange: (version) => this.onVersionChange(version),
@@ -88,6 +89,7 @@ export namespace ComponentListItem {
       selectedVersion: Installable.Version
     ) => void;
     readonly itemRenderer: ListItemRenderer<T>;
+    readonly isScrolling: boolean;
   }
 
   export interface State {

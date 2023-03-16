@@ -158,6 +158,10 @@
     padding-top: 8px;
 }
 
+.component-list-item .footer.scrolling {
+    visibility: hidden;
+}
+
 .component-list-item .footer > * {
     display: inline-block;
 }

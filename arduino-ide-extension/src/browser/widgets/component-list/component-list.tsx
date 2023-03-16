@@ -2,16 +2,33 @@ import * as React from '@theia/core/shared/react';
 import { Virtuoso } from '@theia/core/shared/react-virtuoso';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { Installable } from '../../../common/protocol/installable';
+import { HoverService } from '../../theia/core/hover-service';
 import { ComponentListItem } from './component-list-item';
 import { ListItemRenderer } from './list-item-renderer';
 
 export class ComponentList<T extends ArduinoComponent> extends React.Component<
-  ComponentList.Props<T>
+  ComponentList.Props<T>,
+  ComponentList.State
 > {
+  constructor(props: Readonly<ComponentList.Props<T>>) {
+    super(props);
+    this.state = {
+      isScrolling: false,
+    };
+  }
+
   override render(): React.ReactNode {
     return (
       <Virtuoso
         data={this.props.items}
+        isScrolling={(isScrolling) => {
+          if (this.state.isScrolling !== isScrolling) {
+            this.setState({ isScrolling });
+            if (isScrolling) {
+              this.props.hoverService.cancelHover();
+            }
+          }
+        }}
         itemContent={(_: number, item: T) => (
           <ComponentListItem<T>
             key={this.props.itemLabel(item)}
@@ -21,6 +38,7 @@ export class ComponentList<T extends ArduinoComponent> extends React.Component<
             uninstall={this.props.uninstall}
             edited={this.props.edited}
             onItemEdit={this.props.onItemEdit}
+            isScrolling={this.state.isScrolling}
           />
         )}
       />
@@ -42,5 +60,9 @@ export namespace ComponentList {
       item: T,
       selectedVersion: Installable.Version
     ) => void;
+    readonly hoverService: HoverService;
+  }
+  export interface State {
+    isScrolling: boolean;
   }
 }

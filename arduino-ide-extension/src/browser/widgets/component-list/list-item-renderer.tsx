@@ -114,6 +114,7 @@ interface ListItemRendererParams<T extends ArduinoComponent> {
   readonly item: T;
   readonly selectedVersion: Installable.Version | undefined;
   readonly inProgress?: 'installing' | 'uninstalling' | undefined;
+  readonly isScrolling: boolean;
   readonly install: (item: T) => Promise<void>;
   readonly uninstall: (item: T) => Promise<void>;
   readonly onVersionChange: (version: Installable.Version) => void;
@@ -156,15 +157,17 @@ export class ListItemRenderer<T extends ArduinoComponent> {
 
   private readonly showHover = (
     event: React.MouseEvent<HTMLElement>,
-    markdown: string
+    params: ListItemRendererParams<T>
   ) => {
-    this.hoverService.requestHover({
-      content: new MarkdownStringImpl(markdown),
-      target: event.currentTarget,
-      position: 'right',
-    });
+    if (!params.isScrolling) {
+      const markdown = this.markdown(params);
+      this.hoverService.requestHover({
+        content: new MarkdownStringImpl(markdown),
+        target: event.currentTarget,
+        position: 'right',
+      });
+    }
   };
-
   renderItem(params: ListItemRendererParams<T>): React.ReactNode {
     const action = this.action(params);
     return (
@@ -172,7 +175,7 @@ export class ListItemRenderer<T extends ArduinoComponent> {
         <Separator />
         <div
           className="component-list-item noselect"
-          onMouseEnter={(event) => this.showHover(event, this.markdown(params))}
+          onMouseOver={(event) => this.showHover(event, params)}
         >
           <Header
             params={params}
@@ -650,8 +653,13 @@ class Footer<T extends ArduinoComponent> extends React.Component<
   }>
 > {
   override render(): React.ReactNode {
+    const { isScrolling } = this.props.params;
+    const className = ['footer'];
+    if (isScrolling) {
+      className.push('scrolling');
+    }
     return (
-      <div className="footer">
+      <div className={className.join(' ')}>
         <SelectVersion {...this.props} />
         <Button {...this.props} />
       </div>
