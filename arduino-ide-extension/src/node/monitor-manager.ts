@@ -1,6 +1,11 @@
 import { ILogger } from '@theia/core';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import { Board, BoardsService, Port, Status } from '../common/protocol';
+import {
+  AlreadyConnectedError,
+  Board,
+  BoardsService,
+  Port,
+} from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
 import { MonitorServiceFactory } from './monitor-service-factory';
@@ -36,7 +41,7 @@ export class MonitorManager extends CoreClientAware {
   private monitorServiceStartQueue: {
     monitorID: string;
     serviceStartParams: [Board, Port];
-    connectToClient: (status: Status) => void;
+    connectToClient: () => Promise<void>;
   }[] = [];
 
   @inject(MonitorServiceFactory)
@@ -104,7 +109,7 @@ export class MonitorManager extends CoreClientAware {
   async startMonitor(
     board: Board,
     port: Port,
-    connectToClient: (status: Status) => void
+    connectToClient: () => Promise<void>
   ): Promise<void> {
     const monitorID = this.monitorID(board.fqbn, port);
 
@@ -127,8 +132,14 @@ export class MonitorManager extends CoreClientAware {
       return;
     }
 
-    const result = await monitor.start();
-    connectToClient(result);
+    try {
+      await connectToClient();
+      await monitor.start();
+    } catch (err) {
+      if (!AlreadyConnectedError.is(err)) {
+        throw err;
+      }
+    }
   }
 
   /**
@@ -202,8 +213,7 @@ export class MonitorManager extends CoreClientAware {
   async notifyUploadFinished(
     fqbn?: string | undefined,
     port?: Port
-  ): Promise<Status> {
-    let status: Status = Status.NOT_CONNECTED;
+  ): Promise<void> {
     let portDidChangeOnUpload = false;
 
     // We have no way of knowing which monitor
@@ -214,7 +224,7 @@ export class MonitorManager extends CoreClientAware {
 
       const monitor = this.monitorServices.get(monitorID);
       if (monitor) {
-        status = await monitor.start();
+        await monitor.start();
       }
 
       // this monitorID will only be present in "disposedForUpload"
@@ -232,7 +242,6 @@ export class MonitorManager extends CoreClientAware {
     }
 
     await this.startQueuedServices(portDidChangeOnUpload);
-    return status;
   }
 
   async startQueuedServices(portDidChangeOnUpload: boolean): Promise<void> {
@@ -246,7 +255,7 @@ export class MonitorManager extends CoreClientAware {
 
     for (const {
       monitorID,
-      serviceStartParams: [_, port],
+      serviceStartParams: [, port],
       connectToClient,
     } of queued) {
       const boardsState = await this.boardsService.getState();
@@ -261,8 +270,8 @@ export class MonitorManager extends CoreClientAware {
         const monitorService = this.monitorServices.get(monitorID);
 
         if (monitorService) {
-          const result = await monitorService.start();
-          connectToClient(result);
+          await connectToClient();
+          await monitorService.start();
         }
       }
     }

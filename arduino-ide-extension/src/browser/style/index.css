@@ -29,9 +29,11 @@
 /* https://github.com/arduino/arduino-ide/pull/1662#issuecomment-1324997134 */
 body {
   --theia-icon-loading: url(../icons/loading-light.svg);
+  --theia-icon-loading-warning: url(../icons/loading-dark.svg);
 }
 body.theia-dark {
   --theia-icon-loading: url(../icons/loading-dark.svg);
+  --theia-icon-loading-warning: url(../icons/loading-light.svg);
 }
 
 .theia-input.warning:focus {
@@ -48,22 +50,32 @@ body.theia-dark {
 }
 
 .theia-input.warning::placeholder {
-  /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: var(--theia-warningForeground);
-  background-color: var(--theia-warningBackground);
-  opacity: 1; /* Firefox */
-}
-
-.theia-input.warning:-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
   color: var(--theia-warningForeground);
   background-color: var(--theia-warningBackground);
 }
 
-.theia-input.warning::-ms-input-placeholder {
-  /* Microsoft Edge */
-  color: var(--theia-warningForeground);
-  background-color: var(--theia-warningBackground);
+.hc-black.hc-theia.theia-hc .theia-input.warning,
+.hc-black.hc-theia.theia-hc .theia-input.warning::placeholder {
+  color: var(--theia-warningBackground);
+  background-color: var(--theia-warningForeground);
+}
+
+.theia-input.error:focus {
+  outline-width: 1px;
+  outline-style: solid;
+  outline-offset: -1px;
+  opacity: 1 !important;
+  color: var(--theia-errorForeground);
+  background-color: var(--theia-errorBackground);
+}
+
+.theia-input.error {
+  background-color: var(--theia-errorBackground);
+}
+
+.theia-input.error::placeholder {
+  color: var(--theia-errorForeground);
+  background-color: var(--theia-errorBackground);
 }
 
 /* Makes the sidepanel a bit wider when opening the widget */

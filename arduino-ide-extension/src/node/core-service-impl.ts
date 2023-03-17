@@ -23,7 +23,7 @@ import {
   UploadUsingProgrammerResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 import { ResponseService } from '../common/protocol/response-service';
-import { OutputMessage, Port, Status } from '../common/protocol';
+import { OutputMessage, Port } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
@@ -392,7 +392,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   }: {
     fqbn?: string | undefined;
     port?: Port | undefined;
-  }): Promise<Status> {
+  }): Promise<void> {
     this.boardDiscovery.setUploadInProgress(false);
     return this.monitorManager.notifyUploadFinished(fqbn, port);
   }

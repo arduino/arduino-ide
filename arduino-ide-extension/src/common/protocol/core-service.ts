@@ -73,12 +73,12 @@ export namespace CoreError {
     UploadUsingProgrammer: 4003,
     BurnBootloader: 4004,
   };
-  export const VerifyFailed = create(Codes.Verify);
-  export const UploadFailed = create(Codes.Upload);
-  export const UploadUsingProgrammerFailed = create(
+  export const VerifyFailed = declareCoreError(Codes.Verify);
+  export const UploadFailed = declareCoreError(Codes.Upload);
+  export const UploadUsingProgrammerFailed = declareCoreError(
     Codes.UploadUsingProgrammer
   );
-  export const BurnBootloaderFailed = create(Codes.BurnBootloader);
+  export const BurnBootloaderFailed = declareCoreError(Codes.BurnBootloader);
   export function is(
     error: unknown
   ): error is ApplicationError<number, ErrorLocation[]> {
@@ -88,7 +88,7 @@ export namespace CoreError {
       Object.values(Codes).includes(error.code)
     );
   }
-  function create(
+  function declareCoreError(
     code: number
   ): ApplicationError.Constructor<number, ErrorLocation[]> {
     return ApplicationError.declare(

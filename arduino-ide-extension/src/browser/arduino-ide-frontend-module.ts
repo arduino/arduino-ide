@@ -496,15 +496,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(TabBarToolbarContribution).toService(MonitorViewContribution);
   bind(WidgetFactory).toDynamicValue((context) => ({
     id: MonitorWidget.ID,
-    createWidget: () => {
-      return new MonitorWidget(
-        context.container.get<MonitorModel>(MonitorModel),
-        context.container.get<MonitorManagerProxyClient>(
-          MonitorManagerProxyClient
-        ),
-        context.container.get<BoardsServiceProvider>(BoardsServiceProvider)
-      );
-    },
+    createWidget: () => context.container.get(MonitorWidget),
   }));
 
   bind(MonitorManagerProxyFactory).toFactory(

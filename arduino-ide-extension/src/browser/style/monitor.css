@@ -20,22 +20,47 @@
 
 .serial-monitor .head {
     display: flex;
-    padding: 5px;
+    padding: 0px 5px 5px 0px;
     height: 27px;
+    background-color: var(--theia-activityBar-background);
 }
 
 .serial-monitor .head .send {
     display: flex;
     flex: 1;
-    margin-right: 2px;
 }
 
-.serial-monitor .head .send > input {
+.serial-monitor .head .send > label:before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    background: var(--theia-icon-loading-warning) center center no-repeat;
+    animation: theia-spin 1.25s linear infinite;
+    width: 30px;
+    height: 30px;
+}
+
+.serial-monitor .head .send > label {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-self: baseline;
+}
+
+.serial-monitor .head .send > input,
+.serial-monitor .head .send > label > input {
     line-height: var(--theia-content-line-height);
+    height: 27px;
     width: 100%;
 }
 
-.serial-monitor .head .send > input:focus {
+.serial-monitor .head .send > label > input {
+    padding-left: 30px;
+    box-sizing: border-box;
+}
+
+.serial-monitor .head .send > input:focus,
+.serial-monitor .head .send > label > input:focus {
     border-color: var(--theia-focusBorder);
 }
 
