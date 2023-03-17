@@ -1,11 +1,14 @@
 import {
-  CommandRegistry,
+  ApplicationError,
   Disposable,
   Emitter,
   MessageService,
   nls,
 } from '@theia/core';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { NotificationManager } from '@theia/messages/lib/browser/notifications-manager';
+import { MessageType } from '@theia/core/lib/common/message-service-protocol';
 import { Board, Port } from '../common/protocol';
 import {
   Monitor,
@@ -23,21 +26,31 @@ import { BoardsServiceProvider } from './boards/boards-service-provider';
 export class MonitorManagerProxyClientImpl
   implements MonitorManagerProxyClient
 {
+  @inject(MessageService)
+  private readonly messageService: MessageService;
+  // This is necessary to call the backend methods from the frontend
+  @inject(MonitorManagerProxyFactory)
+  private readonly server: MonitorManagerProxyFactory;
+  @inject(BoardsServiceProvider)
+  private readonly boardsServiceProvider: BoardsServiceProvider;
+  @inject(NotificationManager)
+  private readonly notificationManager: NotificationManager;
+
   // When pluggable monitor messages are received from the backend
   // this event is triggered.
   // Ideally a frontend component is connected to this event
   // to update the UI.
-  protected readonly onMessagesReceivedEmitter = new Emitter<{
+  private readonly onMessagesReceivedEmitter = new Emitter<{
     messages: string[];
   }>();
   readonly onMessagesReceived = this.onMessagesReceivedEmitter.event;
 
-  protected readonly onMonitorSettingsDidChangeEmitter =
+  private readonly onMonitorSettingsDidChangeEmitter =
     new Emitter<MonitorSettings>();
   readonly onMonitorSettingsDidChange =
     this.onMonitorSettingsDidChangeEmitter.event;
 
-  protected readonly onMonitorShouldResetEmitter = new Emitter();
+  private readonly onMonitorShouldResetEmitter = new Emitter<void>();
   readonly onMonitorShouldReset = this.onMonitorShouldResetEmitter.event;
 
   // WebSocket used to handle pluggable monitor communication between
@@ -51,29 +64,16 @@ export class MonitorManagerProxyClientImpl
     return this.wsPort;
   }
 
-  constructor(
-    @inject(MessageService)
-    protected messageService: MessageService,
-
-    // This is necessary to call the backend methods from the frontend
-    @inject(MonitorManagerProxyFactory)
-    protected server: MonitorManagerProxyFactory,
-
-    @inject(CommandRegistry)
-    protected readonly commandRegistry: CommandRegistry,
-
-    @inject(BoardsServiceProvider)
-    protected readonly boardsServiceProvider: BoardsServiceProvider
-  ) {}
-
   /**
    * Connects a localhost WebSocket using the specified port.
    * @param addressPort port of the WebSocket
    */
   async connect(addressPort: number): Promise<void> {
-    if (!!this.webSocket) {
-      if (this.wsPort === addressPort) return;
-      else this.disconnect();
+    if (this.webSocket) {
+      if (this.wsPort === addressPort) {
+        return;
+      }
+      this.disconnect();
     }
     try {
       this.webSocket = new WebSocket(`ws://localhost:${addressPort}`);
@@ -87,6 +87,9 @@ export class MonitorManagerProxyClientImpl
       return;
     }
 
+    const opened = new Deferred<void>();
+    this.webSocket.onopen = () => opened.resolve();
+    this.webSocket.onerror = () => opened.reject();
     this.webSocket.onmessage = (message) => {
       const parsedMessage = JSON.parse(message.data);
       if (Array.isArray(parsedMessage))
@@ -99,19 +102,26 @@ export class MonitorManagerProxyClientImpl
       }
     };
     this.wsPort = addressPort;
+    return opened.promise;
   }
 
   /**
    * Disconnects the WebSocket if connected.
    */
   disconnect(): void {
-    if (!this.webSocket) return;
+    if (!this.webSocket) {
+      return;
+    }
     this.onBoardsConfigChanged?.dispose();
     this.onBoardsConfigChanged = undefined;
     try {
-      this.webSocket?.close();
+      this.webSocket.close();
       this.webSocket = undefined;
-    } catch {
+    } catch (err) {
+      console.error(
+        'Could not close the websocket connection for the monitor.',
+        err
+      );
       this.messageService.error(
         nls.localize(
           'arduino/monitor/unableToCloseWebSocket',
@@ -126,6 +136,7 @@ export class MonitorManagerProxyClientImpl
   }
 
   async startMonitor(settings?: PluggableMonitorSettings): Promise<void> {
+    await this.boardsServiceProvider.reconciled;
     this.lastConnectedBoard = {
       selectedBoard: this.boardsServiceProvider.boardsConfig.selectedBoard,
       selectedPort: this.boardsServiceProvider.boardsConfig.selectedPort,
@@ -150,11 +161,11 @@ export class MonitorManagerProxyClientImpl
                   ? Port.keyOf(this.lastConnectedBoard.selectedPort)
                   : undefined)
             ) {
-              this.onMonitorShouldResetEmitter.fire(null);
               this.lastConnectedBoard = {
                 selectedBoard: selectedBoard,
                 selectedPort: selectedPort,
               };
+              this.onMonitorShouldResetEmitter.fire();
             } else {
               // a board is plugged and it's the same as prev, rerun "this.startMonitor" to
               // recreate the listener callback
@@ -167,7 +178,14 @@ export class MonitorManagerProxyClientImpl
     const { selectedBoard, selectedPort } =
       this.boardsServiceProvider.boardsConfig;
     if (!selectedBoard || !selectedBoard.fqbn || !selectedPort) return;
-    await this.server().startMonitor(selectedBoard, selectedPort, settings);
+    try {
+      this.clearVisibleNotification();
+      await this.server().startMonitor(selectedBoard, selectedPort, settings);
+    } catch (err) {
+      const message = ApplicationError.is(err) ? err.message : String(err);
+      this.previousNotificationId = this.notificationId(message);
+      this.messageService.error(message);
+    }
   }
 
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings> {
@@ -198,5 +216,25 @@ export class MonitorManagerProxyClientImpl
         data: settings,
       })
     );
+  }
+
+  /**
+   * This is the internal (Theia) ID of the notification that is currently visible.
+   * It's stored here as a field to be able to close it before starting a new monitor connection. It's a hack.
+   */
+  private previousNotificationId: string | undefined;
+  private clearVisibleNotification(): void {
+    if (this.previousNotificationId) {
+      this.notificationManager.clear(this.previousNotificationId);
+      this.previousNotificationId = undefined;
+    }
+  }
+
+  private notificationId(message: string, ...actions: string[]): string {
+    return this.notificationManager['getMessageId']({
+      text: message,
+      actions,
+      type: MessageType.Error,
+    });
   }
 }

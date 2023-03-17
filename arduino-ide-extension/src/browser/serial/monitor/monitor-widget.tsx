@@ -1,7 +1,14 @@
 import * as React from '@theia/core/shared/react';
-import { injectable, inject } from '@theia/core/shared/inversify';
+import {
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
-import { Disposable } from '@theia/core/lib/common/disposable';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import {
   ReactWidget,
   Message,
@@ -13,9 +20,13 @@ import { SerialMonitorSendInput } from './serial-monitor-send-input';
 import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { nls } from '@theia/core/lib/common';
-import { MonitorManagerProxyClient } from '../../../common/protocol';
+import {
+  MonitorEOL,
+  MonitorManagerProxyClient,
+} from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { MonitorSettings } from '../../../node/monitor-settings/monitor-settings-provider';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -40,40 +51,46 @@ export class MonitorWidget extends ReactWidget {
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
 
-  constructor(
-    @inject(MonitorModel)
-    protected readonly monitorModel: MonitorModel,
+  @inject(MonitorModel)
+  private readonly monitorModel: MonitorModel;
+  @inject(MonitorManagerProxyClient)
+  private readonly monitorManagerProxy: MonitorManagerProxyClient;
+  @inject(BoardsServiceProvider)
+  private readonly boardsServiceProvider: BoardsServiceProvider;
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
-    @inject(MonitorManagerProxyClient)
-    protected readonly monitorManagerProxy: MonitorManagerProxyClient,
+  private readonly toDisposeOnReset: DisposableCollection;
 
-    @inject(BoardsServiceProvider)
-    protected readonly boardsServiceProvider: BoardsServiceProvider
-  ) {
+  constructor() {
     super();
     this.id = MonitorWidget.ID;
     this.title.label = MonitorWidget.LABEL;
     this.title.iconClass = 'monitor-tab-icon';
     this.title.closable = true;
     this.scrollOptions = undefined;
+    this.toDisposeOnReset = new DisposableCollection();
     this.toDispose.push(this.clearOutputEmitter);
-    this.toDispose.push(
-      Disposable.create(() => this.monitorManagerProxy.disconnect())
-    );
   }
 
-  protected override onBeforeAttach(msg: Message): void {
-    this.update();
-    this.toDispose.push(this.monitorModel.onChange(() => this.update()));
-    this.getCurrentSettings().then(this.onMonitorSettingsDidChange.bind(this));
-    this.monitorManagerProxy.onMonitorSettingsDidChange(
-      this.onMonitorSettingsDidChange.bind(this)
-    );
-
-    this.monitorManagerProxy.startMonitor();
+  @postConstruct()
+  protected init(): void {
+    this.toDisposeOnReset.dispose();
+    this.toDisposeOnReset.pushAll([
+      Disposable.create(() => this.monitorManagerProxy.disconnect()),
+      this.monitorModel.onChange(() => this.update()),
+      this.monitorManagerProxy.onMonitorSettingsDidChange((event) =>
+        this.updateSettings(event)
+      ),
+    ]);
+    this.startMonitor();
   }
 
-  onMonitorSettingsDidChange(settings: MonitorSettings): void {
+  reset(): void {
+    this.init();
+  }
+
+  private updateSettings(settings: MonitorSettings): void {
     this.settings = {
       ...this.settings,
       pluggableMonitorSettings: {
@@ -90,6 +107,7 @@ export class MonitorWidget extends ReactWidget {
   }
 
   override dispose(): void {
+    this.toDisposeOnReset.dispose();
     super.dispose();
   }
 
@@ -122,7 +140,7 @@ export class MonitorWidget extends ReactWidget {
     this.update();
   }
 
-  protected onFocusResolved = (element: HTMLElement | undefined) => {
+  protected onFocusResolved = (element: HTMLElement | undefined): void => {
     if (this.closing || !this.isAttached) {
       return;
     }
@@ -132,7 +150,7 @@ export class MonitorWidget extends ReactWidget {
     );
   };
 
-  protected get lineEndings(): SerialMonitorOutput.SelectOption<MonitorModel.EOL>[] {
+  protected get lineEndings(): SerialMonitorOutput.SelectOption<MonitorEOL>[] {
     return [
       {
         label: nls.localize('arduino/serial/noLineEndings', 'No Line Ending'),
@@ -156,11 +174,23 @@ export class MonitorWidget extends ReactWidget {
     ];
   }
 
-  private getCurrentSettings(): Promise<MonitorSettings> {
+  private async startMonitor(): Promise<void> {
+    await this.appStateService.reachedState('ready');
+    await this.boardsServiceProvider.reconciled;
+    await this.syncSettings();
+    await this.monitorManagerProxy.startMonitor();
+  }
+
+  private async syncSettings(): Promise<void> {
+    const settings = await this.getCurrentSettings();
+    this.updateSettings(settings);
+  }
+
+  private async getCurrentSettings(): Promise<MonitorSettings> {
     const board = this.boardsServiceProvider.boardsConfig.selectedBoard;
     const port = this.boardsServiceProvider.boardsConfig.selectedPort;
     if (!board || !port) {
-      return Promise.resolve(this.settings || {});
+      return this.settings || {};
     }
     return this.monitorManagerProxy.getCurrentSettings(board, port);
   }
@@ -171,7 +201,7 @@ export class MonitorWidget extends ReactWidget {
       : undefined;
 
     const baudrateOptions = baudrate?.values.map((b) => ({
-      label: b + ' baud',
+      label: nls.localize('arduino/monitor/baudRate', '{0} baud', b),
       value: b,
     }));
     const baudrateSelectedOption = baudrateOptions?.find(
@@ -181,7 +211,7 @@ export class MonitorWidget extends ReactWidget {
     const lineEnding =
       this.lineEndings.find(
         (item) => item.value === this.monitorModel.lineEnding
-      ) || this.lineEndings[1]; // Defaults to `\n`.
+      ) || MonitorEOL.DEFAULT;
 
     return (
       <div className="serial-monitor">
@@ -228,13 +258,13 @@ export class MonitorWidget extends ReactWidget {
     );
   }
 
-  protected readonly onSend = (value: string) => this.doSend(value);
-  protected async doSend(value: string): Promise<void> {
+  protected readonly onSend = (value: string): void => this.doSend(value);
+  protected doSend(value: string): void {
     this.monitorManagerProxy.send(value);
   }
 
   protected readonly onChangeLineEnding = (
-    option: SerialMonitorOutput.SelectOption<MonitorModel.EOL>
+    option: SerialMonitorOutput.SelectOption<MonitorEOL>
   ): void => {
     this.monitorModel.lineEnding = option.value;
   };

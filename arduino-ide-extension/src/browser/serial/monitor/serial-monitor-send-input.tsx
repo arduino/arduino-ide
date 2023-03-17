@@ -5,6 +5,10 @@ import { DisposableCollection, nls } from '@theia/core/lib/common';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { MonitorModel } from '../../monitor-model';
 import { Unknown } from '../../../common/nls';
+import {
+  isMonitorConnectionError,
+  MonitorConnectionStatus,
+} from '../../../common/protocol';
 
 class HistoryList {
   private readonly items: string[] = [];
@@ -62,7 +66,7 @@ export namespace SerialMonitorSendInput {
   }
   export interface State {
     text: string;
-    connected: boolean;
+    connectionStatus: MonitorConnectionStatus;
     history: HistoryList;
   }
 }
@@ -75,18 +79,27 @@ export class SerialMonitorSendInput extends React.Component<
 
   constructor(props: Readonly<SerialMonitorSendInput.Props>) {
     super(props);
-    this.state = { text: '', connected: true, history: new HistoryList() };
+    this.state = {
+      text: '',
+      connectionStatus: 'not-connected',
+      history: new HistoryList(),
+    };
     this.onChange = this.onChange.bind(this);
     this.onSend = this.onSend.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   override componentDidMount(): void {
-    this.setState({ connected: this.props.monitorModel.connected });
+    this.setState({
+      connectionStatus: this.props.monitorModel.connectionStatus,
+    });
     this.toDisposeBeforeUnmount.push(
       this.props.monitorModel.onChange(({ property }) => {
-        if (property === 'connected')
-          this.setState({ connected: this.props.monitorModel.connected });
+        if (property === 'connected' || property === 'connectionStatus') {
+          this.setState({
+            connectionStatus: this.props.monitorModel.connectionStatus,
+          });
+        }
       })
     );
   }
@@ -97,44 +110,83 @@ export class SerialMonitorSendInput extends React.Component<
   }
 
   override render(): React.ReactNode {
+    const status = this.state.connectionStatus;
+    const input = this.renderInput(status);
+    if (status !== 'connecting') {
+      return input;
+    }
+    return <label>{input}</label>;
+  }
+
+  private renderInput(status: MonitorConnectionStatus): React.ReactNode {
+    const inputClassName = this.inputClassName(status);
+    const placeholder = this.placeholder;
+    const readOnly = Boolean(inputClassName);
     return (
       <input
         ref={this.setRef}
         type="text"
-        className={`theia-input ${this.shouldShowWarning() ? 'warning' : ''}`}
-        placeholder={this.placeholder}
-        value={this.state.text}
+        className={`theia-input ${inputClassName}`}
+        readOnly={readOnly}
+        placeholder={placeholder}
+        title={placeholder}
+        value={readOnly ? '' : this.state.text} // always show the placeholder if cannot edit the <input>
         onChange={this.onChange}
         onKeyDown={this.onKeyDown}
       />
     );
   }
 
+  private inputClassName(
+    status: MonitorConnectionStatus
+  ): 'error' | 'warning' | '' {
+    if (isMonitorConnectionError(status)) {
+      return 'error';
+    }
+    if (status === 'connected') {
+      return '';
+    }
+    return 'warning';
+  }
+
   protected shouldShowWarning(): boolean {
     const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
     const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
-    return !this.state.connected || !board || !port;
+    return !this.state.connectionStatus || !board || !port;
   }
 
   protected get placeholder(): string {
-    if (this.shouldShowWarning()) {
+    const status = this.state.connectionStatus;
+    if (isMonitorConnectionError(status)) {
+      return status.errorMessage;
+    }
+    if (status === 'not-connected') {
       return nls.localize(
         'arduino/serial/notConnected',
         'Not connected. Select a board and a port to connect automatically.'
       );
     }
-
     const board = this.props.boardsServiceProvider.boardsConfig.selectedBoard;
     const port = this.props.boardsServiceProvider.boardsConfig.selectedPort;
+    const boardLabel = board
+      ? Board.toString(board, {
+          useFqbn: false,
+        })
+      : Unknown;
+    const portLabel = port ? port.address : Unknown;
+    if (status === 'connecting') {
+      return nls.localize(
+        'arduino/serial/connecting',
+        "Connecting to '{0}' on '{1}'...",
+        boardLabel,
+        portLabel
+      );
+    }
     return nls.localize(
       'arduino/serial/message',
       "Message (Enter to send message to '{0}' on '{1}')",
-      board
-        ? Board.toString(board, {
-            useFqbn: false,
-          })
-        : Unknown,
-      port ? port.address : Unknown
+      boardLabel,
+      portLabel
     );
   }
 

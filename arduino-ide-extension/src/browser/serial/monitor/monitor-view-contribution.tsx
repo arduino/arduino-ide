@@ -10,6 +10,7 @@ import {
 import { ArduinoToolbar } from '../../toolbar/arduino-toolbar';
 import { ArduinoMenus } from '../../menu/arduino-menus';
 import { nls } from '@theia/core/lib/common';
+import { Event } from '@theia/core/lib/common/event';
 import { MonitorModel } from '../../monitor-model';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 
@@ -84,13 +85,13 @@ export class MonitorViewContribution
       id: 'monitor-autoscroll',
       render: () => this.renderAutoScrollButton(),
       isVisible: (widget) => widget instanceof MonitorWidget,
-      onDidChange: this.model.onChange as any, // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
+      onDidChange: this.model.onChange as Event<unknown> as Event<void>,
     });
     registry.registerItem({
       id: 'monitor-timestamp',
       render: () => this.renderTimestampButton(),
       isVisible: (widget) => widget instanceof MonitorWidget,
-      onDidChange: this.model.onChange as any, // XXX: it's a hack. See: https://github.com/eclipse-theia/theia/pull/6696/
+      onDidChange: this.model.onChange as Event<unknown> as Event<void>,
     });
     registry.registerItem({
       id: SerialMonitor.Commands.CLEAR_OUTPUT.id,
@@ -143,8 +144,7 @@ export class MonitorViewContribution
   protected async reset(): Promise<void> {
     const widget = this.tryGetWidget();
     if (widget) {
-      widget.dispose();
-      await this.openView({ activate: true, reveal: true });
+      widget.reset();
     }
   }
 

@@ -2,7 +2,6 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   MonitorManagerProxy,
   MonitorManagerProxyClient,
-  Status,
 } from '../common/protocol';
 import { Board, Port } from '../common/protocol';
 import { MonitorManager } from './monitor-manager';
@@ -41,11 +40,16 @@ export class MonitorManagerProxyImpl implements MonitorManagerProxy {
       await this.changeMonitorSettings(board, port, settings);
     }
 
-    const connectToClient = (status: Status) => {
-      if (status === Status.ALREADY_CONNECTED || status === Status.OK) {
-        // Monitor started correctly, connect it with the frontend
-        this.client.connect(this.manager.getWebsocketAddressPort(board, port));
+    const connectToClient = async () => {
+      const address = this.manager.getWebsocketAddressPort(board, port);
+      if (!this.client) {
+        throw new Error(
+          `No client was connected to this monitor manager. Board: ${
+            board.fqbn ?? board.name
+          }, port: ${port.address}, address: ${address}`
+        );
       }
+      await this.client.connect(address);
     };
     return this.manager.startMonitor(board, port, connectToClient);
   }

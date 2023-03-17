@@ -1,8 +1,23 @@
-import { ClientDuplexStream } from '@grpc/grpc-js';
-import { Disposable, Emitter, ILogger } from '@theia/core';
+import { ClientDuplexStream, status } from '@grpc/grpc-js';
+import {
+  ApplicationError,
+  Disposable,
+  Emitter,
+  ILogger,
+  nls,
+} from '@theia/core';
 import { inject, named, postConstruct } from '@theia/core/shared/inversify';
 import { diff, Operation } from 'just-diff';
-import { Board, Port, Status, Monitor } from '../common/protocol';
+import {
+  Board,
+  Port,
+  Monitor,
+  createAlreadyConnectedError,
+  createMissingConfigurationError,
+  createNotConnectedError,
+  createConnectionFailedError,
+  isMonitorConnected,
+} from '../common/protocol';
 import {
   EnumerateMonitorPortSettingsRequest,
   EnumerateMonitorPortSettingsResponse,
@@ -19,8 +34,13 @@ import {
   PluggableMonitorSettings,
   MonitorSettingsProvider,
 } from './monitor-settings/monitor-settings-provider';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import {
+  Deferred,
+  retry,
+  timeoutReject,
+} from '@theia/core/lib/common/promise-util';
 import { MonitorServiceFactoryOptions } from './monitor-service-factory';
+import { ServiceError } from './service-error';
 
 export const MonitorServiceName = 'monitor-service';
 type DuplexHandlerKeys =
@@ -76,7 +96,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
   readonly onDispose = this.onDisposeEmitter.event;
 
   private _initialized = new Deferred<void>();
-  private creating: Deferred<Status>;
+  private creating: Deferred<void>;
   private readonly board: Board;
   private readonly port: Port;
   private readonly monitorID: string;
@@ -114,7 +134,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         this.updateClientsSettings(this.settings);
       });
 
-    this.portMonitorSettings(this.port.protocol, this.board.fqbn!).then(
+    this.portMonitorSettings(this.port.protocol, this.board.fqbn!, true).then(
       async (settings) => {
         this.settings = {
           ...this.settings,
@@ -154,74 +174,85 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
   /**
    * Start and connects a monitor using currently set board and port.
-   * If a monitor is already started or board fqbn, port address and/or protocol
-   * are missing nothing happens.
-   * @returns a status to verify connection has been established.
+   * If a monitor is already started, the promise will reject with an `AlreadyConnectedError`.
+   * If the board fqbn, port address and/or protocol are missing, the promise rejects with a `MissingConfigurationError`.
    */
-  async start(): Promise<Status> {
+  async start(): Promise<void> {
     if (this.creating?.state === 'unresolved') return this.creating.promise;
     this.creating = new Deferred();
     if (this.duplex) {
       this.updateClientsSettings({
-        monitorUISettings: { connected: true, serialPort: this.port.address },
+        monitorUISettings: {
+          connectionStatus: 'connected',
+          connected: true, // TODO: should be removed when plotter app understand the `connectionStatus` message
+          serialPort: this.port.address,
+        },
       });
-      this.creating.resolve(Status.ALREADY_CONNECTED);
+      this.creating.reject(createAlreadyConnectedError(this.port));
       return this.creating.promise;
     }
 
     if (!this.board?.fqbn || !this.port?.address || !this.port?.protocol) {
-      this.updateClientsSettings({ monitorUISettings: { connected: false } });
+      this.updateClientsSettings({
+        monitorUISettings: {
+          connectionStatus: 'not-connected',
+          connected: false, // TODO: should be removed when plotter app understand the `connectionStatus` message
+        },
+      });
 
-      this.creating.resolve(Status.CONFIG_MISSING);
+      this.creating.reject(createMissingConfigurationError(this.port));
       return this.creating.promise;
     }
 
     this.logger.info('starting monitor');
 
-    // get default monitor settings from the CLI
-    const defaultSettings = await this.portMonitorSettings(
-      this.port.protocol,
-      this.board.fqbn
-    );
-    // get actual settings from the settings provider
-    this.settings = {
-      ...this.settings,
-      pluggableMonitorSettings: {
-        ...this.settings.pluggableMonitorSettings,
-        ...(await this.monitorSettingsProvider.getSettings(
-          this.monitorID,
-          defaultSettings
-        )),
-      },
-    };
+    try {
+      // get default monitor settings from the CLI
+      const defaultSettings = await this.portMonitorSettings(
+        this.port.protocol,
+        this.board.fqbn
+      );
 
-    const coreClient = await this.coreClient;
+      this.updateClientsSettings({
+        monitorUISettings: { connectionStatus: 'connecting' },
+      });
 
-    const { instance } = coreClient;
-    const monitorRequest = new MonitorRequest();
-    monitorRequest.setInstance(instance);
-    if (this.board?.fqbn) {
-      monitorRequest.setFqbn(this.board.fqbn);
-    }
-    if (this.port?.address && this.port?.protocol) {
-      const rpcPort = new RpcPort();
-      rpcPort.setAddress(this.port.address);
-      rpcPort.setProtocol(this.port.protocol);
-      monitorRequest.setPort(rpcPort);
-    }
-    const config = new MonitorPortConfiguration();
-    for (const id in this.settings.pluggableMonitorSettings) {
-      const s = new MonitorPortSetting();
-      s.setSettingId(id);
-      s.setValue(this.settings.pluggableMonitorSettings[id].selectedValue);
-      config.addSettings(s);
-    }
-    monitorRequest.setPortConfiguration(config);
+      // get actual settings from the settings provider
+      this.settings = {
+        ...this.settings,
+        pluggableMonitorSettings: {
+          ...this.settings.pluggableMonitorSettings,
+          ...(await this.monitorSettingsProvider.getSettings(
+            this.monitorID,
+            defaultSettings
+          )),
+        },
+      };
 
-    const wroteToStreamSuccessfully = await this.pollWriteToStream(
-      monitorRequest
-    );
-    if (wroteToStreamSuccessfully) {
+      const coreClient = await this.coreClient;
+
+      const { instance } = coreClient;
+      const monitorRequest = new MonitorRequest();
+      monitorRequest.setInstance(instance);
+      if (this.board?.fqbn) {
+        monitorRequest.setFqbn(this.board.fqbn);
+      }
+      if (this.port?.address && this.port?.protocol) {
+        const rpcPort = new RpcPort();
+        rpcPort.setAddress(this.port.address);
+        rpcPort.setProtocol(this.port.protocol);
+        monitorRequest.setPort(rpcPort);
+      }
+      const config = new MonitorPortConfiguration();
+      for (const id in this.settings.pluggableMonitorSettings) {
+        const s = new MonitorPortSetting();
+        s.setSettingId(id);
+        s.setValue(this.settings.pluggableMonitorSettings[id].selectedValue);
+        config.addSettings(s);
+      }
+      monitorRequest.setPortConfiguration(config);
+
+      await this.pollWriteToStream(monitorRequest);
       // Only store the config, if the monitor has successfully started.
       this.currentPortConfigSnapshot = MonitorPortConfiguration.toObject(
         false,
@@ -237,15 +268,34 @@ export class MonitorService extends CoreClientAware implements Disposable {
         `started monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
       this.updateClientsSettings({
-        monitorUISettings: { connected: true, serialPort: this.port.address },
+        monitorUISettings: {
+          connectionStatus: 'connected',
+          connected: true, // TODO: should be removed when plotter app understand the `connectionStatus` message
+          serialPort: this.port.address,
+        },
       });
-      this.creating.resolve(Status.OK);
+      this.creating.resolve();
       return this.creating.promise;
-    } else {
+    } catch (err) {
       this.logger.warn(
         `failed starting monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
-      this.creating.resolve(Status.NOT_CONNECTED);
+      const appError = ApplicationError.is(err)
+        ? err
+        : createConnectionFailedError(
+            this.port,
+            ServiceError.is(err)
+              ? err.details
+              : err instanceof Error
+              ? err.message
+              : String(err)
+          );
+      this.creating.reject(appError);
+      this.updateClientsSettings({
+        monitorUISettings: {
+          connectionStatus: { errorMessage: appError.message },
+        },
+      });
       return this.creating.promise;
     }
   }
@@ -264,19 +314,29 @@ export class MonitorService extends CoreClientAware implements Disposable {
     // default handlers
     duplex
       .on('close', () => {
-        this.duplex = null;
-        this.updateClientsSettings({
-          monitorUISettings: { connected: false },
-        });
+        if (duplex === this.duplex) {
+          this.duplex = null;
+          this.updateClientsSettings({
+            monitorUISettings: {
+              connected: false, // TODO: should be removed when plotter app understand the `connectionStatus` message
+              connectionStatus: 'not-connected',
+            },
+          });
+        }
         this.logger.info(
           `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
         );
       })
       .on('end', () => {
-        this.duplex = null;
-        this.updateClientsSettings({
-          monitorUISettings: { connected: false },
-        });
+        if (duplex === this.duplex) {
+          this.duplex = null;
+          this.updateClientsSettings({
+            monitorUISettings: {
+              connected: false, // TODO: should be removed when plotter app understand the `connectionStatus` message
+              connectionStatus: 'not-connected',
+            },
+          });
+        }
         this.logger.info(
           `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
         );
@@ -287,21 +347,17 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
   }
 
-  pollWriteToStream(request: MonitorRequest): Promise<boolean> {
-    let attemptsRemaining = MAX_WRITE_TO_STREAM_TRIES;
-    const writeTimeoutMs = WRITE_TO_STREAM_TIMEOUT_MS;
-
+  pollWriteToStream(request: MonitorRequest): Promise<void> {
     const createWriteToStreamExecutor =
       (duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>) =>
-      (resolve: (value: boolean) => void, reject: () => void) => {
+      (resolve: () => void, reject: (reason?: unknown) => void) => {
         const resolvingDuplexHandlers: DuplexHandler[] = [
           {
             key: 'error',
             callback: async (err: Error) => {
               this.logger.error(err);
-              resolve(false);
-              // TODO
-              // this.theiaFEClient?.notifyError()
+              const details = ServiceError.is(err) ? err.details : err.message;
+              reject(createConnectionFailedError(this.port, details));
             },
           },
           {
@@ -313,79 +369,47 @@ export class MonitorService extends CoreClientAware implements Disposable {
                 return;
               }
               if (monitorResponse.getSuccess()) {
-                resolve(true);
+                resolve();
                 return;
               }
               const data = monitorResponse.getRxData();
               const message =
                 typeof data === 'string'
                   ? data
-                  : this.streamingTextDecoder.decode(data, {stream:true});
+                  : this.streamingTextDecoder.decode(data, { stream: true });
               this.messages.push(...splitLines(message));
             },
           },
         ];
 
         this.setDuplexHandlers(duplex, resolvingDuplexHandlers);
-
-        setTimeout(() => {
-          reject();
-        }, writeTimeoutMs);
         duplex.write(request);
       };
 
-    const pollWriteToStream = new Promise<boolean>((resolve) => {
-      const startPolling = async () => {
-        // here we create a new duplex but we don't yet
-        // set "this.duplex", nor do we use "this.duplex" in our poll
-        // as duplex 'end' / 'close' events (which we do not "await")
-        // will set "this.duplex" to null
-        const createdDuplex = await this.createDuplex();
-
-        let pollingIsSuccessful;
-        // attempt a "writeToStream" and "await" CLI response: success (true) or error (false)
-        // if we get neither within WRITE_TO_STREAM_TIMEOUT_MS or an error we get undefined
-        try {
-          const writeToStream = createWriteToStreamExecutor(createdDuplex);
-          pollingIsSuccessful = await new Promise(writeToStream);
-        } catch (error) {
-          this.logger.error(error);
-        }
-
-        // CLI confirmed port opened successfully
-        if (pollingIsSuccessful) {
-          this.duplex = createdDuplex;
-          resolve(true);
-          return;
-        }
-
-        // if "pollingIsSuccessful" is false
-        // the CLI gave us an error, lets try again
-        // after waiting 2 seconds if we've not already
-        // reached MAX_WRITE_TO_STREAM_TRIES
-        if (pollingIsSuccessful === false) {
-          attemptsRemaining -= 1;
-          if (attemptsRemaining > 0) {
-            setTimeout(startPolling, 2000);
-            return;
-          } else {
-            resolve(false);
-            return;
+    return Promise.race([
+      retry(
+        async () => {
+          let createdDuplex = undefined;
+          try {
+            createdDuplex = await this.createDuplex();
+            await new Promise<void>(createWriteToStreamExecutor(createdDuplex));
+            this.duplex = createdDuplex;
+          } catch (err) {
+            createdDuplex?.end();
+            throw err;
           }
-        }
-
-        // "pollingIsSuccessful" remains undefined:
-        // we got no response from the CLI within 30 seconds
-        // resolve to false and end the duplex connection
-        resolve(false);
-        createdDuplex.end();
-        return;
-      };
-
-      startPolling();
-    });
-
-    return pollWriteToStream;
+        },
+        2_000,
+        MAX_WRITE_TO_STREAM_TRIES
+      ),
+      timeoutReject(
+        WRITE_TO_STREAM_TIMEOUT_MS,
+        nls.localize(
+          'arduino/monitor/connectionTimeout',
+          "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it"
+        )
+      ),
+    ]) as Promise<unknown> as Promise<void>;
   }
 
   /**
@@ -429,9 +453,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * @param message string sent to running monitor
    * @returns a status to verify message has been sent.
    */
-  async send(message: string): Promise<Status> {
+  async send(message: string): Promise<void> {
     if (!this.duplex) {
-      return Status.NOT_CONNECTED;
+      throw createNotConnectedError(this.port);
     }
     const coreClient = await this.coreClient;
     const { instance } = coreClient;
@@ -439,14 +463,12 @@ export class MonitorService extends CoreClientAware implements Disposable {
     const req = new MonitorRequest();
     req.setInstance(instance);
     req.setTxData(new TextEncoder().encode(message));
-    return new Promise<Status>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       if (this.duplex) {
-        this.duplex?.write(req, () => {
-          resolve(Status.OK);
-        });
+        this.duplex?.write(req, resolve);
         return;
       }
-      this.stop().then(() => resolve(Status.NOT_CONNECTED));
+      this.stop().then(() => reject(createNotConnectedError(this.port)));
     });
   }
 
@@ -469,7 +491,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
    */
   private async portMonitorSettings(
     protocol: string,
-    fqbn: string
+    fqbn: string,
+    swallowsPlatformNotFoundError = false
   ): Promise<PluggableMonitorSettings> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
@@ -478,19 +501,33 @@ export class MonitorService extends CoreClientAware implements Disposable {
     req.setPortProtocol(protocol);
     req.setFqbn(fqbn);
 
-    const res = await new Promise<EnumerateMonitorPortSettingsResponse>(
-      (resolve, reject) => {
-        client.enumerateMonitorPortSettings(req, (err, resp) => {
-          if (!!err) {
-            reject(err);
+    const resp = await new Promise<
+      EnumerateMonitorPortSettingsResponse | undefined
+    >((resolve, reject) => {
+      client.enumerateMonitorPortSettings(req, async (err, resp) => {
+        if (err) {
+          // Check whether the platform is installed: https://github.com/arduino/arduino-ide/issues/1974.
+          // No error codes. Look for `Unknown FQBN: platform arduino:mbed_nano is not installed` message similarities: https://github.com/arduino/arduino-cli/issues/1762.
+          if (
+            swallowsPlatformNotFoundError &&
+            ServiceError.is(err) &&
+            err.code === status.NOT_FOUND &&
+            err.details.includes('FQBN') &&
+            err.details.includes(fqbn.split(':', 2).join(':')) // create a platform ID from the FQBN
+          ) {
+            resolve(undefined);
           }
-          resolve(resp);
-        });
-      }
-    );
+          reject(err);
+        }
+        resolve(resp);
+      });
+    });
 
     const settings: PluggableMonitorSettings = {};
-    for (const iterator of res.getSettingsList()) {
+    if (!resp) {
+      return settings;
+    }
+    for (const iterator of resp.getSettingsList()) {
       settings[iterator.getSettingId()] = {
         id: iterator.getSettingId(),
         label: iterator.getLabel(),
@@ -510,7 +547,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * @param settings map of monitor settings to change
    * @returns a status to verify settings have been sent.
    */
-  async changeSettings(settings: MonitorSettings): Promise<Status> {
+  async changeSettings(settings: MonitorSettings): Promise<void> {
     const config = new MonitorPortConfiguration();
     const { pluggableMonitorSettings } = settings;
     const reconciledSettings = await this.monitorSettingsProvider.setSettings(
@@ -527,17 +564,23 @@ export class MonitorService extends CoreClientAware implements Disposable {
       }
     }
 
+    const connectionStatus = Boolean(this.duplex)
+      ? 'connected'
+      : 'not-connected';
     this.updateClientsSettings({
       monitorUISettings: {
         ...settings.monitorUISettings,
-        connected: !!this.duplex,
+        connectionStatus,
         serialPort: this.port.address,
+        connected: isMonitorConnected(connectionStatus), // TODO: should be removed when plotter app understand the `connectionStatus` message
       },
       pluggableMonitorSettings: reconciledSettings,
     });
 
     if (!this.duplex) {
-      return Status.NOT_CONNECTED;
+      // instead of throwing an error, return silently like the original logic
+      // https://github.com/arduino/arduino-ide/blob/9b49712669b06c97bda68a1e5f04eee4664c13f8/arduino-ide-extension/src/node/monitor-service.ts#L540
+      return;
     }
 
     const diffConfig = this.maybeUpdatePortConfigSnapshot(config);
@@ -545,7 +588,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       this.logger.info(
         `No port configuration changes have been detected. No need to send configure commands to the running monitor ${this.port.protocol}:${this.port.address}.`
       );
-      return Status.OK;
+      return;
     }
 
     const coreClient = await this.coreClient;
@@ -560,7 +603,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
     req.setInstance(instance);
     req.setPortConfiguration(diffConfig);
     this.duplex.write(req);
-    return Status.OK;
   }
 
   /**
@@ -688,6 +730,26 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
   updateClientsSettings(settings: MonitorSettings): void {
     this.settings = { ...this.settings, ...settings };
+    if (
+      settings.monitorUISettings?.connectionStatus &&
+      !('connected' in settings.monitorUISettings)
+    ) {
+      // Make sure the deprecated `connected` prop is set.
+      settings.monitorUISettings.connected = isMonitorConnected(
+        settings.monitorUISettings.connectionStatus
+      );
+    }
+    if (
+      typeof settings.monitorUISettings?.connected === 'boolean' &&
+      !('connectionStatus' in settings.monitorUISettings)
+    ) {
+      // Set the connectionStatus if the message was sent by the plotter which does not handle the new protocol. Assuming that the plotter can send anything.
+      // https://github.com/arduino/arduino-serial-plotter-webapp#monitor-settings
+      settings.monitorUISettings.connectionStatus = settings.monitorUISettings
+        .connected
+        ? 'connected'
+        : 'not-connected';
+    }
     const command: Monitor.Message = {
       command: Monitor.MiddlewareCommand.ON_SETTINGS_DID_CHANGE,
       data: settings,

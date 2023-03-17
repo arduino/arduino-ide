@@ -1,10 +1,9 @@
-import { MonitorModel } from '../../browser/monitor-model';
-import { PluggableMonitorSetting } from '../../common/protocol';
+import { MonitorState, PluggableMonitorSetting } from '../../common/protocol';
 
 export type PluggableMonitorSettings = Record<string, PluggableMonitorSetting>;
 export interface MonitorSettings {
   pluggableMonitorSettings?: PluggableMonitorSettings;
-  monitorUISettings?: Partial<MonitorModel.State>;
+  monitorUISettings?: Partial<MonitorState>;
 }
 
 export const MonitorSettingsProvider = Symbol('MonitorSettingsProvider');

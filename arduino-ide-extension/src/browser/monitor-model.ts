@@ -4,7 +4,14 @@ import {
   LocalStorageService,
 } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { MonitorManagerProxyClient } from '../common/protocol';
+import {
+  isMonitorConnected,
+  MonitorConnectionStatus,
+  monitorConnectionStatusEquals,
+  MonitorEOL,
+  MonitorManagerProxyClient,
+  MonitorState,
+} from '../common/protocol';
 import { isNullOrUndefined } from '../common/utils';
 import { MonitorSettings } from '../node/monitor-settings/monitor-settings-provider';
 
@@ -19,36 +26,36 @@ export class MonitorModel implements FrontendApplicationContribution {
   protected readonly monitorManagerProxy: MonitorManagerProxyClient;
 
   protected readonly onChangeEmitter: Emitter<
-    MonitorModel.State.Change<keyof MonitorModel.State>
+    MonitorState.Change<keyof MonitorState>
   >;
 
   protected _autoscroll: boolean;
   protected _timestamp: boolean;
-  protected _lineEnding: MonitorModel.EOL;
+  protected _lineEnding: MonitorEOL;
   protected _interpolate: boolean;
   protected _darkTheme: boolean;
   protected _wsPort: number;
   protected _serialPort: string;
-  protected _connected: boolean;
+  protected _connectionStatus: MonitorConnectionStatus;
 
   constructor() {
     this._autoscroll = true;
     this._timestamp = false;
     this._interpolate = false;
-    this._lineEnding = MonitorModel.EOL.DEFAULT;
+    this._lineEnding = MonitorEOL.DEFAULT;
     this._darkTheme = false;
     this._wsPort = 0;
     this._serialPort = '';
-    this._connected = true;
+    this._connectionStatus = 'not-connected';
 
     this.onChangeEmitter = new Emitter<
-      MonitorModel.State.Change<keyof MonitorModel.State>
+      MonitorState.Change<keyof MonitorState>
     >();
   }
 
   onStart(): void {
     this.localStorageService
-      .getData<MonitorModel.State>(MonitorModel.STORAGE_ID)
+      .getData<MonitorState>(MonitorModel.STORAGE_ID)
       .then(this.restoreState.bind(this));
 
     this.monitorManagerProxy.onMonitorSettingsDidChange(
@@ -56,11 +63,11 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
-  get onChange(): Event<MonitorModel.State.Change<keyof MonitorModel.State>> {
+  get onChange(): Event<MonitorState.Change<keyof MonitorState>> {
     return this.onChangeEmitter.event;
   }
 
-  protected restoreState(state: MonitorModel.State): void {
+  protected restoreState(state: MonitorState): void {
     if (!state) {
       return;
     }
@@ -125,11 +132,11 @@ export class MonitorModel implements FrontendApplicationContribution {
     this.timestamp = !this._timestamp;
   }
 
-  get lineEnding(): MonitorModel.EOL {
+  get lineEnding(): MonitorEOL {
     return this._lineEnding;
   }
 
-  set lineEnding(lineEnding: MonitorModel.EOL) {
+  set lineEnding(lineEnding: MonitorEOL) {
     if (lineEnding === this._lineEnding) return;
     this._lineEnding = lineEnding;
     this.monitorManagerProxy.changeSettings({
@@ -211,19 +218,26 @@ export class MonitorModel implements FrontendApplicationContribution {
     );
   }
 
-  get connected(): boolean {
-    return this._connected;
+  get connectionStatus(): MonitorConnectionStatus {
+    return this._connectionStatus;
   }
 
-  set connected(connected: boolean) {
-    if (connected === this._connected) return;
-    this._connected = connected;
+  set connectionStatus(connectionStatus: MonitorConnectionStatus) {
+    if (
+      monitorConnectionStatusEquals(connectionStatus, this.connectionStatus)
+    ) {
+      return;
+    }
+    this._connectionStatus = connectionStatus;
     this.monitorManagerProxy.changeSettings({
-      monitorUISettings: { connected },
+      monitorUISettings: {
+        connectionStatus,
+        connected: isMonitorConnected(connectionStatus),
+      },
     });
     this.onChangeEmitter.fire({
-      property: 'connected',
-      value: this._connected,
+      property: 'connectionStatus',
+      value: this._connectionStatus,
     });
   }
 
@@ -238,7 +252,7 @@ export class MonitorModel implements FrontendApplicationContribution {
       darkTheme,
       wsPort,
       serialPort,
-      connected,
+      connectionStatus,
     } = monitorUISettings;
 
     if (!isNullOrUndefined(autoscroll)) this.autoscroll = autoscroll;
@@ -248,31 +262,7 @@ export class MonitorModel implements FrontendApplicationContribution {
     if (!isNullOrUndefined(darkTheme)) this.darkTheme = darkTheme;
     if (!isNullOrUndefined(wsPort)) this.wsPort = wsPort;
     if (!isNullOrUndefined(serialPort)) this.serialPort = serialPort;
-    if (!isNullOrUndefined(connected)) this.connected = connected;
+    if (!isNullOrUndefined(connectionStatus))
+      this.connectionStatus = connectionStatus;
   };
-}
-
-// TODO: Move this to /common
-export namespace MonitorModel {
-  export interface State {
-    autoscroll: boolean;
-    timestamp: boolean;
-    lineEnding: EOL;
-    interpolate: boolean;
-    darkTheme: boolean;
-    wsPort: number;
-    serialPort: string;
-    connected: boolean;
-  }
-  export namespace State {
-    export interface Change<K extends keyof State> {
-      readonly property: K;
-      readonly value: State[K];
-    }
-  }
-
-  export type EOL = '' | '\n' | '\r' | '\r\n';
-  export namespace EOL {
-    export const DEFAULT: EOL = '\n';
-  }
 }
