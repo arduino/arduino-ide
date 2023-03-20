@@ -258,6 +258,12 @@ export const ArduinoConfigSchema: PreferenceSchema = {
       ),
       default: undefined,
     },
+    'arduino.sketch.editorOpenTimeout': {
+      type: 'number',
+      description:
+        'Set the editor timeout in milliseconds to reproduce the duplicate editor tabs. See #1791',
+      default: 5000,
+    },
   },
 };
 
@@ -288,6 +294,7 @@ export interface ArduinoConfiguration {
   'arduino.cli.daemon.debug': boolean;
   'arduino.sketch.inoBlueprint': string;
   'arduino.checkForUpdates': boolean;
+  'arduino.sketch.editorOpenTimeout': number;
 }
 
 export const ArduinoPreferences = Symbol('ArduinoPreferences');

@@ -196,7 +196,7 @@ export class OpenSketchFiles extends SketchContribution {
         }
       });
 
-    const timeout = 5_000; // number of ms IDE2 waits for the editor to show up in the UI
+    const timeout = this.preferences['arduino.sketch.editorOpenTimeout']; // number of ms IDE2 waits for the editor to show up in the UI
     const result: EditorWidget | undefined | 'timeout' = await Promise.race([
       deferred.promise,
       wait(timeout).then(() => {
