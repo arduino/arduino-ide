@@ -45,7 +45,11 @@ export class OpenSketchFiles extends SketchContribution {
         await this.ensureOpened(uri);
       }
       if (focusMainSketchFile) {
-        await this.ensureOpened(mainFileUri, true, { mode: 'activate' });
+        await this.ensureOpened(mainFileUri, true, {
+          mode: 'activate',
+          preview: false,
+          counter: 0,
+        });
       }
       if (mainFileUri.endsWith('.pde')) {
         const message = nls.localize(
