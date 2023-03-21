@@ -356,6 +356,8 @@ import { Account } from './contributions/account';
 import { SidebarBottomMenuWidget } from './theia/core/sidebar-bottom-menu-widget';
 import { SidebarBottomMenuWidget as TheiaSidebarBottomMenuWidget } from '@theia/core/lib/browser/shell/sidebar-bottom-menu-widget';
 import { CreateCloudCopy } from './contributions/create-cloud-copy';
+import { FileResourceResolver } from './theia/filesystem/file-resource';
+import { FileResourceResolver as TheiaFileResourceResolver } from '@theia/filesystem/lib/browser/file-resource';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -1034,4 +1036,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(FrontendApplicationContribution).toService(DaemonPort);
   bind(IsOnline).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(IsOnline);
+
+  // https://github.com/arduino/arduino-ide/issues/437
+  bind(FileResourceResolver).toSelf().inSingletonScope();
+  rebind(TheiaFileResourceResolver).toService(FileResourceResolver);
 });
