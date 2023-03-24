@@ -128,13 +128,7 @@ export class SketchbookWidget extends BaseWidget {
 
   protected override onActivateRequest(message: Message): void {
     super.onActivateRequest(message);
-
-    // TODO: focus the active sketchbook
-    // if (this.editor) {
-    //     this.editor.focus();
-    // } else {
-    // }
-    this.node.focus();
+    this.sketchbookCompositeWidget.activate();
   }
 
   protected override onResize(message: Widget.ResizeMessage): void {

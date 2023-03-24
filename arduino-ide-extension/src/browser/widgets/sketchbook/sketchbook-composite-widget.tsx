@@ -9,6 +9,7 @@ import { BaseWidget } from '@theia/core/lib/browser/widgets/widget';
 import { CommandService } from '@theia/core/lib/common/command';
 import { SketchbookTreeWidget } from './sketchbook-tree-widget';
 import { CreateNew } from '../sketchbook/create-new';
+import { findChildTheiaButton } from '../../utils/dom';
 
 @injectable()
 export abstract class BaseSketchbookCompositeWidget<
@@ -18,16 +19,17 @@ export abstract class BaseSketchbookCompositeWidget<
   protected readonly commandService: CommandService;
 
   private readonly compositeNode: HTMLElement;
+  private readonly footerNode: HTMLElement;
   private readonly footerRoot: Root;
 
   constructor() {
     super();
     this.compositeNode = document.createElement('div');
     this.compositeNode.classList.add('composite-node');
-    const footerNode = document.createElement('div');
-    footerNode.classList.add('footer-node');
-    this.compositeNode.appendChild(footerNode);
-    this.footerRoot = createRoot(footerNode);
+    this.footerNode = document.createElement('div');
+    this.footerNode.classList.add('footer-node');
+    this.compositeNode.appendChild(this.footerNode);
+    this.footerRoot = createRoot(this.footerNode);
     this.node.appendChild(this.compositeNode);
     this.title.closable = false;
   }
@@ -51,6 +53,7 @@ export abstract class BaseSketchbookCompositeWidget<
     super.onActivateRequest(message);
     // Sending a resize message is needed because otherwise the tree widget would render empty
     this.onResize(Widget.ResizeMessage.UnknownSize);
+    findChildTheiaButton(this.footerNode, true)?.focus();
   }
 
   protected override onResize(message: Widget.ResizeMessage): void {
