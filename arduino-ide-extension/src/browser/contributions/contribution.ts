@@ -6,6 +6,10 @@ import {
 } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { Saveable } from '@theia/core/lib/browser/saveable';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { MaybePromise } from '@theia/core/lib/common/types';
@@ -62,6 +66,7 @@ import { MessageType } from '@theia/core/lib/common/message-service-protocol';
 import { WorkspaceService } from '../theia/workspace/workspace-service';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ConfigServiceClient } from '../config/config-service-client';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 
 export {
   Command,
@@ -217,6 +222,9 @@ export abstract class CoreServiceContribution extends SketchContribution {
   @inject(NotificationManager)
   private readonly notificationManager: NotificationManager;
 
+  @inject(ApplicationShell)
+  private readonly shell: ApplicationShell;
+
   /**
    * This is the internal (Theia) ID of the notification that is currently visible.
    * It's stored here as a field to be able to close it before executing any new core command (such as verify, upload, etc.)
@@ -279,6 +287,9 @@ export abstract class CoreServiceContribution extends SketchContribution {
     keepOutput?: boolean;
     task: (progressId: string, coreService: CoreService) => Promise<T>;
   }): Promise<T> {
+    const toDisposeOnComplete = new DisposableCollection(
+      this.maybeActivateMonitorWidget()
+    );
     const { progressText, keepOutput, task } = options;
     this.outputChannelManager
       .getChannel('Arduino')
@@ -290,7 +301,22 @@ export abstract class CoreServiceContribution extends SketchContribution {
       run: ({ progressId }) => task(progressId, this.coreService),
       keepOutput,
     });
+    toDisposeOnComplete.dispose();
     return result;
+  }
+
+  // TODO: cleanup!
+  // this dependency does not belong here
+  // support core command contribution handlers, the monitor-widget should implement it and register itself as a handler
+  // the monitor widget should reveal itself after a successful core command execution
+  private maybeActivateMonitorWidget(): Disposable {
+    const currentWidget = this.shell.bottomPanel.currentTitle?.owner;
+    if (currentWidget?.id === 'serial-monitor') {
+      return Disposable.create(() =>
+        this.shell.bottomPanel.activateWidget(currentWidget)
+      );
+    }
+    return Disposable.NULL;
   }
 
   private notificationId(message: string, ...actions: string[]): string {
