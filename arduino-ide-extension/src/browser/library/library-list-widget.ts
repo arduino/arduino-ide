@@ -20,6 +20,7 @@ import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
 import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
+import { findChildTheiaButton } from '../utils/dom';
 
 @injectable()
 export class LibraryListWidget extends ListWidget<
@@ -243,17 +244,7 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
 
   protected override onAfterAttach(message: Message): void {
     super.onAfterAttach(message);
-    let buttonToFocus: HTMLButtonElement | undefined = undefined;
-    for (const child of Array.from(this.controlPanel.children)) {
-      if (child instanceof HTMLButtonElement) {
-        if (child.classList.contains('main')) {
-          buttonToFocus = child;
-          break;
-        }
-        buttonToFocus = child;
-      }
-    }
-    buttonToFocus?.focus();
+    findChildTheiaButton(this.controlPanel)?.focus();
   }
 }
 export namespace MessageBoxDialog {
