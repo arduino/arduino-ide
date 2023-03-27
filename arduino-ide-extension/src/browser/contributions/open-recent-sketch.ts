@@ -1,4 +1,5 @@
 import { NativeImage } from '@theia/core/electron-shared/electron';
+import { ThemeService } from '@theia/core/lib/browser/theming';
 import {
   Disposable,
   DisposableCollection,
@@ -9,7 +10,11 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { SketchesError } from '../../common/protocol';
 import { ConfigServiceClient } from '../config/config-service-client';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { NativeImageCache } from '../native-image-cache';
+import {
+  isThemeNativeImage,
+  NativeImageCache,
+  ThemeNativeImage,
+} from '../native-image-cache';
 import { NotificationCenter } from '../notification-center';
 import { CloudSketchContribution } from './cloud-contribution';
 import { CommandRegistry, MenuModelRegistry, Sketch } from './contribution';
@@ -27,21 +32,34 @@ export class OpenRecentSketch extends CloudSketchContribution {
   private readonly imageCache: NativeImageCache;
   @inject(ConfigServiceClient)
   private readonly configServiceClient: ConfigServiceClient;
+  @inject(ThemeService)
+  private readonly themeService: ThemeService;
 
-  private readonly toDispose = new DisposableCollection();
-  private cloudImage: NativeImage | undefined;
+  private readonly toDisposeBeforeRegister = new DisposableCollection();
+  private readonly toDispose = new DisposableCollection(
+    this.toDisposeBeforeRegister
+  );
+  private cloudImage: NativeImage | ThemeNativeImage;
 
   override onStart(): void {
-    this.notificationCenter.onRecentSketchesDidChange(({ sketches }) =>
-      this.refreshMenu(sketches)
-    );
-    this.imageCache
-      .getImage('cloud')
-      .then((image) => (this.cloudImage = image));
+    this.toDispose.pushAll([
+      this.notificationCenter.onRecentSketchesDidChange(({ sketches }) =>
+        this.refreshMenu(sketches)
+      ),
+      this.themeService.onDidColorThemeChange(() => this.update()),
+    ]);
+  }
+
+  onStop(): void {
+    this.toDispose.dispose();
   }
 
   override async onReady(): Promise<void> {
     this.update();
+    this.imageCache.getImage('cloud').then((image) => {
+      this.cloudImage = image;
+      this.update();
+    });
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
@@ -65,7 +83,7 @@ export class OpenRecentSketch extends CloudSketchContribution {
 
   private register(sketches: Sketch[]): void {
     const order = 0;
-    this.toDispose.dispose();
+    this.toDisposeBeforeRegister.dispose();
     for (const sketch of sketches) {
       const { uri } = sketch;
       const command = { id: `arduino-open-recent--${uri}` };
@@ -95,7 +113,7 @@ export class OpenRecentSketch extends CloudSketchContribution {
         ArduinoMenus.FILE__OPEN_RECENT_SUBMENU,
         menuAction
       );
-      this.toDispose.pushAll([
+      this.toDisposeBeforeRegister.pushAll([
         new DisposableCollection(
           Disposable.create(() =>
             this.commandRegistry.unregisterCommand(command)
@@ -109,13 +127,23 @@ export class OpenRecentSketch extends CloudSketchContribution {
   }
 
   private assignImage(sketch: Sketch, menuAction: MenuAction): MenuAction {
-    if (this.cloudImage) {
+    const image = this.nativeImageForTheme();
+    if (image) {
       const dataDirUri = this.configServiceClient.tryGetDataDirUri();
       const isCloud = this.createFeatures.isCloud(sketch, dataDirUri);
       if (isCloud) {
-        Object.assign(menuAction, { nativeImage: this.cloudImage });
+        Object.assign(menuAction, { nativeImage: image });
       }
     }
     return menuAction;
+  }
+
+  private nativeImageForTheme(): NativeImage | undefined {
+    const image = this.cloudImage;
+    if (isThemeNativeImage(image)) {
+      const themeType = this.themeService.getCurrentTheme().type;
+      return themeType === 'light' ? image.light : image.dark;
+    }
+    return image;
   }
 }
