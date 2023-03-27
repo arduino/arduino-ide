@@ -119,6 +119,8 @@ import {
   PluginDeployer_GH_12064,
 } from './theia/plugin-ext/plugin-deployer';
 import { SettingsReader } from './settings-reader';
+import { DiskFileSystemProvider } from './theia/filesystem/disk-file-system-provider';
+import { DiskFileSystemProvider as TheiaDiskFileSystemProvider } from '@theia/filesystem/lib/node/disk-file-system-provider';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -406,6 +408,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(PluginDeployer).to(PluginDeployer_GH_12064).inSingletonScope();
 
   bind(SettingsReader).toSelf().inSingletonScope();
+
+  bind(DiskFileSystemProvider).toSelf().inSingletonScope();
+  rebind(TheiaDiskFileSystemProvider).toService(DiskFileSystemProvider);
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {
