@@ -356,6 +356,7 @@ import { Account } from './contributions/account';
 import { SidebarBottomMenuWidget } from './theia/core/sidebar-bottom-menu-widget';
 import { SidebarBottomMenuWidget as TheiaSidebarBottomMenuWidget } from '@theia/core/lib/browser/shell/sidebar-bottom-menu-widget';
 import { CreateCloudCopy } from './contributions/create-cloud-copy';
+import { NativeImageCache } from './native-image-cache';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands and toolbar items
@@ -1034,4 +1035,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(FrontendApplicationContribution).toService(DaemonPort);
   bind(IsOnline).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(IsOnline);
+  // manages native images for the electron menu icons
+  bind(NativeImageCache).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(NativeImageCache);
 });
