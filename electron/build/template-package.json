@@ -3,7 +3,7 @@
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3",
-    "electron-builder": "23.0.2"
+    "electron-builder": "23.6.0"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
@@ -11,7 +11,7 @@
   "devDependencies": {
     "@theia/cli": "1.31.1",
     "cross-env": "^7.0.2",
-    "electron-builder": "23.3.3",
+    "electron-builder": "23.6.0",
     "electron-notarize": "^1.1.1",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
