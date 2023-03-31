@@ -99,6 +99,7 @@ jobs:
             export CSC_LINK="${{ runner.temp }}/signing_certificate.${{ matrix.config.certificate-extension }}"
             echo "${{ secrets[matrix.config.certificate-secret] }}" | base64 --decode > "$CSC_LINK"
             export CSC_KEY_PASSWORD="${{ secrets[matrix.config.certificate-password-secret] }}"
+            export CSC_FOR_PULL_REQUEST=true
           fi
 
           if [ "${{ runner.OS }}" = "Windows" ]; then
