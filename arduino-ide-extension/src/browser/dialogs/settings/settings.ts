@@ -123,6 +123,17 @@ export class SettingsService {
       this._settings = deepClone(settings);
       this.ready.resolve();
     });
+    this.preferenceService.onPreferenceChanged(async (event) => {
+      await this.ready.promise;
+      const { preferenceName, newValue } = event;
+      if (
+        preferenceName === 'workbench.colorTheme' &&
+        typeof newValue === 'string' &&
+        this._settings.themeId !== newValue
+      ) {
+        this.reset();
+      }
+    });
   }
 
   protected async loadSettings(): Promise<Settings> {
