@@ -37,6 +37,8 @@ export interface MonitorManagerProxyClient {
   isWSConnected(): Promise<boolean>;
   startMonitor(settings?: PluggableMonitorSettings): Promise<void>;
   getCurrentSettings(board: Board, port: Port): Promise<MonitorSettings>;
+  setMonitorWidgetStatus(value: boolean): void;
+  getMonitorWidgetStatus(): boolean;
   send(message: string): void;
   changeSettings(settings: MonitorSettings): void;
 }

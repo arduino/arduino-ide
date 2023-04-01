@@ -65,6 +65,9 @@ export class PlotterFrontendContribution extends Contribution {
 
     ipcRenderer.on(CLOSE_PLOTTER_WINDOW, async () => {
       if (!!this.window) {
+        if (!this.monitorManagerProxy.getMonitorWidgetStatus()) {
+          this.monitorManagerProxy.disconnect();
+        }
         this.window = null;
       }
     });
