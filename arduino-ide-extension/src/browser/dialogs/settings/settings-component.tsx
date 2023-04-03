@@ -24,6 +24,12 @@ import {
 } from '@theia/core/lib/common/i18n/localization';
 import SettingsStepInput from './settings-step-input';
 import { InterfaceScale } from '../../contributions/interface-scale';
+import {
+  userConfigurableThemes,
+  themeLabelForSettings,
+  arduinoThemeTypeOf,
+} from '../../theia/core/theming';
+import { Theme } from '@theia/core/lib/common/theme';
 
 const maxScale = InterfaceScale.ZoomLevel.toPercentage(
   InterfaceScale.ZoomLevel.MAX
@@ -218,14 +224,10 @@ export class SettingsComponent extends React.Component<
             <div className="flex-line">
               <select
                 className="theia-select"
-                value={this.props.themeService.getCurrentTheme().label}
+                value={this.currentThemeLabel}
                 onChange={this.themeDidChange}
               >
-                {this.props.themeService.getThemes().map(({ id, label }) => (
-                  <option key={id} value={label}>
-                    {label}
-                  </option>
-                ))}
+                {this.themeSelectOptions}
               </select>
             </div>
             <div className="flex-line">
@@ -331,6 +333,46 @@ export class SettingsComponent extends React.Component<
         </div>
       </div>
     );
+  }
+
+  private get currentThemeLabel(): string {
+    const currentTheme = this.props.themeService.getCurrentTheme();
+    return themeLabelForSettings(currentTheme);
+  }
+
+  private get separatedThemes(): (Theme | string)[] {
+    const separatedThemes: (Theme | string)[] = [];
+    const groupedThemes = userConfigurableThemes(this.props.themeService);
+    for (const group of groupedThemes) {
+      for (let i = 0; i < group.length; i++) {
+        const theme = group[i];
+        if (i === 0 && separatedThemes.length) {
+          const arduinoThemeType = arduinoThemeTypeOf(theme);
+          separatedThemes.push(`separator-${arduinoThemeType}`);
+        }
+        separatedThemes.push(theme);
+      }
+    }
+    return separatedThemes;
+  }
+
+  private get themeSelectOptions(): React.ReactNode[] {
+    return this.separatedThemes.map((item) => {
+      if (typeof item === 'string') {
+        return (
+          // &#9472; -> BOX DRAWINGS LIGHT HORIZONTAL
+          <option key={item} disabled>
+            &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;
+          </option>
+        );
+      }
+      const label = themeLabelForSettings(item);
+      return (
+        <option key={item.id} value={label}>
+          {label}
+        </option>
+      );
+    });
   }
 
   private toSelectOptions(language: string | LanguageInfo): JSX.Element {
@@ -610,8 +652,8 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const { selectedIndex } = event.target.options;
-    const theme = this.props.themeService.getThemes()[selectedIndex];
-    if (theme) {
+    const theme = this.separatedThemes[selectedIndex];
+    if (theme && typeof theme !== 'string') {
       this.setState({ themeId: theme.id });
       if (this.props.themeService.getCurrentTheme().id !== theme.id) {
         this.props.themeService.setCurrentTheme(theme.id);
