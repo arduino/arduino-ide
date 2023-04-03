@@ -238,7 +238,6 @@ import {
   UploadFirmwareDialog,
   UploadFirmwareDialogProps,
 } from './dialogs/firmware-uploader/firmware-uploader-dialog';
-
 import { UploadCertificate } from './contributions/upload-certificate';
 import {
   ArduinoFirmwareUploader,
@@ -328,9 +327,13 @@ import { NewCloudSketch } from './contributions/new-cloud-sketch';
 import { SketchbookCompositeWidget } from './widgets/sketchbook/sketchbook-composite-widget';
 import { WindowTitleUpdater } from './theia/core/window-title-updater';
 import { WindowTitleUpdater as TheiaWindowTitleUpdater } from '@theia/core/lib/browser/window/window-title-updater';
-import { ThemeServiceWithDB } from './theia/core/theming';
-import { ThemeServiceWithDB as TheiaThemeServiceWithDB } from '@theia/monaco/lib/browser/monaco-indexed-db';
-import { MonacoThemingService } from './theia/monaco/monaco-theming-service';
+import {
+  MonacoThemingService,
+  CleanupObsoleteThemes,
+  ThemesRegistrationSummary,
+  MonacoThemeRegistry,
+} from './theia/monaco/monaco-theming-service';
+import { MonacoThemeRegistry as TheiaMonacoThemeRegistry } from '@theia/monaco/lib/browser/textmate/monaco-theme-registry';
 import { MonacoThemingService as TheiaMonacoThemingService } from '@theia/monaco/lib/browser/monaco-theming-service';
 import { TypeHierarchyServiceProvider } from './theia/typehierarchy/type-hierarchy-service';
 import { TypeHierarchyServiceProvider as TheiaTypeHierarchyServiceProvider } from '@theia/typehierarchy/lib/browser/typehierarchy-service';
@@ -973,10 +976,18 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaWindowTitleUpdater).toService(WindowTitleUpdater);
 
   // register Arduino themes
-  bind(ThemeServiceWithDB).toSelf().inSingletonScope();
-  rebind(TheiaThemeServiceWithDB).toService(ThemeServiceWithDB);
   bind(MonacoThemingService).toSelf().inSingletonScope();
   rebind(TheiaMonacoThemingService).toService(MonacoThemingService);
+
+  // workaround for themes cannot be removed after registration
+  // https://github.com/eclipse-theia/theia/issues/11151
+  bind(CleanupObsoleteThemes).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(
+    CleanupObsoleteThemes
+  );
+  bind(ThemesRegistrationSummary).toSelf().inSingletonScope();
+  bind(MonacoThemeRegistry).toSelf().inSingletonScope();
+  rebind(TheiaMonacoThemeRegistry).toService(MonacoThemeRegistry);
 
   // disable type-hierarchy support
   // https://github.com/eclipse-theia/theia/commit/16c88a584bac37f5cf3cc5eb92ffdaa541bda5be
