@@ -1,15 +1,16 @@
 import {Line, SerialMonitorOutput} from './serial-monitor-send-output';
 
-function writeOverLine(line: Line, insert: string, cursorPosition: number): [number, number] {
-  var lenBefore = line.message.length;
+function writeOverLine(line: Line, insert: string, cursorPosition: number, charCount: number): [number, number] {
+  const lenBefore = line.message.length;
   line.message = line.message.substring(0, cursorPosition) + insert + line.message.substring(cursorPosition + insert.length)
   cursorPosition = cursorPosition + insert.length;
   line.lineLen = line.message.length;
-  return [line.lineLen - lenBefore, cursorPosition];
+  return [charCount + (line.lineLen - lenBefore), cursorPosition];
 }
 
-const escapeSequenceGoHome = '\x1B[H';
-const escapeSequenceClearScreen = '\x1B[2J';
+const escape = '\x1B';
+const escapeSequenceGoHome = escape+'[H';
+const escapeSequenceClearScreen = escape+'[2J';
 
 export function messagesToLines(
   messages: string[],
@@ -28,17 +29,21 @@ export function messagesToLines(
   let allMessages = messages.join('');
   let overflow = null;
 
-  if (allMessages.indexOf(escapeSequenceGoHome) >= 0) {
-    const before = allMessages.substring(0, allMessages.indexOf(escapeSequenceGoHome));
-    const after = allMessages.substring(allMessages.indexOf(escapeSequenceGoHome) + escapeSequenceGoHome.length);
-    const [_lines, _charCount] = messagesToLines([before], prevLines, charCount, currentLineIndex, currentCursorPosition, separator);
-    return messagesToLines([after], _lines, _charCount, 0, 0, separator);
-  } else if (allMessages.indexOf(escapeSequenceClearScreen) >= 0) {
+  let goHomeSequenceIndex = allMessages.indexOf(escapeSequenceGoHome);
+  let clearScreenSequenceIndex = allMessages.indexOf(escapeSequenceClearScreen);
+  let lastEscapeIndex = allMessages.lastIndexOf(escape);
+
+  if (goHomeSequenceIndex >= 0) {
+    const before = allMessages.substring(0, goHomeSequenceIndex);
+    const after = allMessages.substring(goHomeSequenceIndex + escapeSequenceGoHome.length);
+    const [updatedLines, updatedCharCount] = messagesToLines([before], prevLines, charCount, currentLineIndex, currentCursorPosition, separator);
+    return messagesToLines([after], updatedLines, updatedCharCount, 0, 0, separator);
+  } else if (clearScreenSequenceIndex >= 0) {
     const after = allMessages.substring(allMessages.lastIndexOf(escapeSequenceClearScreen) + escapeSequenceClearScreen.length);
     return messagesToLines([after], [], 0, 0, 0, separator);
-  } else if (allMessages.lastIndexOf('\x1B') >= 0) {
-    overflow = allMessages.substring(allMessages.lastIndexOf('\x1B'));
-    const result = messagesToLines([allMessages.substring(0, allMessages.lastIndexOf('\x1B'))], prevLines, charCount, currentLineIndex, currentCursorPosition, separator);
+  } else if (lastEscapeIndex >= 0) {
+    overflow = allMessages.substring(lastEscapeIndex);
+    const result = messagesToLines([allMessages.substring(0, lastEscapeIndex)], prevLines, charCount, currentLineIndex, currentCursorPosition, separator);
     result[4] = overflow;
     return result;
   }
@@ -54,15 +59,11 @@ export function messagesToLines(
       if (currentLineIndex > prevLines.length - 1) {
         prevLines.push({message: '', lineLen: 0, timestamp: new Date()});
       }
-      let [_addedCharacters, _currentCursorPosition] = writeOverLine(prevLines[currentLineIndex], chunk, currentCursorPosition)
-      charCount += _addedCharacters;
-      currentCursorPosition = _currentCursorPosition;
+      [charCount, currentCursorPosition] = writeOverLine(prevLines[currentLineIndex], chunk, currentCursorPosition, charCount)
     }
 
     if (i < chunks.length - 1) {
-      let [_addedCharacters, _currentCursorPosition] = writeOverLine(prevLines[currentLineIndex], separator, currentCursorPosition)
-      charCount += _addedCharacters;
-      currentCursorPosition = _currentCursorPosition;
+      [charCount, currentCursorPosition] = writeOverLine(prevLines[currentLineIndex], separator, currentCursorPosition, charCount)
     }
   }
 

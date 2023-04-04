@@ -24,11 +24,11 @@ const date = new Date();
 const testLines: TestLine[] = [
   {
     messages: ['Hello'],
-    expected: { lines: [{ message: 'Hello', lineLen: 5 }], charCount: 5 }
+    expected: { lines: [{ message: 'Hello', lineLen: 5 }], charCount: 5 },
   },
   {
     messages: ['Hello', 'Dog!'],
-    expected: { lines: [{ message: 'HelloDog!', lineLen: 9 }], charCount: 9 }
+    expected: { lines: [{ message: 'HelloDog!', lineLen: 9 }], charCount: 9 },
   },
   {
     messages: ['Hello\n', 'Dog!'],
@@ -38,7 +38,7 @@ const testLines: TestLine[] = [
         { message: 'Dog!', lineLen: 4 },
       ],
       charCount: 10,
-    }
+    },
   },
   {
     messages: ['Dog!'],
@@ -49,7 +49,7 @@ const testLines: TestLine[] = [
         { message: 'Dog!', lineLen: 4 },
       ],
       charCount: 10,
-    }
+    },
   },
   {
     messages: [' Dog!\n', " Who's a good ", 'boy?\n', "You're a good boy!"],
@@ -69,7 +69,7 @@ const testLines: TestLine[] = [
         { message: '?\n', lineLen: 2 },
         { message: "You're a good boy!", lineLen: 8 },
       ],
-    }
+    },
   },
   {
     messages: ['boy?\n', "You're a good boy!"],
@@ -95,7 +95,7 @@ const testLines: TestLine[] = [
         { message: '?\n', lineLen: 2 },
         { message: "You're a good boy!", lineLen: 8 },
       ],
-    }
+    },
   },
   {
     messages: ["Who's a good boy?\n", 'Yo'],
@@ -120,7 +120,6 @@ const testLines: TestLine[] = [
       ],
     }
   },
-
   {
     messages: ['Dog!'],
     prevLines: { lines: [{ message: 'Hello\n', lineLen: 6 }], charCount: 6 },
