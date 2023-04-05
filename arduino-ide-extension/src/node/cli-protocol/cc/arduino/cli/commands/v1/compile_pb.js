@@ -137,7 +137,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     warnings: jspb.Message.getFieldWithDefault(msg, 9, ""),
     verbose: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
     quiet: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
-    vidPid: jspb.Message.getFieldWithDefault(msg, 12, ""),
     jobs: jspb.Message.getFieldWithDefault(msg, 14, 0),
     librariesList: (f = jspb.Message.getRepeatedField(msg, 15)) == null ? undefined : f,
     optimizeForDebug: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
@@ -231,10 +230,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
     case 11:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setQuiet(value);
-      break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setVidPid(value);
       break;
     case 14:
       var value = /** @type {number} */ (reader.readInt32());
@@ -395,13 +390,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
   if (f) {
     writer.writeBool(
       11,
-      f
-    );
-  }
-  f = message.getVidPid();
-  if (f.length > 0) {
-    writer.writeString(
-      12,
       f
     );
   }
@@ -730,24 +718,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getQuiet = function() 
  */
 proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setQuiet = function(value) {
   return jspb.Message.setProto3BooleanField(this, 11, value);
-};
-
-
-/**
- * optional string vid_pid = 12;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getVidPid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setVidPid = function(value) {
-  return jspb.Message.setProto3StringField(this, 12, value);
 };
 
 
