@@ -48,9 +48,6 @@ export class CompileRequest extends jspb.Message {
     getQuiet(): boolean;
     setQuiet(value: boolean): CompileRequest;
 
-    getVidPid(): string;
-    setVidPid(value: string): CompileRequest;
-
     getJobs(): number;
     setJobs(value: number): CompileRequest;
 
@@ -122,7 +119,6 @@ export namespace CompileRequest {
         warnings: string,
         verbose: boolean,
         quiet: boolean,
-        vidPid: string,
         jobs: number,
         librariesList: Array<string>,
         optimizeForDebug: boolean,
