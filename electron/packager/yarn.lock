@@ -2,17 +2,17 @@
 # yarn lockfile v1
 
 
-"7zip-bin@^5.0.3":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/7zip-bin/-/7zip-bin-5.0.3.tgz#bc5b5532ecafd923a61f2fb097e3b108c0106a3f"
-  integrity sha512-GLyWIFBbGvpKPGo55JyRZAo4lVbnBiD52cKlw/0Vt+wnmKvWJkpZvsjVoaIolyBXDeAQKSicRtqFNPem9w0WYA==
+"7zip-bin@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/7zip-bin/-/7zip-bin-5.1.1.tgz#9274ec7460652f9c632c59addf24efb1684ef876"
+  integrity sha512-sAP4LldeWNz0lNzmTird3uWfFDWWTeg6V/MsmyyLR9X1idwKBWIgt/ZvinqQldJm3LecKEs1emkbquO6PCiLVQ==
 
-"7zip-min@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/7zip-min/-/7zip-min-1.1.1.tgz#96903ea587aa09376843d254a6bea9df107a8aab"
-  integrity sha512-GPTk3xycxB0NjRM1SKAUL7TWXjgFAyzwXkamkk5YgSLd6OneeWBw+fxULctrVr4XqPBBh+LyqpHlyj9ryfpqoQ==
+"7zip-min@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/7zip-min/-/7zip-min-1.4.4.tgz#82a50a8d3f0a2d86b4c908433c9ec35627f4138c"
+  integrity sha512-mYB1WW5tcXfZxUN4+2joKk4+6j8jp+mpO2YiMU5z1gNNFbACxI2ADasffsdNPovZSwn/E662ZIH5gRkFPMufmA==
   dependencies:
-    "7zip-bin" "^5.0.3"
+    "7zip-bin" "5.1.1"
 
 "@babel/runtime@^7.15.4":
   version "7.20.6"

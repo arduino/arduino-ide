@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/file-type": "^10.9.1",
     "@types/temp": "^0.8.32",
-    "7zip-min": "^1.1.1",
+    "7zip-min": "^1.4.4",
     "chai": "^4.2.0",
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
