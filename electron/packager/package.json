@@ -20,7 +20,7 @@
     "crypto": "^1.0.1",
     "dateformat": "^3.0.3",
     "deepmerge": "2.01",
-    "file-type": "^14.1.4",
+    "file-type": "^14.7.1",
     "glob": "^7.1.6",
     "is-ci": "^2.0.0",
     "mocha": "^7.1.1",
