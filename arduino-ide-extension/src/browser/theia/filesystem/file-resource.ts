@@ -1,5 +1,3 @@
-import { ResourceSaveOptions } from '@theia/core/lib/common/resource';
-import { Readable } from '@theia/core/lib/common/stream';
 import URI from '@theia/core/lib/common/uri';
 import { injectable } from '@theia/core/shared/inversify';
 import {
@@ -11,14 +9,13 @@ import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import {
   FileOperationError,
   FileOperationResult,
-  FileStat,
 } from '@theia/filesystem/lib/common/files';
 import * as PQueue from 'p-queue';
 
 @injectable()
 export class FileResourceResolver extends TheiaFileResourceResolver {
   override async resolve(uri: URI): Promise<WriteQueuedFileResource> {
-    let stat: FileStat | undefined;
+    let stat;
     try {
       stat = await this.fileService.resolve(uri);
     } catch (e) {
@@ -37,6 +34,7 @@ export class FileResourceResolver extends TheiaFileResourceResolver {
       );
     }
     return new WriteQueuedFileResource(uri, this.fileService, {
+      isReadonly: stat?.isReadonly ?? false,
       shouldOverwrite: () => this.shouldOverwrite(uri),
       shouldOpenAsText: (error) => this.shouldOpenAsText(uri, error),
     });
@@ -52,21 +50,30 @@ class WriteQueuedFileResource extends FileResource {
     options: FileResourceOptions
   ) {
     super(uri, fileService, options);
+    const originalDoWrite = this['doWrite'];
+    this['doWrite'] = (content, options) =>
+      this.writeQueue.add(() => originalDoWrite.bind(this)(content, options));
+    const originalSaveStream = this['saveStream'];
+    if (originalSaveStream) {
+      this['saveStream'] = (content, options) =>
+        this.writeQueue.add(() =>
+          originalSaveStream.bind(this)(content, options)
+        );
+    }
+    const originalSaveContents = this['saveContents'];
+    if (originalSaveContents) {
+      this['saveContents'] = (content, options) =>
+        this.writeQueue.add(() =>
+          originalSaveContents.bind(this)(content, options)
+        );
+    }
     const originalSaveContentChanges = this['saveContentChanges'];
     if (originalSaveContentChanges) {
-      this['saveContentChanges'] = (changes, options) => {
-        return this.writeQueue.add(() =>
+      this['saveContentChanges'] = (changes, options) =>
+        this.writeQueue.add(() =>
           originalSaveContentChanges.bind(this)(changes, options)
         );
-      };
     }
-  }
-
-  protected override async doWrite(
-    content: string | Readable<string>,
-    options?: ResourceSaveOptions
-  ): Promise<void> {
-    return this.writeQueue.add(() => super.doWrite(content, options));
   }
 
   protected override async isInSync(): Promise<boolean> {
