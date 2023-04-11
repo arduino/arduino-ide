@@ -9,7 +9,7 @@ import {
   AvailableBoard,
 } from './boards-service-provider';
 import { nls } from '@theia/core/lib/common';
-import classNames from 'classnames';
+import * as classNames from 'classnames';
 import { BoardsConfig } from './boards-config';
 
 export interface BoardsDropDownListCoords {

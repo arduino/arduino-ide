@@ -1,5 +1,5 @@
 import * as React from '@theia/core/shared/react';
-import classnames from 'classnames';
+import * as classnames from 'classnames';
 
 interface SettingsStepInputProps {
   initialValue: number;

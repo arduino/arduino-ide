@@ -10,7 +10,7 @@
     "node": ">=16.0.0 <17"
   },
   "devDependencies": {
-    "@theia/cli": "1.35.0",
+    "@theia/cli": "1.36.0",
     "@types/jsdom": "^11.0.4",
     "@types/sinon": "^2.3.5",
     "@typescript-eslint/eslint-plugin": "^4.27.0",

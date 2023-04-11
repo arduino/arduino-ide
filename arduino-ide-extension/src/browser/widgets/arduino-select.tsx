@@ -5,12 +5,10 @@ import type { ThemeConfig } from 'react-select/dist/declarations/src/theme';
 import type { GroupBase } from 'react-select/dist/declarations/src/types';
 import type { StateManagerProps } from 'react-select/dist/declarations/src/useStateManager';
 
-export class ArduinoSelect<
-  Option,
-  IsMulti extends boolean = false,
-  Group extends GroupBase<Option> = GroupBase<Option>
-> extends React.Component<StateManagerProps<Option, IsMulti, Group>> {
-  constructor(props: StateManagerProps<Option, IsMulti, Group>) {
+export class ArduinoSelect extends React.Component<
+  StateManagerProps<unknown, boolean, GroupBase<unknown>>
+> {
+  constructor(props: StateManagerProps<unknown, boolean, GroupBase<unknown>>) {
     super(props);
   }
 
