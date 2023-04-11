@@ -1,6 +1,7 @@
 import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { assert, expect } from 'chai';
 import fetch from 'cross-fetch';
+import { posix } from 'path';
 import { v4 } from 'uuid';
 import { ArduinoPreferences } from '../../browser/arduino-preferences';
 import { AuthenticationClientService } from '../../browser/auth/authentication-client-service';
@@ -250,6 +251,39 @@ describe('create-api', () => {
       sketch = findByName(name, sketches);
       expect(sketch).to.be.undefined;
     });
+  });
+
+  it("should fetch the sketch when transforming the 'secrets' into '#include' and the sketch is not in the cache", async () => {
+    const name = v4();
+    const posixPath = toPosix(name);
+    const newSketch = await createApi.createSketch(
+      posixPath,
+      'void setup(){} void loop(){}',
+      {
+        secrets: {
+          data: [
+            {
+              name: 'SECRET_THING',
+              value: '❤︎',
+            },
+          ],
+        },
+      }
+    );
+    expect(newSketch).to.be.not.undefined;
+    expect(newSketch.secrets).to.be.not.undefined;
+    expect(Array.isArray(newSketch.secrets)).to.be.true;
+    expect(newSketch.secrets?.length).to.be.equal(1);
+    expect(newSketch.secrets?.[0]).to.be.deep.equal({
+      name: 'SECRET_THING',
+      value: '❤︎',
+    });
+    createApi.sketchCache.init(); // invalidate the cache
+    const content = await createApi.readFile(
+      posix.join(posixPath, `${name}.ino`)
+    );
+    expect(content.includes(`#include "${Create.arduino_secrets_file}"`)).to.be
+      .true;
   });
 });
 

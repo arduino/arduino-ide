@@ -57,6 +57,30 @@ export class CreateApi {
     return result;
   }
 
+  /**
+   * `sketchPath` is not the POSIX path but the path with the user UUID, username, etc.
+   * See [Create.Resource#path](./typings.ts). If `cache` is `true` and a sketch exists with the path,
+   * the cache will be updated with the new state of the sketch.
+   */
+  // TODO: no nulls in API
+  async sketchByPath(
+    sketchPath: string,
+    cache = false
+  ): Promise<Create.Sketch | null> {
+    const url = new URL(`${this.domain()}/sketches/byPath/${sketchPath}`);
+    const headers = await this.headers();
+    const sketch = await this.run<Create.Sketch>(url, {
+      method: 'GET',
+      headers,
+    });
+    if (sketch && cache) {
+      this.sketchCache.addSketch(sketch);
+      const posixPath = createPaths.toPosixPath(sketch.path);
+      this.sketchCache.purgeByPath(posixPath);
+    }
+    return sketch;
+  }
+
   async sketches(limit = 50): Promise<Create.Sketch[]> {
     const url = new URL(`${this.domain()}/sketches`);
     url.searchParams.set('user_id', 'me');
@@ -86,7 +110,11 @@ export class CreateApi {
 
   async createSketch(
     posixPath: string,
-    contentProvider: MaybePromise<string> = this.sketchesService.defaultInoContent()
+    contentProvider: MaybePromise<string> = this.sketchesService.defaultInoContent(),
+    payloadOverride: Record<
+      string,
+      string | boolean | number | Record<string, unknown>
+    > = {}
   ): Promise<Create.Sketch> {
     const url = new URL(`${this.domain()}/sketches`);
     const [headers, content] = await Promise.all([
@@ -97,6 +125,7 @@ export class CreateApi {
       ino: btoa(content),
       path: posixPath,
       user_id: 'me',
+      ...payloadOverride,
     };
     const init = {
       method: 'PUT',
@@ -212,7 +241,17 @@ export class CreateApi {
         return data;
       }
 
-      const sketch = this.sketchCache.getSketch(createPaths.parentPosix(path));
+      const posixPath = createPaths.parentPosix(path);
+      let sketch = this.sketchCache.getSketch(posixPath);
+      // Workaround for https://github.com/arduino/arduino-ide/issues/1999.
+      if (!sketch) {
+        // Convert the ordinary sketch POSIX path to the Create path.
+        // For example, `/sketch_apr6a` will be transformed to `8a694e4b83878cc53472bd75ee928053:kittaakos/sketches_v2/sketch_apr6a`.
+        const createPathPrefix = this.sketchCache.createPathPrefix;
+        if (createPathPrefix) {
+          sketch = await this.sketchByPath(createPathPrefix + posixPath, true);
+        }
+      }
 
       if (
         sketch &&
@@ -448,13 +487,18 @@ export class CreateApi {
     await this.run(url, init, ResponseResultProvider.NOOP);
   }
 
+  private fetchCounter = 0;
   private async run<T>(
     requestInfo: URL,
     init: RequestInit | undefined,
     resultProvider: ResponseResultProvider = ResponseResultProvider.JSON
   ): Promise<T> {
-    console.debug(`HTTP ${init?.method}: ${requestInfo.toString()}`);
+    const fetchCount = `[${++this.fetchCounter}]`;
+    const fetchStart = performance.now();
+    const method = init?.method ? `${init.method}: ` : '';
+    const url = requestInfo.toString();
     const response = await fetch(requestInfo.toString(), init);
+    const fetchEnd = performance.now();
     if (!response.ok) {
       let details: string | undefined = undefined;
       try {
@@ -465,7 +509,18 @@ export class CreateApi {
       const { statusText, status } = response;
       throw new CreateError(statusText, status, details);
     }
+    const parseStart = performance.now();
     const result = await resultProvider(response);
+    const parseEnd = performance.now();
+    console.debug(
+      `HTTP ${fetchCount} ${method} ${url} [fetch: ${(
+        fetchEnd - fetchStart
+      ).toFixed(2)} ms, parse: ${(parseEnd - parseStart).toFixed(
+        2
+      )} ms] body: ${
+        typeof result === 'string' ? result : JSON.stringify(result)
+      }`
+    );
     return result;
   }
 
