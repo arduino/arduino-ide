@@ -7,6 +7,9 @@
 - name: "topic: CLI"
   color: "00ffff"
   description: Related to Arduino CLI
+- name: "topic: cloud"
+  color: "00ffff"
+  description: Related to Arduino Cloud and cloud sketches
 - name: "topic: debugger"
   color: "00ffff"
   description: Related to the integrated debugger
