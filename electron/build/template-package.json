@@ -2,7 +2,8 @@
   "main": "scripts/arduino-ide-electron-main.js",
   "author": "Arduino SA",
   "resolutions": {
-    "**/fs-extra": "^4.0.3"
+    "**/fs-extra": "^4.0.3",
+    "nsfw": "^2.2.4"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
