@@ -104,6 +104,7 @@ jobs:
           if [ "${{ runner.OS }}" = "Windows" ]; then
             npm config set msvs_version 2017 --global
           fi
+          npx node-gyp install
           yarn --cwd ./electron/packager/
           yarn --cwd ./electron/packager/ package
 

@@ -9,13 +9,15 @@
   "engines": {
     "node": ">=16.0.0 <17"
   },
+  "resolutions": {
+    "nsfw": "^2.2.4"
+  },
   "devDependencies": {
     "@theia/cli": "1.31.1",
     "@types/jsdom": "^11.0.4",
     "@types/sinon": "^2.3.5",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "@typescript-eslint/parser": "^4.27.0",
-    "cross-env": "^7.0.2",
     "eslint": "^7.28.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
@@ -27,6 +29,7 @@
     "jsdom": "^11.5.1",
     "lerna": "^6.1.0",
     "lint-staged": "^11.0.0",
+    "node-gyp": "^9.3.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^2.6.1",
