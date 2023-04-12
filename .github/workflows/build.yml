@@ -42,8 +42,8 @@ jobs:
           - os: windows-2019
             certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
             certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
-            certificate-extension: pfx  # File extension for the certificate.
-          - os: ubuntu-18.04 # https://github.com/arduino/arduino-ide/issues/259
+            certificate-extension: pfx # File extension for the certificate.
+          - os: ubuntu-latest
           - os: macos-latest
             # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
             # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
@@ -104,7 +104,6 @@ jobs:
           if [ "${{ runner.OS }}" = "Windows" ]; then
             npm config set msvs_version 2017 --global
           fi
-          npx node-gyp install
           yarn --cwd ./electron/packager/
           yarn --cwd ./electron/packager/ package
 

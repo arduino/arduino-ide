@@ -261,10 +261,6 @@ ${fs
       `yarn --cwd ${join(repoRoot, 'electron', 'build')} build`,
       `Building the ${productName} application`
     );
-    exec(
-      `yarn --cwd ${join(repoRoot, 'electron', 'build')} rebuild`,
-      'Rebuilding native dependencies'
-    );
 
     //------------------------------------------------------------------------------+
     // Create a throw away dotenv file which we use to feed the builder with input. |
