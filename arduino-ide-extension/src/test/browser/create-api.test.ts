@@ -1,4 +1,8 @@
-import { Container, ContainerModule } from '@theia/core/shared/inversify';
+import {
+  Container,
+  ContainerModule,
+  injectable,
+} from '@theia/core/shared/inversify';
 import { assert, expect } from 'chai';
 import fetch from 'cross-fetch';
 import { posix } from 'path';
@@ -19,13 +23,14 @@ import queryString = require('query-string');
 const timeout = 60 * 1_000;
 
 describe('create-api', () => {
-  let createApi: CreateApi;
+  let createApi: TestCreateApi;
 
   before(async function () {
     this.timeout(timeout);
     try {
       const accessToken = await login();
-      createApi = createContainer(accessToken).get<CreateApi>(CreateApi);
+      createApi =
+        createContainer(accessToken).get<TestCreateApi>(TestCreateApi);
     } catch (err) {
       if (err instanceof LoginFailed) {
         return this.skip();
@@ -43,7 +48,7 @@ describe('create-api', () => {
     const container = new Container({ defaultScope: 'Singleton' });
     container.load(
       new ContainerModule((bind) => {
-        bind(CreateApi).toSelf().inSingletonScope();
+        bind(TestCreateApi).toSelf().inSingletonScope();
         bind(SketchCache).toSelf().inSingletonScope();
         bind(AuthenticationClientService).toConstantValue(<
           AuthenticationClientService
@@ -224,6 +229,47 @@ describe('create-api', () => {
     expect(findByName(otherName, sketches)).to.be.not.undefined;
   });
 
+  [
+    [-1, 1],
+    [0, 2],
+    [1, 2],
+  ].forEach(([diff, expected]) =>
+    it(`should not run unnecessary fetches when retrieving all sketches (sketch count ${
+      diff < 0 ? '<' : diff > 0 ? '>' : '='
+    } limit)`, async () => {
+      const content = 'void setup(){} void loop(){}';
+      const maxLimit = 50; // https://github.com/arduino/arduino-ide/pull/875
+      const sketchCount = maxLimit + diff;
+      const sketchNames = [...Array(sketchCount).keys()].map(() => v4());
+
+      await sketchNames
+        .map((name) => createApi.createSketch(toPosix(name), content))
+        .reduce(async (acc, curr) => {
+          await acc;
+          return curr;
+        }, Promise.resolve() as Promise<unknown>);
+
+      createApi.resetRequestRecording();
+      const sketches = await createApi.sketches();
+      const allRequests = createApi.requestRecording.slice();
+
+      expect(sketches.length).to.be.equal(sketchCount);
+      sketchNames.forEach(
+        (name) => expect(findByName(name, sketches)).to.be.not.undefined
+      );
+
+      expect(allRequests.length).to.be.equal(expected);
+      const getSketchesRequests = allRequests.filter(
+        (description) =>
+          description.method === 'GET' &&
+          description.pathname === '/create/v2/sketches' &&
+          description.query &&
+          description.query.includes(`limit=${maxLimit}`)
+      );
+      expect(getSketchesRequests.length).to.be.equal(expected);
+    })
+  );
+
   ['.', '-', '_'].map((char) => {
     it(`should create a new sketch with '${char}' in the sketch folder name although it's disallowed from the Create Editor`, async () => {
       const name = `sketch${char}`;
@@ -331,4 +377,45 @@ class LoginFailed extends Error {
     super(message);
     Object.setPrototypeOf(this, LoginFailed.prototype);
   }
+}
+
+@injectable()
+class TestCreateApi extends CreateApi {
+  private _recording: RequestDescription[] = [];
+
+  constructor() {
+    super();
+    const originalRun = this['run'];
+    this['run'] = (url, init, resultProvider) => {
+      this._recording.push(createRequestDescription(url, init));
+      return originalRun.bind(this)(url, init, resultProvider);
+    };
+  }
+
+  resetRequestRecording(): void {
+    this._recording = [];
+  }
+
+  get requestRecording(): RequestDescription[] {
+    return this._recording;
+  }
+}
+
+interface RequestDescription {
+  readonly origin: string;
+  readonly pathname: string;
+  readonly query?: string;
+
+  readonly method?: string | undefined;
+  readonly serializedBody?: string | undefined;
+}
+
+function createRequestDescription(
+  url: URL,
+  init?: RequestInit | undefined
+): RequestDescription {
+  const { origin, pathname, search: query } = url;
+  const method = init?.method;
+  const serializedBody = init?.body?.toString();
+  return { origin, pathname, query, method, serializedBody };
 }
