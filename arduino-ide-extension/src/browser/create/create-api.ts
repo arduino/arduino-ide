@@ -86,26 +86,25 @@ export class CreateApi {
     url.searchParams.set('user_id', 'me');
     url.searchParams.set('limit', limit.toString());
     const headers = await this.headers();
-    const result: { sketches: Create.Sketch[] } = { sketches: [] };
-
-    let partialSketches: Create.Sketch[] = [];
+    const allSketches: Create.Sketch[] = [];
     let currentOffset = 0;
-    do {
+    while (true) {
       url.searchParams.set('offset', currentOffset.toString());
-      partialSketches = (
-        await this.run<{ sketches: Create.Sketch[] }>(url, {
-          method: 'GET',
-          headers,
-        })
-      ).sketches;
-      if (partialSketches.length !== 0) {
-        result.sketches = result.sketches.concat(partialSketches);
+      const { sketches } = await this.run<{ sketches: Create.Sketch[] }>(url, {
+        method: 'GET',
+        headers,
+      });
+      allSketches.push(...sketches);
+      if (sketches.length < limit) {
+        break;
       }
-      currentOffset = currentOffset + limit;
-    } while (partialSketches.length !== 0);
-
-    result.sketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
-    return result.sketches;
+      currentOffset += limit;
+      // The create API doc show that there is `next` and `prev` pages, but it does not work
+      // https://api2.arduino.cc/create/docs#!/sketches95v2/sketches_v2_search
+      // IF sketchCount mod limit === 0, an extra fetch must happen to detect the end of the pagination.
+    }
+    allSketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
+    return allSketches;
   }
 
   async createSketch(
