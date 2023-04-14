@@ -41,7 +41,10 @@ import {
 } from '../common/protocol/arduino-daemon';
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
+import {
+  ConfigDirUriProvider,
+  EnvVariablesServer,
+} from './theia/env-variables/env-variables-server';
 import { NodeFileSystemExt } from './node-filesystem-ext';
 import {
   FileSystemExt,
@@ -236,6 +239,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(DefaultWorkspaceServer).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceServer).toService(DefaultWorkspaceServer);
 
+  bind(ConfigDirUriProvider).toSelf().inSingletonScope();
   bind(EnvVariablesServer).toSelf().inSingletonScope();
   rebind(TheiaEnvVariablesServer).toService(EnvVariablesServer);
 

@@ -2,22 +2,16 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { LibrarySearch, LibraryService } from '../../common/protocol';
-import { LibraryServiceImpl } from '../../node/library-service-impl';
-import {
-  configureBackendApplicationConfigProvider,
-  createBaseContainer,
-  startDaemon,
-} from './test-bindings';
+import { createBaseContainer, startDaemon } from './test-bindings';
 
 describe('library-service-impl', () => {
   let libraryService: LibraryService;
   let toDispose: DisposableCollection;
 
   before(async function () {
-    configureBackendApplicationConfigProvider();
     this.timeout(20_000);
     toDispose = new DisposableCollection();
-    const container = createContainer();
+    const container = await createContainer();
     await start(container, toDispose);
     libraryService = container.get<LibraryService>(LibraryService);
   });
@@ -72,11 +66,8 @@ describe('library-service-impl', () => {
   });
 });
 
-function createContainer(): Container {
-  return createBaseContainer((bind) => {
-    bind(LibraryServiceImpl).toSelf().inSingletonScope();
-    bind(LibraryService).toService(LibraryServiceImpl);
-  });
+async function createContainer(): Promise<Container> {
+  return createBaseContainer();
 }
 
 async function start(

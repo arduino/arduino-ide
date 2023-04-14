@@ -530,7 +530,6 @@ function isPrimaryPackageIndexMissingStatus(
   { directories: { data } }: DefaultCliConfig
 ): boolean {
   const predicate = ({ message }: RpcStatus.AsObject) =>
-    message.includes('loading json index file') &&
     message.includes(join(data, 'package_index.json'));
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
   return evaluate(status, predicate);
@@ -551,8 +550,6 @@ function isLibraryIndexMissingStatus(
   { directories: { data } }: DefaultCliConfig
 ): boolean {
   const predicate = ({ message }: RpcStatus.AsObject) =>
-    message.includes('index file') &&
-    message.includes('reading') &&
     message.includes(join(data, 'library_index.json'));
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
   return evaluate(status, predicate);
