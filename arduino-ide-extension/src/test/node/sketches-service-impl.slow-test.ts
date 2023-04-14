@@ -11,11 +11,7 @@ import { sync as rimrafSync } from 'rimraf';
 import { Sketch, SketchesService } from '../../common/protocol';
 import { SketchesServiceImpl } from '../../node/sketches-service-impl';
 import { ErrnoException } from '../../node/utils/errors';
-import {
-  configureBackendApplicationConfigProvider,
-  createBaseContainer,
-  startDaemon,
-} from './test-bindings';
+import { createBaseContainer, startDaemon } from './test-bindings';
 
 const testTimeout = 10_000;
 
@@ -24,9 +20,8 @@ describe('sketches-service-impl', () => {
   let toDispose: DisposableCollection;
 
   before(async () => {
-    configureBackendApplicationConfigProvider();
     toDispose = new DisposableCollection();
-    container = createContainer();
+    container = await createContainer();
     await start(container, toDispose);
   });
 
@@ -257,6 +252,6 @@ async function start(
   await startDaemon(container, toDispose);
 }
 
-function createContainer(): Container {
+async function createContainer(): Promise<Container> {
   return createBaseContainer();
 }

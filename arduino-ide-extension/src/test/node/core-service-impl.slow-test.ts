@@ -10,11 +10,7 @@ import {
   CoreService,
   SketchesService,
 } from '../../common/protocol';
-import {
-  configureBackendApplicationConfigProvider,
-  createBaseContainer,
-  startDaemon,
-} from './test-bindings';
+import { createBaseContainer, startDaemon } from './test-bindings';
 
 const testTimeout = 30_000;
 const setupTimeout = 5 * 60 * 1_000; // five minutes
@@ -25,14 +21,10 @@ describe('core-service-impl', () => {
   let container: Container;
   let toDispose: DisposableCollection;
 
-  before(() => {
-    configureBackendApplicationConfigProvider();
-  });
-
   beforeEach(async function () {
     this.timeout(setupTimeout);
     toDispose = new DisposableCollection();
-    container = createContainer();
+    container = await createContainer();
     await start(container, toDispose);
   });
 
@@ -97,10 +89,12 @@ async function start(
   });
 }
 
-function createContainer(): Container {
-  return createBaseContainer((bind) => {
-    bind(TestCommandRegistry).toSelf().inSingletonScope();
-    bind(CommandRegistry).toService(TestCommandRegistry);
+async function createContainer(): Promise<Container> {
+  return createBaseContainer({
+    additionalBindings: (bind, rebind) => {
+      bind(TestCommandRegistry).toSelf().inSingletonScope();
+      rebind(CommandRegistry).toService(TestCommandRegistry);
+    },
   });
 }
 

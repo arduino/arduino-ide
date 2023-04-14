@@ -513,7 +513,7 @@ export class CreateApi {
     const result = await resultProvider(response);
     const parseEnd = performance.now();
     console.debug(
-      `HTTP ${fetchCount} ${method} ${url} [fetch: ${(
+      `HTTP ${fetchCount} ${method}${url} [fetch: ${(
         fetchEnd - fetchStart
       ).toFixed(2)} ms, parse: ${(parseEnd - parseStart).toFixed(
         2

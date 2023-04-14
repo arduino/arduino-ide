@@ -68,7 +68,7 @@
     "cpy": "^8.1.2",
     "cross-fetch": "^3.1.5",
     "dateformat": "^3.0.3",
-    "deepmerge": "2.0.1",
+    "deepmerge": "^4.2.2",
     "electron-updater": "^4.6.5",
     "fast-json-stable-stringify": "^2.1.0",
     "fast-safe-stringify": "^2.1.1",

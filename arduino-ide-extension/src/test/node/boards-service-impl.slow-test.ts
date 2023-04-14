@@ -2,21 +2,16 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { BoardSearch, BoardsService } from '../../common/protocol';
-import {
-  configureBackendApplicationConfigProvider,
-  createBaseContainer,
-  startDaemon,
-} from './test-bindings';
+import { createBaseContainer, startDaemon } from './test-bindings';
 
 describe('boards-service-impl', () => {
   let boardService: BoardsService;
   let toDispose: DisposableCollection;
 
   before(async function () {
-    configureBackendApplicationConfigProvider();
     this.timeout(20_000);
     toDispose = new DisposableCollection();
-    const container = createContainer();
+    const container = await createContainer();
     await start(container, toDispose);
     boardService = container.get<BoardsService>(BoardsService);
   });
@@ -94,7 +89,7 @@ describe('boards-service-impl', () => {
   });
 });
 
-function createContainer(): Container {
+async function createContainer(): Promise<Container> {
   return createBaseContainer();
 }
 

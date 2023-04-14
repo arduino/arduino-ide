@@ -13,13 +13,20 @@ import { ILogger, Loggable } from '@theia/core/lib/common/logger';
 import { LogLevel } from '@theia/core/lib/common/logger-protocol';
 import { waitForEvent } from '@theia/core/lib/common/promise-util';
 import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
-import { BackendApplicationConfigProvider } from '@theia/core/lib/node/backend-application-config-provider';
+import URI from '@theia/core/lib/common/uri';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import { ProcessUtils } from '@theia/core/lib/node/process-utils';
 import {
   Container,
   ContainerModule,
   injectable,
   interfaces,
 } from '@theia/core/shared/inversify';
+import * as deepmerge from 'deepmerge';
+import { promises as fs, mkdirSync } from 'fs';
+import { dump as dumpYaml } from 'js-yaml';
+import { join } from 'path';
+import { path as tempPath, track } from 'temp';
 import {
   ArduinoDaemon,
   AttachedBoardsChangeEvent,
@@ -33,6 +40,7 @@ import {
   IndexUpdateDidFailParams,
   IndexUpdateParams,
   LibraryPackage,
+  LibraryService,
   NotificationServiceClient,
   NotificationServiceServer,
   OutputMessage,
@@ -44,10 +52,12 @@ import {
 import { ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
 import { BoardDiscovery } from '../../node/board-discovery';
 import { BoardsServiceImpl } from '../../node/boards-service-impl';
+import { CLI_CONFIG, CliConfig, DefaultCliConfig } from '../../node/cli-config';
 import { ConfigServiceImpl } from '../../node/config-service-impl';
 import { CoreClientProvider } from '../../node/core-client-provider';
 import { CoreServiceImpl } from '../../node/core-service-impl';
 import { IsTempSketch } from '../../node/is-temp-sketch';
+import { LibraryServiceImpl } from '../../node/library-service-impl';
 import { MonitorManager } from '../../node/monitor-manager';
 import { MonitorService } from '../../node/monitor-service';
 import {
@@ -56,7 +66,12 @@ import {
 } from '../../node/monitor-service-factory';
 import { SettingsReader } from '../../node/settings-reader';
 import { SketchesServiceImpl } from '../../node/sketches-service-impl';
-import { EnvVariablesServer } from '../../node/theia/env-variables/env-variables-server';
+import {
+  ConfigDirUriProvider,
+  EnvVariablesServer,
+} from '../../node/theia/env-variables/env-variables-server';
+
+const tracked = track();
 
 @injectable()
 class ConsoleLogger extends MockLogger {
@@ -234,12 +249,64 @@ class TestResponseService implements ResponseService {
   }
 }
 
-export function createBaseContainer(
-  containerCustomizations?: (
+class TestConfigDirUriProvider extends ConfigDirUriProvider {
+  constructor(private readonly configDirPath: string) {
+    super();
+  }
+
+  override configDirUri(): URI {
+    return FileUri.create(this.configDirPath);
+  }
+}
+
+function shouldKeepTestFolder(): boolean {
+  return (
+    typeof process.env.ARDUINO_IDE__KEEP_TEST_FOLDER === 'string' &&
+    /true/i.test(process.env.ARDUINO_IDE__KEEP_TEST_FOLDER)
+  );
+}
+
+export function newTempConfigDirPath(
+  prefix = 'arduino-ide--slow-tests'
+): string {
+  let tempDirPath;
+  if (shouldKeepTestFolder()) {
+    tempDirPath = tempPath(prefix);
+    mkdirSync(tempDirPath, { recursive: true });
+    console.log(
+      `Detected ARDUINO_IDE__KEEP_TEST_FOLDER=true, keeping temporary test configuration folders: ${tempDirPath}`
+    );
+  } else {
+    tempDirPath = tracked.mkdirSync();
+  }
+  return join(tempDirPath, '.testArduinoIDE');
+}
+
+interface CreateBaseContainerParams {
+  readonly cliConfig?: CliConfig | (() => Promise<CliConfig>);
+  readonly configDirPath?: string;
+  readonly additionalBindings?: (
     bind: interfaces.Bind,
     rebind: interfaces.Rebind
-  ) => void
-): Container {
+  ) => void;
+}
+
+export async function createBaseContainer(
+  params?: CreateBaseContainerParams
+): Promise<Container> {
+  const configDirUriProvider = new TestConfigDirUriProvider(
+    params?.configDirPath || newTempConfigDirPath()
+  );
+  if (params?.cliConfig) {
+    const config =
+      typeof params.cliConfig === 'function'
+        ? await params.cliConfig()
+        : params.cliConfig;
+    await writeCliConfigFile(
+      FileUri.fsPath(configDirUriProvider.configDirUri()),
+      config
+    );
+  }
   const container = new Container({ defaultScope: 'Singleton' });
   const module = new ContainerModule((bind, unbind, isBound, rebind) => {
     bind(CoreClientProvider).toSelf().inSingletonScope();
@@ -263,6 +330,7 @@ export function createBaseContainer(
           return child.get<MonitorService>(MonitorService);
         }
     );
+    bind(ConfigDirUriProvider).toConstantValue(configDirUriProvider);
     bind(EnvVariablesServer).toSelf().inSingletonScope();
     bind(TheiaEnvVariablesServer).toService(EnvVariablesServer);
     bind(SilentArduinoDaemon).toSelf().inSingletonScope();
@@ -274,6 +342,7 @@ export function createBaseContainer(
     bind(NotificationServiceServer).toService(TestNotificationServiceServer);
     bind(ConfigServiceImpl).toSelf().inSingletonScope();
     bind(ConfigService).toService(ConfigServiceImpl);
+    bind(CommandRegistry).toSelf().inSingletonScope();
     bind(CommandService).toService(CommandRegistry);
     bindContributionProvider(bind, CommandContribution);
     bind(TestBoardDiscovery).toSelf().inSingletonScope();
@@ -282,12 +351,46 @@ export function createBaseContainer(
     bind(SketchesServiceImpl).toSelf().inSingletonScope();
     bind(SketchesService).toService(SketchesServiceImpl);
     bind(SettingsReader).toSelf().inSingletonScope();
-    if (containerCustomizations) {
-      containerCustomizations(bind, rebind);
-    }
+    bind(LibraryServiceImpl).toSelf().inSingletonScope();
+    bind(LibraryService).toService(LibraryServiceImpl);
+    bind(ProcessUtils).toSelf().inSingletonScope();
+    params?.additionalBindings?.(bind, rebind);
   });
   container.load(module);
   return container;
+}
+
+async function writeCliConfigFile(
+  containerFolderPath: string,
+  cliConfig: CliConfig
+): Promise<void> {
+  await fs.mkdir(containerFolderPath, { recursive: true });
+  const yaml = dumpYaml(cliConfig);
+  const cliConfigPath = join(containerFolderPath, CLI_CONFIG);
+  await fs.writeFile(cliConfigPath, yaml);
+  console.debug(`Created CLI configuration file at ${cliConfigPath}:
+${yaml}
+`);
+}
+
+export async function createCliConfig(
+  configDirPath: string,
+  configOverrides: Partial<DefaultCliConfig> = {}
+): Promise<DefaultCliConfig> {
+  const directories = {
+    data: join(configDirPath, 'data', 'Arduino15'),
+    downloads: join(configDirPath, 'data', 'Arduino15', 'staging'),
+    builtin: join(configDirPath, 'data', 'Arduino15', 'libraries'),
+    user: join(configDirPath, 'user', 'Arduino'),
+  };
+  for (const directoryPath of Object.values(directories)) {
+    await fs.mkdir(directoryPath, { recursive: true });
+  }
+  const config = { directories };
+  const mergedOverrides = deepmerge(configOverrides, <DefaultCliConfig>{
+    logging: { level: 'trace' },
+  });
+  return deepmerge(config, mergedOverrides);
 }
 
 export async function startDaemon(
@@ -311,20 +414,5 @@ export async function startDaemon(
   ]);
   if (startCustomizations) {
     await startCustomizations(container, toDispose);
-  }
-}
-
-export function configureBackendApplicationConfigProvider(): void {
-  try {
-    BackendApplicationConfigProvider.get();
-  } catch (err) {
-    if (
-      err instanceof Error &&
-      err.message.includes('BackendApplicationConfigProvider#set')
-    ) {
-      BackendApplicationConfigProvider.set({
-        configDirName: '.testArduinoIDE',
-      });
-    }
   }
 }

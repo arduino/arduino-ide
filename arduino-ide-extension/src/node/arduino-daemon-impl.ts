@@ -16,6 +16,7 @@ import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { CLI_CONFIG } from './cli-config';
 import { getExecPath } from './exec-util';
 import { SettingsReader } from './settings-reader';
+import { ProcessUtils } from '@theia/core/lib/node/process-utils';
 
 @injectable()
 export class ArduinoDaemonImpl
@@ -33,6 +34,9 @@ export class ArduinoDaemonImpl
 
   @inject(SettingsReader)
   private readonly settingsReader: SettingsReader;
+
+  @inject(ProcessUtils)
+  private readonly processUtils: ProcessUtils;
 
   private readonly toDispose = new DisposableCollection();
   private readonly onDaemonStartedEmitter = new Emitter<string>();
@@ -84,8 +88,16 @@ export class ArduinoDaemonImpl
       ).unref();
 
       this.toDispose.pushAll([
-        Disposable.create(() => daemon.kill()),
-        Disposable.create(() => this.fireDaemonStopped()),
+        Disposable.create(() => {
+          if (daemon.pid) {
+            this.processUtils.terminateProcessTree(daemon.pid);
+            this.fireDaemonStopped();
+          } else {
+            throw new Error(
+              'The CLI Daemon process does not have a PID. IDE2 could not stop the CLI daemon.'
+            );
+          }
+        }),
       ]);
       this.fireDaemonStarted(port);
       this.onData('Daemon is running.');
