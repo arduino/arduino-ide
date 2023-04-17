@@ -4,6 +4,12 @@
       "detail": "バージョン：{0}\n日付：{1}{2}\nCLIバージョン：{3}\n\n{4}",
       "label": "{0}について"
     },
+    "account": {
+      "goToCloudEditor": "クラウドエディターへ移動",
+      "goToIoTCloud": "IoTクラウドへ移動",
+      "goToProfile": "プロファイルへ移動",
+      "menuTitle": "Arduinoクラウド"
+    },
     "board": {
       "board": "ボード{0}",
       "boardConfigDialogTitle": "他のボードとポートを選択",
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse'が見つかりません。スケッチに'#include <Mouse.h>'という行はありますか？"
     },
     "cloud": {
-      "account": "アカウント",
       "chooseSketchVisibility": "スケッチの可視性を選択:",
       "cloudSketchbook": "クラウドスケッチブック",
       "connected": "接続済み",
       "continue": "続ける",
-      "donePulling": "‘{0}’のプルが完了しました。",
-      "donePushing": "‘{0}’のプッシュが完了しました。",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "埋め込み:",
       "emptySketchbook": "スケッチブックは空です",
       "goToCloud": "クラウドへ",
@@ -97,7 +102,7 @@
       "link": "リンク:",
       "notYetPulled": "クラウドにプッシュできません。まだプルされていません。",
       "offline": "オフライン",
-      "openInCloudEditor": "クラウドエディタで開く",
+      "openInCloudEditor": "クラウドエディターで開く",
       "options": "オプション…",
       "privateVisibility": "プライベート：スケッチを見られるのは自分だけです。",
       "profilePicture": "プロフィール画像",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "このパッケージに含まれるボード:",
       "by": "by",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "検索をフィルタ…",
       "install": "インストール",
-      "installed": "インストール済み",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
       "moreInfo": "詳細情報",
+      "otherVersions": "Other Versions",
+      "remove": "削除",
+      "title": "{0} by {1}",
       "uninstall": "アンインストール",
       "uninstallMsg": "{0}をアンインストールしますか？",
-      "version": "バージョン{0}"
+      "update": "Update"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "'{0}': {1}にあるスケッチブックにアクセスできませんでした"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
       "addFile": "ファイルを追加...",
@@ -188,6 +202,7 @@
       "copyError": "エラーメッセージをコピー",
       "noBoardSelected": "ボードが選択されていません。ツール > ボードメニューからArduinoボードを選択してください。"
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "Daemonを再起動",
       "start": "Daemonを開始",
@@ -216,7 +231,7 @@
       "revealError": "エラーを表示"
     },
     "electron": {
-      "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディタにコピーして、IDEを再起動してください。",
+      "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディターにコピーして、IDEを再起動してください。",
       "unsavedChanges": "未保存の変更は保存されません。"
     },
     "examples": {
@@ -313,6 +328,13 @@
       "tools": "ツール"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "websocketを閉じることができません",
       "unableToConnectToWebSocket": "websocketに接続することができません"
     },
@@ -353,7 +375,7 @@
       "ide.updateBaseUrl": "アップデートをダウンロードするためのベースURL。デフォルトは 'https://downloads.arduino.cc/arduino-ide' です。",
       "ide.updateChannel": "アップデート元のリリースチャンネル。stableは安定版リリース、nightlyは最新の開発用ビルドです。",
       "interfaceScale": "インターフェイスのスケール",
-      "invalid.editorFontSize": "エディタのフォントサイズが無効です。正の整数でなければなりません。",
+      "invalid.editorFontSize": "エディターのフォントサイズが無効です。正の整数でなければなりません。",
       "invalid.sketchbook.location": "スケッチブックの場所が無効です: {0}",
       "invalid.theme": "無効なテーマです。",
       "language.log": "Arduino Language Serverがスケッチフォルダにログファイルを生成した方がよい場合はtrue。それ以外はfalse。デフォルトではfalse。",
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "自動スクロール",
       "carriageReturn": "CRのみ",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "メッセージ（'{1}'の{0}にメッセージを送信するにはEnter）",
       "newLine": "LFのみ",
       "newLineCarriageReturn": "CRおよびLF",
@@ -414,11 +437,11 @@
       "editInvalidSketchFolderLocationQuestion": "スケッチを別の場所に保存してみますか？",
       "editInvalidSketchFolderQuestion": "スケッチを別の名前で保存しますか？",
       "exportBinary": "コンパイル済みバイナリをエクスポート",
-      "invalidCloudSketchName": "名前は、文字または数字で始まり、文字、数字、ダッシュ、ドット、アンダースコアが続く必要があります。最大文字数は36文字です。",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
       "invalidSketchFolderLocationDetails": "スケッチは、それ自身の中のフォルダに保存することはできません。",
       "invalidSketchFolderLocationMessage": "無効なスケッチフォルダの場所：'{0}'。",
       "invalidSketchFolderNameMessage": "スケッチフォルダの名前が無効です：'{0}'",
-      "invalidSketchName": "名前は、文字または数字で始まり、文字、数字、ダッシュ、ドット、アンダースコアが続く必要があります。最大文字数は63文字です。",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "移動",
       "movingMsg": "ファイル\"{0}\"は、\"{1}\"という名前のスケッチフォルダの中にあることが必要です。\nこのフォルダを作成し、ファイルを移動させ、継続しますか？",
       "new": "新規スケッチ",
@@ -451,6 +474,17 @@
       "dismissSurvey": "次回から表示しない",
       "surveyMessage": "とても簡単なアンケートに答えて、私たちの改善にご協力ください。私たちはコミュニティを大切にしており、サポーターのことをもう少しよく知りたいのです。"
     },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
     "updateIndexes": {
       "updateIndexes": "インデックスを更新",
       "updateLibraryIndex": "ライブラリのインデックスを更新",
@@ -480,9 +514,10 @@
     "core": {
       "cannotConnectBackend": "バックエンドに接続できません。",
       "cannotConnectDaemon": "CLI daemonに接続できません。",
-      "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディタにコピーして、IDEを再起動してください。",
+      "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディターにコピーして、IDEを再起動してください。",
       "daemonOffline": "CLI Daemonはオフラインです",
       "offline": "オフライン",
+      "offlineText": "オフライン",
       "quitTitle": "本当に終了しますか？"
     },
     "editor": {

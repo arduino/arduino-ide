@@ -4,6 +4,12 @@
       "detail": "Versió: {0}\nData: {1}{2}\nVersió de CLI: {3}{4} [{5}]\n\n{6}",
       "label": "Sobre{0}"
     },
+    "account": {
+      "goToCloudEditor": "Ves a l'editor del núvol",
+      "goToIoTCloud": "Ves al núvol de l'IoT",
+      "goToProfile": "Ves al perfil",
+      "menuTitle": "Núvol d'Arduino"
+    },
     "board": {
       "board": "Placa {0}",
       "boardConfigDialogTitle": "Selecciona una altra placa i port",
@@ -83,13 +89,12 @@
       "mouseError": "No s'ha trobat \"Mouse\". El teu programa té la línia \"#include <Mouse.h>\"?"
     },
     "cloud": {
-      "account": "Compte",
       "chooseSketchVisibility": "Trieu la visibilitat del vostre programa:",
       "cloudSketchbook": "Quadern de programes del núvol",
       "connected": "Connectat",
       "continue": "Continua",
       "donePulling": "Descarregat correctament \"{0}\".",
-      "donePushing": "Enviat correctament \"{0}\".",
+      "donePushing": "Pujat correctament \"{0}\".",
       "embed": "Encasta:",
       "emptySketchbook": "El teu quadern de programes està buit",
       "goToCloud": "Ves al núvol",
@@ -112,7 +117,7 @@
       "remote": "Remot",
       "share": "Comparteix...",
       "shareSketch": "Comparteix programa...",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "Mostra/Amaga el quadern de programes del núvol",
       "signIn": "Inicia sessió",
       "signInToCloud": "Inicia la sessió a Arduino Cloud",
       "signOut": "Tanca sessió",
@@ -121,14 +126,14 @@
       "visitArduinoCloud": "Visiteu Arduino Cloud per crear programes al núvol."
     },
     "cloudSketch": {
-      "alreadyExists": "Cloud sketch '{0}' already exists.",
-      "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
-      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "alreadyExists": "El programa del núvol \"{0}\" ja existeix.",
+      "creating": "Creant programa al núvol \"{0}\"...",
+      "new": "Programa al núvol nou",
+      "notFound": "No s'ha pogut baixar el programa del núvol \"{0}\". No existeix.",
       "pulling": "Sincronitzant quadern de programes, descarregant \"{0}\"...",
-      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
-      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
-      "synchronizingSketchbook": "Synchronizing sketchbook..."
+      "pushing": "Sincronitzant el quadern de programes, pujant \"{0}\"...",
+      "renaming": "Reanomenant el programa del núvol de \"{0}\" a \"{1}\"...",
+      "synchronizingSketchbook": "Sincronitzant el quadern de programes..."
     },
     "common": {
       "all": "Tot",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Plaques incloses al paquet:",
       "by": "per",
+      "clickToOpen": "Fes clic per obrir-ho al navegador: {0}",
       "filterSearch": "Filtra la teva cerca...",
       "install": "Instal·la",
-      "installed": "Instal·lat",
+      "installLatest": "Instal·la l'última",
+      "installVersion": "Instal·la {0}",
+      "installed": "{0} instal·lada",
       "moreInfo": "Més informació",
+      "otherVersions": "Altres versions",
+      "remove": "Elimina",
+      "title": "{0} en {1}",
       "uninstall": "Desinstal·la",
       "uninstallMsg": "Vols desinstal·lar {0}?",
-      "version": "Versió {0}"
+      "update": "Actualitza"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "No s'ha pogut accedir a la ubicació del quadern de programes a \"{0}\": {1}"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connexió perduda. Les accions i actualitzacions del programa del núvol no estaran disponibles."
     },
     "contributions": {
       "addFile": "Afegeix un fitxer",
@@ -188,6 +202,7 @@
       "copyError": "Còpia els missatges d'error",
       "noBoardSelected": "No s'ha seleccionat cap placa. Tria una placa Arduino des d'Eines > Plaques"
     },
+    "createCloudCopy": "Puja el programa al núvol",
     "daemon": {
       "restart": "Reinicia el servei",
       "start": "Inicia el servei",
@@ -313,11 +328,18 @@
       "tools": "Eines"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "No s'ha pogut tancar la ranura web",
       "unableToConnectToWebSocket": "No s'ha pogut connectar a la ranura web"
     },
     "newCloudSketch": {
-      "newSketchTitle": "Name of the new Cloud Sketch"
+      "newSketchTitle": "Nom del nou programa del núvol"
     },
     "portProtocol": {
       "network": "Xarxa",
@@ -386,13 +408,14 @@
       }
     },
     "renameCloudSketch": {
-      "renameSketchTitle": "New name of the Cloud Sketch"
+      "renameSketchTitle": "Nou nom del programa del núvol"
     },
     "replaceMsg": "Substitueix la versió existent de {0}?",
     "selectZip": "Seleccioneu un fitxer zip que contingui la llibreria que voleu afegir",
     "serial": {
       "autoscroll": "Desplaçament automàtic",
       "carriageReturn": "Retorn de carro",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "Missatge (escriu per enviar un missatge a \"{0}\" en \"{1}\")",
       "newLine": "Línia nova",
       "newLineCarriageReturn": "Ambdós NL & CR",
@@ -411,22 +434,22 @@
       "createdArchive": "S'ha creat l'arxiu \"{0}\".",
       "doneCompiling": "Compilació enllestida.",
       "doneUploading": "Pujada enllestida.",
-      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
-      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "editInvalidSketchFolderLocationQuestion": "Vols provar guardant el programa en una ubicació diferent?",
+      "editInvalidSketchFolderQuestion": "Vols provar guardant el programa amb un nom diferent?",
       "exportBinary": "Exporta el binari compilat",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
-      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
-      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
-      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidCloudSketchName": "El nom ha de començar amb una lletra, un número o una barra baixa, seguit per lletres, números, guions, punts i barres baixes. La llargària màxima és de 36 caràcters.",
+      "invalidSketchFolderLocationDetails": "No pots guardar un programa en una carpeta dins d'ell mateix.",
+      "invalidSketchFolderLocationMessage": "La carpeta d'ubicació del programa no és vàlida: \"{0}\"",
+      "invalidSketchFolderNameMessage": "El nom de la carpeta del programa no és vàlid: \"{0}\"",
+      "invalidSketchName": "El nom ha de començar amb una lletra, un número o una barra baixa, seguit per lletres, números, guions, punts i barres baixes. La llargària màxima és de 63 caràcters.",
       "moving": "Movent-se",
       "movingMsg": "El fitxer \"{0}\" ha d'estar dins d'una carpeta anomenada \"{1}\".\nVoleu crear aquesta carpeta, moure el fitxer i continuar?",
       "new": "Programa nou",
-      "noTrailingPeriod": "A filename cannot end with a dot",
+      "noTrailingPeriod": "Un nom de fitxer no pot acabar amb un punt",
       "openFolder": "Obri la carpeta",
       "openRecent": "Obri recent",
       "openSketchInNewWindow": "Obri el programa en una finestra nova",
-      "reservedFilename": "'{0}' is a reserved filename.",
+      "reservedFilename": "\"{0}\" és un nom de fitxer reservat.",
       "saveFolderAs": "Desa la carpeta del programa com a...",
       "saveSketch": "Guarda el fitxer per obrir-lo de nou més tard.",
       "saveSketchAs": "Desa la carpeta del programa com a...",
@@ -443,13 +466,24 @@
       "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
+      "newCloudSketch": "Programa del núvol nou",
       "newSketch": "Programa nou"
     },
     "survey": {
       "answerSurvey": "Contesta l'enquesta",
       "dismissSurvey": "No ho tornes a mostrar",
       "surveyMessage": "Ajuda'ns a millorar contestant aquesta enquesta súper curta. Valorem la nostra comunitat i volem conéixer els nostres usuaris un poc millor."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Núvol"
     },
     "updateIndexes": {
       "updateIndexes": "Actualitza els índexs",
@@ -465,15 +499,15 @@
       "upload": "Carrega"
     },
     "validateSketch": {
-      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
-      "abortFixTitle": "Invalid sketch",
-      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
-      "renameSketchFileTitle": "Invalid sketch filename",
-      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
-      "renameSketchFolderTitle": "Invalid sketch name"
+      "abortFixMessage": "El programa encara no és vàlid. Vols corregir els problemes persistents? Clicant \"{0}\" s'obrirà un nou programa.",
+      "abortFixTitle": "El programa no és vàlid",
+      "renameSketchFileMessage": "L'arxiu del programa \"{0}\" no es pot usar. {1} Vols reanomenar-lo ara?",
+      "renameSketchFileTitle": "El nom del fitxer del programa no és vàlid",
+      "renameSketchFolderMessage": "El programa \"{0}\" no es pot usar. {1} Per obtindre detalls del missatge, reanomena el programa. Vols reanomenar-lo ara?",
+      "renameSketchFolderTitle": "El nom del programa no és vàlid"
     },
     "workspace": {
-      "alreadyExists": "'{0}' already exists."
+      "alreadyExists": "\"{0}\" ja existeix."
     }
   },
   "theia": {
@@ -483,6 +517,7 @@
       "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
       "daemonOffline": "El servei CLI està fora de línia",
       "offline": "Fora de línia",
+      "offlineText": "Fora de línia",
       "quitTitle": "Segur que vols eixir?"
     },
     "editor": {
@@ -493,8 +528,8 @@
       "expand": "Expandeix"
     },
     "workspace": {
-      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
-      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCloudSketch": "El programa del núvol \"{0}\" s'eliminarà per sempre dels servidors d'Arduino i de les memòries cau locals. Aquesta acció no es pot desfer. Vols eliminar el programa actual?",
+      "deleteCurrentSketch": "Voleu eliminar el programa actual?",
       "fileNewName": "Nom del nou fitxer",
       "invalidExtension": ". {0} no és una extensió vàlida",
       "newFileName": "Nou nom per al fitxer"

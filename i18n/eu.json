@@ -4,6 +4,12 @@
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "{0}ri buruz"
     },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "{0} plaka",
       "boardConfigDialogTitle": "Select Other Board and Port",
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Account",
       "chooseSketchVisibility": "Aukeratu zure programaren ikusgaitasuna:",
       "cloudSketchbook": "Hodeiko programa bilduma",
       "connected": "Konektatuta",
       "continue": "Jarraitu",
-      "donePulling": "Hodeitik kargatzea burututa: '{0}'.",
-      "donePushing": "Hodeian gordetzea burututa: '{0}'.",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "Kapsulatu:",
       "emptySketchbook": "Zure programa bilduma hutsik dago",
       "goToCloud": "Go to Cloud",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Boards included in this package:",
       "by": "Egilea:",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Iragazi zure bilaketa...",
       "install": "Instalatu",
-      "installed": "Installed",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
       "moreInfo": "Informazio gehiago",
+      "otherVersions": "Other Versions",
+      "remove": "Kendu",
+      "title": "{0} by {1}",
       "uninstall": "Desinstalatu",
       "uninstallMsg": "{0} desinstalatu nahi duzu?",
-      "version": "{0} bertsioa"
+      "update": "Update"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
       "addFile": "Gehitu fitxategia",
@@ -188,6 +202,7 @@
       "copyError": "Copy error messages",
       "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "Restart Daemon",
       "start": "Start Daemon",
@@ -313,6 +328,13 @@
       "tools": "Tresnak"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "Unable to close websocket",
       "unableToConnectToWebSocket": "Unable to connect to websocket"
     },
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "Korritze automatikoa",
       "carriageReturn": "Orga-itzulera",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Lerro berria",
       "newLineCarriageReturn": "NL & CR biak",
@@ -414,11 +437,11 @@
       "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
       "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Esportatu konpilatutako bitarra",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
       "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
       "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
       "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Lekuz aldatzen",
       "movingMsg": "\"{0}\" fitxategiak \"{1}\" izeneko programa-karpetaren barruan egon behar du.\nSortu karpeta, eraman fitxategia bertara eta jarraitu?",
       "new": "New Sketch",
@@ -450,6 +473,17 @@
       "answerSurvey": "Answer survey",
       "dismissSurvey": "Don't show again",
       "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
     },
     "updateIndexes": {
       "updateIndexes": "Update Indexes",
@@ -483,6 +517,7 @@
       "couldNotSave": "Ezin izan da programa gorde. Kopiatu gorde gabeko zure lana zure testu-editore gogokoenera eta berrabiarazi IDEa.",
       "daemonOffline": "CLI daemon-a lineaz kanpo",
       "offline": "Lineaz kanpo",
+      "offlineText": "Lineaz kanpo",
       "quitTitle": "Are you sure you want to quit?"
     },
     "editor": {
