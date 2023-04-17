@@ -4,6 +4,12 @@
       "detail": "版本： {0}\n日期： {1}{2}\n命令列版本： {3}\n\n{4}",
       "label": "關於 {0}"
     },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "{0} 開發板",
       "boardConfigDialogTitle": "選擇其他開發板和序列埠",
@@ -83,13 +89,12 @@
       "mouseError": "找不到 'Mouse', 請檢查草稿碼中是否有 '#include <Mouse.h>'？"
     },
     "cloud": {
-      "account": "帳戶",
       "chooseSketchVisibility": "選擇草稿碼的能見度：",
       "cloudSketchbook": "Cloud Sketchbook",
       "connected": "已連線",
       "continue": "繼續",
-      "donePulling": "已完成拉取 '{0}'。",
-      "donePushing": "已完成推送 '{0}'。",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "嵌入：",
       "emptySketchbook": "您的草稿碼簿是空的",
       "goToCloud": "前往 Cloud",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "包含在此套件的開發版：",
       "by": "提供者：",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "篩選搜尋結果...",
       "install": "安裝",
-      "installed": "已安装",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
       "moreInfo": "詳細資訊",
+      "otherVersions": "Other Versions",
+      "remove": "移除",
+      "title": "{0} by {1}",
       "uninstall": "移除安裝",
       "uninstallMsg": "你要移除 {0} 嗎？",
-      "version": "版本 {0}"
+      "update": "Update"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "無法存取位於 '{0}' :{1} 的草稿碼簿。"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
       "addFile": "加入檔案",
@@ -188,6 +202,7 @@
       "copyError": "複製錯誤訊息",
       "noBoardSelected": "未選取開發版。請從 工具 > 開發版 中選取您的開發版"
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "重新啟動背景服務程式",
       "start": "啟動背景服務程式",
@@ -313,6 +328,13 @@
       "tools": "工具"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "無法關閉 websocket",
       "unableToConnectToWebSocket": "無法連線到 websocket"
     },
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "自動捲動",
       "carriageReturn": "歸位",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "訊息 (按 Enter 將訊息發送連接到 {1} 的 {0})",
       "newLine": "換行",
       "newLineCarriageReturn": "換行加歸位",
@@ -414,11 +437,11 @@
       "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
       "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "會出編譯好的二進位檔",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
       "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
       "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
       "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "移動",
       "movingMsg": "檔案{0}需要放在草稿碼資料夾內名稱為{1}的資料夾,\n要建立此資料夾, 搬移檔案再繼續嗎？",
       "new": "建立新草稿碼",
@@ -450,6 +473,17 @@
       "answerSurvey": "回覆問卷",
       "dismissSurvey": "不要再顯示",
       "surveyMessage": "請回答這個超簡短的問卷來幫助我們改進, 我們很重視社群，也希望能多了解我們的支持者。"
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
     },
     "updateIndexes": {
       "updateIndexes": "更新索引",
@@ -483,6 +517,7 @@
       "couldNotSave": "無法儲存草稿, 請先將尚未存檔的內容複製到慣用的文字編輯器中, 再重新啟動 IDE。",
       "daemonOffline": "CLI 背景服務程式離線",
       "offline": "離線",
+      "offlineText": "離線",
       "quitTitle": "你確定要退出嗎？"
     },
     "editor": {

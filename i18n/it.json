@@ -4,6 +4,12 @@
       "detail": "Versione: {0}\nData: {1}{2}\nVersione CLI: {3}\n\n{4}",
       "label": "Informazioni su {0}"
     },
+    "account": {
+      "goToCloudEditor": "Vai all'editor del cloud",
+      "goToIoTCloud": "Vai al cloud IoT",
+      "goToProfile": "Vai al profilo",
+      "menuTitle": "Cloud di Arduino"
+    },
     "board": {
       "board": "Scheda{0}",
       "boardConfigDialogTitle": "Seleziona un'altra scheda e un'altra porta",
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse' non è stato trovato. Il tuo sketch include la linea '#include <Mouse.h>' nel codice?"
     },
     "cloud": {
-      "account": "Account",
       "chooseSketchVisibility": "Scegli a chi far vedere il tuo Sketch:",
       "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Connesso",
       "continue": "Continua",
-      "donePulling": "Pulling terminato ‘{0}’.",
-      "donePushing": "Invio terminato ‘{0}’.",
+      "donePulling": "Scaricamento di '{0}' effettuato.",
+      "donePushing": "Invio di '{0}' effettuato.",
       "embed": "Includi:",
       "emptySketchbook": "La raccolta degli sketch è vuota",
       "goToCloud": "Vai al Cloud",
@@ -112,7 +117,7 @@
       "remote": "Remoto",
       "share": "Condividi...",
       "shareSketch": "Condividi sketch",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "Mostra/Nascondi la raccolta remota degli sketch",
       "signIn": "ACCEDI",
       "signInToCloud": "Effettua la registrazione su Arduino Cloud",
       "signOut": "Disconnetti",
@@ -121,14 +126,14 @@
       "visitArduinoCloud": "Visita Arduino Cloud per creare Cloud Sketch "
     },
     "cloudSketch": {
-      "alreadyExists": "Cloud sketch '{0}' already exists.",
-      "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
-      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "alreadyExists": "Lo sketch remoto '{0}' è già presente.",
+      "creating": "Creazione in corso dello sketch remoto '{0}'...",
+      "new": "Nuovo Sketch remoto",
+      "notFound": "Impossibile scaricare lo sketch remoto '{0}'. Non esiste.",
       "pulling": "Sincronizzazione degli sketch, pulling \"{0}\"...",
-      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
-      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
-      "synchronizingSketchbook": "Synchronizing sketchbook..."
+      "pushing": "Sincronizzazione della raccolta degli sketch in corso, sto inviando '{0}'...",
+      "renaming": "Sto rinominando lo sketch remoto da '{0}' a '{1}'...",
+      "synchronizingSketchbook": "Sincronizzazione della raccolta degli sketch in corso..."
     },
     "common": {
       "all": "Tutti",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Schede incluse in questo pacchetto:",
       "by": "da",
+      "clickToOpen": "Cliccare per aprire nel browser: {0}",
       "filterSearch": "Filtra la tua ricerca...",
       "install": "Installa",
-      "installed": "Installata",
+      "installLatest": "Installa il più recente",
+      "installVersion": "Installa {0}",
+      "installed": "{0} installato",
       "moreInfo": "Maggiori informazioni",
+      "otherVersions": "Altre versioni",
+      "remove": "Rimuovi",
+      "title": "{0} di {1}",
       "uninstall": "Disinstalla",
       "uninstallMsg": "Vuoi veramente disinstallare {0}?",
-      "version": "Versione {0}"
+      "update": "Aggiornamento"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "Impossibile accedere alla raccolta degli sketch presenti in '{0}': {1}"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connessione persa. Le azioni e gli aggiornamenti degli sketch del cloud non saranno disponibili."
     },
     "contributions": {
       "addFile": "Aggiungi file",
@@ -188,6 +202,7 @@
       "copyError": "Copia messaggi di errore",
       "noBoardSelected": "Non è stata selezionata alcuna scheda. Selezionare la tua scheda Arduino dal menu Strumenti > Scheda."
     },
+    "createCloudCopy": "Invia lo sketch nel cloud",
     "daemon": {
       "restart": "Riavvia il demone",
       "start": "Avvia il demone",
@@ -313,11 +328,18 @@
       "tools": "Strumenti"
     },
     "monitor": {
+      "alreadyConnectedError": "Impossibile connettere alla porta {0} {1}. Già connesso.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Impossibile connettere alla porta {0} {1}.",
+      "connectionFailedErrorWithDetails": "{0} Impossibile connettere alla porta {1} {2}.",
+      "connectionTimeout": "Tempo scaduto. L'IDE non ha ricevuto il messaggio di 'successo' dal monitor dopo essersi connesso con esso.",
+      "missingConfigurationError": "Impossibile connettere alla porta {0} {1}. Manca la configurazione del monitor.",
+      "notConnectedError": "Non connesso alla porta {0} {1}.",
       "unableToCloseWebSocket": "Impossibile chiudere il websocket",
       "unableToConnectToWebSocket": "Impossibile connettersi al websocket"
     },
     "newCloudSketch": {
-      "newSketchTitle": "Name of the new Cloud Sketch"
+      "newSketchTitle": "Nome del nuovo sketch remoto"
     },
     "portProtocol": {
       "network": "Rete",
@@ -386,13 +408,14 @@
       }
     },
     "renameCloudSketch": {
-      "renameSketchTitle": "New name of the Cloud Sketch"
+      "renameSketchTitle": "Nuovo nome dello sketch remoto"
     },
     "replaceMsg": "Sostituire la versione esistente con la versione {0}?",
     "selectZip": "Scegli il file zip che contiene la libreria che vuoi aggiungere",
     "serial": {
       "autoscroll": "Scorrimento automatico",
       "carriageReturn": "Ritorno carrello (CR)",
+      "connecting": "Connessione in corso di '{0}' su '{1}'...",
       "message": "Messaggio (premi Enter per inviare il messaggio a '{0}' on '{1}')",
       "newLine": "A capo (NL)",
       "newLineCarriageReturn": "Entrambi NL & CR",
@@ -411,22 +434,22 @@
       "createdArchive": "Creato l'archivio '{0}'.",
       "doneCompiling": "Compilazione completata.",
       "doneUploading": "Caricamento terminato.",
-      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
-      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "editInvalidSketchFolderLocationQuestion": "Vuoi provare a salvare lo sketch in una posizione diversa?",
+      "editInvalidSketchFolderQuestion": "Vuoi provare a salvare lo sketch con un nome diverso?",
       "exportBinary": "Esporta sketch compilato",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
-      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
-      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
-      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidCloudSketchName": "Il nome deve iniziare con una lettera, un numero o un trattino basso, seguito da lettere, numeri, trattini, punti e trattini bassi. La lunghezza massima è di 36 caratteri.",
+      "invalidSketchFolderLocationDetails": "Non è possibile salvare uno sketch in una cartella al suo interno.",
+      "invalidSketchFolderLocationMessage": "Posizione della cartella degli sketch non valida: '{0}'",
+      "invalidSketchFolderNameMessage": "Nome della cartella degli sketch non valida: '{0}'",
+      "invalidSketchName": "Il nome deve iniziare con una lettera, un numero o un trattino basso, seguito da lettere, numeri, trattini, punti e trattini bassi. La lunghezza massima è di 63 caratteri.",
       "moving": "Spostando",
       "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
       "new": "Nuovo Sketch",
-      "noTrailingPeriod": "A filename cannot end with a dot",
+      "noTrailingPeriod": "Il nome di un file non può terminare con un punto",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",
       "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra",
-      "reservedFilename": "'{0}' is a reserved filename.",
+      "reservedFilename": "'{0}' è il nome di un file riservato.",
       "saveFolderAs": "Salva la cartella sketch come...",
       "saveSketch": "Salva il tuo sketch per riaprirlo in seguito.",
       "saveSketchAs": "Salva la cartella dello sketch come...",
@@ -443,13 +466,24 @@
       "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
+      "newCloudSketch": "Nuovo sketch remoto",
       "newSketch": "Nuovo Sketch"
     },
     "survey": {
       "answerSurvey": "Rispondi al questionario",
       "dismissSurvey": "Non mostrare più",
       "surveyMessage": "Aiutaci a migliorare rispondendo a questo brevissimo questionario. Abbiamo a cuore la nostra comunità e vorremmo conoscere meglio chi ci supporta!"
+    },
+    "theme": {
+      "currentThemeNotFound": "Impossibile trovare il tema attualmente selezionato: {0}. Arduino IDE ha selezionato un tema integrato compatibile con quello mancante.",
+      "dark": "Scuro",
+      "deprecated": "{0} (deprecato)",
+      "hc": "Alto contrasto",
+      "light": "Luce",
+      "user": "{0} (utente)"
+    },
+    "title": {
+      "cloud": "Cloud"
     },
     "updateIndexes": {
       "updateIndexes": "Aggiorna gli indici",
@@ -465,15 +499,15 @@
       "upload": "Carica"
     },
     "validateSketch": {
-      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
-      "abortFixTitle": "Invalid sketch",
-      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
-      "renameSketchFileTitle": "Invalid sketch filename",
-      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
-      "renameSketchFolderTitle": "Invalid sketch name"
+      "abortFixMessage": "Lo sketch non è ancora valido. Vuoi risolvere i problemi rimanenti? Facendo clic su '{0}', si aprirà un nuovo sketch.",
+      "abortFixTitle": "Lo sketch non è valido",
+      "renameSketchFileMessage": "Il file dello sketch '{0}' non può essere usato. {1} Vuoi rinominare adesso lo sketch?",
+      "renameSketchFileTitle": "Il nome del file dello sketch non è valido",
+      "renameSketchFolderMessage": "Lo sketch '{0}' non può essere usato. {1} Per eliminare questo messaggio, rinomina lo sketch. Vuoi rinominare adesso lo sketch?",
+      "renameSketchFolderTitle": "Il nome dello sketch non è valido"
     },
     "workspace": {
-      "alreadyExists": "'{0}' already exists."
+      "alreadyExists": "'{0}' è già presente."
     }
   },
   "theia": {
@@ -483,6 +517,7 @@
       "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l' Arduino IDE. ",
       "daemonOffline": "Il CLI Daemon è disconnesso",
       "offline": "Offline",
+      "offlineText": "Offline",
       "quitTitle": "Sei sicuro di volere chiudere?"
     },
     "editor": {
@@ -493,8 +528,8 @@
       "expand": "Espandi"
     },
     "workspace": {
-      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
-      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCloudSketch": "Lo sketch remoto '{0}' sarà eliminato definitivamente dai server di Arduino e dalle cache locali. Questa azione è irreversibile. Vuoi eliminare lo sketch?",
+      "deleteCurrentSketch": "Vuoi eliminare lo sketch attuale?",
       "fileNewName": "Nome per il nuovo file",
       "invalidExtension": "\".{0}\" non è un'estensione valida",
       "newFileName": "Nuovo nome del file"

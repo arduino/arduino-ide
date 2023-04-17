@@ -4,6 +4,12 @@
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "A propos de {0}"
     },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "Carte{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Compte",
       "chooseSketchVisibility": "Choisissez la visibilité du croquis :",
       "cloudSketchbook": "Carnet de Croquis Cloud",
       "connected": "Connecté",
       "continue": "Continuer",
-      "donePulling": "Récupération de '{0}' terminée.",
-      "donePushing": "Téléchargement terminé pour '{0}'",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "Embarqué : ",
       "emptySketchbook": "Votre carnet de croquis est vide",
       "goToCloud": "Go to Cloud",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Boards included in this package:",
       "by": "par",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Filtrez votre recherche...",
       "install": "Installer",
-      "installed": "Installed",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
       "moreInfo": "Plus d'information",
+      "otherVersions": "Other Versions",
+      "remove": "Supprimer ",
+      "title": "{0} by {1}",
       "uninstall": "Désinstaller",
       "uninstallMsg": "Voulez vous désinstaller {0}?",
-      "version": "Version {0}"
+      "update": "Update"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
       "addFile": "Ajouter un fichier",
@@ -188,6 +202,7 @@
       "copyError": "Copier les messages d'erreur",
       "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "Redémarrer Daemon",
       "start": "Démarrer Daemon",
@@ -313,6 +328,13 @@
       "tools": "Outils"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "Impossible de fermer le web socket",
       "unableToConnectToWebSocket": "Impossible de se connecter au web socket"
     },
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "Défilement automatique",
       "carriageReturn": "Retour chariot",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nouvelle ligne",
       "newLineCarriageReturn": "Les deux, NL et CR",
@@ -414,11 +437,11 @@
       "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
       "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Exporter les binaires compilés",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
       "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
       "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
       "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Déplacement",
       "movingMsg": "Le fichier \"{0}\" à besoin d'être à l'intérieur d'un dossier de croquis appelé \"{1}\".\nCréer ce dossier, déplacer le fichier et continuer ?",
       "new": "New Sketch",
@@ -450,6 +473,17 @@
       "answerSurvey": "Enquête sur les réponses",
       "dismissSurvey": "Ne pas montrer de nouveau",
       "surveyMessage": "Aide-nous à nous améliorer en répondant à cette enquête très courte. Nous apprécions notre communauté et nous aimerions connaître un peu mieux nos supporters."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
     },
     "updateIndexes": {
       "updateIndexes": "Update Indexes",
@@ -483,6 +517,7 @@
       "couldNotSave": "Impossible d'enregistrer le croquis. Veuillez copier votre travail non enregistré dans votre éditeur de texte favori et redémarrer l'IDE.",
       "daemonOffline": "CLI Deamon hors ligne",
       "offline": "Hors-ligne",
+      "offlineText": "Hors-ligne",
       "quitTitle": "Est que-vous sur vous voulez quitter? "
     },
     "editor": {

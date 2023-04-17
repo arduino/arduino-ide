@@ -4,6 +4,12 @@
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "О программе {0}"
     },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "Плата{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse' не найдено. В вашем скетче есть строка '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Аккаунт",
       "chooseSketchVisibility": "Выберите видимость своего скетча:",
       "cloudSketchbook": "Альбом в облаке",
       "connected": "Подключено",
       "continue": "Продолжить",
-      "donePulling": "Закончить вытягивание ‘{0}’.",
-      "donePushing": "Отправлено ‘{0}’.",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "Встроить:",
       "emptySketchbook": "Ваш альбом пуст",
       "goToCloud": "Go to Cloud",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Boards included in this package:",
       "by": "от",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Отфильтровать результаты поиска...",
       "install": "Установка",
-      "installed": "Installed",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
       "moreInfo": "Дополнительная информация",
+      "otherVersions": "Other Versions",
+      "remove": "Удалить",
+      "title": "{0} by {1}",
       "uninstall": "Удалить",
       "uninstallMsg": "Вы хотите удалить {0}?",
-      "version": "Версия {0}"
+      "update": "Update"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
       "addFile": "Добавить файл...",
@@ -188,6 +202,7 @@
       "copyError": "Скопировать сообщения ошибок",
       "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "Перезапустить Daemon",
       "start": "Запустить Daemon",
@@ -313,6 +328,13 @@
       "tools": "Инструменты"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "Не удалось закрыть веб-сокет.",
       "unableToConnectToWebSocket": "Не удается подключиться к веб-сокету."
     },
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "Автопрокрутка",
       "carriageReturn": "CR Возврат каретки",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Новая строка",
       "newLineCarriageReturn": "NL & CR",
@@ -414,11 +437,11 @@
       "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
       "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Экспортировать скомпилированный бинарный файл",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
       "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
       "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
       "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Переместить",
       "movingMsg": "Файл «{0}» должен быть в папке с именем скетча «{1}». \nСоздать эту папку, переместить файл и продолжить?",
       "new": "New Sketch",
@@ -426,7 +449,7 @@
       "openFolder": "Открыть папку",
       "openRecent": "Открыть предыдущий",
       "openSketchInNewWindow": "Открыть скетч в новом окне",
-      "reservedFilename": "'{0}' is a reserved filename.",
+      "reservedFilename": "{0} это зарезервированное имя файла.",
       "saveFolderAs": "Сохранить папку со скетчем как...",
       "saveSketch": "Сохраните свой скетч, чтобы открыть его позже.",
       "saveSketchAs": "Сохранить папку скетча как...",
@@ -451,6 +474,17 @@
       "dismissSurvey": "Больше не показывать",
       "surveyMessage": "Пожалуйста, помоги нам стать лучше, пройдя этот супер-короткий опрос. Мы ценим наше сообщество и хотели бы узнать наших сторонников немного лучше!"
     },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
     "updateIndexes": {
       "updateIndexes": "Update Indexes",
       "updateLibraryIndex": "Update Library Index",
@@ -470,10 +504,10 @@
       "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
-      "renameSketchFolderTitle": "Invalid sketch name"
+      "renameSketchFolderTitle": "Неверное название скетча"
     },
     "workspace": {
-      "alreadyExists": "'{0}' already exists."
+      "alreadyExists": "{0} уже существует."
     }
   },
   "theia": {
@@ -483,6 +517,7 @@
       "couldNotSave": "Скетч не сохранён. Пожалуйста, скопируйте вашу не сохраненную работу в ваш внешний текстовый редактор и перезапустите IDE.",
       "daemonOffline": "CLI демон не подключен",
       "offline": "Не подключено",
+      "offlineText": "Не подключено",
       "quitTitle": "Вы уверены, что хотите выйти?"
     },
     "editor": {

@@ -4,6 +4,12 @@
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
       "label": "Acerca de {0}"
     },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Ir al Perfil",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "Placa{0}",
       "boardConfigDialogTitle": "Seleccionar Otra Placa y Puerto",
@@ -38,7 +44,7 @@
       "succesfullyInstalledPlatform": "Plataforma {0}:{1} instalada correctamente",
       "succesfullyUninstalledPlatform": "Plataforma {0}:{1} desinstalada correctamente",
       "typeOfPorts": "{0} puertos",
-      "unknownBoard": "Unknown board"
+      "unknownBoard": "Placa desconocida"
     },
     "boardsManager": "Gestor de placas",
     "boardsType": {
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Mouse.h>'?"
     },
     "cloud": {
-      "account": "Cuenta",
       "chooseSketchVisibility": "Elige la visibilidad de tu Sketch:",
       "cloudSketchbook": "Libro de bocetos en la nube",
       "connected": "Conectado",
       "continue": "Continuar",
-      "donePulling": "Extracción de '{0}' realizada.",
-      "donePushing": "Envío a '{0}' realizado.",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
       "embed": "Incrustado:",
       "emptySketchbook": "Tu Sketchbook está vacío",
       "goToCloud": "Ir al Cloud",
@@ -128,7 +133,7 @@
       "pulling": "Synchronizing sketchbook, pulling '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
       "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
-      "synchronizingSketchbook": "Synchronizing sketchbook..."
+      "synchronizingSketchbook": "Sincronizando carpeta..."
     },
     "common": {
       "all": "Todo",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Placas incluidas en este paquete:",
       "by": "de",
+      "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Filtre su búsqueda...",
       "install": "Instalar",
-      "installed": "Instalado",
+      "installLatest": "Install Latest",
+      "installVersion": "Instalar {0}",
+      "installed": "{0}instalado",
       "moreInfo": "Más información",
+      "otherVersions": "Otras versiones",
+      "remove": "Eliminar",
+      "title": "{0} by {1}",
       "uninstall": "Desinstalar",
       "uninstallMsg": "¿Quieres desinstalar {0}?",
-      "version": "Versión {0}"
+      "update": "Actualizar"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
       "addFile": "Añadir fichero...",
@@ -188,6 +202,7 @@
       "copyError": "Copiar mensajes de error",
       "noBoardSelected": "Ninguna placa seleccionada. Por favor selecciona una placa Arduino en el menú Herramientas > Placas"
     },
+    "createCloudCopy": "Push Sketch to Cloud",
     "daemon": {
       "restart": "Reiniciar Daemon",
       "start": "Iniciar Daemon",
@@ -313,6 +328,13 @@
       "tools": "Herramientas"
     },
     "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
       "unableToCloseWebSocket": "No se puede cerrar websocket",
       "unableToConnectToWebSocket": "No se puede conectar al websocket"
     },
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Retorno de carro",
+      "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "Mensaje (Intro para mandar el mensaje de '{0}' a '{1}')",
       "newLine": "Nueva línea",
       "newLineCarriageReturn": "Ambos NL & CR",
@@ -411,18 +434,18 @@
       "createdArchive": "Archivo '{0}' creado.",
       "doneCompiling": "Compilación completada.",
       "doneUploading": "Carga completada.",
-      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
-      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "editInvalidSketchFolderLocationQuestion": "¿Quieres intentar guardar el código en una ubicación diferente?",
+      "editInvalidSketchFolderQuestion": "¿Quieres intentar guardar el código con un nombre diferente?",
       "exportBinary": "Exportar binario compilado",
-      "invalidCloudSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidCloudSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 36.",
       "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
       "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
       "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter or number, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 63.",
       "moving": "Moviendo",
       "movingMsg": "El archivo \"{0}\" tiene que estar dentro de una carpeta de bocetos llamada \"{1}\".\n¿Crear esta carpeta, mover el archivo y continuar?",
       "new": "New Sketch",
-      "noTrailingPeriod": "A filename cannot end with a dot",
+      "noTrailingPeriod": "El nombre del archivo no puede terminar con un punto.",
       "openFolder": "Abrir carpeta",
       "openRecent": "Abierto recientemente",
       "openSketchInNewWindow": "Abrir Sketch en una ventana nueva",
@@ -451,6 +474,17 @@
       "dismissSurvey": "No volver a mostrar",
       "surveyMessage": "Por favor ayudenos mejorar completando esta breve encuesta. Valoramos nuestra comunidad y nos gustaría conocer algo mejor a los que nos apoyan."
     },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
     "updateIndexes": {
       "updateIndexes": "Actualizar indices",
       "updateLibraryIndex": "Actualizar Indice de librerías",
@@ -473,7 +507,7 @@
       "renameSketchFolderTitle": "Invalid sketch name"
     },
     "workspace": {
-      "alreadyExists": "'{0}' already exists."
+      "alreadyExists": "'{0}' ya existe."
     }
   },
   "theia": {
@@ -483,6 +517,7 @@
       "couldNotSave": "No se ha podido guardar el sketch. Por favor, copia tu trabajo no guardado en tu editor de texto favorito y reinicia el IDE.",
       "daemonOffline": "Demonio del CLI fuera de línea",
       "offline": "Desconectado",
+      "offlineText": "Desconectado",
       "quitTitle": "Seguro que quiere salir ?"
     },
     "editor": {
@@ -494,7 +529,7 @@
     },
     "workspace": {
       "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
-      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "El código '{0}' será permanentemente eliminado. Esta acción es irreversible. ¿Quieres eliminar el código actual?",
       "fileNewName": "Nombre del nuevo archivo",
       "invalidExtension": "\".{0}\" no es una extensión válida",
       "newFileName": "Nuevo nombre para el archivo"

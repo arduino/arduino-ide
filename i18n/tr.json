@@ -4,6 +4,12 @@
       "detail": "Versiyon: {0}\nTarih: {1}{2}\nCLI Versiyonu: {3}\n\n{4}",
       "label": "{0} Hakkında"
     },
+    "account": {
+      "goToCloudEditor": "Bulut Düzenleyici'ye Git",
+      "goToIoTCloud": "IoT Bulut'a Git",
+      "goToProfile": "Profile Git",
+      "menuTitle": "Arduino Cloud"
+    },
     "board": {
       "board": "Kart{0}",
       "boardConfigDialogTitle": "Başka Kart ve Port Seç",
@@ -83,13 +89,12 @@
       "mouseError": "'Mouse' bulunamadı. Eskiziniz '#include <Mouse.h>' satırını içeriyor mu? "
     },
     "cloud": {
-      "account": "Hesap",
       "chooseSketchVisibility": "Eskizinizin görünürlüğünü seçin",
       "cloudSketchbook": "Bulut Eskiz Defteri",
       "connected": "Bağlandı",
       "continue": "Devam et",
-      "donePulling": "Çekme bitti: ‘{0}’.",
-      "donePushing": "Gönderme bitti: ‘{0}’.",
+      "donePulling": "Çekme bitti: '{0}'.",
+      "donePushing": "Gönderme bitti: '{0}'.",
       "embed": "Yerleştir:",
       "emptySketchbook": "Eskiz Defteriniz boş",
       "goToCloud": "Buluta Git",
@@ -155,18 +160,27 @@
     "component": {
       "boardsIncluded": "Bu pakete dahil kartlar:",
       "by": "-",
+      "clickToOpen": "Tarayıca açmak için tıkla: {0}",
       "filterSearch": "Aramayı Filtrele...",
       "install": "Kur",
-      "installed": "Kurulu",
+      "installLatest": "En Yeniyi Kur",
+      "installVersion": "{0}'i kur",
+      "installed": "{0} kuruldu",
       "moreInfo": "Daha fazla bilgi",
+      "otherVersions": "Diğer Sürümler",
+      "remove": "Kaldır",
+      "title": "{0} / {1}",
       "uninstall": "Kaldır",
       "uninstallMsg": "{0} kaldırılsın mı?",
-      "version": "Versiyon {0}"
+      "update": "Güncelle"
     },
     "configuration": {
       "cli": {
         "inaccessibleDirectory": "'{0}': {1} konumundaki eskiz defterine erişilemedi"
       }
+    },
+    "connectionStatus": {
+      "connectionLost": "Bağlantı koptu. Bulut eskiz işlemleri ve güncellemeleri kullanılamayacak."
     },
     "contributions": {
       "addFile": "Dosya Ekle",
@@ -188,6 +202,7 @@
       "copyError": "Hata mesajlarını kopyala",
       "noBoardSelected": "Kart seçili değil. Lütfen Araçlar > Kart menüsünden Arduino kartınızı seçin."
     },
+    "createCloudCopy": "Eskizi Bulut'a Gönder",
     "daemon": {
       "restart": "Arthizmeti Yeniden Başlat",
       "start": "Arthizmeti Başlat",
@@ -313,6 +328,13 @@
       "tools": "Araçlar"
     },
     "monitor": {
+      "alreadyConnectedError": " {0} {1} portuna bağlanılamadı. Zaten bağlı.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "{0} {1} portuna bağlanılamadı.",
+      "connectionFailedErrorWithDetails": "{0}  {1} {2} portuna bağlanılamadı.",
+      "connectionTimeout": "Zaman aşımı. IDE başarılı bağlantıdan sonra ekrandan 'başarılı' mesajını almadı",
+      "missingConfigurationError": " {0} {1} portuna bağlanılamadı. Ekran yapılandırması eksik.",
+      "notConnectedError": " {0} {1} portuna bağlı değil.",
       "unableToCloseWebSocket": "Websocket kapatılamadı ",
       "unableToConnectToWebSocket": "Websocket'e bağlanılamadı"
     },
@@ -393,6 +415,7 @@
     "serial": {
       "autoscroll": "Otomatik Kaydırma",
       "carriageReturn": "Satır Başı",
+      "connecting": "'{1}' üzerindeki '{0}' bağlantısı kuruluyor...",
       "message": "Mesaj ('{0}' - '{1}''a mesaj göndermek için Enter'a basın)",
       "newLine": "Yeni Satır",
       "newLineCarriageReturn": "NL ve CR ile Birlikte",
@@ -414,11 +437,11 @@
       "editInvalidSketchFolderLocationQuestion": "Eskizi farklı bir konuma kaydetmeyi denemek ister misiniz?",
       "editInvalidSketchFolderQuestion": "Eskizi farklı bir isimle kaydetmeyi denemek ister misiniz?",
       "exportBinary": "Derlenmiş Dosyayı Dışa Aktar",
-      "invalidCloudSketchName": "İsim bir harf veya rakam ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 36 karakterdir.",
+      "invalidCloudSketchName": "İsim bir harf, rakam veya altçizgi ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 36 karakterdir.",
       "invalidSketchFolderLocationDetails": "Bir eskizi kendi içindeki bir klasöre kaydedemezsiniz.",
       "invalidSketchFolderLocationMessage": "Hatalı eskiz klasörü konumu: {0}",
       "invalidSketchFolderNameMessage": "Hatalı eskiz klasörü adı: {0}",
-      "invalidSketchName": "İsim bir harf veya rakam ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 63 karakterdir.",
+      "invalidSketchName": "İsim bir harf, rakam veya altçizgi ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 63 karakterdir.",
       "moving": "Taşınıyor",
       "movingMsg": "\"{0}\" dosyasının \"{1}\" isminde bir eskiz klasörünün içinde olması gerekiyor.\nKlasörü oluştur, dosyayı taşı ve devam et?",
       "new": "Yeni Eskiz",
@@ -450,6 +473,17 @@
       "answerSurvey": "Anketi yanıtla",
       "dismissSurvey": "Tekrar gösterme",
       "surveyMessage": "Lütfen bu çok kısa anketi yanıtlayarak gelişmemize yardım edin. Topluluğumuza değer veriyoruz e destekçilerimizi biraz daha iyi tanımak isteriz."
+    },
+    "theme": {
+      "currentThemeNotFound": "Mevcut seçili tema bulunamadı: {0}. Arduino IDE kayıp olanın yerine uyumlu dahili bir tane seçti.",
+      "dark": "Koyu",
+      "deprecated": "{0} (kaldırıldı)",
+      "hc": "Yüksek Karşıtlık",
+      "light": "Açık",
+      "user": "{0} (kullanıcı)"
+    },
+    "title": {
+      "cloud": "Bulut"
     },
     "updateIndexes": {
       "updateIndexes": "Katalogları Güncelle",
@@ -483,6 +517,7 @@
       "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
       "daemonOffline": "CLI Daemon Çevrimdışı",
       "offline": "Çevrimdışı",
+      "offlineText": "Çevrimdışı",
       "quitTitle": "Çıkmak istediğinizden emin misiniz?"
     },
     "editor": {
