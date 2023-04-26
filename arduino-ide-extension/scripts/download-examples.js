@@ -4,31 +4,29 @@
 const version = '1.10.0';
 
 (async () => {
-  const os = require('os');
-  const { promises: fs } = require('fs');
-  const path = require('path');
+  const os = require('node:os');
+  const { promises: fs } = require('node:fs');
+  const path = require('node:path');
   const shell = require('shelljs');
   const { v4 } = require('uuid');
+  const { exec } = require('./utils');
 
   const repository = path.join(os.tmpdir(), `${v4()}-arduino-examples`);
   if (shell.mkdir('-p', repository).code !== 0) {
     shell.exit(1);
   }
 
-  if (
-    shell.exec(
-      `git clone https://github.com/arduino/arduino-examples.git ${repository}`
-    ).code !== 0
-  ) {
-    shell.exit(1);
-  }
+  exec(
+    'git',
+    ['clone', 'https://github.com/arduino/arduino-examples.git', repository],
+    shell
+  );
 
-  if (
-    shell.exec(`git -C ${repository} checkout tags/${version} -b ${version}`)
-      .code !== 0
-  ) {
-    shell.exit(1);
-  }
+  exec(
+    'git',
+    ['-C', repository, 'checkout', `tags/${version}`, '-b', version],
+    shell
+  );
 
   const destination = path.join(__dirname, '..', 'Examples');
   shell.mkdir('-p', destination);
