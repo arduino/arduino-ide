@@ -1,15 +1,15 @@
 //@ts-check
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 const semver = require('semver');
 const merge = require('deepmerge');
 const dateFormat = require('dateformat');
 const { isNightly, isRelease, git } = require('./utils');
 
-function artifactName() {
+async function artifactName() {
   const { platform, arch } = process;
-  const id = (() => {
+  const id = await (() => {
     if (isRelease) {
       return getVersion();
     } else if (isNightly) {
@@ -69,8 +69,8 @@ function electronPlatform() {
   }
 }
 
-function getVersion() {
-  const repositoryRootPath = git('rev-parse --show-toplevel');
+async function getVersion() {
+  const repositoryRootPath = await git(['rev-parse', '--show-toplevel']);
   let version = JSON.parse(
     fs.readFileSync(path.join(repositoryRootPath, 'package.json'), {
       encoding: 'utf8',
@@ -85,7 +85,7 @@ function getVersion() {
     if (isNightly) {
       version = `${version}-nightly-${timestamp()}`;
     } else {
-      version = `${version}-snapshot-${currentCommitish()}`;
+      version = `${version}-snapshot-${await currentCommitish()}`;
     }
     if (!semver.valid(version)) {
       throw new Error(`Invalid patched version: '${version}'.`);
@@ -109,18 +109,18 @@ function timestamp() {
   return dateFormat(new Date(), 'yyyymmdd');
 }
 
-function currentCommitish() {
-  return git('rev-parse --short HEAD');
+async function currentCommitish() {
+  return git(['rev-parse', '--short', 'HEAD']);
 }
 
 // function currentBranch() {
 //     return git('rev-parse --abbrev-ref HEAD');
 // }
 
-function generateTemplate(buildDate) {
+async function generateTemplate(buildDate) {
   // do `export PUBLISH=true yarn package` if you want to mimic CI build locally.
   // const electronPublish = release || (isCI && currentBranch() === 'main') || process.env.PUBLISH === 'true';
-  const version = getVersion();
+  const version = await getVersion();
   const productName = 'Arduino IDE';
   const name = 'arduino-ide';
   const updateChannel = getChannel();
@@ -139,7 +139,7 @@ function generateTemplate(buildDate) {
       productName,
       appId: 'cc.arduino.IDE2',
       [electronPlatform()]: {
-        artifactName: artifactName(),
+        artifactName: await artifactName(),
       },
     },
   };

@@ -21,8 +21,8 @@
     throw reason;
   });
 
-  const fs = require('fs');
-  const join = require('path').join;
+  const fs = require('node:fs');
+  const join = require('node:path').join;
   const shell = require('shelljs');
   const { echo, cp, mkdir, mv, rm } = shell;
   shell.config.fatal = true;
@@ -32,7 +32,7 @@
   // https://github.com/shelljs/shelljs/issues/1024#issuecomment-1001552543
   shell.env.NODE_OPTIONS = '--max_old_space_size=4096'; // Increase heap size for the CI
   shell.env.PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = 'true'; // Skip download and avoid `ERROR: Failed to download Chromium`.
-  const template = require('./config').generateTemplate(
+  const template = await require('./config').generateTemplate(
     new Date().toISOString()
   );
   const utils = require('./utils');
@@ -74,12 +74,14 @@
     // Clean up the `./electron/build/resources` folder with Git.
     // To avoid file duplication between bundled app and dev mode, some files are copied from `./electron-app` to `./electron/build` folder.
     const foldersToSyncFromDev = ['resources'];
-    foldersToSyncFromDev.forEach((filename) =>
-      shell.exec(
-        `git -C ${join(repoRoot, 'electron', 'build', filename)} clean -ffxdq`,
-        {
-          async: false,
-        }
+    await Promise.all(
+      foldersToSyncFromDev.map((filename) =>
+        exec('git', [
+          '-C',
+          join(repoRoot, 'electron', 'build', filename),
+          'clean',
+          '-ffxdq',
+        ])
       )
     );
 
@@ -104,15 +106,20 @@
     // Build and test the extensions |
     //-------------------------------+
     for (const extension of extensions) {
-      exec(
-        `yarn --network-timeout 1000000 --cwd ${join(repoRoot, extension)}`,
+      await exec(
+        'yarn',
+        ['--network-timeout', '1000000', '--cwd', join(repoRoot, extension)],
         `Building and testing ${extension}`
       );
-      exec(
-        `yarn --network-timeout 1000000 --cwd ${join(
-          repoRoot,
-          extension
-        )} test:slow`,
+      await exec(
+        'yarn',
+        [
+          '--network-timeout',
+          '1000000',
+          '--cwd',
+          join(repoRoot, extension),
+          'test:slow',
+        ],
         `Executing slow tests ${extension}`
       );
     }
@@ -142,11 +149,21 @@
     for (const extension of extensions) {
       const packageJsonPath = join(repoRoot, extension, 'package.json');
       const versionToRestore = readJson(packageJsonPath).version;
-      exec(
-        `yarn --network-timeout 1000000 --cwd ${join(
-          repoRoot,
-          extension
-        )} publish --ignore-scripts --new-version ${version} --no-git-tag-version --registry http://localhost:4873`,
+      await exec(
+        'yarn',
+        [
+          '--network-timeout',
+          '1000000',
+          '--cwd',
+          join(repoRoot, extension),
+          'publish',
+          '--ignore-scripts',
+          '--new-version',
+          version,
+          '--no-git-tag-version',
+          '--registry',
+          'http://localhost:4873',
+        ],
         `Publishing ${extension}@${version} to the private npm registry`
       );
       // Publishing will change the version number, this should be reverted up after the build.
@@ -250,20 +267,26 @@ ${fs
     //-------------------------------------------------------------------------------------------+
     // Install all private and public dependencies for the electron application and build Theia. |
     //-------------------------------------------------------------------------------------------+
-    exec(
-      `yarn --network-timeout 1000000 --cwd ${join(
-        repoRoot,
-        'electron',
-        'build'
-      )} --registry http://localhost:4873`,
+    await exec(
+      'yarn',
+      [
+        '--network-timeout',
+        '1000000',
+        '--cwd',
+        join(repoRoot, 'electron', 'build'),
+        '--registry',
+        'http://localhost:4873',
+      ],
       'Installing dependencies'
     );
-    exec(
-      `yarn --cwd ${join(repoRoot, 'electron', 'build')} build`,
+    await exec(
+      'yarn',
+      ['--cwd', join(repoRoot, 'electron', 'build'), 'build'],
       `Building the ${productName} application`
     );
-    exec(
-      `yarn --cwd ${join(repoRoot, 'electron', 'build')} rebuild`,
+    await exec(
+      'yarn',
+      ['--cwd', join(repoRoot, 'electron', 'build'), 'rebuild'],
       'Rebuilding native dependencies'
     );
 
@@ -284,8 +307,9 @@ ${fs
     //-----------------------------------+
     // Package the electron application. |
     //-----------------------------------+
-    exec(
-      `yarn --cwd ${join(repoRoot, 'electron', 'build')} package`,
+    await exec(
+      'yarn',
+      ['--cwd', join(repoRoot, 'electron', 'build'), 'package'],
       `Packaging the ${productName} application`
     );
 
@@ -317,15 +341,19 @@ ${fs
   //--------+
   // Utils. |
   //--------+
-  function exec(command, toEcho) {
+  /**
+   * @param {string} command
+   * @param {readonly string[]} args
+   */
+  async function exec(command, args, toEcho = '') {
     if (toEcho) {
       echo(`⏱️  >>> ${toEcho}...`);
     }
-    const { stdout } = shell.exec(command);
+    const stdout = await utils.exec(command, args);
     if (toEcho) {
       echo(`👌  <<< ${toEcho}.`);
     }
-    return stdout;
+    return stdout.trim();
   }
 
   async function copyFilesToBuildArtifacts() {
@@ -437,13 +465,13 @@ ${fs
   }
 
   /**
-   * @param {import('fs').PathLike} file
+   * @param {import('node:fs').PathLike} file
    * @param {string|undefined} [algorithm="sha512"]
    * @param {BufferEncoding|undefined} [encoding="base64"]
    * @param {object|undefined} [options]
    */
   function hashFile(file, algorithm = 'sha512', encoding = 'base64', options) {
-    const crypto = require('crypto');
+    const crypto = require('node:crypto');
     return new Promise((resolve, reject) => {
       const hash = crypto.createHash(algorithm);
       hash.on('error', reject).setEncoding(encoding);
@@ -500,11 +528,11 @@ ${fs
 
   /**
    * @param {string} configPath
-   * @return {Promise<import('child_process').ChildProcess>}
+   * @return {Promise<import('node:child_process').ChildProcess>}
    */
   function startNpmRegistry(configPath) {
     return new Promise((resolve, reject) => {
-      const fork = require('child_process').fork(
+      const fork = require('node:child_process').fork(
         require.resolve('verdaccio/bin/verdaccio'),
         ['-c', configPath]
       );
