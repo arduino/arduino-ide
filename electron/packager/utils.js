@@ -125,20 +125,21 @@ const isElectronPublish = false; // TODO: support auto-updates
 const isNightly = process.env.IS_NIGHTLY === 'true';
 const isRelease = process.env.IS_RELEASE === 'true';
 
-function git(command) {
+/**
+ * @param {readonly string[]} args
+ */
+async function git(args) {
   try {
-    const gitPath = shell.which('git');
+    const git = shell.which('git');
     const error = shell.error();
     if (error) {
       throw new Error(error);
     }
-    const { stderr, stdout } = shell.exec(`"${gitPath}" ${command}`, {
-      silent: true,
-    });
-    if (stderr) {
-      throw new Error(stderr.toString().trim());
+    if (!git) {
+      throw new Error("Could not find 'git' on the $PATH");
     }
-    return stdout.toString().trim();
+    const stdout = await exec(git.toString(), args);
+    return stdout;
   } catch (e) {
     throw e;
   }
@@ -168,6 +169,20 @@ function getChannelFile(platform) {
   );
 }
 
+/**
+ * @param {string} command
+ * @param {readonly string[]} args
+ */
+async function exec(command, args) {
+  const execa = await import('execa');
+  const promise = execa.execa(command, args);
+  if (promise.pipeStdout) {
+    promise.pipeStdout(process.stdout);
+  }
+  const { stdout } = await promise;
+  return stdout;
+}
+
 module.exports = {
   adjustArchiveStructure,
   isZip,
@@ -177,4 +192,5 @@ module.exports = {
   isElectronPublish,
   git,
   getChannelFile,
+  exec,
 };
