@@ -1,3 +1,31 @@
+// @ts-check
+
+const exec = (
+  /** @type {string} */ command,
+  /** @type {readonly string[]} */ args,
+  /** @type {import('shelljs')|undefined}*/ shell = undefined,
+  /** @type {import('node:child_process').ExecFileSyncOptionsWithStringEncoding|undefined} */ options = undefined
+) => {
+  try {
+    const stdout = require('node:child_process').execFileSync(
+      command,
+      args,
+      options ? options : { encoding: 'utf8' }
+    );
+    if (shell) {
+      shell.echo(stdout.trim());
+    }
+    return stdout;
+  } catch (err) {
+    if (shell) {
+      shell.echo(err instanceof Error ? err.message : String(err));
+      shell.exit(1);
+    }
+    throw err;
+  }
+};
+exports.exec = exec;
+
 /**
  * Clones something from GitHub and builds it with [`Task`](https://taskfile.dev/).
  *
@@ -21,11 +49,15 @@ exports.goBuildFromGit = (version, destinationPath, taskName) => {
 };
 
 /**
- * The `command` is either `go` or `task`.
+ * The `command` must be either `'go'` or `'task'`.
+ * @param {string} command
+ * @param {{ owner: any; repo: any; commitish: any; }} version
+ * @param {string} destinationPath
+ * @param {string} taskName
  */
 function buildFromGit(command, version, destinationPath, taskName) {
-  const fs = require('fs');
-  const path = require('path');
+  const fs = require('node:fs');
+  const path = require('node:path');
   const temp = require('temp');
   const shell = require('shelljs');
 
@@ -66,23 +98,17 @@ function buildFromGit(command, version, destinationPath, taskName) {
 
   const tempRepoPath = temp.mkdirSync();
   shell.echo(`>>> Cloning ${taskName} source to ${tempRepoPath}...`);
-  if (shell.exec(`git clone ${url} ${tempRepoPath}`).code !== 0) {
-    shell.exit(1);
-  }
+  exec('git', ['clone', url, tempRepoPath], shell);
   shell.echo(`<<< Cloned ${taskName} repo.`);
 
   if (commitish) {
     shell.echo(`>>> Checking out ${commitish}...`);
-    if (shell.exec(`git -C ${tempRepoPath} checkout ${commitish}`).code !== 0) {
-      shell.exit(1);
-    }
+    exec('git', ['-C', tempRepoPath, 'checkout', commitish], shell);
     shell.echo(`<<< Checked out ${commitish}.`);
   }
 
   shell.echo(`>>> Building the ${taskName}...`);
-  if (shell.exec(`${command} build`, { cwd: tempRepoPath }).code !== 0) {
-    shell.exit(1);
-  }
+  exec(command, ['build'], shell, { cwd: tempRepoPath, encoding: 'utf8' });
   shell.echo(`<<< Done ${taskName} build.`);
 
   const binName = path.basename(destinationPath);
