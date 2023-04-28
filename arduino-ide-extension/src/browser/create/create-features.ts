@@ -8,6 +8,10 @@ import { AuthenticationSession } from '../../node/auth/types';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../utils/constants';
 import { CreateUri } from './create-uri';
 
 export type CloudSketchState = 'push' | 'pull';
@@ -128,8 +132,8 @@ export class CreateFeatures implements FrontendApplicationContribution {
       return undefined;
     }
     return dataDirUri
-      .resolve('RemoteSketchbook')
-      .resolve('ArduinoCloud')
+      .resolve(REMOTE_SKETCHBOOK_FOLDER)
+      .resolve(ARDUINO_CLOUD_FOLDER)
       .isEqualOrParent(new URI(sketch.uri));
   }
 

@@ -16,6 +16,10 @@ import {
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { AuthenticationSession } from '../../common/protocol/authentication-service';
 import { ConfigService } from '../../common/protocol';
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../utils/constants';
 
 export namespace LocalCacheUri {
   export const scheme = 'arduino-local-cache';
@@ -107,7 +111,7 @@ export class LocalCacheFsProvider
       return;
     }
     this._localCacheRoot = localCacheUri;
-    for (const segment of ['RemoteSketchbook', 'ArduinoCloud']) {
+    for (const segment of [REMOTE_SKETCHBOOK_FOLDER, ARDUINO_CLOUD_FOLDER]) {
       this._localCacheRoot = this._localCacheRoot.resolve(segment);
       await fileService.createFolder(this._localCacheRoot);
     }
