@@ -1,8 +1,14 @@
-import { nls } from '@theia/core/lib/common';
+import { nls } from '@theia/core/lib/common/nls';
 import * as React from '@theia/core/shared/react';
-import ReactMarkdown from 'react-markdown';
+// @ts-expect-error see https://github.com/microsoft/TypeScript/issues/49721#issuecomment-1319854183
+import type { Options } from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
+
+const ReactMarkdown = React.lazy<React.ComponentType<Options>>(
+  // @ts-expect-error see above
+  () => import('react-markdown')
+);
 
 export interface UpdateProgress {
   progressInfo?: ProgressInfo | undefined;
@@ -96,17 +102,26 @@ export const IDEUpdaterComponent = ({
         {changelog && (
           <div className="dialogRow changelog-container">
             <div className="changelog">
-              <ReactMarkdown
-                components={{
-                  a: ({ href, children, ...props }) => (
-                    <a onClick={() => href && openExternal(href)} {...props}>
-                      {children}
-                    </a>
-                  ),
-                }}
+              <React.Suspense
+                fallback={
+                  <div className="fallback">
+                    <div className="spinner" />
+                  </div>
+                }
               >
-                {changelog}
-              </ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    // @ts-expect-error see imports. There is no ESM type-only import in CommonJS modules.
+                    a: ({ href, children, ...props }) => (
+                      <a onClick={() => href && openExternal(href)} {...props}>
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {changelog}
+                </ReactMarkdown>
+              </React.Suspense>
             </div>
           </div>
         )}

@@ -94,7 +94,7 @@
     "ps-tree": "^1.2.0",
     "query-string": "^7.0.1",
     "react-disable": "^0.1.1",
-    "react-markdown": "^6.0.3",
+    "react-markdown": "^8.0.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-select": "^5.6.0",
     "react-tabs": "^3.1.2",
