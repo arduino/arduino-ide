@@ -444,7 +444,7 @@ export class SketchesServiceImpl
    * For example, on Windows, instead of getting an [8.3 filename](https://en.wikipedia.org/wiki/8.3_filename), callers will get a fully resolved path.
    * `C:\\Users\\KITTAA~1\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a` will be `C:\\Users\\kittaakos\\AppData\\Local\\Temp\\.arduinoIDE-unsaved2022615-21100-iahybb.yyvh\\sketch_jul15a`
    */
-  createTempFolder(): Promise<string> {
+  private createTempFolder(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       temp.mkdir({ prefix: TempSketchPrefix }, (createError, dirPath) => {
         if (createError) {
@@ -523,13 +523,14 @@ export class SketchesServiceImpl
     } else {
       filter = () => true;
     }
-    await cpy(source, destination, {
+    await cpy(sourceFolderBasename, destination, {
       rename: (basename) =>
         sourceFolderBasename !== destinationFolderBasename &&
         basename === `${sourceFolderBasename}.ino`
           ? `${destinationFolderBasename}.ino`
           : basename,
       filter,
+      cwd: path.dirname(source),
     });
     const copiedSketch = await this.doLoadSketch(destinationUri, false);
     return copiedSketch;
