@@ -2,6 +2,7 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
@@ -227,13 +228,35 @@ describe('sketches-service-impl', () => {
       expect(mainFileContentTwoAfterCopy).to.be.equal(contentOne);
     });
 
-    [
-      ['(', ')', 'parentheses'],
-      ['[', ']', 'brackets'],
-      ['{', '}', 'braces'],
-      ['<', '>', 'chevrons'],
-    ].map(([open, close, name]) =>
+    (
+      [
+        ['(', ')', 'parentheses'],
+        ['[', ']', 'brackets'],
+        ['{', '}', 'braces'],
+        [
+          '<',
+          '>',
+          'chevrons',
+          {
+            predicate: () => isWindows,
+            why: '< (less than) and > (greater than) are reserved characters on Windows (https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions)',
+          },
+        ],
+      ] as [
+        open: string,
+        close: string,
+        name: string,
+        skip?: { predicate: () => boolean; why: string }
+      ][]
+    ).map(([open, close, name, skip]) =>
       it(`should copy a sketch when the path contains ${name} in the sketch folder path: '${open},${close}'`, async function () {
+        if (skip) {
+          const { predicate, why } = skip;
+          if (predicate()) {
+            console.info(why);
+            return this.skip();
+          }
+        }
         this.timeout(testTimeout);
         const sketchesService =
           container.get<SketchesServiceImpl>(SketchesService);
