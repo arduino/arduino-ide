@@ -2,6 +2,7 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
@@ -226,16 +227,94 @@ describe('sketches-service-impl', () => {
       expect(mainFileContentOneAfterCopy).to.be.equal(contentOne);
       expect(mainFileContentTwoAfterCopy).to.be.equal(contentOne);
     });
+
+    (
+      [
+        ['(', ')', 'parentheses'],
+        ['[', ']', 'brackets'],
+        ['{', '}', 'braces'],
+        [
+          '<',
+          '>',
+          'chevrons',
+          {
+            predicate: () => isWindows,
+            why: '< (less than) and > (greater than) are reserved characters on Windows (https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions)',
+          },
+        ],
+      ] as [
+        open: string,
+        close: string,
+        name: string,
+        skip?: { predicate: () => boolean; why: string }
+      ][]
+    ).map(([open, close, name, skip]) =>
+      it(`should copy a sketch when the path contains ${name} in the sketch folder path: '${open},${close}'`, async function () {
+        if (skip) {
+          const { predicate, why } = skip;
+          if (predicate()) {
+            console.info(why);
+            return this.skip();
+          }
+        }
+        this.timeout(testTimeout);
+        const sketchesService =
+          container.get<SketchesServiceImpl>(SketchesService);
+        const content = `// special content when ${name} are in the path`;
+        const tempRoot = await sketchesService['createTempFolder']();
+        toDispose.push(disposeFolder(tempRoot));
+        const sketch = await sketchesService.createNewSketch(
+          'punctuation_marks',
+          content
+        );
+        toDispose.push(disposeSketch(sketch));
+
+        // the destination path contains punctuation marks
+        const tempRootUri = FileUri.create(tempRoot);
+        const testSegment = `path segment with ${open}${name}${close}`;
+        const firstDestinationUri = tempRootUri
+          .resolve(testSegment)
+          .resolve('first')
+          .resolve(sketch.name);
+
+        const firstSketchCopy = await sketchesService.copy(sketch, {
+          destinationUri: firstDestinationUri.toString(),
+        });
+        expect(firstSketchCopy).to.be.not.undefined;
+        expect(firstSketchCopy.mainFileUri).to.be.equal(
+          firstDestinationUri.resolve(`${sketch.name}.ino`).toString()
+        );
+        const firstCopyContent = await mainFileContentOf(firstSketchCopy);
+        expect(firstCopyContent).to.be.equal(content);
+
+        // the source path contains punctuation marks. yes, the target too, but it does not matter
+        const secondDestinationUri = tempRootUri
+          .resolve(testSegment)
+          .resolve('second')
+          .resolve(sketch.name);
+        const secondSketchCopy = await sketchesService.copy(firstSketchCopy, {
+          destinationUri: secondDestinationUri.toString(),
+        });
+        expect(secondSketchCopy).to.be.not.undefined;
+        expect(secondSketchCopy.mainFileUri).to.be.equal(
+          secondDestinationUri.resolve(`${sketch.name}.ino`).toString()
+        );
+        const secondCopyContent = await mainFileContentOf(secondSketchCopy);
+        expect(secondCopyContent).to.be.equal(content);
+      })
+    );
   });
 });
 
 function disposeSketch(...sketch: Sketch[]): Disposable {
+  return disposeFolder(...sketch.map(({ uri }) => FileUri.fsPath(uri)));
+}
+
+function disposeFolder(...paths: string[]): Disposable {
   return new DisposableCollection(
-    ...sketch
-      .map(({ uri }) => FileUri.fsPath(uri))
-      .map((path) =>
-        Disposable.create(() => rimrafSync(path, { maxBusyTries: 5 }))
-      )
+    ...paths.map((path) =>
+      Disposable.create(() => rimrafSync(path, { maxBusyTries: 5 }))
+    )
   );
 }
 
