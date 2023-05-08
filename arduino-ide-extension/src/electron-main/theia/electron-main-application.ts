@@ -19,8 +19,13 @@ import {
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { URI } from '@theia/core/shared/vscode-uri';
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import * as os from '@theia/core/lib/common/os';
-import { Restart } from '@theia/core/lib/electron-common/messaging/electron-messages';
+import { isOSX } from '@theia/core/lib/common/os';
+import {
+  RequestTitleBarStyle,
+  Restart,
+  TitleBarStyleAtStartup,
+  TitleBarStyleChanged,
+} from '@theia/core/lib/electron-common/messaging/electron-messages';
 import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
 import { IsTempSketch } from '../../node/is-temp-sketch';
 import {
@@ -176,7 +181,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
   private attachFileAssociations(cwd: string): void {
     // OSX: register open-file event
-    if (os.isOSX) {
+    if (isOSX) {
       app.on('open-file', async (event, path) => {
         event.preventDefault();
         const resolvedPath = await this.resolvePath(path, cwd);
@@ -330,10 +335,19 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   protected override getTitleBarStyle(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _config: FrontendApplicationConfig
+    config: FrontendApplicationConfig
   ): 'native' | 'custom' {
-    return 'native';
+    const storedFrame = this.electronStore.get('windowstate')?.frame;
+    if (storedFrame !== undefined) {
+      return !!storedFrame ? 'native' : 'custom';
+    }
+    if (config.preferences && config.preferences['window.titleBarStyle']) {
+      const titleBarStyle = config.preferences['window.titleBarStyle'];
+      if (titleBarStyle === 'native' || titleBarStyle === 'custom') {
+        return titleBarStyle;
+      }
+    }
+    return 'custom';
   }
 
   protected override hookApplicationEvents(): void {
@@ -350,6 +364,21 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         // TODO: remove deleted sketch from closedWorkspaces?
         this.delete(sketch);
       }
+    });
+    ipcMain.on(TitleBarStyleChanged, ({ sender }, titleBarStyle: string) => {
+      this.useNativeWindowFrame = isOSX || titleBarStyle === 'native';
+      const browserWindow = BrowserWindow.fromId(sender.id);
+      if (browserWindow) {
+        this.saveWindowState(browserWindow);
+      } else {
+        console.warn(`no BrowserWindow with id: ${sender.id}`);
+      }
+    });
+    ipcMain.on(RequestTitleBarStyle, ({ sender }) => {
+      sender.send(
+        TitleBarStyleAtStartup,
+        this.didUseNativeWindowFrameOnStart.get(sender.id) ? 'native' : 'custom'
+      );
     });
   }
 

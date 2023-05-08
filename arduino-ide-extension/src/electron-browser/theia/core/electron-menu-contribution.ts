@@ -1,53 +1,38 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
+import {
+  getCurrentWebContents,
+  getCurrentWindow,
+} from '@theia/core/electron-shared/@electron/remote';
+import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
+import { PreferenceScope } from '@theia/core/lib/browser/preferences/preference-scope';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
-import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import {
-  ElectronMenuContribution as TheiaElectronMenuContribution,
   ElectronCommands,
+  ElectronMenuContribution as TheiaElectronMenuContribution,
 } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
-import { MainMenuManager } from '../../../common/main-menu-manager';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { ZoomLevel } from '@theia/core/lib/electron-browser/window/electron-window-preferences';
-import { PreferenceScope } from '@theia/core/lib/browser/preferences/preference-scope';
-import {
-  getCurrentWindow,
-  getCurrentWebContents,
-} from '@theia/core/electron-shared/@electron/remote';
+import { injectable } from '@theia/core/shared/inversify';
+import { MainMenuManager } from '../../../common/main-menu-manager';
 
 @injectable()
 export class ElectronMenuContribution
   extends TheiaElectronMenuContribution
   implements MainMenuManager
 {
-  @inject(FrontendApplicationStateService)
-  private readonly appStateService: FrontendApplicationStateService;
-
-  // private appReady = false;
-  // private updateWhenReady = false;
+  private app: FrontendApplication;
 
   override onStart(app: FrontendApplication): void {
+    this.app = app;
     super.onStart(app);
-    this.appStateService.reachedState('ready').then(() => {
-      // this.appReady = true;
-      // if (this.updateWhenReady) {
-      //   this.update();
-      // }
-    });
-  }
-
-  protected override hideTopPanel(): void {
-    // NOOP
-    // We reuse the `div` for the Arduino toolbar.
   }
 
   update(): void {
-    // if (this.appReady) {
-    (this as any).setMenu();
-    // } else {
-    //   this.updateWhenReady = true;
-    // }
+    // no menu updates before `onStart`
+    if (!this.app) {
+      return;
+    }
+    this.setMenu(this.app);
   }
 
   override registerCommands(registry: CommandRegistry): void {

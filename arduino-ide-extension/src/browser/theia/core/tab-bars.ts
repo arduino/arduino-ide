@@ -23,11 +23,6 @@ export class TabBarRenderer extends TheiaTabBarRenderer {
 }
 
 export class ToolbarAwareTabBar extends TheiaToolbarAwareTabBar {
-  protected override async updateBreadcrumbs(): Promise<void> {
-    // NOOP
-    // IDE2 does not use breadcrumbs.
-  }
-
   private readonly doUpdateToolbar = debounce(() => super.updateToolbar(), 500);
   protected override updateToolbar(): void {
     // Unlike Theia, IDE2 debounces the toolbar updates with 500ms

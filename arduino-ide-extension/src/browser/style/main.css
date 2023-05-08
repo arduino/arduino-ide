@@ -100,6 +100,19 @@
     background-color: var(--theia-titleBar-activeBackground);
 }
 
+#arduino-toolbar-panel {
+    background: var(--theia-titleBar-activeBackground);
+    color: var(--theia-titleBar-activeForeground);
+    display: flex;
+    min-height: var(--theia-private-menubar-height);
+    border-bottom: 1px solid var(--theia-titleBar-border);
+}
+#arduino-toolbar-panel:window-inactive,
+#arduino-toolbar-panel:-moz-window-inactive {
+    background: var(--theia-titleBar-inactiveBackground);
+    color: var(--theia-titleBar-inactiveForeground);
+}
+
 #arduino-toolbar-container {
     display: flex;
     width: 100%;

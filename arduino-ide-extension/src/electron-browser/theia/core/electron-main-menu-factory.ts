@@ -5,7 +5,6 @@ import {
   CommandMenuNode,
   CompoundMenuNode,
   CompoundMenuNodeRole,
-  MAIN_MENU_BAR,
   MenuNode,
   MenuPath,
 } from '@theia/core/lib/common/menu';
@@ -39,18 +38,9 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     });
   }
 
-  override createElectronMenuBar(): Electron.Menu {
+  override createElectronMenuBar(): Electron.Menu | null {
     this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
-    const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
-    const template = this.fillMenuTemplate([], menuModel, [], {
-      rootMenuPath: MAIN_MENU_BAR,
-    });
-    if (isOSX) {
-      template.unshift(this.createOSXMenu());
-    }
-    const menu = remote.Menu.buildFromTemplate(this.escapeAmpersand(template));
-    this._menu = menu;
-    return menu;
+    return super.createElectronMenuBar();
   }
 
   override async setMenuBar(): Promise<void> {
@@ -61,13 +51,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       this.updateWhenReady = true;
       return;
     }
-    await this.preferencesService.ready;
-    const createdMenuBar = this.createElectronMenuBar();
-    if (isOSX) {
-      remote.Menu.setApplicationMenu(createdMenuBar);
-    } else {
-      remote.getCurrentWindow().setMenu(createdMenuBar);
-    }
+    return super.setMenuBar();
   }
 
   override createElectronContextMenu(
