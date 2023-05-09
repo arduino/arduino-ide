@@ -1,3 +1,4 @@
+import { ResourceSaveOptions } from '@theia/core/lib/common/resource';
 import URI from '@theia/core/lib/common/uri';
 import { injectable } from '@theia/core/shared/inversify';
 import {
@@ -7,6 +8,7 @@ import {
 } from '@theia/filesystem/lib/browser/file-resource';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import {
+  ETAG_DISABLED,
   FileOperationError,
   FileOperationResult,
 } from '@theia/filesystem/lib/common/files';
@@ -51,8 +53,16 @@ class WriteQueuedFileResource extends FileResource {
   ) {
     super(uri, fileService, options);
     const originalDoWrite = this['doWrite'];
-    this['doWrite'] = (content, options) =>
-      this.writeQueue.add(() => originalDoWrite.bind(this)(content, options));
+    this['doWrite'] = (content, options) => {
+      if (isETagDisabledResourceSaveOptions(options)) {
+        // When force overriding without auto-save do not enqueue the modification, it's already enqueued and the conflict is just being resolved.
+        // https://github.com/arduino/arduino-ide/issues/2051
+        return originalDoWrite.bind(this)(content, options);
+      }
+      return this.writeQueue.add(() =>
+        originalDoWrite.bind(this)(content, options)
+      );
+    };
     const originalSaveStream = this['saveStream'];
     if (originalSaveStream) {
       this['saveStream'] = (content, options) =>
@@ -82,4 +92,25 @@ class WriteQueuedFileResource extends FileResource {
     await this.writeQueue.onIdle();
     return super.isInSync();
   }
+}
+
+// Theia incorrectly sets the disabled ETag on the `stat` instead of the `version` so `FileResourceVersion#is` is unusable.
+// https://github.com/eclipse-theia/theia/blob/f9063625b861b8433341fcd1a29a0d0298778f4c/packages/filesystem/src/browser/file-resource.ts#L210
+// https://github.com/eclipse-theia/theia/blob/f9063625b861b8433341fcd1a29a0d0298778f4c/packages/filesystem/src/browser/file-resource.ts#L34
+// https://github.com/eclipse-theia/theia/discussions/12502
+function isETagDisabledResourceSaveOptions(
+  options?: ResourceSaveOptions
+): boolean {
+  if (typeof options === 'object') {
+    if ('version' in options && typeof options['version'] === 'object') {
+      const version = <Record<string, unknown>>options['version'];
+      if (version && 'stat' in version && typeof version['stat'] === 'object') {
+        const stat = <Record<string, unknown>>version['stat'];
+        if (stat) {
+          return 'etag' in stat && stat['etag'] === ETAG_DISABLED;
+        }
+      }
+    }
+  }
+  return false;
 }
