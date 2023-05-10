@@ -18,6 +18,7 @@ import {
   BoardSearch,
   sortComponents,
   SortGroup,
+  platformInstallFailed,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -474,7 +475,7 @@ export class BoardsServiceImpl
       });
       resp.on('error', (error) => {
         this.responseService.appendToOutput({
-          chunk: `Failed to install platform: ${item.id}.\n`,
+          chunk: `${platformInstallFailed(item.id, version)}\n`,
         });
         this.responseService.appendToOutput({
           chunk: `${error.toString()}\n`,

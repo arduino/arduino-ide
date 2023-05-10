@@ -278,6 +278,10 @@
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
     },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+    },
     "library": {
       "addZip": "Add .ZIP Library...",
       "arduinoLibraries": "Arduino libraries",

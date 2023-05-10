@@ -8,7 +8,10 @@ import {
   sortComponents,
   SortGroup,
 } from '../common/protocol';
-import { Installable } from '../common/protocol/installable';
+import {
+  Installable,
+  libraryInstallFailed,
+} from '../common/protocol/installable';
 import {
   LibraryDependency,
   LibraryLocation,
@@ -34,6 +37,7 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/lib_pb';
 import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress } from './grpc-progressible';
+import { ServiceError } from './service-error';
 
 @injectable()
 export class LibraryServiceImpl
@@ -272,7 +276,12 @@ export class LibraryServiceImpl
       (resolve, reject) => {
         client.libraryResolveDependencies(req, (error, resp) => {
           if (error) {
-            reject(error);
+            console.error('Failed to list library dependencies', error);
+            // If a gRPC service error, it removes the code and the number to provider more readable error message to the user.
+            const unwrappedError = ServiceError.is(error)
+              ? new Error(error.details)
+              : error;
+            reject(unwrappedError);
             return;
           }
           resolve(
@@ -344,9 +353,7 @@ export class LibraryServiceImpl
       });
       resp.on('error', (error) => {
         this.responseService.appendToOutput({
-          chunk: `Failed to install library: ${item.name}${
-            version ? `:${version}` : ''
-          }.\n`,
+          chunk: `${libraryInstallFailed(item.name, version)}\n`,
         });
         this.responseService.appendToOutput({
           chunk: `${error.toString()}\n`,

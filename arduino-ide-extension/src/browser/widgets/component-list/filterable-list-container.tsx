@@ -6,13 +6,20 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { Searchable } from '../../../common/protocol/searchable';
 import { ExecuteWithProgress } from '../../../common/protocol/progressible';
-import { Installable } from '../../../common/protocol/installable';
+import {
+  Installable,
+  libraryInstallFailed,
+  platformInstallFailed,
+} from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { SearchBar } from './search-bar';
 import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
-import { ResponseServiceClient } from '../../../common/protocol';
+import {
+  LibraryPackage,
+  ResponseServiceClient,
+} from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 import { FilterRenderer } from './filter-renderer';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
@@ -130,13 +137,24 @@ export class FilterableListContainer<
   }
 
   private async install(item: T, version: Installable.Version): Promise<void> {
-    const { install, searchable } = this.props;
+    const { install, searchable, messageService } = this.props;
+    const { name } = item;
     await ExecuteWithProgress.doWithProgress({
       ...this.props,
       progressText:
         nls.localize('arduino/common/processing', 'Processing') +
-        ` ${item.name}:${version}`,
-      run: ({ progressId }) => install({ item, progressId, version }),
+        ` ${name}:${version}`,
+      run: async ({ progressId }) => {
+        try {
+          await install({ item, progressId, version });
+        } catch (err) {
+          const message = LibraryPackage.is(item) // TODO: this dispatch does not belong here
+            ? libraryInstallFailed(name, version)
+            : platformInstallFailed(name, version);
+          const cause = err instanceof Error ? err.message : String(err);
+          messageService.error(`${message} ${cause}`);
+        }
+      },
     });
     const items = await searchable.search(this.state.searchOptions);
     this.setState({ items, edited: undefined });
