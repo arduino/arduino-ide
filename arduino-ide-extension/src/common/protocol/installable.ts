@@ -1,4 +1,5 @@
 import type { MessageService } from '@theia/core/lib/common/message-service';
+import { nls } from '@theia/core/lib/common/nls';
 import {
   coerce as coerceSemver,
   compare as compareSemver,
@@ -8,6 +9,32 @@ import { naturalCompare } from '../utils';
 import type { ArduinoComponent } from './arduino-component';
 import { ExecuteWithProgress } from './progressible';
 import type { ResponseServiceClient } from './response-service';
+
+export function libraryInstallFailed(
+  name: string,
+  version?: string | undefined
+): string {
+  const versionSuffix = version ? `:${version}` : '';
+  return nls.localize(
+    'arduino/installable/libraryInstallFailed',
+    "Failed to install library: '{0}{1}'.",
+    name,
+    versionSuffix
+  );
+}
+
+export function platformInstallFailed(
+  name: string,
+  version?: string | undefined
+): string {
+  const versionSuffix = version ? `:${version}` : '';
+  return nls.localize(
+    'arduino/installable/platformInstallFailed',
+    "Failed to install platform: '{0}{1}'.",
+    name,
+    versionSuffix
+  );
+}
 
 export interface Installable<T extends ArduinoComponent> {
   /**
@@ -62,7 +89,7 @@ export namespace Installable {
     'remove',
     'unknown',
   ] as const;
-  export type Action = typeof ActionLiterals[number];
+  export type Action = (typeof ActionLiterals)[number];
 
   export function action(params: {
     installed?: Version | undefined;
