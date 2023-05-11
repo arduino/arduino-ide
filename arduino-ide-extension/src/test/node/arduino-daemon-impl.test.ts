@@ -43,19 +43,13 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
   }
 
   private async initCliConfig(): Promise<string> {
-    const cliPath = await this.getExecPath();
+    const cliPath = this.getExecPath();
     const destDir = track.mkdirSync();
-    await spawnCommand(`"${cliPath}"`, [
-      'config',
-      'init',
-      '--dest-dir',
-      destDir,
-    ]);
+    await spawnCommand(cliPath, ['config', 'init', '--dest-dir', destDir]);
     const content = fs.readFileSync(path.join(destDir, CLI_CONFIG), {
       encoding: 'utf8',
     });
-    const cliConfig = safeLoad(content) as any;
-    // cliConfig.daemon.port = String(this.port);
+    const cliConfig = safeLoad(content);
     const modifiedContent = safeDump(cliConfig);
     fs.writeFileSync(path.join(destDir, CLI_CONFIG), modifiedContent, {
       encoding: 'utf8',
