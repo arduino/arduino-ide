@@ -20,7 +20,7 @@ import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
 import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
-import { findChildTheiaButton } from '../utils/dom';
+import { findChildTheiaButton, splitByBoldTag } from '../utils/dom';
 
 @injectable()
 export class LibraryListWidget extends ListWidget<
@@ -81,7 +81,7 @@ export class LibraryListWidget extends ListWidget<
     let installDependencies: boolean | undefined = undefined;
     if (dependencies.length) {
       const message = document.createElement('div');
-      message.innerHTML =
+      const textContent =
         dependencies.length === 1
           ? nls.localize(
               'arduino/library/needsOneDependency',
@@ -95,6 +95,22 @@ export class LibraryListWidget extends ListWidget<
               item.name,
               version
             );
+      const segments = splitByBoldTag(textContent);
+      if (!segments) {
+        message.textContent = textContent;
+      } else {
+        segments.map((segment) => {
+          const span = document.createElement('span');
+          if (typeof segment === 'string') {
+            span.textContent = segment;
+          } else {
+            const bold = document.createElement('b');
+            bold.textContent = segment.textContent;
+            span.appendChild(bold);
+          }
+          message.appendChild(span);
+        });
+      }
       const listContainer = document.createElement('div');
       listContainer.style.maxHeight = '300px';
       listContainer.style.overflowY = 'auto';
