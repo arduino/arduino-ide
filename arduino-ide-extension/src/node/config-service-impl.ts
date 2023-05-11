@@ -222,8 +222,8 @@ export class ConfigServiceImpl
   }
 
   private async getFallbackCliConfig(): Promise<DefaultCliConfig> {
-    const cliPath = await this.daemon.getExecPath();
-    const rawJson = await spawnCommand(`"${cliPath}"`, [
+    const cliPath = this.daemon.getExecPath();
+    const rawJson = await spawnCommand(cliPath, [
       'config',
       'dump',
       'format',
@@ -233,13 +233,8 @@ export class ConfigServiceImpl
   }
 
   private async initCliConfigTo(fsPathToDir: string): Promise<void> {
-    const cliPath = await this.daemon.getExecPath();
-    await spawnCommand(`"${cliPath}"`, [
-      'config',
-      'init',
-      '--dest-dir',
-      `"${fsPathToDir}"`,
-    ]);
+    const cliPath = this.daemon.getExecPath();
+    await spawnCommand(cliPath, ['config', 'init', '--dest-dir', fsPathToDir]);
   }
 
   private async mapCliConfigToAppConfig(

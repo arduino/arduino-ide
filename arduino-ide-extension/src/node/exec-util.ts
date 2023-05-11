@@ -1,51 +1,17 @@
-import os from 'node:os';
-import which from 'which';
-import semver from 'semver';
-import { join } from 'node:path';
 import { spawn } from 'node:child_process';
+import os from 'node:os';
+import { join } from 'node:path';
 
-export async function getExecPath(
-  commandName: string,
-  onError: (error: Error) => void = (error) => console.log(error),
-  versionArg?: string | undefined,
-  inBinDir?: boolean
-): Promise<string> {
-  const execName = `${commandName}${os.platform() === 'win32' ? '.exe' : ''}`;
-  const relativePath = ['..', '..', 'build'];
-  if (inBinDir) {
-    relativePath.push('bin');
-  }
-  const buildCommand = join(__dirname, ...relativePath, execName);
-  if (!versionArg) {
-    return buildCommand;
-  }
-  const versionRegexp = /\d+\.\d+\.\d+/;
-  const buildVersion = await spawnCommand(
-    `"${buildCommand}"`,
-    [versionArg],
-    onError
-  );
-  const buildShortVersion = (buildVersion.match(versionRegexp) || [])[0];
-  const pathCommand = await new Promise<string | undefined>((resolve) =>
-    which(execName, (error, path) => resolve(error ? undefined : path))
-  );
-  if (!pathCommand) {
-    return buildCommand;
-  }
-  const pathVersion = await spawnCommand(
-    `"${pathCommand}"`,
-    [versionArg],
-    onError
-  );
-  const pathShortVersion = (pathVersion.match(versionRegexp) || [])[0];
-  if (
-    pathShortVersion &&
-    buildShortVersion &&
-    semver.gt(pathShortVersion, buildShortVersion)
-  ) {
-    return pathCommand;
-  }
-  return buildCommand;
+export type ArduinoBinaryName =
+  | 'arduino-cli'
+  | 'arduino-fwuploader'
+  | 'arduino-language-server';
+export type ClangBinaryName = 'clangd' | 'clang-format';
+export type BinaryName = ArduinoBinaryName | ClangBinaryName;
+
+export function getExecPath(binaryName: BinaryName): string {
+  const filename = `${binaryName}${os.platform() === 'win32' ? '.exe' : ''}`;
+  return join(__dirname, '..', '..', 'build', filename);
 }
 
 export function spawnCommand(
@@ -55,7 +21,7 @@ export function spawnCommand(
   stdIn?: string
 ): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    const cp = spawn(command, args, { windowsHide: true, shell: true });
+    const cp = spawn(command, args, { windowsHide: true });
     const outBuffers: Buffer[] = [];
     const errBuffers: Buffer[] = [];
     cp.stdout.on('data', (b: Buffer) => outBuffers.push(b));
