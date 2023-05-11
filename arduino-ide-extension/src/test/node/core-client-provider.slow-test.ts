@@ -1,5 +1,4 @@
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { waitForEvent } from '@theia/core/lib/common/promise-util';
 import type { MaybePromise } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
@@ -16,6 +15,7 @@ import { ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
 import { CLI_CONFIG, DefaultCliConfig } from '../../node/cli-config';
 import { BoardListRequest } from '../../node/cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import { CoreClientProvider } from '../../node/core-client-provider';
+import { spawnCommand } from '../../node/exec-util';
 import { ConfigDirUriProvider } from '../../node/theia/env-variables/env-variables-server';
 import { ErrnoException } from '../../node/utils/errors';
 import {
@@ -177,10 +177,9 @@ describe('core-client-provider', () => {
         boardsPackages.filter(({ id }) => id === 'teensy:avr').length
       ).to.be.equal(1);
     };
-    const configDirPath = await prepareTestConfigDir(
-      { board_manager: { additional_urls: additionalUrls } },
-      ({ boardsService }) => assertTeensyAvailable(boardsService)
-    );
+    const configDirPath = await prepareTestConfigDir({
+      board_manager: { additional_urls: additionalUrls },
+    });
     const thirdPartyPackageIndexPath = join(
       configDirPath,
       'data',
@@ -273,27 +272,31 @@ async function assertFunctionalCli(
  * the config folder.
  */
 async function prepareTestConfigDir(
-  configOverrides: Partial<DefaultCliConfig> = {},
-  otherExpect?: (services: Services) => MaybePromise<void>
+  configOverrides: Partial<DefaultCliConfig> = {}
 ): Promise<string> {
-  const toDispose = new DisposableCollection();
   const params = { configDirPath: newTempConfigDirPath(), configOverrides };
   const container = await createContainer(params);
-  try {
-    await start(container, toDispose);
-    await assertFunctionalCli(container, otherExpect);
-    const configDirUriProvider =
-      container.get<ConfigDirUriProvider>(ConfigDirUriProvider);
-    return FileUri.fsPath(configDirUriProvider.configDirUri());
-  } finally {
-    const daemon = container.get<ArduinoDaemonImpl>(ArduinoDaemonImpl);
-    // Wait for the daemon stop event. All subprocesses (such as `serial-discovery` and `mdns-discovery`) must terminate.
-    // Otherwise, `EPERM: operation not permitted, unlink` is thrown on Windows when "corrupting" the `directories.data` folder for the tests.
-    await Promise.all([
-      waitForEvent(daemon.onDaemonStopped, 5_000),
-      Promise.resolve(toDispose.dispose()),
-    ]);
-  }
+  const daemon = container.get<ArduinoDaemonImpl>(ArduinoDaemonImpl);
+  const cliPath = await daemon.getExecPath();
+  const configDirUriProvider =
+    container.get<ConfigDirUriProvider>(ConfigDirUriProvider);
+  const configDirPath = FileUri.fsPath(configDirUriProvider.configDirUri());
+  await coreUpdateIndex(cliPath, configDirPath);
+  return configDirPath;
+}
+
+async function coreUpdateIndex(
+  cliPath: string,
+  configDirPath: string
+): Promise<void> {
+  const cliConfigPath = join(configDirPath, 'arduino-cli.yaml');
+  await fs.access(cliConfigPath);
+  const stdout = await spawnCommand(
+    cliPath,
+    ['core', 'update-index', '--config-file', cliConfigPath],
+    (error) => console.error(error)
+  );
+  console.log(stdout);
 }
 
 async function startCli(
@@ -312,15 +315,8 @@ async function startCli(
     throw err;
   }
   const container = await createContainer(configDirPath);
-  await start(container, toDispose);
-  return container;
-}
-
-async function start(
-  container: Container,
-  toDispose: DisposableCollection
-): Promise<void> {
   await startDaemon(container, toDispose);
+  return container;
 }
 
 async function createContainer(
