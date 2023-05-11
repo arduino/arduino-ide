@@ -13,7 +13,7 @@ import {
 } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { SearchBar } from './search-bar';
-import { ListWidget } from './list-widget';
+import { ListWidget, UserAbortError } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 import {
@@ -148,6 +148,11 @@ export class FilterableListContainer<
         try {
           await install({ item, progressId, version });
         } catch (err) {
+          if (err instanceof UserAbortError) {
+            // Do not toast an error message on user abort.
+            // https://github.com/arduino/arduino-ide/issues/2063
+            return;
+          }
           const message = LibraryPackage.is(item) // TODO: this dispatch does not belong here
             ? libraryInstallFailed(name, version)
             : platformInstallFailed(name, version);
