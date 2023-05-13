@@ -1,7 +1,10 @@
-import { Emitter, Event, JsonRpcProxy } from '@theia/core';
+import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { injectable, interfaces } from '@theia/core/shared/inversify';
-import { HostedPluginServer } from '@theia/plugin-ext/lib/common/plugin-protocol';
-import { HostedPluginSupport as TheiaHostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import {
+  PluginContributions,
+  HostedPluginSupport as TheiaHostedPluginSupport,
+} from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 
 @injectable()
 export class HostedPluginSupport extends TheiaHostedPluginSupport {
@@ -10,7 +13,7 @@ export class HostedPluginSupport extends TheiaHostedPluginSupport {
 
   override onStart(container: interfaces.Container): void {
     super.onStart(container);
-    this.hostedPluginServer.onDidCloseConnection(() =>
+    this['server'].onDidCloseConnection(() =>
       this.onDidCloseConnectionEmitter.fire()
     );
   }
@@ -28,8 +31,38 @@ export class HostedPluginSupport extends TheiaHostedPluginSupport {
     return this.onDidCloseConnectionEmitter.event;
   }
 
-  private get hostedPluginServer(): JsonRpcProxy<HostedPluginServer> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (this as any).server;
+  protected override startPlugins(
+    contributionsByHost: Map<string, PluginContributions[]>,
+    toDisconnect: DisposableCollection
+  ): Promise<void> {
+    reorderPlugins(contributionsByHost);
+    return super.startPlugins(contributionsByHost, toDisconnect);
   }
+}
+
+/**
+ * Force the `vscode-arduino-ide` API to activate before any Arduino IDE tool VSIX.
+ *
+ * Arduino IDE tool VISXs are not forced to declare the `vscode-arduino-api` as a `extensionDependencies`,
+ * but the API must activate before any tools. This in place sorting helps to bypass Theia's plugin resolution
+ * without forcing tools developers to add `vscode-arduino-api` to the `extensionDependencies`.
+ */
+function reorderPlugins(
+  contributionsByHost: Map<string, PluginContributions[]>
+): void {
+  for (const [, contributions] of contributionsByHost) {
+    const apiPluginIndex = contributions.findIndex(isArduinoAPI);
+    if (apiPluginIndex >= 0) {
+      const apiPlugin = contributions[apiPluginIndex];
+      contributions.splice(apiPluginIndex, 1);
+      contributions.unshift(apiPlugin);
+    }
+  }
+}
+
+function isArduinoAPI(pluginContribution: PluginContributions): boolean {
+  return (
+    pluginContribution.plugin.metadata.model.id ===
+    'dankeboy36.vscode-arduino-api'
+  );
 }
