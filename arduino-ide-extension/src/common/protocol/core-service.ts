@@ -5,13 +5,11 @@ import type {
   Range,
   Position,
 } from '@theia/core/shared/vscode-languageserver-protocol';
-import type {
-  BoardUserField,
-  Port,
-} from '../../common/protocol/boards-service';
+import type { BoardUserField, Port, Installable } from '../../common/protocol/';
 import type { Programmer } from './boards-service';
 import type { Sketch } from './sketches-service';
 import { IndexUpdateSummary } from './notification-service';
+import type { CompileSummary as ApiCompileSummary } from 'vscode-arduino-api';
 
 export const CompilerWarningLiterals = [
   'None',
@@ -19,7 +17,7 @@ export const CompilerWarningLiterals = [
   'More',
   'All',
 ] as const;
-export type CompilerWarnings = typeof CompilerWarningLiterals[number];
+export type CompilerWarnings = (typeof CompilerWarningLiterals)[number];
 export namespace CompilerWarnings {
   export function labelOf(warning: CompilerWarnings): string {
     return CompilerWarningLabels[warning];
@@ -103,6 +101,53 @@ export namespace CoreError {
   }
 }
 
+export interface InstalledPlatformReference {
+  readonly id: string;
+  readonly version: Installable.Version;
+  /**
+   * Absolute filesystem path.
+   */
+  readonly installDir: string;
+  readonly packageUrl: string;
+}
+
+export interface ExecutableSectionSize {
+  readonly name: string;
+  readonly size: number;
+  readonly maxSize: number;
+}
+
+export interface CompileSummary {
+  readonly buildPath: string;
+  /**
+   * To be compatible with the `vscode-arduino-tools` API.
+   * @deprecated Use `buildPath` instead. Use Theia or VS Code URI to convert to an URI string on the client side.
+   */
+  readonly buildOutputUri: string;
+  readonly usedLibraries: ApiCompileSummary['usedLibraries'];
+  readonly executableSectionsSize: ExecutableSectionSize[];
+  readonly boardPlatform?: InstalledPlatformReference | undefined;
+  readonly buildPlatform?: InstalledPlatformReference | undefined;
+  readonly buildProperties: string[];
+}
+
+export function isCompileSummary(arg: unknown): arg is CompileSummary {
+  return (
+    Boolean(arg) &&
+    typeof arg === 'object' &&
+    (<CompileSummary>arg).buildPath !== undefined &&
+    typeof (<CompileSummary>arg).buildPath === 'string' &&
+    (<CompileSummary>arg).buildOutputUri !== undefined &&
+    typeof (<CompileSummary>arg).buildOutputUri === 'string' &&
+    (<CompileSummary>arg).executableSectionsSize !== undefined &&
+    Array.isArray((<CompileSummary>arg).executableSectionsSize) &&
+    (<CompileSummary>arg).usedLibraries !== undefined &&
+    Array.isArray((<CompileSummary>arg).usedLibraries) &&
+    (<CompileSummary>arg).buildProperties !== undefined &&
+    Array.isArray((<CompileSummary>arg).buildProperties)
+  );
+}
+
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
@@ -132,7 +177,7 @@ export interface CoreService {
 }
 
 export const IndexTypeLiterals = ['platform', 'library'] as const;
-export type IndexType = typeof IndexTypeLiterals[number];
+export type IndexType = (typeof IndexTypeLiterals)[number];
 export namespace IndexType {
   export function is(arg: unknown): arg is IndexType {
     return (

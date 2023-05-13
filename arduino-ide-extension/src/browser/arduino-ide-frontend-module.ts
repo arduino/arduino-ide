@@ -354,6 +354,7 @@ import { FileResourceResolver as TheiaFileResourceResolver } from '@theia/filesy
 import { StylingParticipant } from '@theia/core/lib/browser/styling-service';
 import { MonacoEditorMenuContribution } from './theia/monaco/monaco-menu';
 import { MonacoEditorMenuContribution as TheiaMonacoEditorMenuContribution } from '@theia/monaco/lib/browser/monaco-menu';
+import { UpdateArduinoContext } from './contributions/update-arduino-context';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -747,6 +748,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, Account);
   Contribution.configure(bind, CloudSketchbookContribution);
   Contribution.configure(bind, CreateCloudCopy);
+  Contribution.configure(bind, UpdateArduinoContext);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

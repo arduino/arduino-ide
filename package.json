@@ -43,7 +43,7 @@
     "watch": "lerna run watch --parallel",
     "test": "lerna run test",
     "test:slow": "lerna run test:slow",
-    "download:plugins": "theia download:plugins",
+    "download:plugins": "theia download:plugins --ignore-errors",
     "update:version": "node ./scripts/update-version.js",
     "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
     "i18n:check": "yarn i18n:generate && git add -N ./i18n && git diff --exit-code ./i18n",
@@ -70,6 +70,7 @@
   "theiaPluginsDir": "plugins",
   "theiaPlugins": {
     "vscode-builtin-cpp": "https://open-vsx.org/api/vscode/cpp/1.52.1/file/vscode.cpp-1.52.1.vsix",
+    "vscode-arduino-api": "https://github.com/dankeboy36/vscode-arduino-api/releases/download/0.1.0/vscode-arduino-api-0.1.0.vsix",
     "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.8.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",

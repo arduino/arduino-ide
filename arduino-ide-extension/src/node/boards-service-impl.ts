@@ -155,6 +155,7 @@ export class BoardsServiceImpl
       VID = prop.get('vid') || '';
       PID = prop.get('pid') || '';
     }
+    const buildProperties = detailsResp.getBuildPropertiesList();
 
     return {
       fqbn,
@@ -164,6 +165,7 @@ export class BoardsServiceImpl
       debuggingSupported,
       VID,
       PID,
+      buildProperties
     };
   }
 

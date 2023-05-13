@@ -9,6 +9,7 @@ import {
   BoardsService,
   CoreService,
   SketchesService,
+  isCompileSummary,
 } from '../../common/protocol';
 import { createBaseContainer, startDaemon } from './test-bindings';
 
@@ -31,7 +32,7 @@ describe('core-service-impl', () => {
   afterEach(() => toDispose.dispose());
 
   describe('compile', () => {
-    it('should execute a command with the build path', async function () {
+    it('should execute a command with the compile summary, including the build path', async function () {
       this.timeout(testTimeout);
       const coreService = container.get<CoreService>(CoreService);
       const sketchesService = container.get<SketchesService>(SketchesService);
@@ -56,7 +57,7 @@ describe('core-service-impl', () => {
       const [, args] = executedBuildDidCompleteCommands[0];
       expect(args.length).to.be.equal(1);
       const arg = args[0];
-      expect(typeof arg).to.be.equal('object');
+      expect(isCompileSummary(arg)).to.be.true;
       expect('buildOutputUri' in arg).to.be.true;
       expect(arg.buildOutputUri).to.be.not.undefined;
 

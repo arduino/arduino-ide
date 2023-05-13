@@ -3216,6 +3216,11 @@
   resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-7.0.5.tgz#b1d2f772142a301538fae9bdf9cf15b9f2573a29"
   integrity sha512-hKB88y3YHL8oPOs/CNlaXtjWn93+Bs48sDQR37ZUqG2tLeCS7EA1cmnkKsuQsub9OKEB/y/Rw9zqJqqNSbqVlQ==
 
+"@types/vscode@^1.78.0":
+  version "1.78.0"
+  resolved "https://registry.yarnpkg.com/@types/vscode/-/vscode-1.78.0.tgz#b5600abce8855cf21fb32d0857bcd084b1f83069"
+  integrity sha512-LJZIJpPvKJ0HVQDqfOy6W4sNKUBBwyDu1Bs8chHBZOe9MNuKTJtidgZ2bqjhmmWpUb0TIIqv47BFUcVmAsgaVA==
+
 "@types/which@^1.3.1":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@types/which/-/which-1.3.2.tgz#9c246fc0c93ded311c8512df2891fb41f6227fdf"
@@ -3997,6 +4002,14 @@ arduino-serial-plotter-webapp@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/arduino-serial-plotter-webapp/-/arduino-serial-plotter-webapp-0.2.0.tgz#90d61ad7ed1452f70fd226ff25eccb36c1ab1a4f"
   integrity sha512-AxQIsKr6Mf8K1c3kj+ojjFvE9Vz8cUqJqRink6/myp/ranEGwsQQ83hziktkPKZvBQshqrMH8nzoGIY2Z3A2OA==
+
+ardunno-cli@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/ardunno-cli/-/ardunno-cli-0.1.2.tgz#145d998231b34b33bf70f7fc6e5be6497191f708"
+  integrity sha512-8PTBMDS2ofe2LJZZKHw/MgfXgDwpiImXJcBeqeZ6lcTSDqQNMJpEIjcCdPcxbsQbJXRRfZZ4nn6G/gXwEuJPpw==
+  dependencies:
+    nice-grpc-common "^2.0.2"
+    protobufjs "^7.2.3"
 
 are-we-there-yet@^2.0.0:
   version "2.0.0"
@@ -10750,6 +10763,13 @@ nested-error-stacks@^2.1.1:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.1.1.tgz#26c8a3cee6cc05fbcf1e333cd2fc3e003326c0b5"
   integrity sha512-9iN1ka/9zmX1ZvLV9ewJYEk9h7RyRRtqdK0woXcqohu8EWIerfPUjYJPg0ULy0UqP7cslmdGc8xKDJcojlKiaw==
 
+nice-grpc-common@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/nice-grpc-common/-/nice-grpc-common-2.0.2.tgz#e6aeebb2bd19d87114b351e291e30d79dd38acf7"
+  integrity sha512-7RNWbls5kAL1QVUOXvBsv1uO0wPQK3lHv+cY1gwkTzirnG1Nop4cBJZubpgziNbaVc/bl9QJcyvsf/NQxa3rjQ==
+  dependencies:
+    ts-error "^1.0.6"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -12196,7 +12216,7 @@ proto-list@~1.2.1:
   resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
   integrity sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA==
 
-protobufjs@^7.0.0:
+protobufjs@^7.0.0, protobufjs@^7.2.3:
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-7.2.3.tgz#01af019e40d9c6133c49acbb3ff9e30f4f0f70b2"
   integrity sha512-TtpvOqwB5Gdz/PQmOjgsrGH1nHjAQVCN7JG4A6r1sXRWESL5rNMAiRcBQlCAdKxZcAbstExQePYG8xof/JVRgg==
@@ -14362,6 +14382,11 @@ trough@^2.0.0:
   resolved "https://registry.yarnpkg.com/trough/-/trough-2.1.0.tgz#0f7b511a4fde65a46f18477ab38849b22c554876"
   integrity sha512-AqTiAOLcj85xS7vQ8QkAV41hPDIJ71XJB4RCUrzo/1GM2CQwhkJGaf9Hgr7BOugMRpgGUrqRg/DrBDl4H40+8g==
 
+ts-error@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/ts-error/-/ts-error-1.0.6.tgz#277496f2a28de6c184cfce8dfd5cdd03a4e6b0fc"
+  integrity sha512-tLJxacIQUM82IR7JO1UUkKlYuUTmoY9HBJAmNWFzheSlDS5SPMcNIepejHJa4BpPQLAcbRhRf3GDJzyj6rbKvA==
+
 ts-md5@^1.2.2:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/ts-md5/-/ts-md5-1.3.1.tgz#f5b860c0d5241dd9bb4e909dd73991166403f511"
@@ -14958,6 +14983,14 @@ vinyl@^2.2.1:
     cloneable-readable "^1.0.0"
     remove-trailing-separator "^1.0.1"
     replace-ext "^1.0.0"
+
+vscode-arduino-api@^0.1.1-alpha.4:
+  version "0.1.1-alpha.4"
+  resolved "https://registry.yarnpkg.com/vscode-arduino-api/-/vscode-arduino-api-0.1.1-alpha.4.tgz#37b95f47f74cb491b2a8826849a4ccbd406fd526"
+  integrity sha512-1W+UK1ckbaYrqQYMLT+oziMzzhvQ5MgUTD8lP/6U6TmH6T0SOlhX/FXZAkfDeyyylcgmA6ItNfkNUskzLy0MEQ==
+  dependencies:
+    "@types/vscode" "^1.78.0"
+    ardunno-cli "^0.1.2"
 
 vscode-jsonrpc@8.1.0:
   version "8.1.0"

@@ -8,6 +8,8 @@ import {
   CompilerWarnings,
   CoreService,
   CoreError,
+  CompileSummary,
+  isCompileSummary,
 } from '../common/protocol/core-service';
 import {
   CompileRequest,
@@ -35,11 +37,14 @@ import { firstToUpperCase, notEmpty } from '../common/utils';
 import { ServiceError } from './service-error';
 import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
 import { BoardDiscovery } from './board-discovery';
+import { Mutable } from '@theia/core/lib/common/types';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
   export type Response = UploadResponse | UploadUsingProgrammerResponse;
 }
+
+type CompileSummaryFragment = Partial<Mutable<CompileSummary>>;
 
 @injectable()
 export class CoreServiceImpl extends CoreClientAware implements CoreService {
@@ -58,23 +63,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   async compile(options: CoreService.Options.Compile): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    let buildPath: string | undefined = undefined;
+    const compileSummary = <CompileSummaryFragment>{};
     const progressHandler = this.createProgressHandler(options);
-    const buildPathHandler = (response: CompileResponse) => {
-      const currentBuildPath = response.getBuildPath();
-      if (currentBuildPath) {
-        buildPath = currentBuildPath;
-      } else {
-        if (!!buildPath && currentBuildPath !== buildPath) {
-          throw new Error(
-            `The CLI has already provided a build path: <${buildPath}>, and IDE received a new build path value: <${currentBuildPath}>.`
-          );
-        }
-      }
-    };
+    const compileSummaryHandler = (response: CompileResponse) =>
+      updateCompileSummary(compileSummary, response);
     const handler = this.createOnDataHandler<CompileResponse>(
       progressHandler,
-      buildPathHandler
+      compileSummaryHandler
     );
     const request = this.compileRequest(options, instance);
     return new Promise<void>((resolve, reject) => {
@@ -111,31 +106,35 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         .on('end', resolve);
     }).finally(() => {
       handler.dispose();
-      if (!buildPath) {
+      if (!isCompileSummary(compileSummary)) {
         console.error(
-          `Have not received the build path from the CLI while running the compilation.`
+          `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
+            compileSummary
+          )}`
         );
       } else {
-        this.fireBuildDidComplete(FileUri.create(buildPath).toString());
+        this.fireBuildDidComplete(compileSummary);
       }
     });
   }
 
   // This executes on the frontend, the VS Code extension receives it, and sends an `ino/buildDidComplete` notification to the language server.
-  private fireBuildDidComplete(buildOutputUri: string): void {
+  private fireBuildDidComplete(compileSummary: CompileSummary): void {
     const params = {
-      buildOutputUri,
+      ...compileSummary,
     };
     console.info(
       `Executing 'arduino.languageserver.notifyBuildDidComplete' with ${JSON.stringify(
-        params
+        params.buildOutputUri
       )}`
     );
     this.commandService
       .executeCommand('arduino.languageserver.notifyBuildDidComplete', params)
       .catch((err) =>
         console.error(
-          `Unexpected error when firing event on build did complete. ${buildOutputUri}`,
+          `Unexpected error when firing event on build did complete. ${JSON.stringify(
+            params.buildOutputUri
+          )}`,
           err
         )
       );
@@ -460,4 +459,63 @@ namespace StreamingResponse {
      */
     readonly handlers?: ((response: R) => void)[];
   }
+}
+
+function updateCompileSummary(
+  compileSummary: CompileSummaryFragment,
+  response: CompileResponse
+): CompileSummaryFragment {
+  const buildPath = response.getBuildPath();
+  if (buildPath) {
+    compileSummary.buildPath = buildPath;
+    compileSummary.buildOutputUri = FileUri.create(buildPath).toString();
+  }
+  const executableSectionsSize = response.getExecutableSectionsSizeList();
+  if (executableSectionsSize) {
+    compileSummary.executableSectionsSize = executableSectionsSize.map((item) =>
+      item.toObject(false)
+    );
+  }
+  const usedLibraries = response.getUsedLibrariesList();
+  if (usedLibraries) {
+    compileSummary.usedLibraries = usedLibraries.map((item) => {
+      const object = item.toObject(false);
+      const library = {
+        ...object,
+        architectures: object.architecturesList,
+        types: object.typesList,
+        examples: object.examplesList,
+        providesIncludes: object.providesIncludesList,
+        properties: object.propertiesMap.reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {} as Record<string, string>),
+        compatibleWith: object.compatibleWithMap.reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {} as Record<string, boolean>),
+      } as const;
+      const mutable = <Partial<Mutable<typeof library>>>library;
+      delete mutable.architecturesList;
+      delete mutable.typesList;
+      delete mutable.examplesList;
+      delete mutable.providesIncludesList;
+      delete mutable.propertiesMap;
+      delete mutable.compatibleWithMap;
+      return library;
+    });
+  }
+  const boardPlatform = response.getBoardPlatform();
+  if (boardPlatform) {
+    compileSummary.buildPlatform = boardPlatform.toObject(false);
+  }
+  const buildPlatform = response.getBuildPlatform();
+  if (buildPlatform) {
+    compileSummary.buildPlatform = buildPlatform.toObject(false);
+  }
+  const buildProperties = response.getBuildPropertiesList();
+  if (buildProperties) {
+    compileSummary.buildProperties = buildProperties.slice();
+  }
+  return compileSummary;
 }
