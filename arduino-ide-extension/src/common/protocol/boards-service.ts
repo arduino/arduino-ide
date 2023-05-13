@@ -441,6 +441,7 @@ export interface BoardDetails {
   readonly debuggingSupported: boolean;
   readonly VID: string;
   readonly PID: string;
+  readonly buildProperties: string[];
 }
 
 export interface Tool {

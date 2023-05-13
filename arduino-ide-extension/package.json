@@ -104,7 +104,8 @@
     "temp": "^0.9.1",
     "temp-dir": "^2.0.0",
     "tree-kill": "^1.2.1",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "vscode-arduino-api": "^0.1.2"
   },
   "devDependencies": {
     "@octokit/rest": "^18.12.0",
