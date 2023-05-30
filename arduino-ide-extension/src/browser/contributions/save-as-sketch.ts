@@ -24,6 +24,7 @@ import {
   RenameCloudSketch,
   RenameCloudSketchParams,
 } from './rename-cloud-sketch';
+import { assertConnectedToBackend } from './save-sketch';
 
 @injectable()
 export class SaveAsSketch extends CloudSketchContribution {
@@ -64,6 +65,10 @@ export class SaveAsSketch extends CloudSketchContribution {
       markAsRecentlyOpened,
     }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
   ): Promise<boolean> {
+    assertConnectedToBackend({
+      connectionStatusService: this.connectionStatusService,
+      messageService: this.messageService,
+    });
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return false;
