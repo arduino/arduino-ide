@@ -260,6 +260,12 @@ export class Platform extends jspb.Message {
     getHelp(): HelpResources | undefined;
     setHelp(value?: HelpResources): Platform;
 
+    getIndexed(): boolean;
+    setIndexed(value: boolean): Platform;
+
+    getMissingMetadata(): boolean;
+    setMissingMetadata(value: boolean): Platform;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -285,6 +291,8 @@ export namespace Platform {
         deprecated: boolean,
         typeList: Array<string>,
         help?: HelpResources.AsObject,
+        indexed: boolean,
+        missingMetadata: boolean,
     }
 }
 
