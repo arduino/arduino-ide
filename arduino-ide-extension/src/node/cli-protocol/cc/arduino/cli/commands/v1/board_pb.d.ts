@@ -18,6 +18,9 @@ export class BoardDetailsRequest extends jspb.Message {
     getFqbn(): string;
     setFqbn(value: string): BoardDetailsRequest;
 
+    getDoNotExpandBuildProperties(): boolean;
+    setDoNotExpandBuildProperties(value: boolean): BoardDetailsRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsRequest.AsObject;
@@ -33,6 +36,7 @@ export namespace BoardDetailsRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         fqbn: string,
+        doNotExpandBuildProperties: boolean,
     }
 }
 
@@ -93,6 +97,11 @@ export class BoardDetailsResponse extends jspb.Message {
     setIdentificationPropertiesList(value: Array<BoardIdentificationProperties>): BoardDetailsResponse;
     addIdentificationProperties(value?: BoardIdentificationProperties, index?: number): BoardIdentificationProperties;
 
+    clearBuildPropertiesList(): void;
+    getBuildPropertiesList(): Array<string>;
+    setBuildPropertiesList(value: Array<string>): BoardDetailsResponse;
+    addBuildProperties(value: string, index?: number): string;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsResponse.AsObject;
@@ -120,6 +129,7 @@ export namespace BoardDetailsResponse {
         programmersList: Array<cc_arduino_cli_commands_v1_common_pb.Programmer.AsObject>,
         debuggingSupported: boolean,
         identificationPropertiesList: Array<BoardIdentificationProperties.AsObject>,
+        buildPropertiesList: Array<string>,
     }
 }
 
