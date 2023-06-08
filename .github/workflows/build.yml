@@ -120,6 +120,9 @@ jobs:
           IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
           CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
+          CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
+          CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
+          CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
         run: |
           # See: https://www.electron.build/code-signing
           if [ $CAN_SIGN = false ]; then

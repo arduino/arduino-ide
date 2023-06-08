@@ -179,7 +179,8 @@ export class CreateApi {
         );
       })
       .catch((reason) => {
-        if (reason?.status === 404) return [] as Create.Resource[];
+        if (reason?.status === 404)
+          return [] as Create.Resource[]; // TODO: must not swallow 404
         else throw reason;
       });
   }
@@ -486,18 +487,12 @@ export class CreateApi {
     await this.run(url, init, ResponseResultProvider.NOOP);
   }
 
-  private fetchCounter = 0;
   private async run<T>(
     requestInfo: URL,
     init: RequestInit | undefined,
     resultProvider: ResponseResultProvider = ResponseResultProvider.JSON
   ): Promise<T> {
-    const fetchCount = `[${++this.fetchCounter}]`;
-    const fetchStart = performance.now();
-    const method = init?.method ? `${init.method}: ` : '';
-    const url = requestInfo.toString();
     const response = await fetch(requestInfo.toString(), init);
-    const fetchEnd = performance.now();
     if (!response.ok) {
       let details: string | undefined = undefined;
       try {
@@ -508,18 +503,7 @@ export class CreateApi {
       const { statusText, status } = response;
       throw new CreateError(statusText, status, details);
     }
-    const parseStart = performance.now();
     const result = await resultProvider(response);
-    const parseEnd = performance.now();
-    console.debug(
-      `HTTP ${fetchCount} ${method}${url} [fetch: ${(
-        fetchEnd - fetchStart
-      ).toFixed(2)} ms, parse: ${(parseEnd - parseStart).toFixed(
-        2
-      )} ms] body: ${
-        typeof result === 'string' ? result : JSON.stringify(result)
-      }`
-    );
     return result;
   }
 
