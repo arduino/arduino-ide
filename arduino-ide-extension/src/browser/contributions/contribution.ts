@@ -68,6 +68,7 @@ import { MainMenuManager } from '../../common/main-menu-manager';
 import { ConfigServiceClient } from '../config/config-service-client';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import { DialogService } from '../dialog-service';
+import { ApplicationConnectionStatusContribution } from '../theia/core/connection-status-service';
 
 export {
   Command,
@@ -171,6 +172,9 @@ export abstract class SketchContribution extends Contribution {
 
   @inject(EnvVariablesServer)
   protected readonly envVariableServer: EnvVariablesServer;
+
+  @inject(ApplicationConnectionStatusContribution)
+  protected readonly connectionStatusService: ApplicationConnectionStatusContribution;
 
   protected async sourceOverride(): Promise<Record<string, string>> {
     const override: Record<string, string> = {};

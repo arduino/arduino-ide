@@ -1,4 +1,3 @@
-import * as os from 'node:os';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -15,7 +14,7 @@ export class ClangFormatter implements Formatter {
   private readonly configService: ConfigService;
 
   @inject(EnvVariablesServer)
-  private readonly envVariableServer: EnvVariablesServer;
+  private readonly envVariablesServer: EnvVariablesServer;
 
   async format({
     content,
@@ -26,26 +25,19 @@ export class ClangFormatter implements Formatter {
     formatterConfigFolderUris: string[];
     options?: FormatterOptions;
   }): Promise<string> {
-    const [execPath, style] = await Promise.all([
-      this.execPath(),
-      this.style(formatterConfigFolderUris, options),
-    ]);
+    const execPath = this.execPath();
+    const args = await this.styleArgs(formatterConfigFolderUris, options);
     const formatted = await spawnCommand(
-      `"${execPath}"`,
-      [style],
+      execPath,
+      args,
       console.error,
       content
     );
     return formatted;
   }
 
-  private _execPath: string | undefined;
-  private async execPath(): Promise<string> {
-    if (this._execPath) {
-      return this._execPath;
-    }
-    this._execPath = await getExecPath('clang-format');
-    return this._execPath;
+  private execPath(): string {
+    return getExecPath('clang-format');
   }
 
   /**
@@ -60,10 +52,10 @@ export class ClangFormatter implements Formatter {
    *
    * See: https://github.com/arduino/arduino-ide/issues/566
    */
-  private async style(
+  private async styleArgs(
     formatterConfigFolderUris: string[],
     options?: FormatterOptions
-  ): Promise<string> {
+  ): Promise<string[]> {
     const clangFormatPaths = await Promise.all([
       ...formatterConfigFolderUris.map((uri) => this.clangConfigPath(uri)),
       this.clangConfigPath(this.configDirPath()),
@@ -72,11 +64,11 @@ export class ClangFormatter implements Formatter {
     const first = clangFormatPaths.filter(Boolean).shift();
     if (first) {
       console.debug(
-        `Using ${ClangFormatFile} style configuration from '${first}'.`
+        `Using ${clangFormatFilename} style configuration from '${first}'.`
       );
-      return `-style=file:"${first}"`;
+      return ['-style', `file:${first}`];
     }
-    return `-style="${style(toClangOptions(options))}"`;
+    return ['-style', style(toClangOptions(options))];
   }
 
   private async dataDirPath(): Promise<string | undefined> {
@@ -88,7 +80,7 @@ export class ClangFormatter implements Formatter {
   }
 
   private async configDirPath(): Promise<string> {
-    const configDirUri = await this.envVariableServer.getConfigDirUri();
+    const configDirUri = await this.envVariablesServer.getConfigDirUri();
     return FileUri.fsPath(configDirUri);
   }
 
@@ -100,7 +92,7 @@ export class ClangFormatter implements Formatter {
       return undefined;
     }
     const folderPath = FileUri.fsPath(uri);
-    const clangFormatPath = join(folderPath, ClangFormatFile);
+    const clangFormatPath = join(folderPath, clangFormatFilename);
     try {
       await fs.access(clangFormatPath, constants.R_OK);
       return clangFormatPath;
@@ -115,7 +107,7 @@ interface ClangFormatOptions {
   readonly TabWidth: number;
 }
 
-const ClangFormatFile = '.clang-format';
+export const clangFormatFilename = '.clang-format';
 
 function toClangOptions(
   options?: FormatterOptions | undefined
@@ -129,24 +121,8 @@ function toClangOptions(
   return { UseTab: 'Never', TabWidth: 2 };
 }
 
-export function style({ TabWidth, UseTab }: ClangFormatOptions): string {
-  let styleArgument = JSON.stringify(styleJson({ TabWidth, UseTab })).replace(
-    /[\\"]/g,
-    '\\$&'
-  );
-  if (os.platform() === 'win32') {
-    // Windows command interpreter does not use backslash escapes. This causes the argument to have alternate quoted and
-    // unquoted sections.
-    // Special characters in the unquoted sections must be caret escaped.
-    const styleArgumentSplit = styleArgument.split('"');
-    for (let i = 1; i < styleArgumentSplit.length; i += 2) {
-      styleArgumentSplit[i] = styleArgumentSplit[i].replace(/[<>^|]/g, '^$&');
-    }
-
-    styleArgument = styleArgumentSplit.join('"');
-  }
-
-  return styleArgument;
+function style({ TabWidth, UseTab }: ClangFormatOptions): string {
+  return JSON.stringify(styleJson({ TabWidth, UseTab }));
 }
 
 function styleJson({

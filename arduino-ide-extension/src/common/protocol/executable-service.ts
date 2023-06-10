@@ -5,6 +5,5 @@ export interface ExecutableService {
     clangdUri: string;
     cliUri: string;
     lsUri: string;
-    fwuploaderUri: string;
   }>;
 }

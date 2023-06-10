@@ -411,17 +411,21 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     }
   }
 
-  private createPort(port: Port | undefined): RpcPort {
+  private createPort(port: Port | undefined): RpcPort | undefined {
+    if (!port) {
+      return undefined;
+    }
     const rpcPort = new RpcPort();
-    if (port) {
-      rpcPort.setAddress(port.address);
-      rpcPort.setLabel(port.addressLabel);
-      rpcPort.setProtocol(port.protocol);
-      rpcPort.setProtocolLabel(port.protocolLabel);
-      if (port.properties) {
-        for (const [key, value] of Object.entries(port.properties)) {
-          rpcPort.getPropertiesMap().set(key, value);
-        }
+    rpcPort.setAddress(port.address);
+    rpcPort.setLabel(port.addressLabel);
+    rpcPort.setProtocol(port.protocol);
+    rpcPort.setProtocolLabel(port.protocolLabel);
+    if (port.hardwareId !== undefined) {
+      rpcPort.setHardwareId(port.hardwareId);
+    }
+    if (port.properties) {
+      for (const [key, value] of Object.entries(port.properties)) {
+        rpcPort.getPropertiesMap().set(key, value);
       }
     }
     return rpcPort;

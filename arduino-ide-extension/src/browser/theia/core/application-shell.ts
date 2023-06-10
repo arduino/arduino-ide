@@ -8,13 +8,10 @@ import {
   TabBar,
   Widget,
 } from '@theia/core/lib/browser';
-import {
-  ConnectionStatus,
-  ConnectionStatusService,
-} from '@theia/core/lib/browser/connection-status-service';
 import { nls } from '@theia/core/lib/common/nls';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { inject, injectable } from '@theia/core/shared/inversify';
+import { ApplicationConnectionStatusContribution } from './connection-status-service';
 import { ToolbarAwareTabBar } from './tab-bars';
 
 @injectable()
@@ -22,8 +19,8 @@ export class ApplicationShell extends TheiaApplicationShell {
   @inject(MessageService)
   private readonly messageService: MessageService;
 
-  @inject(ConnectionStatusService)
-  private readonly connectionStatusService: ConnectionStatusService;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatusService: ApplicationConnectionStatusContribution;
 
   override async addWidget(
     widget: Widget,
@@ -64,9 +61,8 @@ export class ApplicationShell extends TheiaApplicationShell {
   }
 
   override async saveAll(options?: SaveOptions): Promise<void> {
-    if (
-      this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE
-    ) {
+    // When there is no connection between the IDE2 frontend and backend.
+    if (this.connectionStatusService.offlineStatus === 'backend') {
       this.messageService.error(
         nls.localize(
           'theia/core/couldNotSave',

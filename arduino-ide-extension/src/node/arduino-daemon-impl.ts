@@ -44,7 +44,6 @@ export class ArduinoDaemonImpl
 
   private _running = false;
   private _port = new Deferred<string>();
-  private _execPath: string | undefined;
 
   // Backend application lifecycle.
 
@@ -68,7 +67,7 @@ export class ArduinoDaemonImpl
   async start(): Promise<string> {
     try {
       this.toDispose.dispose(); // This will `kill` the previously started daemon process, if any.
-      const cliPath = await this.getExecPath();
+      const cliPath = this.getExecPath();
       this.onData(`Starting daemon from ${cliPath}...`);
       const { daemon, port } = await this.spawnDaemonProcess();
       // Watchdog process for terminating the daemon process when the backend app terminates.
@@ -132,12 +131,8 @@ export class ArduinoDaemonImpl
     return this.onDaemonStoppedEmitter.event;
   }
 
-  async getExecPath(): Promise<string> {
-    if (this._execPath) {
-      return this._execPath;
-    }
-    this._execPath = await getExecPath('arduino-cli', this.onError.bind(this));
-    return this._execPath;
+  getExecPath(): string {
+    return getExecPath('arduino-cli');
   }
 
   protected async getSpawnArgs(): Promise<string[]> {
@@ -151,7 +146,7 @@ export class ArduinoDaemonImpl
       '--port',
       '0',
       '--config-file',
-      `"${cliConfigPath}"`,
+      cliConfigPath,
       '-v',
     ];
     if (debug) {
@@ -173,10 +168,8 @@ export class ArduinoDaemonImpl
     daemon: ChildProcess;
     port: string;
   }> {
-    const [cliPath, args] = await Promise.all([
-      this.getExecPath(),
-      this.getSpawnArgs(),
-    ]);
+    const args = await this.getSpawnArgs();
+    const cliPath = this.getExecPath();
     const ready = new Deferred<{ daemon: ChildProcess; port: string }>();
     const options = { shell: true };
     const daemon = spawn(`"${cliPath}"`, args, options);
