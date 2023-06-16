@@ -9,6 +9,7 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { Event, Emitter } from '@theia/core/lib/common/event';
+import { deepClone } from '@theia/core/lib/common/objects';
 import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
@@ -171,7 +172,10 @@ export class ArduinoDaemonImpl
     const args = await this.getSpawnArgs();
     const cliPath = this.getExecPath();
     const ready = new Deferred<{ daemon: ChildProcess; port: string }>();
-    const options = { shell: true };
+    const options = {
+      shell: true,
+      env: { ...deepClone(process.env), NO_COLOR: String(true) },
+    };
     const daemon = spawn(`"${cliPath}"`, args, options);
 
     // If the process exists right after the daemon gRPC server has started (due to an invalid port, unknown address, TCP port in use, etc.)
@@ -258,7 +262,7 @@ export class ArduinoDaemonImpl
   }
 
   protected onData(message: string): void {
-    this.logger.info(message);
+    this.logger.info(message.trim());
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
