@@ -19,3 +19,8 @@ export const InstallManually = nls.localize(
   'arduino/common/installManually',
   'Install Manually'
 );
+
+export const serialMonitorWidgetLabel = nls.localize(
+  'arduino/common/serialMonitor',
+  'Serial Monitor'
+);

@@ -1,6 +1,10 @@
 import * as React from '@theia/core/shared/react';
-import { injectable, inject } from '@theia/core/shared/inversify';
-import { AbstractViewContribution, codicon } from '@theia/core/lib/browser';
+import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import {
+  AbstractViewContribution,
+  ApplicationShell,
+  codicon
+} from '@theia/core/lib/browser';
 import { MonitorWidget } from './monitor-widget';
 import { MenuModelRegistry, Command, CommandRegistry } from '@theia/core';
 import {
@@ -13,6 +17,12 @@ import { nls } from '@theia/core/lib/common';
 import { Event } from '@theia/core/lib/common/event';
 import { MonitorModel } from '../../monitor-model';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
+import {
+  ArduinoPreferences,
+  defaultMonitorWidgetDockPanel,
+  isMonitorWidgetDockPanel
+} from '../../arduino-preferences';
+import { serialMonitorWidgetLabel } from '../../../common/nls';
 
 export namespace SerialMonitor {
   export namespace Commands {
@@ -50,31 +60,59 @@ export class MonitorViewContribution
   static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
     MonitorWidget.ID + ':toggle-toolbar';
   static readonly RESET_SERIAL_MONITOR = MonitorWidget.ID + ':reset';
+  
+  @inject(MonitorModel)
+  private readonly model: MonitorModel;
+  @inject(MonitorManagerProxyClient)
+  private readonly monitorManagerProxy: MonitorManagerProxyClient;
+  @inject(ArduinoPreferences)
+  private readonly arduinoPreferences: ArduinoPreferences;
 
-  constructor(
-    @inject(MonitorModel)
-    protected readonly model: MonitorModel,
+  private _panel: ApplicationShell.Area;
 
-    @inject(MonitorManagerProxyClient)
-    protected readonly monitorManagerProxy: MonitorManagerProxyClient
-  ) {
+  constructor() {
     super({
       widgetId: MonitorWidget.ID,
-      widgetName: MonitorWidget.LABEL,
+      widgetName: serialMonitorWidgetLabel,
       defaultWidgetOptions: {
-        area: 'bottom',
+        area: defaultMonitorWidgetDockPanel,
       },
       toggleCommandId: MonitorViewContribution.TOGGLE_SERIAL_MONITOR,
       toggleKeybinding: 'CtrlCmd+Shift+M',
     });
+    this._panel = defaultMonitorWidgetDockPanel;
+  }
+
+  @postConstruct()
+  protected init(): void {
+    this._panel = this.arduinoPreferences['arduino.monitor.dockPanel'] ?? defaultMonitorWidgetDockPanel;
     this.monitorManagerProxy.onMonitorShouldReset(() => this.reset());
+    this.arduinoPreferences.onPreferenceChanged((event) => {
+      if (event.preferenceName === 'arduino.monitor.dockPanel' && isMonitorWidgetDockPanel(event.newValue) && event.newValue !== this._panel) { 
+        this._panel = event.newValue;
+        const widget = this.tryGetWidget();
+        // reopen at the new position if opened
+        if (widget) {
+          widget.close();
+          this.openView({ activate: true, reveal: true });
+        }
+      }
+    })
+  }
+
+  override get defaultViewOptions(): ApplicationShell.WidgetOptions {
+    const viewOptions = super.defaultViewOptions;
+    return {
+      ...viewOptions,
+      area: this._panel
+    };
   }
 
   override registerMenus(menus: MenuModelRegistry): void {
     if (this.toggleCommand) {
       menus.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
         commandId: this.toggleCommand.id,
-        label: MonitorWidget.LABEL,
+        label: serialMonitorWidgetLabel,
         order: '5',
       });
     }
