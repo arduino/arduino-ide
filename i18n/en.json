@@ -381,6 +381,9 @@
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",

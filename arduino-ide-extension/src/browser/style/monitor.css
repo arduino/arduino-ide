@@ -20,7 +20,7 @@
 
 .serial-monitor .head {
     display: flex;
-    padding: 0px 5px 5px 0px;
+    padding: 0px 5px 5px 5px;
     height: 27px;
     background-color: var(--theia-activityBar-background);
 }

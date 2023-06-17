@@ -27,13 +27,10 @@ import {
 } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { serialMonitorWidgetLabel } from '../../../common/nls';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
-  static readonly LABEL = nls.localize(
-    'arduino/common/serialMonitor',
-    'Serial Monitor'
-  );
   static readonly ID = 'serial-monitor';
 
   protected settings: MonitorSettings = {};
@@ -65,7 +62,7 @@ export class MonitorWidget extends ReactWidget {
   constructor() {
     super();
     this.id = MonitorWidget.ID;
-    this.title.label = MonitorWidget.LABEL;
+    this.title.label = serialMonitorWidgetLabel;
     this.title.iconClass = 'monitor-tab-icon';
     this.title.closable = true;
     this.scrollOptions = undefined;
