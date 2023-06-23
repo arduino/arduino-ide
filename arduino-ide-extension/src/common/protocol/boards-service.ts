@@ -180,7 +180,7 @@ export namespace BoardSearch {
     'Partner',
     'Arduino@Heart',
   ] as const;
-  export type Type = typeof TypeLiterals[number];
+  export type Type = (typeof TypeLiterals)[number];
   export namespace Type {
     export function is(arg: unknown): arg is Type {
       return typeof arg === 'string' && TypeLiterals.includes(arg as Type);
@@ -347,7 +347,7 @@ export namespace Port {
 
   export namespace Protocols {
     export const KnownProtocolLiterals = ['serial', 'network'] as const;
-    export type KnownProtocol = typeof KnownProtocolLiterals[number];
+    export type KnownProtocol = (typeof KnownProtocolLiterals)[number];
     export namespace KnownProtocol {
       export function is(protocol: unknown): protocol is KnownProtocol {
         return (
@@ -476,29 +476,105 @@ export namespace ConfigOption {
     fqbn: string,
     configOptions: ConfigOption[]
   ): string {
-    if (!configOptions.length) {
-      return fqbn;
+    const failInvalidFQBN = (): never => {
+      throw new Error(`Invalid FQBN: ${fqbn}`);
+    };
+
+    const [vendor, arch, id, rest] = fqbn.split(':');
+    if (!vendor || !arch || !id) {
+      return failInvalidFQBN();
     }
 
-    const toValue = (values: ConfigValue[]) => {
-      const selectedValue = values.find(({ selected }) => selected);
-      if (!selectedValue) {
+    const existingOptions: Record<string, string> = {};
+    if (rest) {
+      // If rest exists, it must have the key=value(,key=value)* format. Otherwise, fail.
+      const tuples = rest.split(',');
+      for (const tuple of tuples) {
+        const segments = tuple.split('=');
+        if (segments.length !== 2) {
+          failInvalidFQBN();
+        }
+        const [option, value] = segments;
+        if (!option || !value) {
+          failInvalidFQBN();
+        }
+        if (existingOptions[option]) {
+          console.warn(
+            `Config value already exists for '${option}' on FQBN. Skipping it. Existing value: ${existingOptions[option]}, new value: ${value}, FQBN: ${fqbn}`
+          );
+        } else {
+          existingOptions[option] = value;
+        }
+      }
+    }
+
+    const newOptions: Record<string, string> = {};
+    for (const configOption of configOptions) {
+      const { option, values } = configOption;
+      if (!option) {
         console.warn(
-          `None of the config values was selected. Values were: ${JSON.stringify(
-            values
+          `Detected empty option on config options. Skipping it. ${JSON.stringify(
+            configOption
           )}`
         );
-        return undefined;
+        continue;
       }
-      return selectedValue.value;
-    };
-    const options = configOptions
-      .map(({ option, values }) => [option, toValue(values)])
-      .filter(([, value]) => !!value)
+      const selectedValue = values.find(({ selected }) => selected);
+      if (selectedValue) {
+        const { value } = selectedValue;
+        if (!value) {
+          console.warn(
+            `Detected empty selected value on config options. Skipping it. ${JSON.stringify(
+              configOption
+            )}`
+          );
+          continue;
+        }
+        if (newOptions[option]) {
+          console.warn(
+            `Config value already exists for '${option}' in config options. Skipping it. Existing value: ${
+              newOptions[option]
+            }, new value: ${value}, config option: ${JSON.stringify(
+              configOption
+            )}`
+          );
+        } else {
+          newOptions[option] = value;
+        }
+      } else {
+        console.warn(
+          `None of the config values was selected. Config options was: ${JSON.stringify(
+            configOption
+          )}`
+        );
+      }
+    }
+
+    // Collect all options from the FQBN. Call them existing.
+    // Collect all incoming options to decorate the FQBN with. Call them new.
+    // To keep the order, iterate through the existing ones and append to FQBN.
+    // If a new(er) value exists for the same option, use the new value.
+    // If there is a new value, "mark" it as visited by deleting it from new. Otherwise, use the existing value.
+    // Append all new ones to the FQBN.
+    const mergedOptions: Record<string, string> = {};
+    for (const existing of Object.entries(existingOptions)) {
+      const [option, value] = existing;
+      const newValue = newOptions[option];
+      if (newValue) {
+        mergedOptions[option] = newValue;
+        delete newOptions[option];
+      } else {
+        mergedOptions[option] = value;
+      }
+    }
+    Array.from(Object.entries(newOptions)).forEach(
+      ([option, value]) => (mergedOptions[option] = value)
+    );
+
+    const configSuffix = Object.entries(mergedOptions)
       .map(([option, value]) => `${option}=${value}`)
       .join(',');
-
-    return `${fqbn}:${options}`;
+    return `${vendor}:${arch}:${id}:${configSuffix}`;
   }
 
   export class ConfigOptionError extends Error {

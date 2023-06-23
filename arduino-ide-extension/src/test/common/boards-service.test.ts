@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import {
   AttachedBoardsChangeEvent,
   BoardInfo,
+  ConfigOption,
   getBoardInfo,
   noNativeSerialPort,
   nonSerialPort,
@@ -90,6 +91,114 @@ describe('boards-service', () => {
       expect(diff.attached.ports[0].address).to.be.equal(
         '/dev/cu.SLAB_USBtoUART'
       );
+    });
+  });
+
+  describe('ConfigOption#decorate', () => {
+    ['invalid', 'a:b:c:foo=', 'a:b:c:foo=bar=baz', 'a:b:c:foo+bar'].map(
+      (fqbn) =>
+        it(`should error when the FQBN is invalid (FQBN: ${fqbn})`, () => {
+          expect(() => ConfigOption.decorate(fqbn, [])).to.throw(
+            /^Invalid FQBN:*/
+          );
+        })
+    );
+
+    it('should be noop when config options is empty', () => {
+      const fqbn = 'a:b:c:menu1=value1';
+      const actual = ConfigOption.decorate(fqbn, []);
+      expect(actual).to.be.equal(fqbn);
+    });
+
+    it('should not duplicate config options', () => {
+      const fqbn = 'a:b:c:menu1=value1';
+      const actual = ConfigOption.decorate(fqbn, [
+        {
+          label: 'Menu 1',
+          option: 'menu1',
+          values: [
+            { label: 'Value 1', value: 'value1', selected: true },
+            { label: 'Another Value', value: 'another1', selected: false },
+          ],
+        },
+      ]);
+      expect(actual).to.be.equal(fqbn);
+    });
+
+    it('should update config options', () => {
+      const fqbn = 'a:b:c:menu1=value1,menu2=value2';
+      const actual = ConfigOption.decorate(fqbn, [
+        {
+          label: 'Menu 1',
+          option: 'menu1',
+          values: [
+            { label: 'Value 1', value: 'value1', selected: false },
+            { label: 'Another Value', value: 'another1', selected: true },
+          ],
+        },
+      ]);
+      expect(actual).to.be.equal('a:b:c:menu1=another1,menu2=value2');
+    });
+
+    it('should favor first over rest when there are duplicate options (duplicate on FQBN)', () => {
+      const fqbn = 'a:b:c:menu1=value1,menu1=value2';
+      const actual = ConfigOption.decorate(fqbn, [
+        {
+          label: 'Menu 1',
+          option: 'menu1',
+          values: [
+            { label: 'Value 1', value: 'value1', selected: false },
+            { label: 'Another Value', value: 'another1', selected: true },
+          ],
+        },
+      ]);
+      expect(actual).to.be.equal('a:b:c:menu1=another1');
+    });
+
+    it('should favor first over rest when there are duplicate options (duplicate in config)', () => {
+      const fqbn = 'a:b:c';
+      const actual = ConfigOption.decorate(fqbn, [
+        {
+          label: 'Menu 1',
+          option: 'menu1',
+          values: [
+            { label: 'Value 1', value: 'value1', selected: false },
+            { label: 'Another Value', value: 'another1', selected: true },
+          ],
+        },
+        {
+          label: 'Menu 1',
+          option: 'menu1',
+          values: [
+            { label: 'Value 1', value: 'value1', selected: true },
+            { label: 'Another Value', value: 'another1', selected: false },
+          ],
+        },
+      ]);
+      expect(actual).to.be.equal('a:b:c:menu1=another1');
+    });
+
+    it('should not change the existing config order', () => {
+      const fqbn = 'a:b:c:menu1=value1';
+      const actual = ConfigOption.decorate(fqbn, [
+        {
+          label: 'Menu 0',
+          option: 'menu0',
+          values: [
+            { label: 'Value 0', value: 'value0', selected: true },
+            { label: 'Another Value', value: 'another0', selected: false },
+          ],
+        },
+        {
+          label: 'Menu 1',
+          option: 'menu1',
+          values: [
+            { label: 'Value 1', value: 'value1', selected: false },
+            { label: 'Another Value', value: 'another1', selected: true },
+          ],
+        },
+      ]);
+      expect(actual).to.be.equal('a:b:c:menu1=another1,menu0=value0');
     });
   });
 

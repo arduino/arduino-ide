@@ -6,7 +6,6 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { Mutex } from 'async-mutex';
 import {
   ArduinoDaemon,
-  assertSanitizedFqbn,
   BoardsService,
   ExecutableService,
   sanitizeFqbn,
@@ -151,7 +150,6 @@ export class InoLanguage extends SketchContribution {
         }
         return;
       }
-      assertSanitizedFqbn(fqbn);
       const fqbnWithConfig = await this.boardDataStore.appendConfigToFqbn(fqbn);
       if (!fqbnWithConfig) {
         throw new Error(
