@@ -104,6 +104,12 @@ describe('boards-service', () => {
         })
     );
 
+    it('should not append the trailing boards config part to FQBN if configs is empty', () => {
+      const fqbn = 'a:b:c';
+      const actual = ConfigOption.decorate(fqbn, []);
+      expect(actual).to.be.equal(fqbn);
+    });
+
     it('should be noop when config options is empty', () => {
       const fqbn = 'a:b:c:menu1=value1';
       const actual = ConfigOption.decorate(fqbn, []);

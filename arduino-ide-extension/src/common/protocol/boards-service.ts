@@ -574,7 +574,8 @@ export namespace ConfigOption {
     const configSuffix = Object.entries(mergedOptions)
       .map(([option, value]) => `${option}=${value}`)
       .join(',');
-    return `${vendor}:${arch}:${id}:${configSuffix}`;
+
+    return `${vendor}:${arch}:${id}${configSuffix ? `:${configSuffix}` : ''}`;
   }
 
   export class ConfigOptionError extends Error {
