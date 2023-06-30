@@ -95,9 +95,6 @@ export class CompileRequest extends jspb.Message {
     getSkipLibrariesDiscovery(): boolean;
     setSkipLibrariesDiscovery(value: boolean): CompileRequest;
 
-    getDoNotExpandBuildProperties(): boolean;
-    setDoNotExpandBuildProperties(value: boolean): CompileRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -136,7 +133,6 @@ export namespace CompileRequest {
         signKey: string,
         encryptKey: string,
         skipLibrariesDiscovery: boolean,
-        doNotExpandBuildProperties: boolean,
     }
 }
 

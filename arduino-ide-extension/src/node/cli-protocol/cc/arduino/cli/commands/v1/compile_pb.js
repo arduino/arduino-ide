@@ -155,8 +155,7 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     keysKeychain: jspb.Message.getFieldWithDefault(msg, 25, ""),
     signKey: jspb.Message.getFieldWithDefault(msg, 26, ""),
     encryptKey: jspb.Message.getFieldWithDefault(msg, 27, ""),
-    skipLibrariesDiscovery: jspb.Message.getBooleanFieldWithDefault(msg, 28, false),
-    doNotExpandBuildProperties: jspb.Message.getBooleanFieldWithDefault(msg, 29, false)
+    skipLibrariesDiscovery: jspb.Message.getBooleanFieldWithDefault(msg, 28, false)
   };
 
   if (includeInstance) {
@@ -292,10 +291,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
     case 28:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSkipLibrariesDiscovery(value);
-      break;
-    case 29:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setDoNotExpandBuildProperties(value);
       break;
     default:
       reader.skipField();
@@ -490,13 +485,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
   if (f) {
     writer.writeBool(
       28,
-      f
-    );
-  }
-  f = message.getDoNotExpandBuildProperties();
-  if (f) {
-    writer.writeBool(
-      29,
       f
     );
   }
@@ -1031,24 +1019,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getSkipLibrariesDiscov
  */
 proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSkipLibrariesDiscovery = function(value) {
   return jspb.Message.setProto3BooleanField(this, 28, value);
-};
-
-
-/**
- * optional bool do_not_expand_build_properties = 29;
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getDoNotExpandBuildProperties = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 29, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setDoNotExpandBuildProperties = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 29, value);
 };
 
 
