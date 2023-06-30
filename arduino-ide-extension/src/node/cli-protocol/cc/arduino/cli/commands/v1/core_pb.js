@@ -2064,8 +2064,7 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.toObject = fu
 proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     progress: (f = msg.getProgress()) && cc_arduino_cli_commands_v1_common_pb.DownloadProgress.toObject(includeInstance, f),
-    taskProgress: (f = msg.getTaskProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f),
-    platform: (f = msg.getPlatform()) && cc_arduino_cli_commands_v1_common_pb.Platform.toObject(includeInstance, f)
+    taskProgress: (f = msg.getTaskProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2112,11 +2111,6 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.deserializeBinaryFromRe
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.TaskProgress.deserializeBinaryFromReader);
       msg.setTaskProgress(value);
       break;
-    case 3:
-      var value = new cc_arduino_cli_commands_v1_common_pb.Platform;
-      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Platform.deserializeBinaryFromReader);
-      msg.setPlatform(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -2160,14 +2154,6 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.serializeBinaryToWriter
       2,
       f,
       cc_arduino_cli_commands_v1_common_pb.TaskProgress.serializeBinaryToWriter
-    );
-  }
-  f = message.getPlatform();
-  if (f != null) {
-    writer.writeMessage(
-      3,
-      f,
-      cc_arduino_cli_commands_v1_common_pb.Platform.serializeBinaryToWriter
     );
   }
 };
@@ -2244,43 +2230,6 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.clearTaskProg
  */
 proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.hasTaskProgress = function() {
   return jspb.Message.getField(this, 2) != null;
-};
-
-
-/**
- * optional Platform platform = 3;
- * @return {?proto.cc.arduino.cli.commands.v1.Platform}
- */
-proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.getPlatform = function() {
-  return /** @type{?proto.cc.arduino.cli.commands.v1.Platform} */ (
-    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Platform, 3));
-};
-
-
-/**
- * @param {?proto.cc.arduino.cli.commands.v1.Platform|undefined} value
- * @return {!proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse} returns this
-*/
-proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.setPlatform = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse} returns this
- */
-proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.clearPlatform = function() {
-  return this.setPlatform(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.v1.PlatformUpgradeResponse.prototype.hasPlatform = function() {
-  return jspb.Message.getField(this, 3) != null;
 };
 
 
