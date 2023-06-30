@@ -1,9 +1,11 @@
 name: Arduino IDE
 
 on:
+  create:
   push:
     branches:
       - main
+      - '[0-9]+.[0-9]+.x'
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/build.yml'
@@ -34,8 +36,36 @@ env:
   CHANGELOG_ARTIFACTS: changelog
 
 jobs:
+  run-determination:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.determination.outputs.result }}
+    permissions: {}
+    steps:
+      - name: Determine if the rest of the workflow should run
+        id: determination
+        run: |
+          RELEASE_BRANCH_REGEX="refs/heads/[0-9]+.[0-9]+.x"
+          TAG_REGEX="refs/tags/.*"
+          # The `create` event trigger doesn't support `branches` filters, so it's necessary to use Bash instead.
+          if [[
+            ("${{ github.event_name }}" != "create" ||
+            "${{ github.ref }}" =~ $RELEASE_BRANCH_REGEX) &&
+            ! "${{ github.ref }}" =~ $TAG_REGEX
+          ]]; then
+            # Run the other jobs.
+            RESULT="true"
+          else
+            # There is no need to run the other jobs.
+            RESULT="false"
+          fi
+
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
   build:
     name: build (${{ matrix.config.os }})
+    needs: run-determination
+    if: needs.run-determination.outputs.result == 'true'
     strategy:
       matrix:
         config:
