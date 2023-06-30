@@ -1,5 +1,7 @@
 # Release Procedure
 
+The ["trunk-based" development strategy](https://trunkbaseddevelopment.com/) is used for releases of Arduino IDE. A branch named `<major>.<minor>.x` (where `<major>.<minor>` is the major and minor version numbers), is created for each minor version series. Release tags (both pre-release and production) are created from these branches. This allows a release to be created from a select subset of the commits in the `main` branch, [cherry-picked](https://git-scm.com/docs/git-cherry-pick) to the release branch.
+
 ## Steps
 
 The following are the steps to follow to make a release of Arduino IDE:
@@ -39,28 +41,60 @@ If the version number of the previous release was `2.0.1`:
 - If this is considered a minor release (non-breaking changes to the "API"), the `version` values must be changed to `2.1.0`.
 - If this is considered a major release (breaking changes to the "API"), the `version` values must be changed to `3.0.0`.
 
-### 4. 🚢 Create the release on GitHub
+### 4. 🍒 Prepare release branch
+
+#### Create
+
+A new release branch must be created on every minor version bump. For example, if you are making the `2.2.0` release, then it is necessary to create a branch named `2.2.x`. That branch will be used for all subsequent releases in the `2.2` minor version series (e.g., `2.2.1`, `2.2.2`).
+
+#### Update
+
+Push all commits that are to be included in the release to the release branch. This can be a [cherry-picked](https://git-scm.com/docs/git-cherry-pick) subset of the commits from the `main` branch if not all the work from `main` is ready for release.
+
+### 5. ✅ Validate release
+
+#### Evaluate CI status
+
+The checks run by the continuous integration system might provide an indication of a problem that should block the release. Since the code in the release branch doesn't necessarily match to that of the `main` branch, it is essential to check the status of the release branch even when everything is passing in the `main` branch.
+
+1. Open the following URL in your browser:<br />
+   https://github.com/arduino/arduino-ide/actions
+1. Type `branch:<release branch>` (where `<release branch>` is the name of the release branch for this release) in the "**Filter workflow runs**" field of the "**Actions**" page.
+1. Press the <kbd>**Enter**</kbd> key.
+1. Wait for all in progress workflow runs to finish.
+1. Click on the first workflow name on the list at the left side of the page.
+1. Check the status of the latest run. If it was not successful, investigate the cause and determine if it is of significance to the release.
+1. Repeat the above steps for each of the listed workflows.
+
+#### Beta testing
+
+The "**Arduino IDE**" workflow run that was triggered by the branch creation will contain artifacts that can be used for beta testing.
+
+[More information about beta testing](../contributor-guide/beta-testing.md)
+
+### 6. 🚢 Create the release on GitHub
 
 Then, you need to **create and push the new tag** and wait for the release to appear on [the "**Releases**" page](https://github.com/arduino/arduino-ide/releases).
 
 ⚠ Doing this will create a new release and users who already have the IDE installed will be notified from the automatic updater that a new version is available. Do not push the tag if you don't want that.
 
-```text
-git checkout main
-git pull
-git tag -a <YOUR_VERSION> -m "<YOUR_VERSION>"
-git push origin <YOUR_VERSION>
-```
+1. Checkout the release branch in the repository.
+1. Run the following commands:
+   ```text
+   git pull
+   git tag -a <YOUR_VERSION> -m "<YOUR_VERSION>"
+   git push origin <YOUR_VERSION>
+   ```
 
 Pushing a tag will trigger a **GitHub Actions** workflow on the `main` branch. Check the "**Arduino IDE**" workflow and see that everything goes right. If the workflow succeeds, a new release will be created automatically and you should see it on the ["**Releases**"](https://github.com/arduino/arduino-ide/releases) page.
 
-### 5. ⬆️ Bump version metadata of packages
+### 7. ⬆️ Bump version metadata of packages
 
 In order for the version number of the tester and nightly builds to have correct precedence compared to the release version, the `version` field of the project's `package.json` files must be given a patch version bump (e.g., `2.0.1` -> `2.0.2`) **after** the creation of the release tag.
 
 Follow the instructions for updating the version metadata [**here**](#update-version-metadata).
 
-### 6. 📄 Create the changelog
+### 8. 📄 Create the changelog
 
 **Create GitHub issues for the known issues** that we haven't solved in the current release:
 
@@ -79,7 +113,7 @@ Add a list of mentions of GitHub users who contributed to the release in any of 
 
 Add a "**Known Issues**" section at the bottom of the changelog.
 
-### 7. ✎ Update the "**Software**" Page
+### 9. ✎ Update the "**Software**" Page
 
 Open a PR on the [bcmi-labs/wiki-content](https://github.com/bcmi-labs/wiki-content) repository to update the links and texts.
 
@@ -96,7 +130,7 @@ When the deploy workflow is done, check if links on the "**Software**" page are 
 
 https://www.arduino.cc/en/software#future-version-of-the-arduino-ide
 
-### 8. 😎 Brag about it
+### 10. 😎 Brag about it
 
 - Ask in the `#product_releases` **Slack** channel to write a post for the social media and, if needed, a blog post.
 - Post a message on the forum (ask @per1234).<br />
