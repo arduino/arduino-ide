@@ -170,7 +170,7 @@
   ],
   "arduino": {
     "cli": {
-      "version": "0.32.3"
+      "version": "0.33.0"
     },
     "fwuploader": {
       "version": "2.2.2"
