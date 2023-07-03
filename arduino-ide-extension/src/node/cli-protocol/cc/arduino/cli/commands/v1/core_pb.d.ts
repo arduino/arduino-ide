@@ -282,6 +282,12 @@ export class PlatformUpgradeResponse extends jspb.Message {
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformUpgradeResponse;
 
 
+    hasPlatform(): boolean;
+    clearPlatform(): void;
+    getPlatform(): cc_arduino_cli_commands_v1_common_pb.Platform | undefined;
+    setPlatform(value?: cc_arduino_cli_commands_v1_common_pb.Platform): PlatformUpgradeResponse;
+
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformUpgradeResponse): PlatformUpgradeResponse.AsObject;
@@ -296,6 +302,7 @@ export namespace PlatformUpgradeResponse {
     export type AsObject = {
         progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
         taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        platform?: cc_arduino_cli_commands_v1_common_pb.Platform.AsObject,
     }
 }
 

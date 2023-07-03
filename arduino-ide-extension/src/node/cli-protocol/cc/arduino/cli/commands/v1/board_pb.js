@@ -498,7 +498,8 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.toObject = functi
 proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-    fqbn: jspb.Message.getFieldWithDefault(msg, 2, "")
+    fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    doNotExpandBuildProperties: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
   if (includeInstance) {
@@ -544,6 +545,10 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinaryFromReader
       var value = /** @type {string} */ (reader.readString());
       msg.setFqbn(value);
       break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDoNotExpandBuildProperties(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -585,6 +590,13 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.serializeBinaryToWriter = f
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getDoNotExpandBuildProperties();
+  if (f) {
+    writer.writeBool(
+      3,
       f
     );
   }
@@ -646,13 +658,31 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setFqbn = functio
 };
 
 
+/**
+ * optional bool do_not_expand_build_properties = 3;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getDoNotExpandBuildProperties = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setDoNotExpandBuildProperties = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 3, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.repeatedFields_ = [10,11,13,15];
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.repeatedFields_ = [10,11,13,15,16];
 
 
 
@@ -702,7 +732,8 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.toObject = function(includ
     cc_arduino_cli_commands_v1_common_pb.Programmer.toObject, includeInstance),
     debuggingSupported: jspb.Message.getBooleanFieldWithDefault(msg, 14, false),
     identificationPropertiesList: jspb.Message.toObjectList(msg.getIdentificationPropertiesList(),
-    proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject, includeInstance),
+    buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 16)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -800,6 +831,10 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReade
       var value = new proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties;
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader);
       msg.addIdentificationProperties(value);
+      break;
+    case 16:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBuildProperties(value);
       break;
     default:
       reader.skipField();
@@ -932,6 +967,13 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter = 
       15,
       f,
       proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.serializeBinaryToWriter
+    );
+  }
+  f = message.getBuildPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      16,
+      f
     );
   }
 };
@@ -1304,6 +1346,43 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addIdentificatio
  */
 proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearIdentificationPropertiesList = function() {
   return this.setIdentificationPropertiesList([]);
+};
+
+
+/**
+ * repeated string build_properties = 16;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getBuildPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 16));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setBuildPropertiesList = function(value) {
+  return jspb.Message.setField(this, 16, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addBuildProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 16, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearBuildPropertiesList = function() {
+  return this.setBuildPropertiesList([]);
 };
 
 

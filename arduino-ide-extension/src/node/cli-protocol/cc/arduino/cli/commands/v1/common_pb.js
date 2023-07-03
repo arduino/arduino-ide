@@ -1637,7 +1637,9 @@ proto.cc.arduino.cli.commands.v1.Platform.toObject = function(includeInstance, m
     manuallyInstalled: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
     deprecated: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
     typeList: (f = jspb.Message.getRepeatedField(msg, 11)) == null ? undefined : f,
-    help: (f = msg.getHelp()) && proto.cc.arduino.cli.commands.v1.HelpResources.toObject(includeInstance, f)
+    help: (f = msg.getHelp()) && proto.cc.arduino.cli.commands.v1.HelpResources.toObject(includeInstance, f),
+    indexed: jspb.Message.getBooleanFieldWithDefault(msg, 13, false),
+    missingMetadata: jspb.Message.getBooleanFieldWithDefault(msg, 14, false)
   };
 
   if (includeInstance) {
@@ -1723,6 +1725,14 @@ proto.cc.arduino.cli.commands.v1.Platform.deserializeBinaryFromReader = function
       var value = new proto.cc.arduino.cli.commands.v1.HelpResources;
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.HelpResources.deserializeBinaryFromReader);
       msg.setHelp(value);
+      break;
+    case 13:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIndexed(value);
+      break;
+    case 14:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setMissingMetadata(value);
       break;
     default:
       reader.skipField();
@@ -1837,6 +1847,20 @@ proto.cc.arduino.cli.commands.v1.Platform.serializeBinaryToWriter = function(mes
       12,
       f,
       proto.cc.arduino.cli.commands.v1.HelpResources.serializeBinaryToWriter
+    );
+  }
+  f = message.getIndexed();
+  if (f) {
+    writer.writeBool(
+      13,
+      f
+    );
+  }
+  f = message.getMissingMetadata();
+  if (f) {
+    writer.writeBool(
+      14,
+      f
     );
   }
 };
@@ -2113,6 +2137,42 @@ proto.cc.arduino.cli.commands.v1.Platform.prototype.clearHelp = function() {
  */
 proto.cc.arduino.cli.commands.v1.Platform.prototype.hasHelp = function() {
   return jspb.Message.getField(this, 12) != null;
+};
+
+
+/**
+ * optional bool indexed = 13;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.getIndexed = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 13, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.setIndexed = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 13, value);
+};
+
+
+/**
+ * optional bool missing_metadata = 14;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.getMissingMetadata = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 14, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.Platform} returns this
+ */
+proto.cc.arduino.cli.commands.v1.Platform.prototype.setMissingMetadata = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 14, value);
 };
 
 
