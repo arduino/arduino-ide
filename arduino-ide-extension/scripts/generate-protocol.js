@@ -31,7 +31,7 @@
       return defaultVersion;
     }
 
-    const { cli } = arduino;
+    const cli = arduino['arduino-cli'];
     if (!cli) {
       return defaultVersion;
     }
@@ -65,9 +65,15 @@
   shell.echo(`<<< Repository cloned.`);
 
   const { platform } = process;
-  const build = path.join(__dirname, '..', 'build');
+  const resourcesFolder = path.join(
+    __dirname,
+    '..',
+    'src',
+    'node',
+    'resources'
+  );
   const cli = path.join(
-    build,
+    resourcesFolder,
     `arduino-cli${platform === 'win32' ? '.exe' : ''}`
   );
   const versionJson = exec(cli, ['version', '--format', 'json'], shell).trim();

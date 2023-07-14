@@ -1,4 +1,4 @@
-import * as fs from 'node:fs';
+import fs from 'node:fs';
 import { join } from 'node:path';
 import {
   injectable,
@@ -38,19 +38,21 @@ export class MonitorSettingsProviderImpl implements MonitorSettingsProvider {
   private pluggableMonitorSettingsPath: string;
 
   @postConstruct()
-  protected async init(): Promise<void> {
-    // get the monitor settings file path
-    const configDirUri = await this.envVariablesServer.getConfigDirUri();
-    this.pluggableMonitorSettingsPath = join(
-      FileUri.fsPath(configDirUri),
-      MONITOR_SETTINGS_FILE
-    );
+  protected init(): void {
+    (async () => {
+      // get the monitor settings file path
+      const configDirUri = await this.envVariablesServer.getConfigDirUri();
+      this.pluggableMonitorSettingsPath = join(
+        FileUri.fsPath(configDirUri),
+        MONITOR_SETTINGS_FILE
+      );
 
-    // read existing settings
-    await this.readSettingsFromFS();
+      // read existing settings
+      await this.readSettingsFromFS();
 
-    // init is done, resolve the deferred and unblock any call that was waiting for it
-    this.ready.resolve();
+      // init is done, resolve the deferred and unblock any call that was waiting for it
+      this.ready.resolve();
+    })();
   }
 
   async getSettings(

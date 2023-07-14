@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: '16.14'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
 
       - name: Install Go
         uses: actions/setup-go@v4
@@ -34,7 +35,7 @@ jobs:
           version: 3.x
 
       - name: Install dependencies
-        run: yarn
+        run: yarn install --immutable
 
       - name: Run i18n:pull script
         run: yarn run i18n:pull

@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { Key, KeyCode } from '@theia/core/lib/browser/keys';
 import { Board } from '../../../common/protocol/boards-service';
 import { DisposableCollection, nls } from '@theia/core/lib/common';

@@ -1,4 +1,4 @@
-import type * as keytarType from 'keytar';
+import type keytarType from 'keytar';
 
 export type KeychainConfig = {
   credentialsSection: string;
@@ -6,9 +6,9 @@ export type KeychainConfig = {
 };
 
 type Keytar = {
-  getPassword: typeof keytarType['getPassword'];
-  setPassword: typeof keytarType['setPassword'];
-  deletePassword: typeof keytarType['deletePassword'];
+  getPassword: (typeof keytarType)['getPassword'];
+  setPassword: (typeof keytarType)['setPassword'];
+  deletePassword: (typeof keytarType)['deletePassword'];
 };
 
 export class Keychain {

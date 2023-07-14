@@ -1,9 +1,13 @@
-import * as React from '@theia/core/shared/react';
-import { injectable, inject, postConstruct } from '@theia/core/shared/inversify';
+import React from '@theia/core/shared/react';
+import {
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import {
   AbstractViewContribution,
   ApplicationShell,
-  codicon
+  codicon,
 } from '@theia/core/lib/browser';
 import { MonitorWidget } from './monitor-widget';
 import { MenuModelRegistry, Command, CommandRegistry } from '@theia/core';
@@ -20,7 +24,7 @@ import { MonitorManagerProxyClient } from '../../../common/protocol';
 import {
   ArduinoPreferences,
   defaultMonitorWidgetDockPanel,
-  isMonitorWidgetDockPanel
+  isMonitorWidgetDockPanel,
 } from '../../arduino-preferences';
 import { serialMonitorWidgetLabel } from '../../../common/nls';
 
@@ -60,7 +64,7 @@ export class MonitorViewContribution
   static readonly TOGGLE_SERIAL_MONITOR_TOOLBAR =
     MonitorWidget.ID + ':toggle-toolbar';
   static readonly RESET_SERIAL_MONITOR = MonitorWidget.ID + ':reset';
-  
+
   @inject(MonitorModel)
   private readonly model: MonitorModel;
   @inject(MonitorManagerProxyClient)
@@ -85,10 +89,16 @@ export class MonitorViewContribution
 
   @postConstruct()
   protected init(): void {
-    this._panel = this.arduinoPreferences['arduino.monitor.dockPanel'] ?? defaultMonitorWidgetDockPanel;
+    this._panel =
+      this.arduinoPreferences['arduino.monitor.dockPanel'] ??
+      defaultMonitorWidgetDockPanel;
     this.monitorManagerProxy.onMonitorShouldReset(() => this.reset());
     this.arduinoPreferences.onPreferenceChanged((event) => {
-      if (event.preferenceName === 'arduino.monitor.dockPanel' && isMonitorWidgetDockPanel(event.newValue) && event.newValue !== this._panel) { 
+      if (
+        event.preferenceName === 'arduino.monitor.dockPanel' &&
+        isMonitorWidgetDockPanel(event.newValue) &&
+        event.newValue !== this._panel
+      ) {
         this._panel = event.newValue;
         const widget = this.tryGetWidget();
         // reopen at the new position if opened
@@ -97,14 +107,14 @@ export class MonitorViewContribution
           this.openView({ activate: true, reveal: true });
         }
       }
-    })
+    });
   }
 
   override get defaultViewOptions(): ApplicationShell.WidgetOptions {
     const viewOptions = super.defaultViewOptions;
     return {
       ...viewOptions,
-      area: this._panel
+      area: this._panel,
     };
   }
 

@@ -6,7 +6,7 @@ import { nls } from '@theia/core/lib/common/nls';
 import { MaybePromise } from '@theia/core/lib/common/types';
 import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { CreateApi } from '../create/create-api';
 import { AbstractDialog } from '../theia/dialogs/dialogs';
 

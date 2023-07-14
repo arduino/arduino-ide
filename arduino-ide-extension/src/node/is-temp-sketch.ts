@@ -1,4 +1,4 @@
-import * as fs from 'node:fs';
+import fs from 'node:fs';
 import tempDir from 'temp-dir';
 import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { injectable } from '@theia/core/shared/inversify';

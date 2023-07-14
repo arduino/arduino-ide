@@ -1,30 +1,38 @@
+// @ts-check
+'use strict';
+
 const fs = require('node:fs');
 const path = require('node:path');
-const expect = require('chai').expect;
-const track = require('temp').track();
-const unpack = require('../utils').unpack;
-const testMe = require('../utils');
-const sinon = require('sinon');
+const { expect } = require('chai');
+const temp = require('temp');
+const { unpack, adjustArchiveStructure } = require('../scripts/archive');
 
-describe('utils', () => {
+describe('archive', () => {
   describe('adjustArchiveStructure', () => {
-    let consoleStub;
+    let tracked;
+    let originalLog;
+    before(() => {
+      tracked = temp.track();
+      originalLog = console.log;
+      console.log = () => {
+        /*NOOP*/
+      };
+    });
 
-    beforeEach(() => {
-      consoleStub = sinon.stub(console, 'log').value(() => {
-        /* NOOP */
-      });
+    after(() => {
+      if (originalLog) {
+        console.log = originalLog;
+      }
     });
 
     afterEach(() => {
-      consoleStub.reset();
-      track.cleanupSync();
+      tracked.cleanupSync();
     });
 
     it('should reject when not a zip file', async () => {
       try {
-        const invalid = path.join(__dirname, 'resources', 'not-a-zip.dmg');
-        await testMe.adjustArchiveStructure(invalid, track.mkdirSync());
+        const invalid = path.join(__dirname, 'test-resources', 'not-a-zip.dmg');
+        await adjustArchiveStructure(invalid, tracked.mkdirSync());
         throw new Error('Expected a rejection');
       } catch (e) {
         expect(e).to.be.an.instanceOf(Error);
@@ -36,10 +44,10 @@ describe('utils', () => {
       try {
         const zip = path.join(
           __dirname,
-          'resources',
+          'test-resources',
           'zip-with-base-folder.zip'
         );
-        await testMe.adjustArchiveStructure(
+        await adjustArchiveStructure(
           zip,
           path.join(__dirname, 'some', 'missing', 'path')
         );
@@ -54,10 +62,10 @@ describe('utils', () => {
       try {
         const zip = path.join(
           __dirname,
-          'resources',
+          'test-resources',
           'zip-with-base-folder.zip'
         );
-        await testMe.adjustArchiveStructure(zip, path.join(__filename));
+        await adjustArchiveStructure(zip, path.join(__filename));
         throw new Error('Expected a rejection');
       } catch (e) {
         expect(e).to.be.an.instanceOf(Error);
@@ -66,23 +74,28 @@ describe('utils', () => {
     });
 
     it('should be a NOOP when the zip already has the desired base folder', async () => {
-      const zip = path.join(__dirname, 'resources', 'zip-with-base-folder.zip');
-      const actual = await testMe.adjustArchiveStructure(
-        zip,
-        track.mkdirSync()
+      const zip = path.join(
+        __dirname,
+        'test-resources',
+        'zip-with-base-folder.zip'
       );
+      const actual = await adjustArchiveStructure(zip, tracked.mkdirSync());
       expect(actual).to.be.equal(zip);
     });
 
     it('should handle whitespace in file path gracefully', async () => {
-      const zip = path.join(__dirname, 'resources', 'zip with whitespace.zip');
-      const out = track.mkdirSync();
-      const actual = await testMe.adjustArchiveStructure(zip, out, true);
+      const zip = path.join(
+        __dirname,
+        'test-resources',
+        'zip with whitespace.zip'
+      );
+      const out = tracked.mkdirSync();
+      const actual = await adjustArchiveStructure(zip, out, true);
       expect(actual).to.be.equal(path.join(out, 'zip with whitespace.zip'));
       console.log(actual);
       expect(fs.existsSync(actual)).to.be.true;
 
-      const verifyOut = track.mkdirSync();
+      const verifyOut = tracked.mkdirSync();
       await unpack(actual, verifyOut);
 
       const root = path.join(verifyOut, 'zip with whitespace');
@@ -97,14 +110,18 @@ describe('utils', () => {
       if (process.platform === 'win32') {
         this.skip();
       }
-      const zip = path.join(__dirname, 'resources', 'zip-with-symlink.zip');
-      const out = track.mkdirSync();
-      const actual = await testMe.adjustArchiveStructure(zip, out, true);
+      const zip = path.join(
+        __dirname,
+        'test-resources',
+        'zip-with-symlink.zip'
+      );
+      const out = tracked.mkdirSync();
+      const actual = await adjustArchiveStructure(zip, out, true);
       expect(actual).to.be.equal(path.join(out, 'zip-with-symlink.zip'));
       console.log(actual);
       expect(fs.existsSync(actual)).to.be.true;
 
-      const verifyOut = track.mkdirSync();
+      const verifyOut = tracked.mkdirSync();
       await unpack(actual, verifyOut);
       expect(
         fs
@@ -116,14 +133,18 @@ describe('utils', () => {
     });
 
     it('should adjust the archive structure if base folder is not present', async () => {
-      const zip = path.join(__dirname, 'resources', 'zip-without-symlink.zip');
-      const out = track.mkdirSync();
-      const actual = await testMe.adjustArchiveStructure(zip, out, true);
+      const zip = path.join(
+        __dirname,
+        'test-resources',
+        'zip-without-symlink.zip'
+      );
+      const out = tracked.mkdirSync();
+      const actual = await adjustArchiveStructure(zip, out, true);
       expect(actual).to.be.equal(path.join(out, 'zip-without-symlink.zip'));
       console.log(actual);
       expect(fs.existsSync(actual)).to.be.true;
 
-      const verifyOut = track.mkdirSync();
+      const verifyOut = tracked.mkdirSync();
       await unpack(actual, verifyOut);
 
       const root = path.join(verifyOut, 'zip-without-symlink');

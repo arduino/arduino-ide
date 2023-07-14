@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { DialogProps } from '@theia/core/lib/browser/dialogs';
 import { Message } from '@theia/core/shared/@phosphor/messaging';

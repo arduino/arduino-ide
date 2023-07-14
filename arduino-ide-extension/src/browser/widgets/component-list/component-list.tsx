@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { Virtuoso } from '@theia/core/shared/react-virtuoso';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { Installable } from '../../../common/protocol/installable';

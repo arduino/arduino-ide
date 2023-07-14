@@ -57,25 +57,75 @@ Please refer to the [Theia IDE prerequisites](https://github.com/eclipse-theia/t
 
 Once you have all the tools installed, you can build the editor following these steps
 
-1. Install the dependencies and build
-    ```sh
-    yarn
-    ```
+If you want to develop the application, do the followings:
 
-2. Rebuild the dependencies
-    ```sh
-    yarn rebuild:browser
-    ```
+1. Install the dependencies
 
-3. Rebuild the electron dependencies
-    ```sh
-    yarn rebuild:electron
-    ```
+   ```sh
+   yarn
+   ```
 
-4. Start the application
-    ```sh
-    yarn start
-    ```
+2. Rebuild the native dependencies for electron
+
+   - <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open the _Command Palette_.
+   - Type `Tasks: Run Task` and press <kbd>Enter</kbd>.
+   - Type `Rebuild App` and press <kbd>Enter</kbd>.
+
+3. Start the TypeScript compiler + `webpack` in watch mode
+
+   - <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - Type `Tasks: Run Task` and press <kbd>Enter</kbd>.
+   - Type `Watch All` and press <kbd>Enter</kbd>.
+   - Select how you want to scan the task output. You can press <kbd>Enter</kbd> or <kbd>Esc</kbd>. [Click](https://code.visualstudio.com/docs/editor/tasks#_defining-a-problem-matcher) here to learn more.
+
+4. Start the application in debug mode
+   - Open the _Run and Debug_ view with <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>,
+   - Select `App` from the dropdown,
+   - Start debugging with <kbd>F5</kbd>.
+
+If you change the backend application, you must restart the electron app in debug mode to use the changes.
+If you change the frontend application, it's sufficient to reload the board window with _Reload Windows_ command from the _Command Palette_.
+
+To run the tests, you must rebuild the native dependencies for the browser target. See [this](https://github.com/arduino/arduino-ide/pull/1823#issuecomment-1400511031) for the technical explanation.
+
+1. Rebuild the native dependencies for the browser
+
+   ```sh
+   yarn rebuild:browser
+   ```
+
+2. To run the tests
+
+   ```sh
+   yarn test
+   ```
+
+3. To run the slow tests
+   ```sh
+   yarn test:slow
+   ```
+
+If you want to debug an individual file, open the test module (`*.test.ts` or `*.slow-test.ts`), open the _Run and Debug_ view, select the `Run Test [current]` and press <kbd>F5</kbd>.
+
+If you want to bundle the application, execute the followings:
+
+1. Rebuild the native dependencies for electron
+
+   ```sh
+   yarn --cwd electron-app rebuild
+   ```
+
+2. Bundle the frontend and backend applications with `webpack`
+
+   ```sh
+   yarn --cwd electron-app build
+   ```
+
+3. Package the application
+   ```sh
+   yarn --cwd electron-app package
+   ```
+
 
 ### Notes for Windows contributors
 Windows requires the Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine.
@@ -109,7 +159,7 @@ This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide
 * *I have understood that not all versions of the CLI are compatible with my version of IDE but how can I manually update the `arduino-cli` inside the IDE?*
 
     [Get](https://arduino.github.io/arduino-cli/installation) the desired version of `arduino-cli` for your platform and manually replace the one inside the IDE. The CLI can be found inside the IDE at:
-    - Windows: `C:\path\to\Arduino IDE\resources\app\node_modules\arduino-ide-extension\build\arduino-cli.exe`,
-    - macOS: `/path/to/Arduino IDE.app/Contents/Resources/app/node_modules/arduino-ide-extension/build/arduino-cli`, and
-    - Linux: `/path/to/Arduino IDE/resources/app/node_modules/arduino-ide-extension/build/arduino-cli`.
+    - Windows: `C:\path\to\Arduino IDE\resources\app\lib\backend\resources\arduino-cli.exe`,
+    - macOS: `/path/to/Arduino IDE.app/Contents/Resources/app/lib/backend/resources/arduino-cli`, and
+    - Linux: `/path/to/Arduino IDE/resources/app/lib/backend/resources/arduino-cli`.
 

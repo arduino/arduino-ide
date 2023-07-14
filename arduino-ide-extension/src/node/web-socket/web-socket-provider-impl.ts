@@ -1,6 +1,6 @@
 import { Emitter } from '@theia/core';
 import { injectable } from '@theia/core/shared/inversify';
-import * as WebSocket from '@theia/core/shared/ws';
+import WebSocket from '@theia/core/shared/ws';
 import { WebSocketProvider } from './web-socket-provider';
 
 @injectable()

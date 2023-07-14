@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Arduino IDE - Rebuild Electron App",
+      "label": "Rebuild App",
       "type": "shell",
       "command": "yarn rebuild:browser && yarn rebuild:electron",
       "group": "build",
@@ -13,7 +13,7 @@
       }
     },
     {
-      "label": "Arduino IDE - Watch IDE Extension",
+      "label": "Watch Extension",
       "type": "shell",
       "command": "yarn --cwd ./arduino-ide-extension watch",
       "group": "build",
@@ -24,7 +24,7 @@
       }
     },
     {
-      "label": "Arduino IDE - Watch Electron App",
+      "label": "Watch App",
       "type": "shell",
       "command": "yarn --cwd ./electron-app watch",
       "group": "build",
@@ -35,11 +35,11 @@
       }
     },
     {
-      "label": "Arduino IDE - Watch All [Electron]",
+      "label": "Watch All",
       "type": "shell",
       "dependsOn": [
-        "Arduino IDE - Watch IDE Extension",
-        "Arduino IDE - Watch Electron App"
+        "Watch Extension",
+        "Watch App"
       ]
     }
   ]

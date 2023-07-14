@@ -1,7 +1,7 @@
 import type { Mutable } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import stableJsonStringify from 'fast-json-stable-stringify';
-import * as assert from 'node:assert';
+import assert from 'node:assert/strict';
 import { basename, join } from 'node:path';
 import { SketchContainer, SketchRef } from '../../common/protocol';
 import { discoverSketches } from '../../node/sketches-service-impl';
@@ -67,7 +67,7 @@ function containersDeepEquals(
 ) {
   const stableActual = JSON.parse(stableJsonStringify(actual));
   const stableExpected = JSON.parse(stableJsonStringify(expected));
-  assert.deepEqual(stableActual, stableExpected);
+  assert.deepStrictEqual(stableActual, stableExpected); // TODO: get rid of `fast-json-stable-stringify`
 }
 
 /**
@@ -86,8 +86,8 @@ function expectedTestSketchbookContainer(
     rootUri += '/';
   }
   const adjustUri = (sketch: Mutable<SketchRef>) => {
-    assert.equal(sketch.uri.startsWith('template://'), true);
-    assert.equal(sketch.uri.startsWith('template:///'), false);
+    assert.strictEqual(sketch.uri.startsWith('template://'), true);
+    assert.strictEqual(sketch.uri.startsWith('template:///'), false);
     sketch.uri = sketch.uri.replace('template://', rootUri).toString();
     return sketch;
   };

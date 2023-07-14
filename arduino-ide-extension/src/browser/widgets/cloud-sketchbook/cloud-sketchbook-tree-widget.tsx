@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { TreeModel } from '@theia/core/lib/browser/tree/tree-model';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';

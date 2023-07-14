@@ -92,6 +92,7 @@ jobs:
         with:
           node-version: '16.14'
           registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
 
       - name: Install Python 3.x
         uses: actions/setup-python@v4
@@ -135,15 +136,24 @@ jobs:
           if [ "${{ runner.OS }}" = "Windows" ]; then
             npm config set msvs_version 2017 --global
           fi
+
           npx node-gyp install
-          yarn --cwd ./electron/packager/
-          yarn --cwd ./electron/packager/ package
+          yarn install --immutable
+
+          yarn --cwd arduino-ide-extension build
+          yarn test
+          yarn --cwd arduino-ide-extension test:slow
+          yarn --cwd arduino-ide-extension lint
+
+          yarn --cwd electron-app rebuild
+          yarn --cwd electron-app build
+          yarn --cwd electron-app package
 
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: electron/build/dist/build-artifacts/
+          path: electron-app/dist/build-artifacts
 
   artifacts:
     name: ${{ matrix.artifact.name }} artifact

@@ -90,9 +90,15 @@ function buildFromGit(command, version, destinationPath, taskName) {
     return;
   }
 
-  const buildFolder = path.join(__dirname, '..', 'build');
-  if (shell.mkdir('-p', buildFolder).code !== 0) {
-    shell.echo('Could not create build folder.');
+  const resourcesFolder = path.join(
+    __dirname,
+    '..',
+    'src',
+    'node',
+    'resources'
+  );
+  if (shell.mkdir('-p', resourcesFolder).code !== 0) {
+    shell.echo('Could not create resources folder.');
     shell.exit(1);
   }
 

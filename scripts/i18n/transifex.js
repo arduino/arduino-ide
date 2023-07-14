@@ -1,15 +1,14 @@
 // @ts-check
 
-const shell = require('shelljs');
 const util = require('util');
 
 const TRANSIFEX_ENDPOINT = 'https://rest.api.transifex.com/';
 
 const apiKey = () => {
 	const apiKey = process.env.TRANSIFEX_API_KEY;
-	if (apiKey === '') {
-		shell.echo('missing TRANSIFEX_API_KEY environment variable');
-		shell.exit(1)
+	if (!apiKey) {
+		console.error('missing TRANSIFEX_API_KEY environment variable');
+		process.exit(1);
 	}
 	return apiKey
 }
@@ -19,19 +18,19 @@ exports.credentials = async () => {
 	const project = process.env.TRANSIFEX_PROJECT;
 	const resource = process.env.TRANSIFEX_RESOURCE;
 
-	if (organization === '') {
-		shell.echo('missing TRANSIFEX_ORGANIZATION environment variable');
-		shell.exit(1)
+	if (!organization) {
+		console.error('missing TRANSIFEX_ORGANIZATION environment variable');
+		process.exit(1);
 	}
 
-	if (project === '') {
-		shell.echo('missing TRANSIFEX_PROJECT environment variable');
-		shell.exit(1)
+	if (!project) {
+		console.error('missing TRANSIFEX_PROJECT environment variable');
+		process.exit(1);
 	}
 
-	if (resource === '') {
-		shell.echo('missing TRANSIFEX_RESOURCE environment variable');
-		shell.exit(1)
+	if (!resource) {
+		console.error('missing TRANSIFEX_RESOURCE environment variable');
+		process.exit(1);
 	}
 
 	return { organization, project, resource }

@@ -5,8 +5,9 @@ import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../common/protocol/arduino-firmware-uploader';
-import { getExecPath, spawnCommand } from './exec-util';
+import { spawnCommand } from './exec-util';
 import { MonitorManager } from './monitor-manager';
+import { arduinoFirmwareUploaderPath } from './resources';
 
 @injectable()
 export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
@@ -74,7 +75,10 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
   }
 
   private async runCommand(args: string[]): Promise<string> {
-    const execPath = getExecPath('arduino-fwuploader');
-    return await spawnCommand(execPath, args, this.onError.bind(this));
+    return await spawnCommand(
+      arduinoFirmwareUploaderPath,
+      args,
+      this.onError.bind(this)
+    );
   }
 }

@@ -1,25 +1,22 @@
 node_modules/
-# .node_modules is a hack for the electron builder.
-.node_modules/
 lib/
 downloads/
-build/
+resources/
 arduino-ide-extension/Examples/
-!electron/build/
 src-gen/
-electron/build/webpack.config.js
 gen-webpack.config.js
+gen-webpack.node.config.js
 .DS_Store
 # switching from `electron` to `browser` in dev mode.
 .browser_modules
 yarn*.log
 # For the VS Code extensions used by Theia.
-plugins
+electron-app/plugins
 # the tokens folder for the themes
 scripts/themes/tokens
-# environment variables
-.env
 # content trace files for electron
 electron-app/traces
 # any Arduino LS generated log files
 inols*.log
+# The electron-builder output.
+electron-app/dist

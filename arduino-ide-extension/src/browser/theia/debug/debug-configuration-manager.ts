@@ -1,9 +1,5 @@
 import debounce from 'p-debounce';
-import {
-  inject,
-  injectable,
-  postConstruct,
-} from '@theia/core/shared/inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -42,9 +38,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     return this.onTempContentDidChangeEmitter.event;
   }
 
-  @postConstruct()
-  protected override async init(): Promise<void> {
-    super.init();
+  protected override async doInit(): Promise<void> {
     this.appStateService.reachedState('ready').then(async () => {
       const tempContent = await this.getTempLaunchJsonContent();
       if (!tempContent) {
@@ -78,6 +72,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
       });
       this.updateModels();
     });
+    return super.doInit();
   }
 
   protected override updateModels = debounce(async () => {

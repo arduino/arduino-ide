@@ -7,7 +7,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { accountMenu } from '../../contributions/account';
 import { CreateFeatures } from '../../create/create-features';
 import { ApplicationConnectionStatusContribution } from './connection-status-service';

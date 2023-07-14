@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import {
   inject,
   injectable,
@@ -62,12 +62,16 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   }
 
   @postConstruct()
-  protected override async init(): Promise<void> {
+  protected override init(): void {
     super.init();
     // cache the current open sketch uri
-    const currentSketch = await this.sketchServiceClient.currentSketch();
-    this.currentSketchUri =
-      (CurrentSketch.isValid(currentSketch) && currentSketch.uri) || '';
+    this.sketchServiceClient
+      .currentSketch()
+      .then(
+        (currentSketch) =>
+          (this.currentSketchUri =
+            (CurrentSketch.isValid(currentSketch) && currentSketch.uri) || '')
+      );
   }
 
   protected override createNodeClassNames(

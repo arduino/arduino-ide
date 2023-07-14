@@ -4,7 +4,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "App (Electron) [Dev]",
+      "name": "App",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
@@ -17,10 +17,8 @@
         "--app-project-path=${workspaceRoot}/electron-app",
         "--remote-debugging-port=9222",
         "--no-app-auto-install",
-        "--plugins=local-dir:../plugins",
+        "--plugins=local-dir:./plugins",
         "--hosted-plugin-inspect=9339",
-        "--content-trace",
-        "--open-devtools",
         "--no-ping-timeout",
       ],
       "env": {
@@ -41,7 +39,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "App (Electron)",
+      "name": "App [Dev]",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
@@ -54,8 +52,10 @@
         "--app-project-path=${workspaceRoot}/electron-app",
         "--remote-debugging-port=9222",
         "--no-app-auto-install",
-        "--plugins=local-dir:../plugins",
+        "--plugins=local-dir:./plugins",
         "--hosted-plugin-inspect=9339",
+        "--content-trace",
+        "--open-devtools",
         "--no-ping-timeout",
       ],
       "env": {
@@ -95,7 +95,8 @@
         "**/${fileBasenameNoExtension}.js"
       ],
       "env": {
-        "TS_NODE_PROJECT": "${workspaceRoot}/tsconfig.json"
+        "TS_NODE_PROJECT": "${workspaceRoot}/tsconfig.json",
+        "IDE2_TEST": "true"
       },
       "sourceMaps": true,
       "smartStep": true,

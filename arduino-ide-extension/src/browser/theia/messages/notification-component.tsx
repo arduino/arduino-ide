@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { NotificationComponent as TheiaNotificationComponent } from '@theia/messages/lib/browser/notification-component';
 import { nls } from '@theia/core/lib/common';
 import { codicon } from '@theia/core/lib/browser';

@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import debounce from 'lodash.debounce';
 import { Event } from '@theia/core/lib/common/event';
 import { CommandService } from '@theia/core/lib/common/command';

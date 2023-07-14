@@ -1,5 +1,5 @@
 import { nls } from '@theia/core/lib/common/nls';
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 // @ts-expect-error see https://github.com/microsoft/TypeScript/issues/49721#issuecomment-1319854183
 import type { Options } from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
@@ -111,7 +111,6 @@ export const IDEUpdaterComponent = ({
               >
                 <ReactMarkdown
                   components={{
-                    // @ts-expect-error see imports. There is no ESM type-only import in CommonJS modules.
                     a: ({ href, children, ...props }) => (
                       <a onClick={() => href && openExternal(href)} {...props}>
                         {children}
