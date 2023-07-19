@@ -1,10 +1,17 @@
-import { injectable } from 'inversify';
-import { BoardsListWidget } from './boards-list-widget';
-import { BoardsPackage } from '../../common/protocol/boards-service';
+import { injectable } from '@theia/core/shared/inversify';
+import {
+  BoardSearch,
+  BoardsPackage,
+} from '../../common/protocol/boards-service';
+import { URI } from '../contributions/contribution';
 import { ListWidgetFrontendContribution } from '../widgets/component-list/list-widget-frontend-contribution';
+import { BoardsListWidget } from './boards-list-widget';
 
 @injectable()
-export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<BoardsPackage> {
+export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendContribution<
+  BoardsPackage,
+  BoardSearch
+> {
   constructor() {
     super({
       widgetId: BoardsListWidget.WIDGET_ID,
@@ -18,7 +25,16 @@ export class BoardsListWidgetFrontendContribution extends ListWidgetFrontendCont
     });
   }
 
-  async initializeLayout(): Promise<void> {
-    this.openView();
+  protected canParse(uri: URI): boolean {
+    try {
+      BoardSearch.UriParser.parse(uri);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  protected parse(uri: URI): BoardSearch | undefined {
+    return BoardSearch.UriParser.parse(uri);
   }
 }

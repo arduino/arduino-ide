@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   Command,
   MenuModelRegistry,
@@ -12,12 +12,12 @@ import {
   PreferenceScope,
   PreferenceService,
 } from '@theia/core/lib/browser/preferences/preference-service';
-import { ArduinoPreferences } from '../arduino-preferences';
 import {
   arduinoCert,
   certificateList,
 } from '../dialogs/certificate-uploader/utils';
 import { ArduinoFirmwareUploader } from '../../common/protocol/arduino-firmware-uploader';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class UploadCertificate extends Contribution {
@@ -30,22 +30,29 @@ export class UploadCertificate extends Contribution {
   @inject(PreferenceService)
   protected readonly preferenceService: PreferenceService;
 
-  @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
-
   @inject(ArduinoFirmwareUploader)
   protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
 
   protected dialogOpened = false;
 
-  registerCommands(registry: CommandRegistry): void {
+  override onStart(): void {
+    this.preferences.onPreferenceChanged(({ preferenceName }) => {
+      if (preferenceName === 'arduino.board.certificates') {
+        this.menuManager.update();
+      }
+    });
+  }
+
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadCertificate.Commands.OPEN, {
       execute: async () => {
         try {
           this.dialogOpened = true;
+          this.menuManager.update();
           await this.dialog.open();
         } finally {
           this.dialogOpened = false;
+          this.menuManager.update();
         }
       },
       isEnabled: () => !this.dialogOpened,
@@ -53,7 +60,7 @@ export class UploadCertificate extends Contribution {
 
     registry.registerCommand(UploadCertificate.Commands.REMOVE_CERT, {
       execute: async (certToRemove) => {
-        const certs = this.arduinoPreferences.get('arduino.board.certificates');
+        const certs = this.preferences.get('arduino.board.certificates');
 
         this.preferenceService.set(
           'arduino.board.certificates',
@@ -74,7 +81,6 @@ export class UploadCertificate extends Contribution {
             .join(' ')}`
         );
       },
-      isEnabled: () => true,
     });
 
     registry.registerCommand(UploadCertificate.Commands.OPEN_CERT_CONTEXT, {
@@ -88,11 +94,10 @@ export class UploadCertificate extends Contribution {
           args: [args.cert],
         });
       },
-      isEnabled: () => true,
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__FIRMWARE_UPLOADER_GROUP, {
       commandId: UploadCertificate.Commands.OPEN.id,
       label: UploadCertificate.Commands.OPEN.label,
@@ -111,25 +116,28 @@ export namespace UploadCertificate {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-upload-certificate-open',
-      label: 'Upload SSL Root Certificates',
+      label: nls.localize(
+        'arduino/certificate/uploadRootCertificates',
+        'Upload SSL Root Certificates'
+      ),
       category: 'Arduino',
     };
 
     export const OPEN_CERT_CONTEXT: Command = {
       id: 'arduino-certificate-open-context',
-      label: 'Open context',
+      label: nls.localize('arduino/certificate/openContext', 'Open context'),
       category: 'Arduino',
     };
 
     export const REMOVE_CERT: Command = {
       id: 'arduino-certificate-remove',
-      label: 'Remove',
+      label: nls.localize('arduino/certificate/remove', 'Remove'),
       category: 'Arduino',
     };
 
     export const UPLOAD_CERT: Command = {
       id: 'arduino-certificate-upload',
-      label: 'Upload',
+      label: nls.localize('arduino/certificate/upload', 'Upload'),
       category: 'Arduino',
     };
   }

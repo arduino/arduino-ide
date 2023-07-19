@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Event } from '@theia/core/lib/common/event';
 import {
@@ -29,6 +29,7 @@ import { CreateUri } from './create-uri';
 import { SketchesService } from '../../common/protocol';
 import { ArduinoPreferences } from '../arduino-preferences';
 import { Create } from './typings';
+import { stringToUint8Array } from '../../common/utils';
 
 @injectable()
 export class CreateFsProvider
@@ -154,7 +155,7 @@ export class CreateFsProvider
 
   async readFile(uri: URI): Promise<Uint8Array> {
     const content = await this.getCreateApi.readFile(uri.path.toString());
-    return new TextEncoder().encode(content);
+    return stringToUint8Array(content);
   }
 
   async writeFile(
@@ -189,10 +190,6 @@ export class CreateFsProvider
         FileSystemProviderErrorCode.NoPermissions
       );
     }
-
-    return this.createApi.init(
-      this.authenticationService,
-      this.arduinoPreferences
-    );
+    return this.createApi;
   }
 }

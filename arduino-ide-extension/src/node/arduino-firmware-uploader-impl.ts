@@ -1,41 +1,22 @@
+import { ILogger } from '@theia/core/lib/common/logger';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
+import type { Port } from '../common/protocol';
 import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../common/protocol/arduino-firmware-uploader';
-import { injectable, inject, named } from 'inversify';
-import { ExecutableService } from '../common/protocol';
 import { getExecPath, spawnCommand } from './exec-util';
-import { ILogger } from '@theia/core/lib/common/logger';
+import { MonitorManager } from './monitor-manager';
 
 @injectable()
 export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
-  @inject(ExecutableService)
-  protected executableService: ExecutableService;
-
-  protected _execPath: string | undefined;
-
   @inject(ILogger)
   @named('fwuploader')
-  protected readonly logger: ILogger;
+  private readonly logger: ILogger;
+  @inject(MonitorManager)
+  private readonly monitorManager: MonitorManager;
 
-  protected onError(error: any): void {
-    this.logger.error(error);
-  }
-
-  async getExecPath(): Promise<string> {
-    if (this._execPath) {
-      return this._execPath;
-    }
-    this._execPath = await getExecPath('arduino-fwuploader');
-    return this._execPath;
-  }
-
-  async runCommand(args: string[]): Promise<any> {
-    const execPath = await this.getExecPath();
-    return await spawnCommand(`"${execPath}"`, args, this.onError.bind(this));
-  }
-
-  async uploadCertificates(command: string): Promise<any> {
+  async uploadCertificates(command: string): Promise<string> {
     return await this.runCommand(['certificates', 'flash', command]);
   }
 
@@ -65,16 +46,35 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
     return await this.list(fqbn);
   }
 
-  async flash(firmware: FirmwareInfo, port: string): Promise<string> {
-    return await this.runCommand([
-      'firmware',
-      'flash',
-      '--fqbn',
-      firmware.board_fqbn,
-      '--address',
-      port,
-      '--module',
-      `${firmware.module}@${firmware.firmware_version}`,
-    ]);
+  async flash(firmware: FirmwareInfo, port: Port): Promise<string> {
+    const board = {
+      name: firmware.board_name,
+      fqbn: firmware.board_fqbn,
+    };
+    try {
+      await this.monitorManager.notifyUploadStarted(board.fqbn, port);
+      const output = await this.runCommand([
+        'firmware',
+        'flash',
+        '--fqbn',
+        firmware.board_fqbn,
+        '--address',
+        port.address,
+        '--module',
+        `${firmware.module}@${firmware.firmware_version}`,
+      ]);
+      return output;
+    } finally {
+      await this.monitorManager.notifyUploadFinished(board.fqbn, port);
+    }
+  }
+
+  private onError(error: Error): void {
+    this.logger.error(error);
+  }
+
+  private async runCommand(args: string[]): Promise<string> {
+    const execPath = getExecPath('arduino-fwuploader');
+    return await spawnCommand(execPath, args, this.onError.bind(this));
   }
 }

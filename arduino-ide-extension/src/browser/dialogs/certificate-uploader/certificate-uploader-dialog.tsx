@@ -1,8 +1,13 @@
-import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
-import { AbstractDialog, DialogProps } from '@theia/core/lib/browser/dialogs';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
+import * as React from '@theia/core/shared/react';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { AbstractDialog } from '../../theia/dialogs/dialogs';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import {
   AvailableBoard,
@@ -17,6 +22,8 @@ import {
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { certificateList, sanifyCertString } from './utils';
 import { ArduinoFirmwareUploader } from '../../../common/protocol/arduino-firmware-uploader';
+import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class UploadCertificateDialogWidget extends ReactWidget {
@@ -34,6 +41,9 @@ export class UploadCertificateDialogWidget extends ReactWidget {
 
   @inject(ArduinoFirmwareUploader)
   protected readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
+
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
   protected certificates: string[] = [];
   protected updatableFqbns: string[] = [];
@@ -64,10 +74,12 @@ export class UploadCertificateDialogWidget extends ReactWidget {
       }
     });
 
-    this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
-      this.updatableFqbns = fqbns;
-      this.update();
-    });
+    this.appStateService.reachedState('ready').then(() =>
+      this.arduinoFirmwareUploader.updatableBoards().then((fqbns) => {
+        this.updatableFqbns = fqbns;
+        this.update();
+      })
+    );
 
     this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
       this.availableBoards = availableBoards;
@@ -137,9 +149,15 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
 
   constructor(
     @inject(UploadCertificateDialogProps)
-    protected readonly props: UploadCertificateDialogProps
+    protected override readonly props: UploadCertificateDialogProps
   ) {
-    super({ title: 'Upload SSL Root Certificates' });
+    super({
+      title: nls.localize(
+        'arduino/certificate/uploadRootCertificates',
+        'Upload SSL Root Certificates'
+      ),
+    });
+    this.node.id = 'certificate-uploader-dialog-container';
     this.contentNode.classList.add('certificate-uploader-dialog');
     this.acceptButton = undefined;
   }
@@ -148,31 +166,34 @@ export class UploadCertificateDialog extends AbstractDialog<void> {
     return;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
     Widget.attach(this.widget, this.contentNode);
+    const firstButton = this.widget.node.querySelector('button');
+    firstButton?.focus();
+
     this.widget.busyCallback = this.busyCallback.bind(this);
     super.onAfterAttach(msg);
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     return false;
   }
 
-  close(): void {
+  override close(): void {
     if (this.busy) {
       return;
     }

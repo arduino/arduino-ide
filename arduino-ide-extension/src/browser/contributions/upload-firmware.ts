@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   Command,
   MenuModelRegistry,
@@ -7,6 +7,7 @@ import {
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { UploadFirmwareDialog } from '../dialogs/firmware-uploader/firmware-uploader-dialog';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class UploadFirmware extends Contribution {
@@ -15,21 +16,23 @@ export class UploadFirmware extends Contribution {
 
   protected dialogOpened = false;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(UploadFirmware.Commands.OPEN, {
       execute: async () => {
         try {
           this.dialogOpened = true;
+          this.menuManager.update();
           await this.dialog.open();
         } finally {
           this.dialogOpened = false;
+          this.menuManager.update();
         }
       },
       isEnabled: () => !this.dialogOpened,
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__FIRMWARE_UPLOADER_GROUP, {
       commandId: UploadFirmware.Commands.OPEN.id,
       label: UploadFirmware.Commands.OPEN.label,
@@ -42,7 +45,10 @@ export namespace UploadFirmware {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-upload-firmware-open',
-      label: 'WiFi101 /  WiFiNINA Firmware Updater',
+      label: nls.localize(
+        'arduino/firmware/updater',
+        'WiFi101 / WiFiNINA Firmware Updater'
+      ),
       category: 'Arduino',
     };
   }

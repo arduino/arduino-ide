@@ -4,15 +4,22 @@ node_modules/
 lib/
 downloads/
 build/
-Examples/
+arduino-ide-extension/Examples/
 !electron/build/
 src-gen/
-*webpack.config.js
+electron/build/webpack.config.js
+gen-webpack.config.js
 .DS_Store
 # switching from `electron` to `browser` in dev mode.
 .browser_modules
 yarn*.log
 # For the VS Code extensions used by Theia.
 plugins
-# the config files for the CLI
-arduino-ide-extension/data/cli/config
+# the tokens folder for the themes
+scripts/themes/tokens
+# environment variables
+.env
+# content trace files for electron
+electron-app/traces
+# any Arduino LS generated log files
+inols*.log

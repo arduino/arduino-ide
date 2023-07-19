@@ -1,51 +1,39 @@
-import { inject, injectable } from 'inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
-import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
-import { WorkspaceCommands } from '@theia/workspace/lib/browser';
 import { ContextMenuRenderer } from '@theia/core/lib/browser/context-menu-renderer';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import {
-  URI,
-  SketchContribution,
   Command,
   CommandRegistry,
-  MenuModelRegistry,
   KeybindingRegistry,
-  TabBarToolbarRegistry,
+  MenuModelRegistry,
   open,
+  SketchContribution,
+  TabBarToolbarRegistry,
+  URI,
 } from './contribution';
-import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
-import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
-import { SketchesServiceClientImpl } from '../../common/protocol/sketches-service-client-impl';
-import { LocalCacheFsProvider } from '../local-cache/local-cache-fs-provider';
 
 @injectable()
 export class SketchControl extends SketchContribution {
   @inject(ApplicationShell)
-  protected readonly shell: ApplicationShell;
-
+  private readonly shell: ApplicationShell;
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
-
+  private readonly menuRegistry: MenuModelRegistry;
   @inject(ContextMenuRenderer)
-  protected readonly contextMenuRenderer: ContextMenuRenderer;
-
-  @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
-
-  @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
-
-  @inject(LocalCacheFsProvider)
-  protected readonly localCacheFsProvider: LocalCacheFsProvider;
+  private readonly contextMenuRenderer: ContextMenuRenderer;
 
   protected readonly toDisposeBeforeCreateNewContextMenu =
     new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(
       SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR,
       {
@@ -53,110 +41,57 @@ export class SketchControl extends SketchContribution {
           this.shell.getWidgets('main').indexOf(widget) !== -1,
         execute: async () => {
           this.toDisposeBeforeCreateNewContextMenu.dispose();
-          const sketch = await this.sketchServiceClient.currentSketch();
-          if (!sketch) {
-            return;
-          }
 
+          let parentElement: HTMLElement | undefined = undefined;
           const target = document.getElementById(
             SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id
           );
-          if (!(target instanceof HTMLElement)) {
-            return;
+          if (target instanceof HTMLElement) {
+            parentElement = target.parentElement ?? undefined;
           }
-          const { parentElement } = target;
           if (!parentElement) {
             return;
           }
 
-          const { mainFileUri, rootFolderFileUris } =
-            await this.sketchService.loadSketch(sketch.uri);
-          const uris = [mainFileUri, ...rootFolderFileUris];
+          const sketch = await this.sketchServiceClient.currentSketch();
+          if (!CurrentSketch.isValid(sketch)) {
+            return;
+          }
 
-          const currentSketch =
-            await this.sketchesServiceClient.currentSketch();
-          const parentsketchUri = this.editorManager.currentEditor
-            ?.getResourceUri()
-            ?.toString();
-          const parentsketch = await this.sketchService.getSketchFolder(
-            parentsketchUri || ''
+          this.menuRegistry.registerMenuAction(
+            ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
+            {
+              commandId: WorkspaceCommands.FILE_RENAME.id,
+              label: nls.localize('vscode/fileActions/rename', 'Rename'),
+              order: '1',
+            }
+          );
+          this.toDisposeBeforeCreateNewContextMenu.push(
+            Disposable.create(() =>
+              this.menuRegistry.unregisterMenuAction(
+                WorkspaceCommands.FILE_RENAME
+              )
+            )
           );
 
-          // if the current file is in the current opened sketch, show extra menus
-          if (
-            currentSketch &&
-            parentsketch &&
-            parentsketch.uri === currentSketch.uri &&
-            (await this.allowRename(parentsketch.uri))
-          ) {
-            this.menuRegistry.registerMenuAction(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              {
-                commandId: WorkspaceCommands.FILE_RENAME.id,
-                label: 'Rename',
-                order: '1',
-              }
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuAction(
-                  WorkspaceCommands.FILE_RENAME
-                )
+          this.menuRegistry.registerMenuAction(
+            ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
+            {
+              commandId: WorkspaceCommands.FILE_DELETE.id,
+              label: nls.localize('vscode/fileActions/delete', 'Delete'),
+              order: '2',
+            }
+          );
+          this.toDisposeBeforeCreateNewContextMenu.push(
+            Disposable.create(() =>
+              this.menuRegistry.unregisterMenuAction(
+                WorkspaceCommands.FILE_DELETE
               )
-            );
-          } else {
-            const renamePlaceholder = new PlaceholderMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              'Rename'
-            );
-            this.menuRegistry.registerMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              renamePlaceholder
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuNode(renamePlaceholder.id)
-              )
-            );
-          }
+            )
+          );
 
-          if (
-            currentSketch &&
-            parentsketch &&
-            parentsketch.uri === currentSketch.uri &&
-            (await this.allowDelete(parentsketch.uri))
-          ) {
-            this.menuRegistry.registerMenuAction(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              {
-                commandId: WorkspaceCommands.FILE_DELETE.id, // TODO: customize delete. Wipe sketch if deleting main file. Close window.
-                label: 'Delete',
-                order: '2',
-              }
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuAction(
-                  WorkspaceCommands.FILE_DELETE
-                )
-              )
-            );
-          } else {
-            const deletePlaceholder = new PlaceholderMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              'Delete'
-            );
-            this.menuRegistry.registerMenuNode(
-              ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
-              deletePlaceholder
-            );
-            this.toDisposeBeforeCreateNewContextMenu.push(
-              Disposable.create(() =>
-                this.menuRegistry.unregisterMenuNode(deletePlaceholder.id)
-              )
-            );
-          }
-
+          const { mainFileUri, rootFolderFileUris } = sketch;
+          const uris = [mainFileUri, ...rootFolderFileUris];
           for (let i = 0; i < uris.length; i++) {
             const uri = new URI(uris[i]);
 
@@ -175,7 +110,7 @@ export class SketchControl extends SketchContribution {
               {
                 commandId: command.id,
                 label: this.labelProvider.getName(uri),
-                order: `${i}`,
+                order: String(i).padStart(4),
               }
             );
             this.toDisposeBeforeCreateNewContextMenu.push(
@@ -192,6 +127,7 @@ export class SketchControl extends SketchContribution {
                 parentElement.getBoundingClientRect().top +
                 parentElement.offsetHeight,
             },
+            showDisabled: true,
           };
           this.contextMenuRenderer.render(options);
         },
@@ -199,12 +135,12 @@ export class SketchControl extends SketchContribution {
     );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__MAIN_GROUP,
       {
         commandId: WorkspaceCommands.NEW_FILE.id,
-        label: 'New Tab',
+        label: nls.localize('vscode/menubar/mNewTab', 'New Tab'),
         order: '0',
       }
     );
@@ -213,7 +149,7 @@ export class SketchControl extends SketchContribution {
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__NAVIGATION_GROUP,
       {
         commandId: CommonCommands.PREVIOUS_TAB.id,
-        label: 'Previous Tab',
+        label: nls.localize('vscode/menubar/mShowPreviousTab', 'Previous Tab'),
         order: '0',
       }
     );
@@ -221,20 +157,20 @@ export class SketchControl extends SketchContribution {
       ArduinoMenus.SKETCH_CONTROL__CONTEXT__NAVIGATION_GROUP,
       {
         commandId: CommonCommands.NEXT_TAB.id,
-        label: 'Next Tab',
+        label: nls.localize('vscode/menubar/mShowNextTab', 'Next Tab'),
         order: '0',
       }
     );
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: WorkspaceCommands.NEW_FILE.id,
       keybinding: 'CtrlCmd+Shift+N',
     });
     registry.registerKeybinding({
       command: CommonCommands.PREVIOUS_TAB.id,
-      keybinding: 'CtrlCmd+Alt+Left', // TODO: check why electron does not show the keybindings in the UI.
+      keybinding: 'CtrlCmd+Alt+Left',
     });
     registry.registerKeybinding({
       command: CommonCommands.NEXT_TAB.id,
@@ -242,28 +178,11 @@ export class SketchControl extends SketchContribution {
     });
   }
 
-  registerToolbarItems(registry: TabBarToolbarRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
     registry.registerItem({
       id: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,
       command: SketchControl.Commands.OPEN_SKETCH_CONTROL__TOOLBAR.id,
     });
-  }
-
-  protected async isCloudSketch(uri: string) {
-    const cloudCacheLocation = this.localCacheFsProvider.from(new URI(uri));
-
-    if (cloudCacheLocation) {
-      return true;
-    }
-    return false;
-  }
-
-  protected async allowRename(uri: string) {
-    return !this.isCloudSketch(uri);
-  }
-
-  protected async allowDelete(uri: string) {
-    return !this.isCloudSketch(uri);
   }
 }
 
@@ -271,7 +190,7 @@ export namespace SketchControl {
   export namespace Commands {
     export const OPEN_SKETCH_CONTROL__TOOLBAR: Command = {
       id: 'arduino-open-sketch-control--toolbar',
-      iconClass: 'fa fa-caret-down',
+      iconClass: 'fa fa-arduino-sketch-tabs-menu',
     };
   }
 }

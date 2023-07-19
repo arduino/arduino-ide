@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "حول {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "اللوحة {0}",
+      "boardConfigDialogTitle": "أختر متحكم و منفذ مختلفين ",
+      "boardInfo": "معلومات اللوحة",
+      "boards": "المتحكمات",
+      "configDialog1": "اختر لوحة و منفذ معا اذا اردت ان ترفع السكتش",
+      "configDialog2": "اذا قمت باختيار لوحة فقط ستسطيع ان تترجم لكن بدون ان ترفع المشروع",
+      "couldNotFindPreviouslySelected": "تعذر ايجاد اللوحة '{0}'  المختارة مسبقا في المنصة المثبتة '{1}' . الرجاء اعادة اختيار اللوحة التي تريد استعمالها يدويا . هل تريد باعادة الاختيار الان؟",
+      "disconnected": "Disconnected",
+      "getBoardInfo": "الحصول على معلومات اللوحة",
+      "inSketchbook": "(داخل ملف المشاريع)",
+      "installNow": "نواة \"{0} {1}\" يجب تثبيتها للوحة \"{2}\" التي تم اختيارها . هل تريد تثبيتها الان ؟",
+      "noBoardsFound": "No boards found for \"{0}\"",
+      "noFQBN": "FQBN غير متاح للوحة المختارة \"{0}\" . هل قمت بتثبيت النواة المعنية ؟",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "No ports discovered",
+      "noPortsSelected": "لا يوجد اية منافذ متاحة للوحة '{0}'",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "لم يتم اختيار اي لوحة",
+      "openBoardsConfig": "قم باختيار لوحة و منفذ مختلفين",
+      "pleasePickBoard": "من فضلك اختر لوحة متصلة على المنفذ الذي اخترته",
+      "port": "المنفذ {0}",
+      "portLabel": "Port: {0}",
+      "ports": "منافذ",
+      "programmer": "المبرمجة",
+      "reselectLater": "اعد الاختيار لاحقا",
+      "searchBoard": "أبحث عن متحكم",
+      "selectBoard": "اختر لوحة",
+      "selectPortForInfo": "الرجاء اختيار منفذ من اجل الحصول على معلومات اللوحة",
+      "showAllAvailablePorts": "يظهر كل المنافذ المتاحة عند تفعيله",
+      "showAllPorts": "أظهر جميع المنافذ",
+      "succesfullyInstalledPlatform": "تم تثبيت المنصة {0}:{1} بنجاح",
+      "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح",
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "مدير اللوحة",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
+    "bootloader": {
+      "burnBootloader": "ثبت محمل برنامج الإقلاع",
+      "burningBootloader": "Burning bootloader...",
+      "doneBurningBootloader": "تم حرق محمل الاقلاع"
+    },
+    "burnBootloader": {
+      "error": "خطا اثناء حرق محمل الاقلاع : {0}"
+    },
+    "certificate": {
+      "addNew": "اضافة جديد",
+      "addURL": "اضف URL لجلب شهادات SSL",
+      "boardAtPort": "{0} في {1}",
+      "certificatesUploaded": "تم رفع الشهادات",
+      "enterURL": "ادخل URL",
+      "noSupportedBoardConnected": "لا يوجد اية لوحة مدعومة متصلة ",
+      "openContext": "افتح المحتوى",
+      "remove": "حذف",
+      "selectBoard": "اختر لوحة ...",
+      "selectCertificateToUpload": "1. اختر شهادة لرفعها",
+      "selectDestinationBoardToUpload": "2. اختر وجهة اللوحة و ارفع الشهادة",
+      "upload": "رفع",
+      "uploadFailed": "فشل الرفع . الرجاء اعادة المحاولة لاحقا",
+      "uploadRootCertificates": "رفع شهادات SSL Root",
+      "uploadingCertificates": "جار رفع الشهادة"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "تعذر ايجاد لوحة المفاتيح 'Keyboard' . هل يحتوي مشروعك على '#include <Keyboard.h>' ؟",
+      "mouseError": "تعذر ايجاد الفأرة 'Mouse' . هل يحتوي مشروعك على '#include <Mouse.h>' ؟"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "اختر خصوصية مشروعك:",
+      "cloudSketchbook": "مشاريع على السحابة",
+      "connected": "متصل",
+      "continue": "استئناف",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "تضمين:",
+      "emptySketchbook": "ملف المشاريع الخاص بك فارغ",
+      "goToCloud": "Go to Cloud",
+      "learnMore": "تعرف على المزيد",
+      "link": "الرابط:",
+      "notYetPulled": "تعذر الدفع الى Cloud . انها لم تسحب الى الان",
+      "offline": "غير متصل",
+      "openInCloudEditor": "الفتح في المحرّر السحابي",
+      "options": "اعدادات...",
+      "privateVisibility": "خاص . وحدك فقط من يستطيع رؤية المشروع",
+      "profilePicture": "صورة الملف الشخصي",
+      "publicVisibility": "عام. اي شخص معه الرابط يستطيع رؤية المشروع",
+      "pull": "اسحب",
+      "pullFirst": "عليك السحب اولا لكي تصبح قادرا على الدفع الى السحابة",
+      "pullSketch": "سحب المشروع",
+      "pullSketchMsg": "سحب هذا المشروع من Cloud سيقوم بالكتابة فوق النسخة المحلية . هل تريد الاكمال ؟",
+      "push": "ادفع",
+      "pushSketch": "دفع المشروع",
+      "pushSketchMsg": "هذا مشروع عام . قبل دفعه , تاكد من عدم وجود اي معلومات حساسة داخل  ملف arduino_secrets.h . تستطيع جعل المشروع خاصا من لوحة المشاركة",
+      "remote": "عن بعد",
+      "share": "مشاركة...",
+      "shareSketch": "مشاركة المشروع",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "تسجيل الدخول",
+      "signInToCloud": "تسجيل الدخول الى Arduino Cloud",
+      "signOut": "تسجيل الخروج",
+      "sync": "مزامنة",
+      "syncEditSketches": "المزامنة و التعديل على مشاريعك في Arduino Cloud",
+      "visitArduinoCloud": "قم بزيارة Arduino Cloud من اجل انشاء ملف مشاريع على السحابة"
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "ثبّت يدويا",
+      "later": "لاحقا",
+      "noBoardSelected": "لم يتم اختيار اي لوحة",
+      "notConnected": "[غير متصل]",
+      "offlineIndicator": "انت غير متصل بالانترنت على الارجح , بدون الاتصال بالانترنت لن تستطيع واجهة سطر الاوامر الخاصة بالاردوينو \"Arduino CLI\" تحميل الموارد المطلوبة و من الممكن ان تسبب باخطاء , الرجاء الاتصال بالانترنت و اعادة تشغيل البرنامج",
+      "oldFormat": "ال '{0}' ما زالت تستخدم صيغة `.pde` القديمة . هل تريد الانتقال الى صيغة `.ino`  الجديدة ؟",
+      "partner": "Partner",
+      "processing": "تتم المعالجة",
+      "recommended": "Recommended",
+      "retired": "Retired",
+      "selectedOn": "{0} شغّل",
+      "serialMonitor": "مراقب المنفذ التسلسلي \"سيريال بورت\"\n ",
+      "type": "Type",
+      "unknown": "غير معروف",
+      "updateable": "Updatable"
+    },
+    "compile": {
+      "error": "خطا في الترجمة : {0}"
+    },
+    "component": {
+      "boardsIncluded": "Boards included in this package:",
+      "by": "بواسطة",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "ترشيح بحثك...",
+      "install": "تنصيب",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "عرض المزيد",
+      "otherVersions": "Other Versions",
+      "remove": "حذف",
+      "title": "{0} by {1}",
+      "uninstall": "الغاء التثبيت",
+      "uninstallMsg": "هل تريد الغاء تثبيت {0}؟",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "اضف ملف...",
+      "fileAdded": "تمت اضافة ملف واحد الى المشروع",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
+      "replaceTitle": "استبدال"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
+    "coreContribution": {
+      "copyError": "نسخ رسالة الخطأ",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "تصحيح برمجي - {0}",
+      "debuggingNotSupported": "'{0}' لا يقبل التصحيح البرمجي",
+      "noPlatformInstalledFor": "المنصة غير مثبتة ل '{0}'",
+      "optimizeForDebugging": "التحسين من اجل التصحيح البرمجي",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "لا تسأل مرة اخرى"
+    },
+    "editor": {
+      "autoFormat": "تنسيق تلقائي",
+      "commentUncomment": "ملاحظة/ الغاء الملاحظة",
+      "copyForForum": "النسخ من اجل المنتدى ",
+      "decreaseFontSize": "تصغير حجم الخط",
+      "decreaseIndent": "تقليل مسافة البادئة",
+      "increaseFontSize": "تكبير حجم الخط",
+      "increaseIndent": "زيادة مسافة البادئة",
+      "nextError": "الخطأ التالي",
+      "previousError": "الخطأ السابق",
+      "revealError": "Reveal Error"
+    },
+    "electron": {
+      "couldNotSave": "تعذر حفظ المشروع . الرجاء نسخ عملك الغير محفوظ الى محرر النصوص المفضل لديك و اعادة تشغيل Arduino IDE",
+      "unsavedChanges": "اي تغييرات لم تحفظ لن يتم حفظها"
+    },
+    "examples": {
+      "builtInExamples": "الأمثلة المدمجة",
+      "couldNotInitializeExamples": "تعذرت تهيئة الامثلة المدمجة",
+      "customLibrary": "امثلة من مكتبات مخصصة",
+      "for": "امثلة ل {0}",
+      "forAny": "أمثلة لأي لوحة",
+      "menu": "أمثلة"
+    },
+    "firmware": {
+      "checkUpdates": "التحقق من التحديثات",
+      "failedInstall": "فشل التثبيت. الرجاء اعادة المحاولة لاحقا",
+      "install": "تنصيب",
+      "installingFirmware": "جار تثبيت البرامج الثابتة",
+      "overwriteSketch": "التثبيت سيكتب فوق المشروع على اللوحة",
+      "selectBoard": "اختر لوحة",
+      "selectVersion": "اختر نسخة البرامج الثابتة",
+      "successfullyInstalled": "تم تثبيت البرامج الثابتة بنجاح",
+      "updater": "محدث البرامج الثابتة ل WiFi101 / WiFiNINA "
+    },
+    "help": {
+      "environment": "البيئة",
+      "faq": "اسئلة متكررة",
+      "findInReference": "ايجاد في مرجع",
+      "gettingStarted": "البدء",
+      "keyword": "ادخل كلمة مفتاحية",
+      "privacyPolicy": "سياسة الخصوصية",
+      "reference": "مراجع",
+      "search": "البحث على Arduino.cc",
+      "troubleshooting": "استكشاف الاخطاء و اصلاحها",
+      "visit": "زيارة Arduino.cc"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE Updates",
+      "closeAndInstallButton": "قم بالاغلاق و التحديث",
+      "closeToInstallNotice": "اغلق البرمجية و حّدث الجهاز الخاص بك ",
+      "downloadButton": "حمّل",
+      "downloadingNotice": "يتم تحميل اخر نسخة من Arduino IDE",
+      "errorCheckingForUpdates": "حدث خطأ اثناء البحث عن تحديثات للـ Arduino IDE \n{0}",
+      "goToDownloadButton": "اذهب الى التحميلات",
+      "goToDownloadPage": "يوجد تحديث للArduino IDE . لكننا غير قادرين على تنزيله و تثبيته تلقائيا . الرجاء الذهاب الى صفحة التحميلات و تنزيل احدث نسخة من هناك.",
+      "ideUpdaterDialog": "التحديثات للبرنامج",
+      "newVersionAvailable": "نسخة جديدة من {0} Arduino IDE قابلة للتحميل",
+      "noUpdatesAvailable": "لا يوجد تحديثات اخيرة متوافرة لل Arduino IDE",
+      "notNowButton": "ليس الان",
+      "skipVersionButton": "تخطى النسخة",
+      "updateAvailable": "يوجد تحديث",
+      "versionDownloaded": "لقد تم تحميل {0} Arduino IDE"
+    },
+    "library": {
+      "addZip": "اضف مكتبة .ZIP ...",
+      "arduinoLibraries": "مكتبات Arduino",
+      "contributedLibraries": "المكتبات التي سوهم بها",
+      "include": "ضمّن مكتبة",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "هل تريد تثبيت التبعيات المفقودة؟",
+      "installOneMissingDependency": "هل تريد تثبيت التبعية المفقودة ؟",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "تم تثبيت المكتبة {0}:{1} بنجاح",
+      "libraryAlreadyExists": "المكتبة موجودة مسبقا . هل تريد الكتابة فوقها ؟",
+      "manageLibraries": "ادارة المكتبات",
+      "namedLibraryAlreadyExists": "يوجد ملف مكتبة باسم {0} مسبقا . هل تريد الكتابة فوقه ؟",
+      "needsMultipleDependencies": "المكتبة <b>{0}:{1}</b> تحتاج  الى تبعات اخرى غير مثبتة حاليا",
+      "needsOneDependency": "المكتبة <b>{0}:{1}</b> تحتاج  الى تبعات اخرى غير مثبتة حاليا",
+      "overwriteExistingLibrary": "هل تريد الكتابة فوق المكتبة الحالية ؟",
+      "successfullyInstalledZipLibrary": "تم تثبيت المكتبة من الارشيف {0} بنجاح",
+      "title": "مدير المكتبات",
+      "uninstalledSuccessfully": "تم الغاء تثبيت المكتبة {0}:{1} بنجاح",
+      "zipLibrary": "المكتبة"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
+    "menu": {
+      "advanced": "متقدم",
+      "sketch": "مشروع",
+      "tools": "ادوات"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "تعذر اغلاق مقبس الويب",
+      "unableToConnectToWebSocket": "تعذر الاتصال بمقبس الويب"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "شبكة",
+      "serial": "Serial"
+    },
+    "preferences": {
+      "additionalManagerURLs": "مدير اللوحات الاضافية",
+      "auth.audience": "جمهور OAuth2",
+      "auth.clientID": "ID الخاص بعميل OAuth2",
+      "auth.domain": "نطاق OAuth2",
+      "auth.registerUri": "عنوان URL المستخدم لتسجيل مستخدم جديد",
+      "automatic": "تلقائي",
+      "board.certificates": "قائمة الشهادات التي يمكن رفعها الى اللوحات",
+      "browse": "استعرض",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "choose": "اختر",
+      "cli.daemonDebug": "تفعيل تسجيل تصحيح الاخطاء لـ  gRPC calls الى CLI الاردوينو (Enable debug logging of the gRPC calls to the Arduino CLI)  يجب اعادة تشغيل ide لكي يصبح هذا الخيار فعالا .  الخيار غير مفعل افتراضيا",
+      "cloud.enabled": "True اذا كانت مهام المزامنة مفعلة . True افتراضيا",
+      "cloud.pull.warn": "True اذا كان يجب تحذير المستخدمين قبل سحب مشروع من السحابة . True افتراضيا",
+      "cloud.push.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع الى السحابة . True افتراضيا",
+      "cloud.pushpublic.warn": "True اذا كان يجب تحذير المستخدمين قبل دفع مشروع عام الى السحابة . True افتراضيا",
+      "cloud.sketchSyncEndpoint": "الوجهة المستخدمة لدفع و سحب المشاريع من الخلفية . تشير افتراضيا الى Arduino Cloud API.",
+      "compile": "الترجمة",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "True لخرج الترجمة المطول . False افتراضيا",
+      "compile.warnings": "يخبر gcc اي مستوى انذار سيتم استخدامه , قيمته 'None' افتراضيا",
+      "compilerWarnings": "تحذيرات المترجم",
+      "editorFontSize": "حجم خط المحرّر",
+      "editorQuickSuggestions": "اقتراحات المحرّر السريعة",
+      "enterAdditionalURLs": "قم بادخال عناوين URL الاضافية , واحد لكل صف",
+      "files.inside.sketches": "اظهر الملفات داخل المشاريع",
+      "ide.updateBaseUrl": "عنوان URL الاساسي حيث يتم تنزيل التحديثات منه \nقيمته افتراضيا 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "انشر القناة للحصول على تحديثات من . 'stable' هو النسخة الثابتة .'nightly' هي اخر نسخة تطويرية ",
+      "interfaceScale": "مقياس الواجهة",
+      "invalid.editorFontSize": "حجم خط المحرّر غير صالح . يجب ان يكون عدد موجب",
+      "invalid.sketchbook.location": "موقع ملف المشروع غير صالح : {0}",
+      "invalid.theme": "سمة غير صالحة",
+      "language.log": "\"True\" اذا كان مخدم اللغات الخاص بArduino يستطيع توليد سجلات الى ملف المشروع , و الا \"False\", و هي كذلك بشكل افتراضي.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "manualProxy": "اعدادات الوكيل يدوياً",
+      "network": "شبكة",
+      "newSketchbookLocation": "اختر مكان المشروع الجديد",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "لا يوجد وكيل",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
+      "showVerbose": "اظهر خرج مطوّل خلال",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "موقع ملف المشاريع",
+      "sketchbook.showAllFiles": "True لعرض كل مجلدات مشاريع داخل المشروع . False افتراضيا",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "unofficialBoardSupport": "انقر لعرض قائمة عناوين URL للوحات المدعومة بشكل غير رسمي",
+      "upload": "الرفع",
+      "upload.verbose": "True لخرج الرفع المطول . False افتراضيا",
+      "verifyAfterUpload": "التحقق من الكود بعد الرفع",
+      "window.autoScale": "True اذا كان مقياس الواجهة يتزامن تلقائيا مع حجم الخط ",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "هل تريد استبدال النسخة الحالية من {0} ؟",
+    "selectZip": "اختر ملف .zip يحوي المكتبة التي تريد اضافتها",
+    "serial": {
+      "autoscroll": "تمرير تلقائي",
+      "carriageReturn": "اعادة الحمل",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "newLine": "سطر جديد",
+      "newLineCarriageReturn": " NL & CR معاً",
+      "noLineEndings": "نهاية السطر غير موجودة",
+      "notConnected": "غير متصل . اختر لوحة و منفذ للاتصال تلقائيا",
+      "openSerialPlotter": "Serial Plotter",
+      "timestamp": "الطابع الزمني",
+      "toggleTimestamp": "تبديل الطابع الزمني"
+    },
+    "sketch": {
+      "archiveSketch": "ارشفة الشيفرة البرمجية",
+      "cantOpen": "المجلد المسمى \"{0}\" موجود مسبقا. لا يمكن فتح الشيفرة البرمجية",
+      "close": "هل انت متاكد بانك تريد اغلاق المشروع ؟",
+      "compile": "Compiling sketch...",
+      "configureAndUpload": "Configure and Upload",
+      "createdArchive": "تم انشاء ارشيف '{0}'",
+      "doneCompiling": "تمت الترجمة بنجاح.",
+      "doneUploading": "تم الرفع بنجاح.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "تصدير الملف الثنائي المترجم",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "يتم النقل",
+      "movingMsg": "الملف \"{0}\" يجب ان يكون داخل مجلد مشروع مسمى \"{1}\"\nهل انشئ المجلد , ثم انقل الملف و اكمل ؟",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "فتح المجلد",
+      "openRecent": "فُتِحَ مؤخرا ",
+      "openSketchInNewWindow": "فتح المشروع في نافذة جديدة",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "احفظ مجلد المشروع باسم",
+      "saveSketch": "احفظ ملف المشروع لفتحه مرة اخرى لاحقا",
+      "saveSketchAs": "حفظ ملف المشروع باسم ...",
+      "showFolder": "اعرض ملف المشروع",
+      "sketch": "مشروع",
+      "sketchbook": "مجلد المشاريع",
+      "titleLocalSketchbook": "مجلد المشاريع المحلي",
+      "titleSketchbook": "مجلد المشاريع",
+      "upload": "رفع",
+      "uploadUsingProgrammer": "الرفع باستخدام مبرمجة",
+      "uploading": "Uploading...",
+      "userFieldsNotFoundError": "تعذر ايجاد حقول المستخدم للوحة المتصلة",
+      "verify": "تحقق",
+      "verifyOrCompile": "تحقق/ترجم"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "الاجابة على الاستبيان",
+      "dismissSurvey": "لا تظهر مرة اخرى",
+      "surveyMessage": "يرجى ان تساعدنا لنحسن ادائنا من خلال الاجابة على هذا الاستبيان القصير جدا . نحن نحترم المجتمع الخاص بنا و نريد ان نتعرف بشكل افضل على داعمينا "
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
+    "upload": {
+      "error": "خطا {0} : {1}"
+    },
+    "userFields": {
+      "cancel": "الغاء",
+      "enterField": "Enter {0}",
+      "upload": "رفع"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "تعذر الاتصال بالخلفية",
+      "cannotConnectDaemon": "تعذر الاتصال ب CLI daemon",
+      "couldNotSave": "تعذر حفظ المشروع . الرجاء نسخ عملك الغير محفوظ الى محرر النصوص المفضل لديك و اعادة تشغيل Arduino IDE",
+      "daemonOffline": "CLI Daemon غير متصل",
+      "offline": "غير متصل",
+      "offlineText": "غير متصل",
+      "quitTitle": "هل انت متاكد بانك تريد الخروج؟"
+    },
+    "editor": {
+      "unsavedTitle": "غير محفوظ – {0}"
+    },
+    "messages": {
+      "collapse": "تقليص",
+      "expand": "توسيع"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "اسم الملف الجديد",
+      "invalidExtension": "\".{0}\" امتداد غير صالح",
+      "newFileName": "الاسم الجديد لملف"
+    }
+  }
+}

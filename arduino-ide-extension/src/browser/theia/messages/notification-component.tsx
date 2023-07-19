@@ -1,8 +1,10 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { NotificationComponent as TheiaNotificationComponent } from '@theia/messages/lib/browser/notification-component';
+import { nls } from '@theia/core/lib/common';
+import { codicon } from '@theia/core/lib/browser';
 
 export class NotificationComponent extends TheiaNotificationComponent {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const { messageId, message, type, collapsed, expandable, source, actions } =
       this.props.notification;
     return (
@@ -14,7 +16,7 @@ export class NotificationComponent extends TheiaNotificationComponent {
         >
           <div className="theia-notification-list-item-content-main">
             <div
-              className={`theia-notification-icon theia-notification-icon-${type}`}
+              className={`theia-notification-icon ${codicon(type)} ${type}`}
             />
             <div className="theia-notification-message">
               <span
@@ -25,16 +27,24 @@ export class NotificationComponent extends TheiaNotificationComponent {
             <ul className="theia-notification-actions">
               {expandable && (
                 <li
-                  className={collapsed ? 'expand' : 'collapse'}
-                  title={collapsed ? 'Expand' : 'Collapse'}
+                  className={
+                    codicon('chevron-down') + collapsed
+                      ? ' expand'
+                      : ' collapse'
+                  }
+                  title={
+                    collapsed
+                      ? nls.localize('theia/messages/expand', 'Expand')
+                      : nls.localize('theia/messages/collapse', 'Collapse')
+                  }
                   data-message-id={messageId}
                   onClick={this.onToggleExpansion}
                 />
               )}
               {!this.isProgress && (
                 <li
-                  className="clear"
-                  title="Clear"
+                  className={codicon('close', true)}
+                  title={nls.localize('vscode/abstractTree/clear', 'Clear')}
                   data-message-id={messageId}
                   onClick={this.onClear}
                 />
@@ -51,7 +61,9 @@ export class NotificationComponent extends TheiaNotificationComponent {
                   actions.map((action, index) => (
                     <button
                       key={messageId + `-action-${index}`}
-                      className="theia-button"
+                      className={`theia-button ${
+                        index !== actions.length - 1 ? 'secondary' : ''
+                      }`}
                       data-message-id={messageId}
                       data-action={action}
                       onClick={this.onAction}

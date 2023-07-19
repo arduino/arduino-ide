@@ -1,8 +1,12 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { FileNode, FileTreeModel } from '@theia/filesystem/lib/browser';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { ConfigService } from '../../../common/protocol';
+import { ConfigServiceClient } from './../../config/config-service-client';
 import { SketchbookTree } from './sketchbook-tree';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import {
@@ -13,7 +17,10 @@ import {
 } from '@theia/core/lib/browser/tree';
 import { SketchbookCommands } from './sketchbook-commands';
 import { OpenerService, open } from '@theia/core/lib/browser';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../sketches-service-client-impl';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -28,7 +35,7 @@ import { Disposable } from '@theia/core/lib/common/disposable';
 @injectable()
 export class SketchbookTreeModel extends FileTreeModel {
   @inject(FileService)
-  protected readonly fileService: FileService;
+  protected override readonly fileService: FileService;
 
   @inject(ArduinoPreferences)
   protected readonly arduinoPreferences: ArduinoPreferences;
@@ -36,8 +43,8 @@ export class SketchbookTreeModel extends FileTreeModel {
   @inject(CommandRegistry)
   public readonly commandRegistry: CommandRegistry;
 
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceClient)
+  protected readonly configService: ConfigServiceClient;
 
   @inject(OpenerService)
   protected readonly openerService: OpenerService;
@@ -45,7 +52,7 @@ export class SketchbookTreeModel extends FileTreeModel {
   @inject(SketchesServiceClientImpl)
   protected readonly sketchServiceClient: SketchesServiceClientImpl;
 
-  @inject(SketchbookTree) protected readonly tree: SketchbookTree;
+  @inject(SketchbookTree) protected override readonly tree: SketchbookTree;
   @inject(WorkspaceService)
   protected readonly workspaceService: WorkspaceService;
   @inject(FrontendApplicationStateService)
@@ -55,10 +62,16 @@ export class SketchbookTreeModel extends FileTreeModel {
   protected readonly progressService: ProgressService;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.reportBusyProgress();
     this.initializeRoot();
+    this.toDispose.push(
+      this.configService.onDidChangeSketchDirUri(async () => {
+        await this.updateRoot();
+        this.selectRoot(this.root);
+      })
+    );
   }
 
   protected readonly pendingBusyProgress = new Map<string, Deferred<void>>();
@@ -121,6 +134,10 @@ export class SketchbookTreeModel extends FileTreeModel {
       return;
     }
     const root = this.root;
+    this.selectRoot(root);
+  }
+
+  private selectRoot(root: TreeNode | undefined) {
     if (CompositeTreeNode.is(root) && root.children.length === 1) {
       const child = root.children[0];
       if (
@@ -143,7 +160,7 @@ export class SketchbookTreeModel extends FileTreeModel {
     }
   }
 
-  *getNodesByUri(uri: URI): IterableIterator<TreeNode> {
+  override *getNodesByUri(uri: URI): IterableIterator<TreeNode> {
     const workspace = this.root;
     if (WorkspaceNode.is(workspace)) {
       for (const root of workspace.children) {
@@ -161,10 +178,12 @@ export class SketchbookTreeModel extends FileTreeModel {
   }
 
   protected async createRoot(): Promise<TreeNode | undefined> {
-    const config = await this.configService.getConfiguration();
-    const rootFileStats = await this.fileService.resolve(
-      new URI(config.sketchDirUri)
-    );
+    const sketchDirUri = this.configService.tryGetSketchDirUri();
+    const errors = this.configService.tryGetMessages();
+    if (!sketchDirUri || errors?.length) {
+      return undefined;
+    }
+    const rootFileStats = await this.fileService.resolve(sketchDirUri);
 
     if (this.workspaceService.opened && rootFileStats.children) {
       // filter out libraries and hardware
@@ -183,7 +202,10 @@ export class SketchbookTreeModel extends FileTreeModel {
   /**
    * Move the given source file or directory to the given target directory.
    */
-  async move(source: TreeNode, target: TreeNode): Promise<URI | undefined> {
+  override async move(
+    source: TreeNode,
+    target: TreeNode
+  ): Promise<URI | undefined> {
     if (source.parent && WorkspaceRootNode.is(source)) {
       // do not support moving a root folder
       return undefined;
@@ -250,7 +272,7 @@ export class SketchbookTreeModel extends FileTreeModel {
 
   // selectNode gets called when the user single-clicks on an item
   // when this happens, we want to open the file if it belongs to the currently open sketch
-  async selectNode(node: Readonly<SelectableTreeNode>): Promise<void> {
+  override async selectNode(node: Readonly<SelectableTreeNode>): Promise<void> {
     super.selectNode(node);
     if (FileNode.is(node) && (await this.isFileInsideCurrentSketch(node))) {
       this.open(node.uri);
@@ -258,10 +280,13 @@ export class SketchbookTreeModel extends FileTreeModel {
   }
 
   public open(uri: URI): void {
-    open(this.openerService, uri);
+    open(this.openerService, uri, {
+      mode: 'reveal',
+      preview: false,
+    });
   }
 
-  protected async doOpenNode(node: TreeNode): Promise<void> {
+  protected override async doOpenNode(node: TreeNode): Promise<void> {
     // if it's a sketch dir, or a file from another sketch, open in new window
     if (!(await this.isFileInsideCurrentSketch(node))) {
       const sketchRoot = this.recursivelyFindSketchRoot(node);
@@ -291,7 +316,10 @@ export class SketchbookTreeModel extends FileTreeModel {
 
     // check if the node is a file that belongs to another sketch
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (sketch && node.uri.toString().indexOf(sketch.uri) !== 0) {
+    if (
+      CurrentSketch.isValid(sketch) &&
+      node.uri.toString().indexOf(sketch.uri) !== 0
+    ) {
       return false;
     }
     return true;

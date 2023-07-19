@@ -1,0 +1,4 @@
+.codicon-debug-alt:before { 
+  font-family: 'FontAwesome' !important;
+  content: "\e905" !important
+}

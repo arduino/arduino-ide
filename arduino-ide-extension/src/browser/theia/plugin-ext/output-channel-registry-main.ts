@@ -1,4 +1,4 @@
-import { injectable, inject } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { CommandService } from '@theia/core/lib/common/command';
 import { OutputCommands } from '@theia/output/lib/browser/output-commands';
 import { PluginInfo } from '@theia/plugin-ext/lib/common/plugin-api-rpc';
@@ -7,9 +7,9 @@ import { OutputChannelRegistryMainImpl as TheiaOutputChannelRegistryMainImpl } f
 @injectable()
 export class OutputChannelRegistryMainImpl extends TheiaOutputChannelRegistryMainImpl {
   @inject(CommandService)
-  protected readonly commandService: CommandService;
+  protected override readonly commandService: CommandService;
 
-  $append(
+  override $append(
     name: string,
     text: string,
     pluginInfo: PluginInfo
@@ -21,17 +21,17 @@ export class OutputChannelRegistryMainImpl extends TheiaOutputChannelRegistryMai
     return Promise.resolve();
   }
 
-  $clear(name: string): PromiseLike<void> {
+  override $clear(name: string): PromiseLike<void> {
     this.commandService.executeCommand(OutputCommands.CLEAR.id, { name });
     return Promise.resolve();
   }
 
-  $dispose(name: string): PromiseLike<void> {
+  override $dispose(name: string): PromiseLike<void> {
     this.commandService.executeCommand(OutputCommands.DISPOSE.id, { name });
     return Promise.resolve();
   }
 
-  async $reveal(name: string, preserveFocus: boolean): Promise<void> {
+  override async $reveal(name: string, preserveFocus: boolean): Promise<void> {
     const options = { preserveFocus };
     this.commandService.executeCommand(OutputCommands.SHOW.id, {
       name,
@@ -39,7 +39,7 @@ export class OutputChannelRegistryMainImpl extends TheiaOutputChannelRegistryMai
     });
   }
 
-  $close(name: string): PromiseLike<void> {
+  override $close(name: string): PromiseLike<void> {
     this.commandService.executeCommand(OutputCommands.HIDE.id, { name });
     return Promise.resolve();
   }

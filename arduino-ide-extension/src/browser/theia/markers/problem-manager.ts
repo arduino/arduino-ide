@@ -1,40 +1,61 @@
-import { inject, injectable, postConstruct } from 'inversify';
-import { Diagnostic } from 'vscode-languageserver-types';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
+import { Diagnostic } from '@theia/core/shared/vscode-languageserver-types';
 import URI from '@theia/core/lib/common/uri';
-import { ILogger } from '@theia/core';
 import { Marker } from '@theia/markers/lib/common/marker';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser/problem/problem-manager';
-import { ConfigService } from '../../../common/protocol/config-service';
+import { ConfigServiceClient } from '../../config/config-service-client';
+import debounce from 'lodash.debounce';
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../../utils/constants';
 
 @injectable()
 export class ProblemManager extends TheiaProblemManager {
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceClient)
+  private readonly configService: ConfigServiceClient;
 
-  @inject(ILogger)
-  protected readonly logger: ILogger;
-
-  protected dataDirUri: URI | undefined;
+  private dataDirUri: URI | undefined;
+  private cloudCacheDirUri: URI | undefined;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
-    this.configService
-      .getConfiguration()
-      .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
-      .catch((err) =>
-        this.logger.error(`Failed to determine the data directory: ${err}`)
-      );
+    this.dataDirUri = this.configService.tryGetDataDirUri();
+    this.configService.onDidChangeDataDirUri((uri) => {
+      this.dataDirUri = uri;
+      this.cloudCacheDirUri = this.dataDirUri
+        ?.resolve(REMOTE_SKETCHBOOK_FOLDER)
+        .resolve(ARDUINO_CLOUD_FOLDER);
+    });
   }
 
-  setMarkers(
+  override setMarkers(
     uri: URI,
     owner: string,
     data: Diagnostic[]
   ): Marker<Diagnostic>[] {
-    if (this.dataDirUri && this.dataDirUri.isEqualOrParent(uri)) {
+    if (
+      this.dataDirUri &&
+      this.dataDirUri.isEqualOrParent(uri) &&
+      this.cloudCacheDirUri && // Do not disable the diagnostics for cloud sketches https://github.com/arduino/arduino-ide/issues/669
+      !this.cloudCacheDirUri.isEqualOrParent(uri)
+    ) {
+      // If in directories.data folder but not in the cloud sketchbook cache folder.
       return [];
     }
     return super.setMarkers(uri, owner, data);
+  }
+
+  private readonly debouncedFireOnDidChangeMakers = debounce(
+    (uri: URI) => this.onDidChangeMarkersEmitter.fire(uri),
+    500
+  );
+  protected override fireOnDidChangeMarkers(uri: URI): void {
+    this.debouncedFireOnDidChangeMakers(uri);
   }
 }

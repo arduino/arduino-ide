@@ -4,26 +4,24 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "App (Electron)",
+      "name": "App (Electron) [Dev]",
       "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
         "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
-        "env": {
-          "NODE_ENV": "development",
-          "NODE_PRESERVE_SYMLINKS": "1"
-        }
       },
       "cwd": "${workspaceFolder}/electron-app",
-      "protocol": "inspector",
       "args": [
         ".",
         "--log-level=debug",
         "--hostname=localhost",
-        "--no-cluster",
         "--app-project-path=${workspaceRoot}/electron-app",
         "--remote-debugging-port=9222",
         "--no-app-auto-install",
-        "--plugins=local-dir:../plugins"
+        "--plugins=local-dir:../plugins",
+        "--hosted-plugin-inspect=9339",
+        "--content-trace",
+        "--open-devtools",
+        "--no-ping-timeout",
       ],
       "env": {
         "NODE_ENV": "development"
@@ -33,7 +31,8 @@
         "${workspaceRoot}/electron-app/src-gen/backend/*.js",
         "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
         "${workspaceRoot}/electron-app/lib/**/*.js",
-        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js"
+        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js",
+        "${workspaceRoot}/node_modules/@theia/**/*.js"
       ],
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
@@ -42,43 +41,55 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "App (Browser)",
-      "program": "${workspaceRoot}/browser-app/src-gen/backend/main.js",
-      "args": [
-        "--hostname=0.0.0.0",
-        "--port=3000",
-        "--no-cluster",
-        "--no-app-auto-install",
-        "--plugins=local-dir:plugins"
-      ],
+      "name": "App (Electron)",
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
       "windows": {
-        "env": {
-          "NODE_ENV": "development",
-          "NODE_PRESERVE_SYMLINKS": "1"
-        }
+        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
       },
+      "cwd": "${workspaceFolder}/electron-app",
+      "args": [
+        ".",
+        "--log-level=debug",
+        "--hostname=localhost",
+        "--app-project-path=${workspaceRoot}/electron-app",
+        "--remote-debugging-port=9222",
+        "--no-app-auto-install",
+        "--plugins=local-dir:../plugins",
+        "--hosted-plugin-inspect=9339",
+        "--no-ping-timeout",
+      ],
       "env": {
         "NODE_ENV": "development"
       },
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceRoot}/browser-app/src-gen/backend/*.js",
-        "${workspaceRoot}/browser-app/lib/**/*.js",
-        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js"
+        "${workspaceRoot}/electron-app/src-gen/backend/*.js",
+        "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
+        "${workspaceRoot}/electron-app/lib/**/*.js",
+        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js",
+        "${workspaceRoot}/node_modules/@theia/**/*.js"
       ],
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std"
     },
     {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Attach to Electron Frontend",
+      "port": 9222,
+      "webRoot": "${workspaceFolder}/electron-app"
+    },
+    {
       "type": "node",
       "request": "launch",
-      "protocol": "inspector",
       "name": "Run Test [current]",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
       "args": [
         "--require",
         "reflect-metadata/Reflect",
+        "--require",
+        "ignore-styles",
         "--no-timeouts",
         "--colors",
         "**/${fileBasenameNoExtension}.js"
@@ -103,6 +114,15 @@
       "name": "Electron Packager",
       "program": "${workspaceRoot}/electron/packager/index.js",
       "cwd": "${workspaceFolder}/electron/packager"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch Electron Backend & Frontend",
+      "configurations": [
+        "App (Electron)",
+        "Attach to Electron Frontend"
+      ]
     }
   ]
 }

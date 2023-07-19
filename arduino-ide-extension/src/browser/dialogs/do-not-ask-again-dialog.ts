@@ -1,11 +1,12 @@
-import { inject, injectable } from 'inversify';
-import { Widget } from '@phosphor/widgets';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
 import {
   ConfirmDialog,
   ConfirmDialogProps,
   DialogError,
 } from '@theia/core/lib/browser/dialogs';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class DoNotAskAgainDialogProps extends ConfirmDialogProps {
@@ -18,7 +19,7 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
 
   constructor(
     @inject(DoNotAskAgainDialogProps)
-    protected readonly props: DoNotAskAgainDialogProps
+    protected override readonly props: DoNotAskAgainDialogProps
   ) {
     super(props);
     this.controlPanel.removeChild(this.errorMessageNode);
@@ -31,14 +32,17 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
     const doNotAskAgainLabel = document.createElement('label');
     doNotAskAgainLabel.classList.add('flex-line');
     doNotAskAgainNode.appendChild(doNotAskAgainLabel);
-    doNotAskAgainLabel.textContent = "Don't ask again";
+    doNotAskAgainLabel.textContent = nls.localize(
+      'arduino/dialog/dontAskAgain',
+      "Don't ask again"
+    );
     this.doNotAskAgainCheckbox = document.createElement('input');
     this.doNotAskAgainCheckbox.setAttribute('align-self', 'center');
     doNotAskAgainLabel.appendChild(this.doNotAskAgainCheckbox);
     this.doNotAskAgainCheckbox.type = 'checkbox';
   }
 
-  protected async accept(): Promise<void> {
+  protected override async accept(): Promise<void> {
     if (!this.resolve) {
       return;
     }
@@ -61,7 +65,7 @@ export class DoNotAskAgainConfirmDialog extends ConfirmDialog {
     }
   }
 
-  protected setErrorMessage(error: DialogError): void {
+  protected override setErrorMessage(error: DialogError): void {
     if (this.acceptButton) {
       this.acceptButton.disabled = !DialogError.getResult(error);
     }

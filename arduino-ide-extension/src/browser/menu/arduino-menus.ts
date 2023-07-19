@@ -1,4 +1,3 @@
-import { isOSX } from '@theia/core/lib/common/os';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
 import {
   MAIN_MENU_BAR,
@@ -7,6 +6,8 @@ import {
   MenuPath,
   SubMenuOptions,
 } from '@theia/core/lib/common/menu';
+import { nls } from '@theia/core/lib/common/nls';
+import { isOSX } from '@theia/core/lib/common/os';
 
 export namespace ArduinoMenus {
   // Main menu
@@ -86,7 +87,7 @@ export namespace ArduinoMenus {
 
   // -- Tools
   export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
-  // `Auto Format`, `Archive Sketch`, `Manage Libraries...`, `Serial Monitor`
+  // `Auto Format`, `Archive Sketch`, `Manage Libraries...`, `Serial Monitor`, Serial Plotter
   export const TOOLS__MAIN_GROUP = [...TOOLS, '0_main'];
   // `WiFi101 /  WiFiNINA Firmware Updater`
   export const TOOLS__FIRMWARE_UPLOADER_GROUP = [
@@ -97,6 +98,11 @@ export namespace ArduinoMenus {
   export const TOOLS__BOARD_SELECTION_GROUP = [...TOOLS, '2_board_selection'];
   // Core settings, such as `Processor` and `Programmers` for the board and `Burn Bootloader`
   export const TOOLS__BOARD_SETTINGS_GROUP = [...TOOLS, '3_board_settings'];
+  // `Tool` > `Ports` (always visible https://github.com/arduino/arduino-ide/issues/655)
+  export const TOOLS__PORTS_SUBMENU = [
+    ...ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
+    '2_ports',
+  ];
 
   // -- Help
   // `Getting Started`, `Environment`, `Troubleshooting`, etc.
@@ -147,6 +153,36 @@ export namespace ArduinoMenus {
   export const SKETCH_CONTROL__CONTEXT__RESOURCES_GROUP = [
     ...SKETCH_CONTROL__CONTEXT,
     '2_resources',
+  ];
+
+  // -- Account
+  export const ARDUINO_ACCOUNT__CONTEXT = ['arduino-account--context'];
+  export const ARDUINO_ACCOUNT__CONTEXT__SIGN_IN_GROUP = [
+    ...ARDUINO_ACCOUNT__CONTEXT,
+    '0_sign_in',
+  ];
+  export const ARDUINO_ACCOUNT__CONTEXT__LEARN_MORE_GROUP = [
+    ...ARDUINO_ACCOUNT__CONTEXT,
+    '1_learn_more',
+  ];
+  export const ARDUINO_ACCOUNT__CONTEXT__GO_TO_GROUP = [
+    ...ARDUINO_ACCOUNT__CONTEXT,
+    '2_go_to',
+  ];
+  export const ARDUINO_ACCOUNT__CONTEXT__SIGN_OUT_GROUP = [
+    ...ARDUINO_ACCOUNT__CONTEXT,
+    '3_sign_out',
+  ];
+
+  // Context menu from the library and boards manager widget
+  export const ARDUINO_COMPONENT__CONTEXT = ['arduino-component--context'];
+  export const ARDUINO_COMPONENT__CONTEXT__INFO_GROUP = [
+    ...ARDUINO_COMPONENT__CONTEXT,
+    '0_info',
+  ];
+  export const ARDUINO_COMPONENT__CONTEXT__ACTION_GROUP = [
+    ...ARDUINO_COMPONENT__CONTEXT,
+    '1_action',
   ];
 
   // -- ROOT SSL CERTIFICATES
@@ -206,3 +242,5 @@ export class PlaceholderMenuNode implements MenuNode {
     return [...this.menuPath, 'placeholder'].join('-');
   }
 }
+
+export const examplesLabel = nls.localize('arduino/examples/menu', 'Examples');

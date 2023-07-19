@@ -1,4 +1,4 @@
-import { interfaces, Container } from 'inversify';
+import { interfaces, Container } from '@theia/core/shared/inversify';
 import { CloudSketchbookTreeWidget } from './cloud-sketchbook-tree-widget';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';

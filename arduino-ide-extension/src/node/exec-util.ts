@@ -1,56 +1,27 @@
-import * as os from 'os';
-import * as which from 'which';
-import * as semver from 'semver';
-import { join } from 'path';
-import { spawn } from 'child_process';
+import { spawn } from 'node:child_process';
+import os from 'node:os';
+import { join } from 'node:path';
 
-export async function getExecPath(
-  commandName: string,
-  onError: (error: Error) => void = (error) => console.log(error),
-  versionArg?: string | undefined,
-  inBinDir?: boolean
-): Promise<string> {
-  const execName = `${commandName}${os.platform() === 'win32' ? '.exe' : ''}`;
-  const relativePath = ['..', '..', 'build'];
-  if (inBinDir) {
-    relativePath.push('bin');
-  }
-  const buildCommand = join(__dirname, ...relativePath, execName);
-  if (!versionArg) {
-    return buildCommand;
-  }
-  const versionRegexp = /\d+\.\d+\.\d+/;
-  const buildVersion = await spawnCommand(
-    `"${buildCommand}"`,
-    [versionArg],
-    onError
-  );
-  const buildShortVersion = (buildVersion.match(versionRegexp) || [])[0];
-  const pathCommand = await new Promise<string | undefined>((resolve) =>
-    which(execName, (error, path) => resolve(error ? undefined : path))
-  );
-  if (!pathCommand) {
-    return buildCommand;
-  }
-  const pathVersion = await spawnCommand(
-    `"${pathCommand}"`,
-    [versionArg],
-    onError
-  );
-  const pathShortVersion = (pathVersion.match(versionRegexp) || [])[0];
-  if (semver.gt(pathShortVersion, buildShortVersion)) {
-    return pathCommand;
-  }
-  return buildCommand;
+export type ArduinoBinaryName =
+  | 'arduino-cli'
+  | 'arduino-fwuploader'
+  | 'arduino-language-server';
+export type ClangBinaryName = 'clangd' | 'clang-format';
+export type BinaryName = ArduinoBinaryName | ClangBinaryName;
+
+export function getExecPath(binaryName: BinaryName): string {
+  const filename = `${binaryName}${os.platform() === 'win32' ? '.exe' : ''}`;
+  return join(__dirname, '..', '..', 'build', filename);
 }
 
 export function spawnCommand(
   command: string,
   args: string[],
-  onError: (error: Error) => void = (error) => console.log(error)
+  onError: (error: Error) => void = (error) => console.log(error),
+  stdIn?: string
 ): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    const cp = spawn(command, args, { windowsHide: true, shell: true });
+    const cp = spawn(command, args, { windowsHide: true });
     const outBuffers: Buffer[] = [];
     const errBuffers: Buffer[] = [];
     cp.stdout.on('data', (b: Buffer) => outBuffers.push(b));
@@ -61,7 +32,7 @@ export function spawnCommand(
     });
     cp.on('exit', (code, signal) => {
       if (code === 0) {
-        const result = Buffer.concat(outBuffers).toString('utf8').trim();
+        const result = Buffer.concat(outBuffers).toString('utf8');
         resolve(result);
         return;
       }
@@ -87,5 +58,9 @@ export function spawnCommand(
         return;
       }
     });
+    if (stdIn !== undefined) {
+      cp.stdin.write(stdIn);
+      cp.stdin.end();
+    }
   });
 }

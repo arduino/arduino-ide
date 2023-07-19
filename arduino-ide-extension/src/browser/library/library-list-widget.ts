@@ -1,49 +1,70 @@
-import { injectable, postConstruct, inject } from 'inversify';
-import { Message } from '@phosphor/messaging';
+import {
+  injectable,
+  postConstruct,
+  inject,
+} from '@theia/core/shared/inversify';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { addEventListener } from '@theia/core/lib/browser/widgets/widget';
-import { AbstractDialog, DialogProps } from '@theia/core/lib/browser/dialogs';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
 import {
   LibraryPackage,
+  LibrarySearch,
   LibraryService,
 } from '../../common/protocol/library-service';
-import { ListWidget } from '../widgets/component-list/list-widget';
+import {
+  ListWidget,
+  UserAbortError,
+} from '../widgets/component-list/list-widget';
 import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
+import { nls } from '@theia/core/lib/common';
+import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
+import { findChildTheiaButton, splitByBoldTag } from '../utils/dom';
 
 @injectable()
-export class LibraryListWidget extends ListWidget<LibraryPackage> {
+export class LibraryListWidget extends ListWidget<
+  LibraryPackage,
+  LibrarySearch
+> {
   static WIDGET_ID = 'library-list-widget';
-  static WIDGET_LABEL = 'Library Manager';
+  static WIDGET_LABEL = nls.localize(
+    'arduino/library/title',
+    'Library Manager'
+  );
 
   constructor(
-    @inject(LibraryService) protected service: LibraryService,
-    @inject(ListItemRenderer)
-    protected itemRenderer: ListItemRenderer<LibraryPackage>
+    @inject(LibraryService) private service: LibraryService,
+    @inject(ListItemRenderer) itemRenderer: ListItemRenderer<LibraryPackage>,
+    @inject(LibraryFilterRenderer) filterRenderer: LibraryFilterRenderer
   ) {
     super({
       id: LibraryListWidget.WIDGET_ID,
       label: LibraryListWidget.WIDGET_LABEL,
-      iconClass: 'library-tab-icon',
+      iconClass: 'fa fa-arduino-library',
       searchable: service,
       installable: service,
       itemLabel: (item: LibraryPackage) => item.name,
-      itemDeprecated: (item: LibraryPackage) => item.deprecated,
       itemRenderer,
+      filterRenderer,
+      defaultSearchOptions: { query: '', type: 'All', topic: 'All' },
     });
   }
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.toDispose.pushAll([
-      this.notificationCenter.onLibraryInstalled(() => this.refresh(undefined)),
-      this.notificationCenter.onLibraryUninstalled(() =>
+      this.notificationCenter.onLibraryDidInstall(() =>
+        this.refresh(undefined)
+      ),
+      this.notificationCenter.onLibraryDidUninstall(() =>
         this.refresh(undefined)
       ),
     ]);
   }
 
-  protected async install({
+  protected override async install({
     item,
     progressId,
     version,
@@ -60,11 +81,36 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
     let installDependencies: boolean | undefined = undefined;
     if (dependencies.length) {
       const message = document.createElement('div');
-      message.innerHTML = `The library <b>${item.name}:${version}</b> needs ${
+      const textContent =
         dependencies.length === 1
-          ? 'another dependency'
-          : 'some other dependencies'
-      } currently not installed:`;
+          ? nls.localize(
+              'arduino/library/needsOneDependency',
+              'The library <b>{0}:{1}</b> needs another dependency currently not installed:',
+              item.name,
+              version
+            )
+          : nls.localize(
+              'arduino/library/needsMultipleDependencies',
+              'The library <b>{0}:{1}</b> needs some other dependencies currently not installed:',
+              item.name,
+              version
+            );
+      const segments = splitByBoldTag(textContent);
+      if (!segments) {
+        message.textContent = textContent;
+      } else {
+        segments.map((segment) => {
+          const span = document.createElement('span');
+          if (typeof segment === 'string') {
+            span.textContent = segment;
+          } else {
+            const bold = document.createElement('b');
+            bold.textContent = segment.textContent;
+            span.appendChild(bold);
+          }
+          message.appendChild(span);
+        });
+      }
       const listContainer = document.createElement('div');
       listContainer.style.maxHeight = '300px';
       listContainer.style.overflowY = 'auto';
@@ -79,28 +125,44 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
       listContainer.appendChild(list);
       message.appendChild(listContainer);
       const question = document.createElement('div');
-      question.textContent = `Would you like to install ${
+      question.textContent =
         dependencies.length === 1
-          ? 'the missing dependency'
-          : 'all the missing dependencies'
-      }?`;
+          ? nls.localize(
+              'arduino/library/installOneMissingDependency',
+              'Would you like to install the missing dependency?'
+            )
+          : nls.localize(
+              'arduino/library/installMissingDependencies',
+              'Would you like to install all the missing dependencies?'
+            );
       message.appendChild(question);
       const result = await new MessageBoxDialog({
-        title: `Dependencies for library ${item.name}:${version}`,
+        title: nls.localize(
+          'arduino/library/installLibraryDependencies',
+          'Install library dependencies'
+        ),
         message,
-        buttons: ['Install all', `Install ${item.name} only`, 'Cancel'],
+        buttons: [
+          nls.localize(
+            'arduino/library/installWithoutDependencies',
+            'Install without dependencies'
+          ),
+          nls.localize('arduino/library/installAll', 'Install All'),
+        ],
         maxWidth: 740, // Aligned with `settings-dialog.css`.
       }).open();
 
       if (result) {
         const { response } = result;
         if (response === 0) {
-          // All
-          installDependencies = true;
-        } else if (response === 1) {
           // Current only
           installDependencies = false;
+        } else if (response === 1) {
+          // All
+          installDependencies = true;
         }
+      } else {
+        throw new UserAbortError();
       }
     } else {
       // The lib does not have any dependencies.
@@ -115,13 +177,18 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
         installDependencies,
       });
       this.messageService.info(
-        `Successfully installed library ${item.name}:${version}`,
+        nls.localize(
+          'arduino/library/installedSuccessfully',
+          'Successfully installed library {0}:{1}',
+          item.name,
+          version
+        ),
         { timeout: 3000 }
       );
     }
   }
 
-  protected async uninstall({
+  protected override async uninstall({
     item,
     progressId,
   }: {
@@ -130,7 +197,12 @@ export class LibraryListWidget extends ListWidget<LibraryPackage> {
   }): Promise<void> {
     await super.uninstall({ item, progressId });
     this.messageService.info(
-      `Successfully uninstalled library ${item.name}:${item.installedVersion}`,
+      nls.localize(
+        'arduino/library/uninstalledSuccessfully',
+        'Successfully uninstalled library {0}:{1}',
+        item.name,
+        item.installedVersion!
+      ),
       { timeout: 3000 }
     );
   }
@@ -142,9 +214,17 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
   constructor(protected readonly options: MessageBoxDialog.Options) {
     super(options);
     this.contentNode.appendChild(this.createMessageNode(this.options.message));
-    (options.buttons || ['OK']).forEach((text, index) => {
+    (
+      options.buttons || [nls.localize('vscode/issueMainService/ok', 'OK')]
+    ).forEach((text, index) => {
       const button = this.createButton(text);
-      button.classList.add(index === 0 ? 'main' : 'secondary');
+      const isPrimaryButton =
+        index === (options.buttons ? options.buttons.length - 1 : 0);
+      button.title = text;
+      button.classList.add(
+        isPrimaryButton ? 'main' : 'secondary',
+        'message-box-dialog-button'
+      );
       this.controlPanel.appendChild(button);
       this.toDisposeOnDetach.push(
         addEventListener(button, 'click', () => {
@@ -155,7 +235,7 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
     });
   }
 
-  protected onCloseRequest(message: Message): void {
+  protected override onCloseRequest(message: Message): void {
     super.onCloseRequest(message);
     this.accept();
   }
@@ -173,9 +253,14 @@ class MessageBoxDialog extends AbstractDialog<MessageBoxDialog.Result> {
     return message;
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     this.response = 0;
     super.handleEnter(event);
+  }
+
+  protected override onAfterAttach(message: Message): void {
+    super.onAfterAttach(message);
+    findChildTheiaButton(this.controlPanel)?.focus();
   }
 }
 export namespace MessageBoxDialog {

@@ -1,32 +1,35 @@
-import { Installable } from './installable';
+import type { Installable } from './installable';
 
 export interface ArduinoComponent {
   readonly name: string;
-  readonly deprecated: boolean;
   readonly author: string;
   readonly summary: string;
   readonly description: string;
-  readonly moreInfoLink?: string;
-
   readonly availableVersions: Installable.Version[];
-  readonly installable: boolean;
-
   readonly installedVersion?: Installable.Version;
+  /**
+   * This is the `Type` in IDE (1.x) UI.
+   */
+  readonly types: string[];
+  readonly deprecated?: boolean;
+  readonly moreInfoLink?: string;
 }
 export namespace ArduinoComponent {
-  export function is(arg: any): arg is ArduinoComponent {
+  export function is(arg: unknown): arg is ArduinoComponent {
     return (
-      !!arg &&
-      'name' in arg &&
-      typeof arg['name'] === 'string' &&
-      'author' in arg &&
-      typeof arg['author'] === 'string' &&
-      'summary' in arg &&
-      typeof arg['summary'] === 'string' &&
-      'description' in arg &&
-      typeof arg['description'] === 'string' &&
-      'installable' in arg &&
-      typeof arg['installable'] === 'boolean'
+      typeof arg === 'object' &&
+      (<ArduinoComponent>arg).name !== undefined &&
+      typeof (<ArduinoComponent>arg).name === 'string' &&
+      (<ArduinoComponent>arg).author !== undefined &&
+      typeof (<ArduinoComponent>arg).author === 'string' &&
+      (<ArduinoComponent>arg).summary !== undefined &&
+      typeof (<ArduinoComponent>arg).summary === 'string' &&
+      (<ArduinoComponent>arg).description !== undefined &&
+      typeof (<ArduinoComponent>arg).description === 'string' &&
+      (<ArduinoComponent>arg).availableVersions !== undefined &&
+      Array.isArray((<ArduinoComponent>arg).availableVersions) &&
+      (<ArduinoComponent>arg).types !== undefined &&
+      Array.isArray((<ArduinoComponent>arg).types)
     );
   }
 }

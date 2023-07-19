@@ -1,15 +1,16 @@
-import { injectable, inject, postConstruct } from 'inversify';
-import { Message } from '@phosphor/messaging';
 import {
-  AbstractDialog,
-  DialogProps,
-  Widget,
-  DialogError,
-} from '@theia/core/lib/browser';
+  injectable,
+  inject,
+  postConstruct,
+} from '@theia/core/shared/inversify';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
+import { DialogProps, Widget, DialogError } from '@theia/core/lib/browser';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
 import { BoardsConfig } from './boards-config';
 import { BoardsService } from '../../common/protocol/boards-service';
 import { BoardsServiceProvider } from './boards-service-provider';
 import { BoardsConfigDialogWidget } from './boards-config-dialog-widget';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsConfigDialogProps extends DialogProps {}
@@ -29,15 +30,18 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
 
   constructor(
     @inject(BoardsConfigDialogProps)
-    protected readonly props: BoardsConfigDialogProps
+    protected override readonly props: BoardsConfigDialogProps
   ) {
-    super(props);
+    super({ ...props, maxWidth: 500 });
 
+    this.node.id = 'select-board-dialog-container';
     this.contentNode.classList.add('select-board-dialog');
     this.contentNode.appendChild(this.createDescription());
 
-    this.appendCloseButton('CANCEL');
-    this.appendAcceptButton('OK');
+    this.appendCloseButton(
+      nls.localize('vscode/issueMainService/cancel', 'Cancel')
+    );
+    this.appendAcceptButton(nls.localize('vscode/issueMainService/ok', 'OK'));
   }
 
   @postConstruct()
@@ -53,7 +57,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
   /**
    * Pass in an empty string if you want to reset the search term. Using `undefined` has no effect.
    */
-  async open(
+  override async open(
     query: string | undefined = undefined
   ): Promise<BoardsConfig.Config | undefined> {
     if (typeof query === 'string') {
@@ -66,18 +70,19 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     const head = document.createElement('div');
     head.classList.add('head');
 
-    const title = document.createElement('div');
-    title.textContent = 'Select Other Board & Port';
-    title.classList.add('title');
-    head.appendChild(title);
-
     const text = document.createElement('div');
     text.classList.add('text');
     head.appendChild(text);
 
     for (const paragraph of [
-      'Select both a Board and a Port if you want to upload a sketch.',
-      'If you only select a Board you will be able just to compile, but not to upload your sketch.',
+      nls.localize(
+        'arduino/board/configDialog1',
+        'Select both a Board and a Port if you want to upload a sketch.'
+      ),
+      nls.localize(
+        'arduino/board/configDialog2',
+        'If you only select a Board you will be able to compile, but not to upload your sketch.'
+      ),
     ]) {
       const p = document.createElement('div');
       p.textContent = paragraph;
@@ -87,7 +92,7 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     return head;
   }
 
-  protected onAfterAttach(msg: Message): void {
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -102,26 +107,29 @@ export class BoardsConfigDialog extends AbstractDialog<BoardsConfig.Config> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message) {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }
 
-  protected handleEnter(event: KeyboardEvent): boolean | void {
+  protected override handleEnter(event: KeyboardEvent): boolean | void {
     if (event.target instanceof HTMLTextAreaElement) {
       return false;
     }
   }
 
-  protected isValid(value: BoardsConfig.Config): DialogError {
+  protected override isValid(value: BoardsConfig.Config): DialogError {
     if (!value.selectedBoard) {
       if (value.selectedPort) {
-        return 'Please pick a board connected to the port you have selected.';
+        return nls.localize(
+          'arduino/board/pleasePickBoard',
+          'Please pick a board connected to the port you have selected.'
+        );
       }
       return false;
     }

@@ -1,21 +1,23 @@
-import { join } from 'path';
-import { inject, injectable, named } from 'inversify';
-import { spawn, ChildProcess } from 'child_process';
+import { join } from 'node:path';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
+import { spawn, ChildProcess } from 'node:child_process';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import { Deferred, retry } from '@theia/core/lib/common/promise-util';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { Event, Emitter } from '@theia/core/lib/common/event';
+import { deepClone } from '@theia/core/lib/common/objects';
 import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
-import { DaemonLog } from './daemon-log';
 import { CLI_CONFIG } from './cli-config';
-import { getExecPath, spawnCommand } from './exec-util';
+import { getExecPath } from './exec-util';
+import { SettingsReader } from './settings-reader';
+import { ProcessUtils } from '@theia/core/lib/node/process-utils';
 
 @injectable()
 export class ArduinoDaemonImpl
@@ -23,40 +25,52 @@ export class ArduinoDaemonImpl
 {
   @inject(ILogger)
   @named('daemon')
-  protected readonly logger: ILogger;
+  private readonly logger: ILogger;
 
   @inject(EnvVariablesServer)
-  protected readonly envVariablesServer: EnvVariablesServer;
+  private readonly envVariablesServer: EnvVariablesServer;
 
   @inject(NotificationServiceServer)
-  protected readonly notificationService: NotificationServiceServer;
+  private readonly notificationService: NotificationServiceServer;
 
-  protected readonly toDispose = new DisposableCollection();
-  protected readonly onDaemonStartedEmitter = new Emitter<void>();
-  protected readonly onDaemonStoppedEmitter = new Emitter<void>();
+  @inject(SettingsReader)
+  private readonly settingsReader: SettingsReader;
 
-  protected _running = false;
-  protected _ready = new Deferred<void>();
-  protected _execPath: string | undefined;
+  @inject(ProcessUtils)
+  private readonly processUtils: ProcessUtils;
+
+  private readonly toDispose = new DisposableCollection();
+  private readonly onDaemonStartedEmitter = new Emitter<string>();
+  private readonly onDaemonStoppedEmitter = new Emitter<void>();
+
+  private _running = false;
+  private _port = new Deferred<string>();
 
   // Backend application lifecycle.
 
   onStart(): void {
-    this.startDaemon();
+    this.start(); // no await
   }
 
   // Daemon API
 
-  async isRunning(): Promise<boolean> {
-    return Promise.resolve(this._running);
+  async getPort(): Promise<string> {
+    return this._port.promise;
   }
 
-  async startDaemon(): Promise<void> {
+  async tryGetPort(): Promise<string | undefined> {
+    if (this._running) {
+      return this._port.promise;
+    }
+    return undefined;
+  }
+
+  async start(): Promise<string> {
     try {
       this.toDispose.dispose(); // This will `kill` the previously started daemon process, if any.
-      const cliPath = await this.getExecPath();
+      const cliPath = this.getExecPath();
       this.onData(`Starting daemon from ${cliPath}...`);
-      const daemon = await this.spawnDaemonProcess();
+      const { daemon, port } = await this.spawnDaemonProcess();
       // Watchdog process for terminating the daemon process when the backend app terminates.
       spawn(
         process.execPath,
@@ -74,30 +88,43 @@ export class ArduinoDaemonImpl
       ).unref();
 
       this.toDispose.pushAll([
-        Disposable.create(() => daemon.kill()),
-        Disposable.create(() => this.fireDaemonStopped()),
+        Disposable.create(() => {
+          if (daemon.pid) {
+            this.processUtils.terminateProcessTree(daemon.pid);
+            this.fireDaemonStopped();
+          } else {
+            throw new Error(
+              'The CLI Daemon process does not have a PID. IDE2 could not stop the CLI daemon.'
+            );
+          }
+        }),
       ]);
-      this.fireDaemonStarted();
+      this.fireDaemonStarted(port);
       this.onData('Daemon is running.');
+      return port;
     } catch (err) {
-      this.onData('Failed to start the daemon.');
-      this.onError(err);
-      let i = 5; // TODO: make this better
-      while (i) {
-        this.onData(`Restarting daemon in ${i} seconds...`);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        i--;
-      }
-      this.onData('Restarting daemon now...');
-      return this.startDaemon();
+      return retry(
+        () => {
+          this.onError(err);
+          return this.start();
+        },
+        1_000,
+        5
+      );
     }
   }
 
-  async stopDaemon(): Promise<void> {
+  async stop(): Promise<void> {
     this.toDispose.dispose();
   }
 
-  get onDaemonStarted(): Event<void> {
+  async restart(): Promise<string> {
+    return this.start();
+  }
+
+  // Backend only daemon API
+
+  get onDaemonStarted(): Event<string> {
     return this.onDaemonStartedEmitter.event;
   }
 
@@ -105,60 +132,50 @@ export class ArduinoDaemonImpl
     return this.onDaemonStoppedEmitter.event;
   }
 
-  get ready(): Promise<void> {
-    return this._ready.promise;
-  }
-
-  async getExecPath(): Promise<string> {
-    if (this._execPath) {
-      return this._execPath;
-    }
-    this._execPath = await getExecPath('arduino-cli', this.onError.bind(this));
-    return this._execPath;
-  }
-
-  async getVersion(): Promise<
-    Readonly<{ version: string; commit: string; status?: string }>
-  > {
-    const execPath = await this.getExecPath();
-    const raw = await spawnCommand(
-      `"${execPath}"`,
-      ['version', '--format', 'json'],
-      this.onError.bind(this)
-    );
-    try {
-      // The CLI `Info` object: https://github.com/arduino/arduino-cli/blob/17d24eb901b1fdaa5a4ec7da3417e9e460f84007/version/version.go#L31-L34
-      const { VersionString, Commit, Status } = JSON.parse(raw);
-      return {
-        version: VersionString,
-        commit: Commit,
-        status: Status,
-      };
-    } catch {
-      return { version: raw, commit: raw };
-    }
+  getExecPath(): string {
+    return getExecPath('arduino-cli');
   }
 
   protected async getSpawnArgs(): Promise<string[]> {
-    const configDirUri = await this.envVariablesServer.getConfigDirUri();
+    const [configDirUri, debug] = await Promise.all([
+      this.envVariablesServer.getConfigDirUri(),
+      this.debugDaemon(),
+    ]);
     const cliConfigPath = join(FileUri.fsPath(configDirUri), CLI_CONFIG);
-    return [
+    const args = [
       'daemon',
+      '--port',
+      '0',
       '--config-file',
-      `"${cliConfigPath}"`,
+      cliConfigPath,
       '-v',
-      '--log-format',
-      'json',
     ];
+    if (debug) {
+      args.push('--debug');
+    }
+    return args;
   }
 
-  protected async spawnDaemonProcess(): Promise<ChildProcess> {
-    const [cliPath, args] = await Promise.all([
-      this.getExecPath(),
-      this.getSpawnArgs(),
-    ]);
-    const ready = new Deferred<ChildProcess>();
-    const options = { shell: true };
+  private async debugDaemon(): Promise<boolean> {
+    const settings = await this.settingsReader.read();
+    if (settings) {
+      const value = settings['arduino.cli.daemon.debug'];
+      return value === true;
+    }
+    return false;
+  }
+
+  protected async spawnDaemonProcess(): Promise<{
+    daemon: ChildProcess;
+    port: string;
+  }> {
+    const args = await this.getSpawnArgs();
+    const cliPath = this.getExecPath();
+    const ready = new Deferred<{ daemon: ChildProcess; port: string }>();
+    const options = {
+      shell: true,
+      env: { ...deepClone(process.env), NO_COLOR: String(true) },
+    };
     const daemon = spawn(`"${cliPath}"`, args, options);
 
     // If the process exists right after the daemon gRPC server has started (due to an invalid port, unknown address, TCP port in use, etc.)
@@ -172,15 +189,31 @@ export class ArduinoDaemonImpl
         const error = DaemonError.parse(message);
         if (error) {
           ready.reject(error);
+          return;
         }
-        for (const expected of [
-          'Daemon is listening on TCP port',
-          'Daemon is now listening on 127.0.0.1',
-        ]) {
-          if (message.includes(expected)) {
-            grpcServerIsReady = true;
-            ready.resolve(daemon);
-          }
+
+        let port = '';
+        let address = '';
+        message
+          .split('\n')
+          .filter((line: string) => line.length)
+          .forEach((line: string) => {
+            try {
+              const parsedLine = JSON.parse(line);
+              if ('Port' in parsedLine) {
+                port = parsedLine.Port;
+              }
+              if ('IP' in parsedLine) {
+                address = parsedLine.IP;
+              }
+            } catch (err) {
+              // ignore
+            }
+          });
+
+        if (port.length && address.length) {
+          grpcServerIsReady = true;
+          ready.resolve({ daemon, port });
         }
       }
     });
@@ -210,29 +243,30 @@ export class ArduinoDaemonImpl
     return ready.promise;
   }
 
-  protected fireDaemonStarted(): void {
+  private fireDaemonStarted(port: string): void {
     this._running = true;
-    this._ready.resolve();
-    this.onDaemonStartedEmitter.fire();
-    this.notificationService.notifyDaemonStarted();
+    this._port.resolve(port);
+    this.onDaemonStartedEmitter.fire(port);
+    this.notificationService.notifyDaemonDidStart(port);
   }
 
-  protected fireDaemonStopped(): void {
+  private fireDaemonStopped(): void {
     if (!this._running) {
       return;
     }
     this._running = false;
-    this._ready.reject(); // Reject all pending.
-    this._ready = new Deferred<void>();
+    this._port.reject(); // Reject all pending.
+    this._port = new Deferred<string>();
     this.onDaemonStoppedEmitter.fire();
-    this.notificationService.notifyDaemonStopped();
+    this.notificationService.notifyDaemonDidStop();
   }
 
   protected onData(message: string): void {
-    DaemonLog.log(this.logger, message);
+    this.logger.info(message.trim());
   }
 
-  protected onError(error: any): void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private onError(error: any): void {
     this.logger.error(error);
   }
 }

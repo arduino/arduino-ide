@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "Σχετικά με {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Πλακέτα{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardInfo": "Πληροφορίες Πλακέτας",
+      "boards": "boards",
+      "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
+      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "couldNotFindPreviouslySelected": "Δεν έγινε εντοπισμός της προηγουμένως επιλεγμένης πλακέτας '{0}' στην εγκατεστημένη πλατφόρμα '{1}'. Παρακαλώ επίλεξε πάλι χειροκίνητα την πλακέτα που θέλεις να χρησιμοποιήσεις. Θέλεις να την επιλέξεις τώρα;",
+      "disconnected": "Disconnected",
+      "getBoardInfo": "Εμφάνιση Πληροφοριών Πλακέτας",
+      "inSketchbook": "(στα Σχέδια)",
+      "installNow": "Ο πυρήνας \"{0} {1}\" πρέπει να εγκατασταθεί για την επιλεγμένη πλακέτα {2}. Θέλεις να την εγκαταστήσεις τώρα;",
+      "noBoardsFound": "No boards found for \"{0}\"",
+      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "No ports discovered",
+      "noPortsSelected": "Δεν επιλέχθηκε θύρα για την πλακέτα: '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "Δεν επιλέχθηκε πλακέτα",
+      "openBoardsConfig": "Επιλογή διαφορετικής πλακέτας και θύρας...",
+      "pleasePickBoard": "Πσρακαλώ επίλεξε μια πλακέτα που συνδέθηκε στην θύρα που έχεις επιλέξει.",
+      "port": "Θύρα{0}",
+      "portLabel": "Port: {0}",
+      "ports": "ports",
+      "programmer": "Προγραμματιστής",
+      "reselectLater": "Επιλογή αργότερα",
+      "searchBoard": "Search board",
+      "selectBoard": "Επιλογή Πλακέτας",
+      "selectPortForInfo": "Παρακαλώ επίλεξε μια θύρα για εμφάνιση πληροφοριών πλακέτας.",
+      "showAllAvailablePorts": "Εμφανίζει όλες τις διαθέσιμες θύρες όταν είναι ενεργοποιημένο.",
+      "showAllPorts": "Show all ports",
+      "succesfullyInstalledPlatform": "Επιτυχής εγκατάσταση πλατφόρμας {0}:{1}",
+      "succesfullyUninstalledPlatform": "Επιτυχής απεγκατάσταση πλατφόρμας {0}:{1}",
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "Διαχειριστής Πλακετών",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
+    "bootloader": {
+      "burnBootloader": "Burn Bootloader",
+      "burningBootloader": "Burning bootloader...",
+      "doneBurningBootloader": "Done burning bootloader."
+    },
+    "burnBootloader": {
+      "error": "Error while burning the bootloader: {0}"
+    },
+    "certificate": {
+      "addNew": "Προσθήκη Νέου",
+      "addURL": "Add URL to fetch SSL certificate",
+      "boardAtPort": "{0} στο {1}",
+      "certificatesUploaded": "Certificates uploaded.",
+      "enterURL": "Enter URL",
+      "noSupportedBoardConnected": "No supported board connected",
+      "openContext": "Open context",
+      "remove": "Αφαίρεση",
+      "selectBoard": "Select a board...",
+      "selectCertificateToUpload": "1. Select certificate to upload",
+      "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
+      "upload": "Ανέβασμα",
+      "uploadFailed": "Upload failed. Please try again.",
+      "uploadRootCertificates": "Upload SSL Root Certificates",
+      "uploadingCertificates": "Uploading certificates."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Επίλεξε την ορατότητα του Σχεδίου σου:",
+      "cloudSketchbook": "Σχέδια Cloud",
+      "connected": "Συνδέθηκε",
+      "continue": "Συνέχεια",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "Ενσωμάτωση:",
+      "emptySketchbook": "Τα Σχέδια σου είναι άδεια.",
+      "goToCloud": "Go to Cloud",
+      "learnMore": "Μάθε περισσότερα",
+      "link": "Σύνδεσμος:",
+      "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
+      "offline": "Εκτός Σύνδεσης",
+      "openInCloudEditor": "Άνοιγμα σε Συντάκτη Cloud",
+      "options": "Επιλογές...",
+      "privateVisibility": "Ιδιωτικό. Μόνο εσύ μπορείς να δεις το Σχέδιο.",
+      "profilePicture": "Εικόνα προφίλ",
+      "publicVisibility": "Δημόσιο. Οποιόσδηποτε με το σύνδεσμο μπορεί να δει το Σχέδιο.",
+      "pull": "Pull",
+      "pullFirst": "You have to pull first to be able to push to the Cloud.",
+      "pullSketch": "Pull Sketch",
+      "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
+      "push": "Push",
+      "pushSketch": "Push Sketch",
+      "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+      "remote": "Απομακρυνσμένο",
+      "share": "Κοινοποίηση...",
+      "shareSketch": "Κοινοποίηση Σχεδίου",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "ΣΥΥΝΔΕΣΗ",
+      "signInToCloud": "Σύνδεση στο Arduino Cloud",
+      "signOut": "Αποσύνδεση",
+      "sync": "Sync",
+      "syncEditSketches": "Συγχρονισμός και τροποποίηση των Arduino Cloud Σχεδίων σου.",
+      "visitArduinoCloud": "Επισκέψου το Arduino Cloud για δημιουργία Σχεδίων Cloud."
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Χειροκίνητη Εγκατάσταση",
+      "later": "Αργότερα",
+      "noBoardSelected": "Δεν έχει επιλεχθεί πλακέτα",
+      "notConnected": "[μη συνδεμένο]",
+      "offlineIndicator": "Φαίνεται πως είστε εκτός σύνδεσης. Χωρίς σύνδεση στο Internet, το Arduino CLI ίσως να μη μπορεί να κάνει λήψη των απαιτούμενων πόρων και να υπάρξει δυσλειτουργία. Παρακαλώ συνδεθείτε στο Internet και επανεκκινήστε την εφαρμογή.",
+      "oldFormat": "Το '{0}' χρησιμοποιεί ακόμα το παλιό '.pde' στυλ. Θέλετε να αλλάξετε στην νέα κατάληξη '.ino';",
+      "partner": "Partner",
+      "processing": "Επεξεργασία",
+      "recommended": "Recommended",
+      "retired": "Retired",
+      "selectedOn": "στο {0}",
+      "serialMonitor": "Παρακολούθηση Σειριακής",
+      "type": "Type",
+      "unknown": "Άγνωστο",
+      "updateable": "Updatable"
+    },
+    "compile": {
+      "error": "Σφάλμα μεταγλώττισης: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Boards included in this package:",
+      "by": "από",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "Filter your search...",
+      "install": "Εγκατάσταση",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "Περισσότερες πληροφορίες",
+      "otherVersions": "Other Versions",
+      "remove": "Αφαίρεση",
+      "title": "{0} by {1}",
+      "uninstall": "Απεγκατάσταση",
+      "uninstallMsg": "Do you want to uninstall {0}?",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "Προσθήκη αρχείου",
+      "fileAdded": "Ένα αρχείο προστέθηκε στον κώδικα.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
+      "replaceTitle": "Αντικατάσταση"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Αποσφαλμάτωση - {0}",
+      "debuggingNotSupported": "Δεν υποστιρίζεται αποσφαλμάτωση από '{0}'",
+      "noPlatformInstalledFor": "Δεν έχει εγκατασταθεί πλατφόρμα για '{0}'",
+      "optimizeForDebugging": "Βελτιστοποίηση για Αποσφαλμάτωση",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "Don't ask again"
+    },
+    "editor": {
+      "autoFormat": "Auto Format",
+      "commentUncomment": "Comment/Uncomment",
+      "copyForForum": "Copy for Forum (Markdown)",
+      "decreaseFontSize": "Decrease Font Size",
+      "decreaseIndent": "Decrease Indent",
+      "increaseFontSize": "Increase Font Size",
+      "increaseIndent": "Increase Indent",
+      "nextError": "Next Error",
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
+    },
+    "electron": {
+      "couldNotSave": "Δεν έγινε αποθήκευση του προγράμματος. Παρακαλώ αντιγράψτε ό,τι δεν έχει αποθηκευθεί στον αγαπημένο σας επεξεργαστή κειμένου, και επανεκινήστε το Ολοκληρωμένο Περιβάλλον Ανάπτυξης IDE.",
+      "unsavedChanges": "Οι μη αποθηκευμένες αλλαγές θα χαθούν."
+    },
+    "examples": {
+      "builtInExamples": "Built-in examples",
+      "couldNotInitializeExamples": "Could not initialize built-in examples.",
+      "customLibrary": "Examples from Custom Libraries",
+      "for": "Παραδείγματα για {0}",
+      "forAny": "Examples for any board",
+      "menu": "Παραδείγματα"
+    },
+    "firmware": {
+      "checkUpdates": "Check Updates",
+      "failedInstall": "Installation failed. Please try again.",
+      "install": "Εγκατάσταση",
+      "installingFirmware": "Installing firmware.",
+      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "selectBoard": "Επιλογή Πλακέτας",
+      "selectVersion": "Select firmware version",
+      "successfullyInstalled": "Firmware successfully installed.",
+      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+    },
+    "help": {
+      "environment": "Περιβάλλον",
+      "faq": "Frequently Asked Questions",
+      "findInReference": "Find in Reference",
+      "gettingStarted": "Getting Started",
+      "keyword": "Type a keyword",
+      "privacyPolicy": "Privacy Policy",
+      "reference": "Reference",
+      "search": "Αναζήτηση στο Arduino.cc",
+      "troubleshooting": "Troubleshooting",
+      "visit": "Επίσκεψη Arduino.cc"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE Updates",
+      "closeAndInstallButton": "Close and Install",
+      "closeToInstallNotice": "Close the software and install the update on your machine.",
+      "downloadButton": "Download",
+      "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+      "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+      "goToDownloadButton": "Go To Download",
+      "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+      "ideUpdaterDialog": "Software Update",
+      "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+      "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
+      "notNowButton": "Not now",
+      "skipVersionButton": "Skip Version",
+      "updateAvailable": "Update Available",
+      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "library": {
+      "addZip": "Προσθέστε μια βιβλιοθήκη μορφής .ZIP",
+      "arduinoLibraries": "Βιβλιοθήκες Arduino",
+      "contributedLibraries": "Contributed libraries",
+      "include": "Συμπεριλάβετε βιβλιοθήκη",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "Would you like to install all the missing dependencies?",
+      "installOneMissingDependency": "Would you like to install the missing dependency?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "Successfully installed library {0}:{1}",
+      "libraryAlreadyExists": "Μια βιβλιοθήκη υπάρχει ήδη. Θέλετε να την αντικαταστήσετε;",
+      "manageLibraries": "Διαχείριση βιβλιοθηκών...",
+      "namedLibraryAlreadyExists": "Μια βιβλιοθήκη με όνομα {0} υπάρχει ήδη. Θέλετε να γίνει αντικατάσταση;",
+      "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
+      "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
+      "overwriteExistingLibrary": "Θέλετε να αντικαταστήσετε αυτή τη βιβλιοθήκη;",
+      "successfullyInstalledZipLibrary": "Επιτυχής εγκατάσταση βιβλιοθήκης απο το αρχείο {0}",
+      "title": "Διαχειριστής βιβλιοθηκών",
+      "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
+      "zipLibrary": "Διαχειριστής βιβλιοθήκης"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
+    "menu": {
+      "advanced": "Advanced",
+      "sketch": "Σχέδιο",
+      "tools": "Εργαλεία"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "Δίκτυο",
+      "serial": "Serial"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Πρόσθετοι Σύνδεσμοι Διαχειριστή Πλακετών",
+      "auth.audience": "The OAuth2 audience.",
+      "auth.clientID": "The OAuth2 client ID.",
+      "auth.domain": "The OAuth2 domain.",
+      "auth.registerUri": "The URI used to register a new user.",
+      "automatic": "Αυτόματο",
+      "board.certificates": "Λίστα πιστοποιητικών που μπορούν να ανέβουν σε πλακέτες",
+      "browse": "Περιήγηση",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "choose": "Επιλογή",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cloud.enabled": "Αληθές αν οι λειτουγίες συγχονισμού σχεδίου είναι ενεργοποιημένες. Προεπιλογή ως αληθές.",
+      "cloud.pull.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν τραβηχτεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές.",
+      "cloud.push.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
+      "cloud.pushpublic.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα δημόσιο σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
+      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "compile": "μεταγλώττιση",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "Αληθές για λεπτομερή έξοδο μεταγλώττισης. Ψευδές απο προεπιλογή.",
+      "compile.warnings": "Λέει στο gcc ποιο επίπεδο προειδοποίησης να χρησιμοποιήσει. Είναι 'None' απο προεπιλογή",
+      "compilerWarnings": "Προειδοποιήσεις μεταγγλωτιστή",
+      "editorFontSize": "Μέγεθος γραμματοσειράς Συντάκτη",
+      "editorQuickSuggestions": "Επιμελιτής γρήγορων προτάσεων",
+      "enterAdditionalURLs": "Τοποθετήστε πρόσθετους Συνδέσμους, ένα σε κάθε σειρά",
+      "files.inside.sketches": "Εμφάνιση αρχείων μέσα σε Σχέδια",
+      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+      "interfaceScale": "Κλίμακα διεπαφής",
+      "invalid.editorFontSize": "Μη-έγκυρο μέγεθος γραμματοσειράς συντάκτη. Πρέπει να είναι θετικός ακέραιος.",
+      "invalid.sketchbook.location": "Μη-έγκυρη τοποθεσία σχεδίων: {0}",
+      "invalid.theme": "Μη-έγκυρο θέμα.",
+      "language.log": "Αληθές αν ο Arduino Language Server πρέπει να παράξει αρχεία κατάστασης στον φάκελο σχεδίου. Διαφορετικά, ψευδές. Είναι ψευδές απο προεπιλογή.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "manualProxy": "Manual proxy configuration",
+      "network": "Δίκτυο",
+      "newSketchbookLocation": "Επιλογή νέας τοποθεσίας σχεδίων",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "No proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
+      "showVerbose": "Εμφάνιση λεπτομερούς εξόδου κατά τη διάρκεια",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "Τοποθεσία σχεδίων",
+      "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "unofficialBoardSupport": "Κλικ για λίστα Συνδέσμων ανεπίσημης υποστήριξης πλακετών",
+      "upload": "ανέβασμα",
+      "upload.verbose": "Αληθές για λεπτομερή έξοδο ανεβάσματος. Ψευδές απο προεπιλογή.",
+      "verifyAfterUpload": "Επιβεβαίωση κώδικα μετά το ανέβασμα",
+      "window.autoScale": "Αληθές αν η διεπαφή χρήστη κλιμακλωνεται αυτόματα μαζί με το μέγεθος γραμματοσειράς.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "Replace the existing version of {0}?",
+    "selectZip": "Select a zip file containing the library you'd like to add",
+    "serial": {
+      "autoscroll": "Autoscroll",
+      "carriageReturn": "Carriage Return",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "newLine": "Νέα γραμμή",
+      "newLineCarriageReturn": "Both NL & CR",
+      "noLineEndings": "No Line Ending",
+      "notConnected": "Not connected. Select a board and a port to connect automatically.",
+      "openSerialPlotter": "Serial Plotter",
+      "timestamp": "Timestamp",
+      "toggleTimestamp": "Toggle Timestamp"
+    },
+    "sketch": {
+      "archiveSketch": "Archive Sketch",
+      "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
+      "close": "Are you sure you want to close the sketch?",
+      "compile": "Compiling sketch...",
+      "configureAndUpload": "Configure and Upload",
+      "createdArchive": "Created archive '{0}'.",
+      "doneCompiling": "Done compiling.",
+      "doneUploading": "Ολοκλήρωση ανεβάσματος",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "Export Compiled Binary",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "Moving",
+      "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "Άνοιγμα φακέλου",
+      "openRecent": "Άνοιγμα πρόσφατου",
+      "openSketchInNewWindow": "Open Sketch in New Window",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "Save sketch folder as...",
+      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketchAs": "Save sketch folder as...",
+      "showFolder": "Show Sketch Folder",
+      "sketch": "Σχέδιο",
+      "sketchbook": "Sketchbook",
+      "titleLocalSketchbook": "Local Sketchbook",
+      "titleSketchbook": "Sketchbook",
+      "upload": "Ανέβασμα",
+      "uploadUsingProgrammer": "Ανέβασμα μέσω προγραμματιστή",
+      "uploading": "Uploading...",
+      "userFieldsNotFoundError": "Can't find user fields for connected board",
+      "verify": "Επαλήθευση",
+      "verifyOrCompile": "Επικύρωση"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
+    "upload": {
+      "error": "{0} σφάλμα: {1}"
+    },
+    "userFields": {
+      "cancel": "Ακύρωση",
+      "enterField": "Enter {0}",
+      "upload": "Ανέβασμα"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Cannot connect to the backend.",
+      "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
+      "couldNotSave": "Δεν έγινε αποθήκευση του προγράμματος. Παρακαλώ αντιγράψτε ό,τι δεν έχει αποθηκευθεί στον αγαπημένο σας επεξεργαστή κειμένου, και επανεκινήστε το Ολοκληρωμένο Περιβάλλον Ανάπτυξης IDE.",
+      "daemonOffline": "CLI Daemon Offline",
+      "offline": "Εκτός Σύνδεσης",
+      "offlineText": "Εκτός Σύνδεσης",
+      "quitTitle": "Are you sure you want to quit?"
+    },
+    "editor": {
+      "unsavedTitle": "Unsaved – {0}"
+    },
+    "messages": {
+      "collapse": "Ελαχιστοποίηση",
+      "expand": "Επαναφορά"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "Όνομα για το νεό αρχείο",
+      "invalidExtension": ".{0} is not a valid extension",
+      "newFileName": "Νέο όνομα για το αρχείο"
+    }
+  }
+}

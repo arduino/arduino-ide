@@ -48,9 +48,6 @@ export class CompileRequest extends jspb.Message {
     getQuiet(): boolean;
     setQuiet(value: boolean): CompileRequest;
 
-    getVidPid(): string;
-    setVidPid(value: string): CompileRequest;
-
     getJobs(): number;
     setJobs(value: number): CompileRequest;
 
@@ -86,6 +83,21 @@ export class CompileRequest extends jspb.Message {
     setLibraryList(value: Array<string>): CompileRequest;
     addLibrary(value: string, index?: number): string;
 
+    getKeysKeychain(): string;
+    setKeysKeychain(value: string): CompileRequest;
+
+    getSignKey(): string;
+    setSignKey(value: string): CompileRequest;
+
+    getEncryptKey(): string;
+    setEncryptKey(value: string): CompileRequest;
+
+    getSkipLibrariesDiscovery(): boolean;
+    setSkipLibrariesDiscovery(value: boolean): CompileRequest;
+
+    getDoNotExpandBuildProperties(): boolean;
+    setDoNotExpandBuildProperties(value: boolean): CompileRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -110,7 +122,6 @@ export namespace CompileRequest {
         warnings: string,
         verbose: boolean,
         quiet: boolean,
-        vidPid: string,
         jobs: number,
         librariesList: Array<string>,
         optimizeForDebug: boolean,
@@ -121,6 +132,11 @@ export namespace CompileRequest {
         sourceOverrideMap: Array<[string, string]>,
         exportBinaries?: google_protobuf_wrappers_pb.BoolValue.AsObject,
         libraryList: Array<string>,
+        keysKeychain: string,
+        signKey: string,
+        encryptKey: string,
+        skipLibrariesDiscovery: boolean,
+        doNotExpandBuildProperties: boolean,
     }
 }
 
@@ -149,6 +165,29 @@ export class CompileResponse extends jspb.Message {
     addExecutableSectionsSize(value?: ExecutableSectionSize, index?: number): ExecutableSectionSize;
 
 
+    hasBoardPlatform(): boolean;
+    clearBoardPlatform(): void;
+    getBoardPlatform(): cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference | undefined;
+    setBoardPlatform(value?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference): CompileResponse;
+
+
+    hasBuildPlatform(): boolean;
+    clearBuildPlatform(): void;
+    getBuildPlatform(): cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference | undefined;
+    setBuildPlatform(value?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference): CompileResponse;
+
+
+    hasProgress(): boolean;
+    clearProgress(): void;
+    getProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
+    setProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): CompileResponse;
+
+    clearBuildPropertiesList(): void;
+    getBuildPropertiesList(): Array<string>;
+    setBuildPropertiesList(value: Array<string>): CompileResponse;
+    addBuildProperties(value: string, index?: number): string;
+
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileResponse.AsObject;
     static toObject(includeInstance: boolean, msg: CompileResponse): CompileResponse.AsObject;
@@ -166,6 +205,10 @@ export namespace CompileResponse {
         buildPath: string,
         usedLibrariesList: Array<cc_arduino_cli_commands_v1_lib_pb.Library.AsObject>,
         executableSectionsSizeList: Array<ExecutableSectionSize.AsObject>,
+        boardPlatform?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.AsObject,
+        buildPlatform?: cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.AsObject,
+        progress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        buildPropertiesList: Array<string>,
     }
 }
 

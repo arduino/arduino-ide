@@ -30,17 +30,20 @@ The Core Service is responsible for building your sketches and uploading them to
   - compiling a sketch for a selected board type
   - uploading a sketch to a connected board
 
-#### Monitor Service
+#### Serial Service
 
-The Monitor Service allows getting information back from sketches running on your Arduino boards.
+The Serial Service allows getting information back from sketches running on your Arduino boards.
 
-- [src/common/protocol/monitor-service.ts](./src/common/protocol/monitor-service.ts) implements the common classes and interfaces
-- [src/node/monitor-service-impl.ts](./src/node/monitor-service-impl.ts) implements the service backend:
+- [src/common/protocol/serial-service.ts](./src/common/protocol/serial-service.ts) implements the common classes and interfaces
+- [src/node/serial/serial-service-impl.ts](./src/node/serial/serial-service-impl.ts) implements the service backend:
   - connecting to / disconnecting from a board
   - receiving and sending data
-- [src/browser/monitor/monitor-widget.tsx](./src/browser/monitor/monitor-widget.tsx) implements the serial monitor front-end:
+- [src/browser/serial/serial-connection-manager.ts](./src/browser/serial/serial-connection-manager.ts) handles the serial connection in the frontend
+- [src/browser/serial/monitor/monitor-widget.tsx](./src/browser/serial/monitor/monitor-widget.tsx) implements the serial monitor front-end:
   - viewing the output from a connected board
   - entering data to send to the board
+- [src/browser/serial/plotter/plotter-frontend-contribution.ts](./src/browser/serial/plotter/plotter-frontend-contribution.ts) implements the serial plotter front-end:
+  - opening a new window running the [Serial Plotter Web App](https://github.com/arduino/arduino-serial-plotter-webapp)
 
 #### Config Service
 
@@ -58,6 +61,15 @@ The Config Service knows about your system, like for example the default sketch 
 #### Rebuild gRPC protocol interfaces
   - Some CLI updates can bring changes to the gRPC interfaces, as the API might change. gRPC interfaces can be updated running the command
     `yarn --cwd arduino-ide-extension generate-protocol`
+
+### Update **clangd** and **ClangFormat**
+
+The [**clangd** C++ language server](https://clangd.llvm.org/) and the [**ClangFormat** code formatter](https://clang.llvm.org/docs/ClangFormat.html) tool dependencies are managed in parallel. Updating them to a different version is done by the following procedure:
+
+1. If the target version is not already [available from the `arduino/clang-static-binaries` repository](https://github.com/arduino/clang-static-binaries/releases), submit [an issue there](https://github.com/arduino/clang-static-binaries/issues) requesting a build and wait for that to be completed.
+1. Validate the **ClangFormat** configuration for the target version by following the instructions [**here**](https://github.com/arduino/tooling-project-assets/tree/main/other/clang-format-configuration#clangformat-version-updates)
+1. Submit a pull request in the `arduino/arduino-ide` repository to update the version in the `arduino.clangd.version` key of [`package.json`](package.json).
+1. Submit a pull request in [the `arduino/tooling-project-assets` repository](https://github.com/arduino/tooling-project-assets) to update the version in the `vars.DEFAULT_CLANG_FORMAT_VERSION` field of [`Taskfile.yml`](https://github.com/arduino/tooling-project-assets/blob/main/Taskfile.yml).
 
 ### Customize Icons
 ArduinoIde uses a customized version of FontAwesome.

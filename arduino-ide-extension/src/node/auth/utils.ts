@@ -1,8 +1,9 @@
 import jwt_decode from 'jwt-decode';
 import { sha256 } from 'hash.js';
-import { randomBytes } from 'crypto';
-import btoa = require('btoa'); // TODO: check why we cannot
+import { randomBytes } from 'node:crypto';
+import btoa from 'btoa';
 import { AuthenticationSession } from './types';
+import { Unknown } from '../../common/nls';
 
 export interface IToken {
   accessToken: string; // When unable to refresh due to network problems, the access token becomes undefined
@@ -44,7 +45,15 @@ export function token2IToken(token: Token): IToken {
     (token.id_token && jwt_decode(token.id_token)) || {};
 
   return {
-    idToken: token.id_token,
+    /*
+     * ".id_token" is already decoded for account details above
+     * so we probably don't need to keep it around as "idToken".
+     * If we do, and subsequently try to store it with
+     * Windows Credential Manager (WCM) it's probable we'll
+     * exceed WCMs' 2500 password character limit breaking
+     * our auth functionality
+     */
+    // ! idToken: token.id_token,
     expiresIn: token.expires_in,
     expiresAt: token.expires_in
       ? Date.now() + token.expires_in * 1000
@@ -54,10 +63,10 @@ export function token2IToken(token: Token): IToken {
     sessionId: parsedIdToken.sub,
     scope: token.scope,
     account: {
-      id: parsedIdToken.sub || 'unknown',
-      email: parsedIdToken.email || 'unknown',
-      nickname: parsedIdToken.nickname || 'unknown',
-      picture: parsedIdToken.picture || 'unknown',
+      id: parsedIdToken.sub || Unknown,
+      email: parsedIdToken.email || Unknown,
+      nickname: parsedIdToken.nickname || Unknown,
+      picture: parsedIdToken.picture || Unknown,
     },
   };
 }

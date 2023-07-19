@@ -1,15 +1,23 @@
-import { ContainerModule } from 'inversify';
 import { JsonRpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
-import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
 import { ElectronMainWindowService } from '@theia/core/lib/electron-common/electron-main-window-service';
-import { ElectronMainApplication as TheiaElectronMainApplication } from '@theia/core/lib/electron-main/electron-main-application';
+import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
 import {
-  SplashService,
-  splashServicePath,
-} from '../electron-common/splash-service';
-import { SplashServiceImpl } from './splash/splash-service-impl';
+  ElectronMainApplication as TheiaElectronMainApplication,
+  ElectronMainApplicationContribution,
+} from '@theia/core/lib/electron-main/electron-main-application';
+import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
+import { ContainerModule } from '@theia/core/shared/inversify';
+import {
+  IDEUpdater,
+  IDEUpdaterClient,
+  IDEUpdaterPath,
+} from '../common/protocol/ide-updater';
+import { IsTempSketch } from '../node/is-temp-sketch';
+import { ElectronArduino } from './electron-arduino';
+import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
 import { ElectronMainApplication } from './theia/electron-main-application';
 import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
+import { TheiaElectronWindow } from './theia/theia-electron-window';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMainApplication).toSelf().inSingletonScope();
@@ -18,14 +26,30 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMainWindowServiceImpl).toSelf().inSingletonScope();
   rebind(ElectronMainWindowService).toService(ElectronMainWindowServiceImpl);
 
-  bind(SplashServiceImpl).toSelf().inSingletonScope();
-  bind(SplashService).toService(SplashServiceImpl);
+  // IDE updater bindings
+  bind(IDEUpdaterImpl).toSelf().inSingletonScope();
+  bind(IDEUpdater).toService(IDEUpdaterImpl);
+  bind(ElectronMainApplicationContribution).toService(IDEUpdater);
   bind(ElectronConnectionHandler)
     .toDynamicValue(
       (context) =>
-        new JsonRpcConnectionHandler(splashServicePath, () =>
-          context.container.get(SplashService)
+        new JsonRpcConnectionHandler<IDEUpdaterClient>(
+          IDEUpdaterPath,
+          (client) => {
+            const server = context.container.get<IDEUpdater>(IDEUpdater);
+            server.setClient(client);
+            client.onDidCloseConnection(() => server.disconnectClient(client));
+            return server;
+          }
         )
     )
     .inSingletonScope();
+
+  bind(TheiaElectronWindow).toSelf();
+  rebind(DefaultTheiaElectronWindow).toService(TheiaElectronWindow);
+
+  bind(IsTempSketch).toSelf().inSingletonScope();
+
+  bind(ElectronArduino).toSelf().inSingletonScope();
+  bind(ElectronMainApplicationContribution).toService(ElectronArduino);
 });

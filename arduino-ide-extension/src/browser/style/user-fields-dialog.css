@@ -1,0 +1,32 @@
+.user-fields-container {
+  max-height: 332px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.user-fields-list {
+  margin: 16px 0;
+}
+
+.user-fields-dialog-content {
+  width: 408px;
+  max-height: 491px;
+}
+
+.user-fields-dialog-content .field-label {
+  color: var(--theia-editorWidget-foreground);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0.01em;
+  text-align: left;
+}
+
+.user-fields-dialog-content .theia-input {
+  flex-grow: 1;
+}
+
+.user-fields-dialog-content .button-container {
+  justify-content: flex-end;
+}

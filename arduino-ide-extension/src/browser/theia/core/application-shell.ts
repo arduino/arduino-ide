@@ -1,52 +1,28 @@
-import { injectable, inject } from 'inversify';
-import { EditorWidget } from '@theia/editor/lib/browser';
-import { CommandService } from '@theia/core/lib/common/command';
-import { MessageService } from '@theia/core/lib/common/message-service';
-import { OutputWidget } from '@theia/output/lib/browser/output-widget';
-import {
-  ConnectionStatusService,
-  ConnectionStatus,
-} from '@theia/core/lib/browser/connection-status-service';
 import {
   ApplicationShell as TheiaApplicationShell,
+  DockPanel,
+  DockPanelRenderer as TheiaDockPanelRenderer,
+  Panel,
+  SaveOptions,
+  SHELL_TABBAR_CONTEXT_MENU,
+  TabBar,
   Widget,
 } from '@theia/core/lib/browser';
-import { Sketch } from '../../../common/protocol';
-import { SaveAsSketch } from '../../contributions/save-as-sketch';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import { nls } from '@theia/core/lib/common/nls';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { ApplicationConnectionStatusContribution } from './connection-status-service';
+import { ToolbarAwareTabBar } from './tab-bars';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
-  @inject(CommandService)
-  protected readonly commandService: CommandService;
-
   @inject(MessageService)
-  protected readonly messageService: MessageService;
+  private readonly messageService: MessageService;
 
-  @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatusService: ApplicationConnectionStatusContribution;
 
-  @inject(ConnectionStatusService)
-  protected readonly connectionStatusService: ConnectionStatusService;
-
-  protected track(widget: Widget): void {
-    super.track(widget);
-    if (widget instanceof OutputWidget) {
-      widget.title.closable = false; // TODO: https://arduino.slack.com/archives/C01698YT7S4/p1598011990133700
-    }
-    if (widget instanceof EditorWidget) {
-      // Make the editor un-closeable asynchronously.
-      this.sketchesServiceClient.currentSketch().then((sketch) => {
-        if (sketch) {
-          if (Sketch.isInSketch(widget.editor.uri, sketch)) {
-            widget.title.closable = false;
-          }
-        }
-      });
-    }
-  }
-
-  async addWidget(
+  override async addWidget(
     widget: Widget,
     options: Readonly<TheiaApplicationShell.WidgetOptions> = {}
   ): Promise<void> {
@@ -72,20 +48,68 @@ export class ApplicationShell extends TheiaApplicationShell {
     return super.addWidget(widget, { ...options, ref });
   }
 
-  async saveAll(): Promise<void> {
-    if (
-      this.connectionStatusService.currentStatus === ConnectionStatus.OFFLINE
-    ) {
+  override handleEvent(): boolean {
+    // NOOP, dragging has been disabled
+    return false;
+  }
+
+  // Avoid hiding top panel as we use it for arduino toolbar
+  protected override createTopPanel(): Panel {
+    const topPanel = super.createTopPanel();
+    topPanel.show();
+    return topPanel;
+  }
+
+  override async saveAll(options?: SaveOptions): Promise<void> {
+    // When there is no connection between the IDE2 frontend and backend.
+    if (this.connectionStatusService.offlineStatus === 'backend') {
       this.messageService.error(
-        'Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.'
+        nls.localize(
+          'theia/core/couldNotSave',
+          'Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.'
+        )
       );
       return; // Theia does not reject on failed save: https://github.com/eclipse-theia/theia/pull/8803
     }
-    await super.saveAll();
-    const options = { execOnlyIfTemp: true, openAfterMove: true };
-    await this.commandService.executeCommand(
-      SaveAsSketch.Commands.SAVE_AS_SKETCH.id,
-      options
-    );
+    return super.saveAll(options);
   }
 }
+
+export class DockPanelRenderer extends TheiaDockPanelRenderer {
+  override createTabBar(): TabBar<Widget> {
+    const renderer = this.tabBarRendererFactory();
+    // `ToolbarAwareTabBar` is from IDE2 and not from Theia. Check the imports.
+    const tabBar = new ToolbarAwareTabBar(
+      this.tabBarToolbarRegistry,
+      this.tabBarToolbarFactory,
+      this.breadcrumbsRendererFactory,
+      {
+        renderer,
+        // Scroll bar options
+        handlers: ['drag-thumb', 'keyboard', 'wheel', 'touch'],
+        useBothWheelAxes: true,
+        scrollXMarginOffset: 4,
+        suppressScrollY: true,
+      }
+    );
+    this.tabBarClasses.forEach((c) => tabBar.addClass(c));
+    renderer.tabBar = tabBar;
+    tabBar.disposed.connect(() => renderer.dispose());
+    renderer.contextMenuPath = SHELL_TABBAR_CONTEXT_MENU;
+    tabBar.currentChanged.connect(this.onCurrentTabChanged, this);
+    return tabBar;
+  }
+}
+
+const originalHandleEvent = DockPanel.prototype.handleEvent;
+
+DockPanel.prototype.handleEvent = function (event) {
+  switch (event.type) {
+    case 'p-dragenter':
+    case 'p-dragleave':
+    case 'p-dragover':
+    case 'p-drop':
+      return;
+  }
+  originalHandleEvent.bind(this)(event);
+};

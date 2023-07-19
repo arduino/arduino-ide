@@ -5,16 +5,68 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
+import * as google_rpc_status_pb from "../../../../../google/rpc/status_pb";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_board_pb from "../../../../../cc/arduino/cli/commands/v1/board_pb";
 import * as cc_arduino_cli_commands_v1_compile_pb from "../../../../../cc/arduino/cli/commands/v1/compile_pb";
 import * as cc_arduino_cli_commands_v1_core_pb from "../../../../../cc/arduino/cli/commands/v1/core_pb";
+import * as cc_arduino_cli_commands_v1_monitor_pb from "../../../../../cc/arduino/cli/commands/v1/monitor_pb";
 import * as cc_arduino_cli_commands_v1_upload_pb from "../../../../../cc/arduino/cli/commands/v1/upload_pb";
 import * as cc_arduino_cli_commands_v1_lib_pb from "../../../../../cc/arduino/cli/commands/v1/lib_pb";
 
+export class CreateRequest extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CreateRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: CreateRequest): CreateRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CreateRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CreateRequest;
+    static deserializeBinaryFromReader(message: CreateRequest, reader: jspb.BinaryReader): CreateRequest;
+}
+
+export namespace CreateRequest {
+    export type AsObject = {
+    }
+}
+
+export class CreateResponse extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): CreateResponse;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CreateResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: CreateResponse): CreateResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CreateResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CreateResponse;
+    static deserializeBinaryFromReader(message: CreateResponse, reader: jspb.BinaryReader): CreateResponse;
+}
+
+export namespace CreateResponse {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+    }
+}
+
 export class InitRequest extends jspb.Message { 
-    getLibraryManagerOnly(): boolean;
-    setLibraryManagerOnly(value: boolean): InitRequest;
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): InitRequest;
+
+    getProfile(): string;
+    setProfile(value: string): InitRequest;
+
+    getSketchPath(): string;
+    setSketchPath(value: string): InitRequest;
 
 
     serializeBinary(): Uint8Array;
@@ -29,37 +81,33 @@ export class InitRequest extends jspb.Message {
 
 export namespace InitRequest {
     export type AsObject = {
-        libraryManagerOnly: boolean,
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        profile: string,
+        sketchPath: string,
     }
 }
 
 export class InitResponse extends jspb.Message { 
 
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): InitResponse;
-
-    clearPlatformsIndexErrorsList(): void;
-    getPlatformsIndexErrorsList(): Array<string>;
-    setPlatformsIndexErrorsList(value: Array<string>): InitResponse;
-    addPlatformsIndexErrors(value: string, index?: number): string;
-
-    getLibrariesIndexError(): string;
-    setLibrariesIndexError(value: string): InitResponse;
+    hasInitProgress(): boolean;
+    clearInitProgress(): void;
+    getInitProgress(): InitResponse.Progress | undefined;
+    setInitProgress(value?: InitResponse.Progress): InitResponse;
 
 
-    hasDownloadProgress(): boolean;
-    clearDownloadProgress(): void;
-    getDownloadProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
-    setDownloadProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): InitResponse;
+    hasError(): boolean;
+    clearError(): void;
+    getError(): google_rpc_status_pb.Status | undefined;
+    setError(value?: google_rpc_status_pb.Status): InitResponse;
 
 
-    hasTaskProgress(): boolean;
-    clearTaskProgress(): void;
-    getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
-    setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): InitResponse;
+    hasProfile(): boolean;
+    clearProfile(): void;
+    getProfile(): cc_arduino_cli_commands_v1_common_pb.Profile | undefined;
+    setProfile(value?: cc_arduino_cli_commands_v1_common_pb.Profile): InitResponse;
 
+
+    getMessageCase(): InitResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): InitResponse.AsObject;
@@ -73,11 +121,79 @@ export class InitResponse extends jspb.Message {
 
 export namespace InitResponse {
     export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        platformsIndexErrorsList: Array<string>,
-        librariesIndexError: string,
-        downloadProgress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
-        taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        initProgress?: InitResponse.Progress.AsObject,
+        error?: google_rpc_status_pb.Status.AsObject,
+        profile?: cc_arduino_cli_commands_v1_common_pb.Profile.AsObject,
+    }
+
+
+    export class Progress extends jspb.Message { 
+
+        hasDownloadProgress(): boolean;
+        clearDownloadProgress(): void;
+        getDownloadProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
+        setDownloadProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): Progress;
+
+
+        hasTaskProgress(): boolean;
+        clearTaskProgress(): void;
+        getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
+        setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): Progress;
+
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Progress.AsObject;
+        static toObject(includeInstance: boolean, msg: Progress): Progress.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Progress, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Progress;
+        static deserializeBinaryFromReader(message: Progress, reader: jspb.BinaryReader): Progress;
+    }
+
+    export namespace Progress {
+        export type AsObject = {
+            downloadProgress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
+            taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        }
+    }
+
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+    
+    INIT_PROGRESS = 1,
+
+    ERROR = 2,
+
+    PROFILE = 3,
+
+    }
+
+}
+
+export class FailedInstanceInitError extends jspb.Message { 
+    getReason(): FailedInstanceInitReason;
+    setReason(value: FailedInstanceInitReason): FailedInstanceInitError;
+
+    getMessage(): string;
+    setMessage(value: string): FailedInstanceInitError;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): FailedInstanceInitError.AsObject;
+    static toObject(includeInstance: boolean, msg: FailedInstanceInitError): FailedInstanceInitError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: FailedInstanceInitError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): FailedInstanceInitError;
+    static deserializeBinaryFromReader(message: FailedInstanceInitError, reader: jspb.BinaryReader): FailedInstanceInitError;
+}
+
+export namespace FailedInstanceInitError {
+    export type AsObject = {
+        reason: FailedInstanceInitReason,
+        message: string,
     }
 }
 
@@ -122,63 +238,15 @@ export namespace DestroyResponse {
     }
 }
 
-export class RescanRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): RescanRequest;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): RescanRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: RescanRequest): RescanRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: RescanRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): RescanRequest;
-    static deserializeBinaryFromReader(message: RescanRequest, reader: jspb.BinaryReader): RescanRequest;
-}
-
-export namespace RescanRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-    }
-}
-
-export class RescanResponse extends jspb.Message { 
-    clearPlatformsIndexErrorsList(): void;
-    getPlatformsIndexErrorsList(): Array<string>;
-    setPlatformsIndexErrorsList(value: Array<string>): RescanResponse;
-    addPlatformsIndexErrors(value: string, index?: number): string;
-
-    getLibrariesIndexError(): string;
-    setLibrariesIndexError(value: string): RescanResponse;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): RescanResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: RescanResponse): RescanResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: RescanResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): RescanResponse;
-    static deserializeBinaryFromReader(message: RescanResponse, reader: jspb.BinaryReader): RescanResponse;
-}
-
-export namespace RescanResponse {
-    export type AsObject = {
-        platformsIndexErrorsList: Array<string>,
-        librariesIndexError: string,
-    }
-}
-
 export class UpdateIndexRequest extends jspb.Message { 
 
     hasInstance(): boolean;
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): UpdateIndexRequest;
+
+    getIgnoreCustomPackageIndexes(): boolean;
+    setIgnoreCustomPackageIndexes(value: boolean): UpdateIndexRequest;
 
 
     serializeBinary(): Uint8Array;
@@ -194,6 +262,7 @@ export class UpdateIndexRequest extends jspb.Message {
 export namespace UpdateIndexRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        ignoreCustomPackageIndexes: boolean,
     }
 }
 
@@ -269,166 +338,6 @@ export namespace UpdateLibrariesIndexResponse {
     }
 }
 
-export class UpdateCoreLibrariesIndexRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): UpdateCoreLibrariesIndexRequest;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): UpdateCoreLibrariesIndexRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: UpdateCoreLibrariesIndexRequest): UpdateCoreLibrariesIndexRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: UpdateCoreLibrariesIndexRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): UpdateCoreLibrariesIndexRequest;
-    static deserializeBinaryFromReader(message: UpdateCoreLibrariesIndexRequest, reader: jspb.BinaryReader): UpdateCoreLibrariesIndexRequest;
-}
-
-export namespace UpdateCoreLibrariesIndexRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-    }
-}
-
-export class UpdateCoreLibrariesIndexResponse extends jspb.Message { 
-
-    hasDownloadProgress(): boolean;
-    clearDownloadProgress(): void;
-    getDownloadProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
-    setDownloadProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): UpdateCoreLibrariesIndexResponse;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): UpdateCoreLibrariesIndexResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: UpdateCoreLibrariesIndexResponse): UpdateCoreLibrariesIndexResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: UpdateCoreLibrariesIndexResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): UpdateCoreLibrariesIndexResponse;
-    static deserializeBinaryFromReader(message: UpdateCoreLibrariesIndexResponse, reader: jspb.BinaryReader): UpdateCoreLibrariesIndexResponse;
-}
-
-export namespace UpdateCoreLibrariesIndexResponse {
-    export type AsObject = {
-        downloadProgress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
-    }
-}
-
-export class OutdatedRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): OutdatedRequest;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): OutdatedRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: OutdatedRequest): OutdatedRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: OutdatedRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): OutdatedRequest;
-    static deserializeBinaryFromReader(message: OutdatedRequest, reader: jspb.BinaryReader): OutdatedRequest;
-}
-
-export namespace OutdatedRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-    }
-}
-
-export class OutdatedResponse extends jspb.Message { 
-    clearOutdatedLibrariesList(): void;
-    getOutdatedLibrariesList(): Array<cc_arduino_cli_commands_v1_lib_pb.InstalledLibrary>;
-    setOutdatedLibrariesList(value: Array<cc_arduino_cli_commands_v1_lib_pb.InstalledLibrary>): OutdatedResponse;
-    addOutdatedLibraries(value?: cc_arduino_cli_commands_v1_lib_pb.InstalledLibrary, index?: number): cc_arduino_cli_commands_v1_lib_pb.InstalledLibrary;
-
-    clearOutdatedPlatformsList(): void;
-    getOutdatedPlatformsList(): Array<cc_arduino_cli_commands_v1_common_pb.Platform>;
-    setOutdatedPlatformsList(value: Array<cc_arduino_cli_commands_v1_common_pb.Platform>): OutdatedResponse;
-    addOutdatedPlatforms(value?: cc_arduino_cli_commands_v1_common_pb.Platform, index?: number): cc_arduino_cli_commands_v1_common_pb.Platform;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): OutdatedResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: OutdatedResponse): OutdatedResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: OutdatedResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): OutdatedResponse;
-    static deserializeBinaryFromReader(message: OutdatedResponse, reader: jspb.BinaryReader): OutdatedResponse;
-}
-
-export namespace OutdatedResponse {
-    export type AsObject = {
-        outdatedLibrariesList: Array<cc_arduino_cli_commands_v1_lib_pb.InstalledLibrary.AsObject>,
-        outdatedPlatformsList: Array<cc_arduino_cli_commands_v1_common_pb.Platform.AsObject>,
-    }
-}
-
-export class UpgradeRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): UpgradeRequest;
-
-    getSkipPostInstall(): boolean;
-    setSkipPostInstall(value: boolean): UpgradeRequest;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): UpgradeRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: UpgradeRequest): UpgradeRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: UpgradeRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): UpgradeRequest;
-    static deserializeBinaryFromReader(message: UpgradeRequest, reader: jspb.BinaryReader): UpgradeRequest;
-}
-
-export namespace UpgradeRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        skipPostInstall: boolean,
-    }
-}
-
-export class UpgradeResponse extends jspb.Message { 
-
-    hasProgress(): boolean;
-    clearProgress(): void;
-    getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
-    setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): UpgradeResponse;
-
-
-    hasTaskProgress(): boolean;
-    clearTaskProgress(): void;
-    getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
-    setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): UpgradeResponse;
-
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): UpgradeResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: UpgradeResponse): UpgradeResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: UpgradeResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): UpgradeResponse;
-    static deserializeBinaryFromReader(message: UpgradeResponse, reader: jspb.BinaryReader): UpgradeResponse;
-}
-
-export namespace UpgradeResponse {
-    export type AsObject = {
-        progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
-        taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
-    }
-}
-
 export class VersionRequest extends jspb.Message { 
 
     serializeBinary(): Uint8Array;
@@ -464,6 +373,63 @@ export class VersionResponse extends jspb.Message {
 export namespace VersionResponse {
     export type AsObject = {
         version: string,
+    }
+}
+
+export class NewSketchRequest extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): NewSketchRequest;
+
+    getSketchName(): string;
+    setSketchName(value: string): NewSketchRequest;
+
+    getSketchDir(): string;
+    setSketchDir(value: string): NewSketchRequest;
+
+    getOverwrite(): boolean;
+    setOverwrite(value: boolean): NewSketchRequest;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): NewSketchRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: NewSketchRequest): NewSketchRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: NewSketchRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): NewSketchRequest;
+    static deserializeBinaryFromReader(message: NewSketchRequest, reader: jspb.BinaryReader): NewSketchRequest;
+}
+
+export namespace NewSketchRequest {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        sketchName: string,
+        sketchDir: string,
+        overwrite: boolean,
+    }
+}
+
+export class NewSketchResponse extends jspb.Message { 
+    getMainFile(): string;
+    setMainFile(value: string): NewSketchResponse;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): NewSketchResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: NewSketchResponse): NewSketchResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: NewSketchResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): NewSketchResponse;
+    static deserializeBinaryFromReader(message: NewSketchResponse, reader: jspb.BinaryReader): NewSketchResponse;
+}
+
+export namespace NewSketchResponse {
+    export type AsObject = {
+        mainFile: string,
     }
 }
 
@@ -548,6 +514,9 @@ export class ArchiveSketchRequest extends jspb.Message {
     getIncludeBuildDir(): boolean;
     setIncludeBuildDir(value: boolean): ArchiveSketchRequest;
 
+    getOverwrite(): boolean;
+    setOverwrite(value: boolean): ArchiveSketchRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ArchiveSketchRequest.AsObject;
@@ -564,6 +533,7 @@ export namespace ArchiveSketchRequest {
         sketchPath: string,
         archivePath: string,
         includeBuildDir: boolean,
+        overwrite: boolean,
     }
 }
 
@@ -582,4 +552,11 @@ export class ArchiveSketchResponse extends jspb.Message {
 export namespace ArchiveSketchResponse {
     export type AsObject = {
     }
+}
+
+export enum FailedInstanceInitReason {
+    FAILED_INSTANCE_INIT_REASON_UNSPECIFIED = 0,
+    FAILED_INSTANCE_INIT_REASON_INVALID_INDEX_URL = 1,
+    FAILED_INSTANCE_INIT_REASON_INDEX_LOAD_ERROR = 2,
+    FAILED_INSTANCE_INIT_REASON_TOOL_LOAD_ERROR = 3,
 }

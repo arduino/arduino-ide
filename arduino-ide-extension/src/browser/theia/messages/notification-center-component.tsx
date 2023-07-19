@@ -1,13 +1,23 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { NotificationComponent } from './notification-component';
 import { NotificationCenterComponent as TheiaNotificationCenterComponent } from '@theia/messages/lib/browser/notification-center-component';
+import { nls } from '@theia/core/lib/common';
+import { codicon } from '@theia/core/lib/browser';
 
 const PerfectScrollbar = require('react-perfect-scrollbar');
 
 export class NotificationCenterComponent extends TheiaNotificationCenterComponent {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const empty = this.state.notifications.length === 0;
-    const title = empty ? 'NO NEW NOTIFICATIONS' : 'NOTIFICATIONS';
+    const title = empty
+      ? nls.localize(
+          'vscode/notificationsCenter/notificationsEmpty',
+          'NO NEW NOTIFICATIONS'
+        )
+      : nls.localize(
+          'vscode/notificationsCenter/notifications',
+          'NOTIFICATIONS'
+        );
     return (
       <div
         className={`theia-notifications-container theia-notification-center ${
@@ -19,13 +29,19 @@ export class NotificationCenterComponent extends TheiaNotificationCenterComponen
           <div className="theia-notification-center-header-actions">
             <ul className="theia-notification-actions">
               <li
-                className="collapse"
-                title="Hide Notification Center"
+                className={codicon('chevron-down', true)}
+                title={nls.localize(
+                  'vscode/notificationsStatus/hideNotifications',
+                  'Hide Notification Center'
+                )}
                 onClick={this.onHide}
               />
               <li
-                className="clear-all"
-                title="Clear All"
+                className={codicon('clear-all', true)}
+                title={nls.localize(
+                  'vscode/notificationsCommands/clearAllNotifications',
+                  'Clear All'
+                )}
                 onClick={this.onClearAll}
               />
             </ul>

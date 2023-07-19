@@ -1,58 +1,66 @@
-import { inject, injectable } from 'inversify';
-import { remote } from 'electron';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { FileDialogService } from '@theia/filesystem/lib/browser';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import {
-  SketchContribution,
   Command,
   CommandRegistry,
   MenuModelRegistry,
+  Sketch,
+  SketchContribution,
   URI,
 } from './contribution';
-import { FileDialogService } from '@theia/filesystem/lib/browser';
 
 @injectable()
 export class AddFile extends SketchContribution {
   @inject(FileDialogService)
-  protected readonly fileDialogService: FileDialogService;
+  private readonly fileDialogService: FileDialogService; // TODO: use dialogService
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(AddFile.Commands.ADD_FILE, {
       execute: () => this.addFile(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: AddFile.Commands.ADD_FILE.id,
-      label: 'Add File...',
+      label: nls.localize('arduino/contributions/addFile', 'Add File') + '...',
       order: '2',
     });
   }
 
-  protected async addFile(): Promise<void> {
+  private async addFile(): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const toAddUri = await this.fileDialogService.showOpenDialog({
-      title: 'Add File',
+      title: nls.localize('arduino/contributions/addFile', 'Add File'),
       canSelectFiles: true,
       canSelectFolders: false,
       canSelectMany: false,
+      modal: true,
     });
     if (!toAddUri) {
       return;
     }
-    const sketchUri = new URI(sketch.uri);
-    const filename = toAddUri.path.base;
-    const targetUri = sketchUri.resolve('data').resolve(filename);
+    const { uri: targetUri, filename } = this.resolveTarget(sketch, toAddUri);
     const exists = await this.fileService.exists(targetUri);
     if (exists) {
-      const { response } = await remote.dialog.showMessageBox({
+      const { response } = await this.dialogService.showMessageBox({
         type: 'question',
-        title: 'Replace',
-        buttons: ['Cancel', 'OK'],
-        message: `Replace the existing version of ${filename}?`,
+        title: nls.localize('arduino/contributions/replaceTitle', 'Replace'),
+        buttons: [
+          nls.localize('vscode/issueMainService/cancel', 'Cancel'),
+          nls.localize('vscode/issueMainService/ok', 'OK'),
+        ],
+        message: nls.localize(
+          'arduino/replaceMsg',
+          'Replace the existing version of {0}?',
+          filename
+        ),
       });
       if (response === 0) {
         // Cancel
@@ -60,9 +68,31 @@ export class AddFile extends SketchContribution {
       }
     }
     await this.fileService.copy(toAddUri, targetUri, { overwrite: true });
-    this.messageService.info('One file added to the sketch.', {
-      timeout: 2000,
-    });
+    this.messageService.info(
+      nls.localize(
+        'arduino/contributions/fileAdded',
+        'One file added to the sketch.'
+      ),
+      {
+        timeout: 2000,
+      }
+    );
+  }
+
+  // https://github.com/arduino/arduino-ide/issues/284#issuecomment-1364533662
+  // File the file to add has one of the following extension, it goes to the sketch folder root: .ino, .h, .cpp, .c, .S
+  // Otherwise, the files goes to the `data` folder inside the sketch folder root.
+  private resolveTarget(
+    sketch: Sketch,
+    toAddUri: URI
+  ): { uri: URI; filename: string } {
+    const path = toAddUri.path;
+    const filename = path.base;
+    let root = new URI(sketch.uri);
+    if (!Sketch.Extensions.CODE_FILES.includes(path.ext)) {
+      root = root.resolve('data');
+    }
+    return { uri: root.resolve(filename), filename: filename };
   }
 }
 

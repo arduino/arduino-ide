@@ -1,64 +1,31 @@
 import { RecursivePartial } from '@theia/core/lib/common/types';
+import { AdditionalUrls } from '../common/protocol';
 
 export const CLI_CONFIG = 'arduino-cli.yaml';
 
 export interface BoardManager {
-  readonly additional_urls: Array<string>;
+  readonly additional_urls: AdditionalUrls;
 }
 export namespace BoardManager {
   export function sameAs(
     left: RecursivePartial<BoardManager> | undefined,
     right: RecursivePartial<BoardManager> | undefined
   ): boolean {
-    const leftOrDefault = left || {};
-    const rightOrDefault = right || {};
-    const leftUrls = Array.from(new Set(leftOrDefault.additional_urls || []));
-    const rightUrls = Array.from(new Set(rightOrDefault.additional_urls || []));
-    if (leftUrls.length !== rightUrls.length) {
-      return false;
-    }
-    return leftUrls.every((url) => rightUrls.indexOf(url) !== -1);
-  }
-}
-
-export interface Daemon {
-  readonly port: string | number;
-}
-export namespace Daemon {
-  export function is(
-    daemon: RecursivePartial<Daemon> | undefined
-  ): daemon is Daemon {
-    return !!daemon && !!daemon.port;
-  }
-  export function sameAs(
-    left: RecursivePartial<Daemon> | undefined,
-    right: RecursivePartial<Daemon> | undefined
-  ): boolean {
-    if (left === undefined) {
-      return right === undefined;
-    }
-    if (right === undefined) {
-      return left === undefined;
-    }
-    return String(left.port) === String(right.port);
+    const leftUrls = left?.additional_urls ?? [];
+    const rightUrls = right?.additional_urls ?? [];
+    return AdditionalUrls.sameAs(leftUrls, rightUrls);
   }
 }
 
 export interface Directories {
   readonly data: string;
-  readonly downloads: string;
   readonly user: string;
 }
 export namespace Directories {
   export function is(
     directories: RecursivePartial<Directories> | undefined
   ): directories is Directories {
-    return (
-      !!directories &&
-      !!directories.data &&
-      !!directories.downloads &&
-      !!directories.user
-    );
+    return !!directories && !!directories.data && !!directories.user;
   }
   export function sameAs(
     left: RecursivePartial<Directories> | undefined,
@@ -70,11 +37,7 @@ export namespace Directories {
     if (right === undefined) {
       return left === undefined;
     }
-    return (
-      left.data === right.data &&
-      left.downloads === right.downloads &&
-      left.user === right.user
-    );
+    return left.data === right.data && left.user === right.user;
   }
 }
 
@@ -123,6 +86,7 @@ export interface Network {
 
 // Arduino CLI config scheme
 export interface CliConfig {
+  locale?: string;
   board_manager?: RecursivePartial<BoardManager>;
   directories?: RecursivePartial<Directories>;
   logging?: RecursivePartial<Logging>;
@@ -132,15 +96,12 @@ export interface CliConfig {
 // Bare minimum required CLI config.
 export interface DefaultCliConfig extends CliConfig {
   directories: Directories;
-  daemon: Daemon;
 }
 export namespace DefaultCliConfig {
   export function is(
     config: RecursivePartial<DefaultCliConfig> | undefined
   ): config is DefaultCliConfig {
-    return (
-      !!config && Directories.is(config.directories) && Daemon.is(config.daemon)
-    );
+    return !!config && Directories.is(config.directories);
   }
   export function sameAs(
     left: DefaultCliConfig,
@@ -148,7 +109,6 @@ export namespace DefaultCliConfig {
   ): boolean {
     return (
       Directories.sameAs(left.directories, right.directories) &&
-      Daemon.sameAs(left.daemon, right.daemon) &&
       BoardManager.sameAs(left.board_manager, right.board_manager) &&
       Logging.sameAs(left.logging, right.logging)
     );

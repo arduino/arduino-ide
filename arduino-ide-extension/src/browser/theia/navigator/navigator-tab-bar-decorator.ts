@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { WidgetDecoration } from '@theia/core/lib/browser/widget-decoration';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 
@@ -8,11 +8,11 @@ import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@thei
  */
 @injectable()
 export class NavigatorTabBarDecorator extends TheiaNavigatorTabBarDecorator {
-  onStart(): void {
+  override onStart(): void {
     // NOOP
   }
 
-  decorate(): WidgetDecoration.Data[] {
+  override decorate(): WidgetDecoration.Data[] {
     // Does not decorate anything.
     return [];
   }

@@ -1,7 +1,11 @@
-import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { TreeNode } from '@theia/core/lib/browser/tree/tree';
-import { CommandRegistry } from '@theia/core/lib/common/command';
+import { Command, CommandRegistry } from '@theia/core/lib/common/command';
 import {
   NodeProps,
   TreeProps,
@@ -14,9 +18,17 @@ import { ContextMenuRenderer } from '@theia/core/lib/browser/context-menu-render
 import { SketchbookTree } from './sketchbook-tree';
 import { SketchbookTreeModel } from './sketchbook-tree-model';
 import { ArduinoPreferences } from '../../arduino-preferences';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../sketches-service-client-impl';
 import { SelectableTreeNode } from '@theia/core/lib/browser/tree/tree-selection';
-import { Sketch } from '../../contributions/contribution';
+import { nls } from '@theia/core/lib/common';
+
+const customTreeProps: TreeProps = {
+  leftPadding: 26,
+  expansionTogglePadding: 6,
+};
 
 @injectable()
 export class SketchbookTreeWidget extends FileTreeWidget {
@@ -32,28 +44,36 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   protected currentSketchUri = '';
 
   constructor(
-    @inject(TreeProps) readonly props: TreeProps,
-    @inject(SketchbookTreeModel) readonly model: SketchbookTreeModel,
+    @inject(TreeProps) override readonly props: TreeProps,
+    @inject(SketchbookTreeModel) override readonly model: SketchbookTreeModel,
     @inject(ContextMenuRenderer)
-    readonly contextMenuRenderer: ContextMenuRenderer,
+    override readonly contextMenuRenderer: ContextMenuRenderer,
     @inject(EditorManager) readonly editorManager: EditorManager
   ) {
     super(props, model, contextMenuRenderer);
     this.id = 'arduino-sketchbook-tree-widget';
     this.title.iconClass = 'sketchbook-tree-icon';
-    this.title.caption = 'Local Sketchbook';
+    this.title.caption = nls.localize(
+      'arduino/sketch/titleLocalSketchbook',
+      'Local Sketchbook'
+    );
     this.title.closable = false;
+    this.addClass('tree-container'); // Adds `height: 100%` to the tree. Otherwise you cannot see it.
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     super.init();
     // cache the current open sketch uri
     const currentSketch = await this.sketchServiceClient.currentSketch();
-    this.currentSketchUri = (currentSketch && currentSketch.uri) || '';
+    this.currentSketchUri =
+      (CurrentSketch.isValid(currentSketch) && currentSketch.uri) || '';
   }
 
-  protected createNodeClassNames(node: TreeNode, props: NodeProps): string[] {
+  protected override createNodeClassNames(
+    node: TreeNode,
+    props: NodeProps
+  ): string[] {
     const classNames = super.createNodeClassNames(node, props);
 
     if (
@@ -66,9 +86,12 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return classNames;
   }
 
-  protected renderIcon(node: TreeNode, props: NodeProps): React.ReactNode {
-    if (SketchbookTree.SketchDirNode.is(node) || Sketch.isSketchFile(node.id)) {
-      return <div className="sketch-folder-icon file-icon"></div>;
+  protected override renderIcon(
+    node: TreeNode,
+    props: NodeProps
+  ): React.ReactNode {
+    if (SketchbookTree.SketchDirNode.is(node)) {
+      return undefined;
     }
     const icon = this.toNodeIcon(node);
     if (icon) {
@@ -77,14 +100,14 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return undefined;
   }
 
-  protected renderTailDecorations(
+  protected override renderTailDecorations(
     node: TreeNode,
     props: NodeProps
   ): React.ReactNode {
     return (
       <React.Fragment>
         {super.renderTailDecorations(node, props)}
-        {this.renderInlineCommands(node, props)}
+        {this.renderInlineCommands(node)}
       </React.Fragment>
     );
   }
@@ -92,10 +115,9 @@ export class SketchbookTreeWidget extends FileTreeWidget {
   protected hoveredNodeId: string | undefined;
   protected setHoverNodeId(id: string | undefined): void {
     this.hoveredNodeId = id;
-    this.update();
   }
 
-  protected createNodeAttributes(
+  protected override createNodeAttributes(
     node: TreeNode,
     props: NodeProps
   ): React.Attributes & React.HTMLAttributes<HTMLElement> {
@@ -107,47 +129,49 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     };
   }
 
-  protected renderInlineCommands(
-    node: TreeNode,
-    props: NodeProps
-  ): React.ReactNode {
-    if (
-      SketchbookTree.SketchDirNode.is(node) &&
-      ((node.commands && node.id === this.hoveredNodeId) ||
-        this.currentSketchUri === node?.uri.toString())
-    ) {
+  protected renderInlineCommands(node: TreeNode): React.ReactNode {
+    if (SketchbookTree.SketchDirNode.is(node) && node.commands) {
       return Array.from(new Set(node.commands)).map((command) =>
-        this.renderInlineCommand(command.id, node)
+        this.renderInlineCommand(command, node)
       );
     }
     return undefined;
   }
 
   protected renderInlineCommand(
-    commandId: string,
+    command: Command | string | [command: string, label: string],
     node: SketchbookTree.SketchDirNode,
     options?: any
   ): React.ReactNode {
-    const command = this.commandRegistry.getCommand(commandId);
-    const icon = command?.iconClass;
+    const commandId = Command.is(command)
+      ? command.id
+      : Array.isArray(command)
+      ? command[0]
+      : command;
+    const resolvedCommand = this.commandRegistry.getCommand(commandId);
+    const icon = resolvedCommand?.iconClass;
     const args = { model: this.model, node: node, ...options };
     if (
-      command &&
+      resolvedCommand &&
       icon &&
       this.commandRegistry.isEnabled(commandId, args) &&
       this.commandRegistry.isVisible(commandId, args)
     ) {
+      const label = Array.isArray(command)
+        ? command[1]
+        : resolvedCommand.label ?? resolvedCommand.id;
       const className = [
         TREE_NODE_SEGMENT_CLASS,
         TREE_NODE_TAIL_CLASS,
         icon,
         'theia-tree-view-inline-action',
+        'sketchbook-commands-icons',
       ].join(' ');
       return (
         <div
           key={`${commandId}--${node.id}`}
           className={className}
-          title={command?.label || command.id}
+          title={label}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
@@ -162,7 +186,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     return undefined;
   }
 
-  protected handleClickEvent(
+  protected override handleClickEvent(
     node: TreeNode | undefined,
     event: React.MouseEvent<HTMLElement>
   ): void {
@@ -188,7 +212,7 @@ export class SketchbookTreeWidget extends FileTreeWidget {
     }
   }
 
-  protected doToggle(event: React.MouseEvent<HTMLElement>): void {
+  protected override doToggle(event: React.MouseEvent<HTMLElement>): void {
     const nodeId = event.currentTarget.getAttribute('data-node-id');
     if (nodeId) {
       const node = this.model.getNode(nodeId);
@@ -197,5 +221,14 @@ export class SketchbookTreeWidget extends FileTreeWidget {
       }
     }
     event.stopPropagation();
+  }
+
+  protected override getPaddingLeft(node: TreeNode, props: NodeProps): number {
+    return (
+      props.depth * customTreeProps.leftPadding +
+      (this.needsExpansionTogglePadding(node)
+        ? customTreeProps.expansionTogglePadding
+        : 0)
+    );
   }
 }

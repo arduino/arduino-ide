@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+// Sorts the dependencies and devDependencies in the package.json without yarn.
+// Usage `./scripts/sort-dependencies ./path/to/package.json`
+
+const { promises: fs } = require('fs');
+const { join, isAbsolute } = require('path');
+const arg = process.argv.slice(2).pop();
+const path = isAbsolute(arg) ? arg : join(process.cwd(), arg);
+fs.readFile(path, { encoding: 'utf8' }).then((raw) => {
+  const json = JSON.parse(raw);
+  ['dependencies', 'devDependencies'].forEach((prop) => {
+    const value = json[prop];
+    if (value) {
+      json[prop] = Array.from(Object.entries(value))
+        .sort(([left], [right]) => left.localeCompare(right))
+        .reduce((acc, [key, value]) => {
+          acc[key] = value;
+          return acc;
+        }, {});
+    }
+  });
+  fs.writeFile(path, JSON.stringify(json, null, 2) + '\n', {
+    encoding: 'utf8',
+  });
+});

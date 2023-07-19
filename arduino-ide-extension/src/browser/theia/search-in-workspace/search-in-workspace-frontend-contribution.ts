@@ -1,4 +1,4 @@
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import {
@@ -13,12 +13,12 @@ export class SearchInWorkspaceFrontendContribution extends TheiaSearchInWorkspac
     this.options.defaultWidgetOptions.rank = 5;
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     super.registerMenus(registry);
     registry.unregisterMenuAction(SearchInWorkspaceCommands.OPEN_SIW_WIDGET);
   }
 
-  registerKeybindings(keybindings: KeybindingRegistry): void {
+  override registerKeybindings(keybindings: KeybindingRegistry): void {
     super.registerKeybindings(keybindings);
     keybindings.unregisterKeybinding(SearchInWorkspaceCommands.OPEN_SIW_WIDGET);
   }

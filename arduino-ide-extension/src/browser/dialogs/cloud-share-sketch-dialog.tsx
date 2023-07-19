@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { inject, injectable } from 'inversify';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
-import { clipboard } from 'electron';
-import {
-  AbstractDialog,
-  ReactWidget,
-  DialogProps,
-} from '@theia/core/lib/browser';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { TreeNode } from '@theia/core/lib/browser/tree/tree';
+import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
+import { nls } from '@theia/core/lib/common/nls';
+import { MaybePromise } from '@theia/core/lib/common/types';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import * as React from '@theia/core/shared/react';
 import { CreateApi } from '../create/create-api';
+import { AbstractDialog } from '../theia/dialogs/dialogs';
 
 const RadioButton = (props: {
   id: string;
@@ -37,15 +37,18 @@ export const ShareSketchComponent = ({
   treeNode,
   createApi,
   domain = 'https://create.arduino.cc',
+  writeClipboard,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   treeNode: any;
   createApi: CreateApi;
   domain?: string;
+  writeClipboard: (text: string) => MaybePromise<void>;
 }): React.ReactElement => {
-  const [loading, setloading] = React.useState<boolean>(false);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const radioChangeHandler = async (event: React.BaseSyntheticEvent) => {
-    setloading(true);
+    setLoading(true);
     const sketch = await createApi.editSketch({
       id: treeNode.sketchId,
       params: {
@@ -54,7 +57,7 @@ export const ShareSketchComponent = ({
     });
     // setPublicVisibility(sketch.is_public);
     treeNode.isPublic = sketch.is_public;
-    setloading(false);
+    setLoading(false);
   };
 
   const sketchLink = `${domain}/editor/_/${treeNode.sketchId}/preview`;
@@ -62,12 +65,20 @@ export const ShareSketchComponent = ({
 
   return (
     <div id="widget-container arduino-sharesketch-dialog">
-      <p>Choose visibility of your Sketch:</p>
+      <p>
+        {nls.localize(
+          'arduino/cloud/chooseSketchVisibility',
+          'Choose visibility of your Sketch:'
+        )}
+      </p>
       <RadioButton
         changed={radioChangeHandler}
         id="1"
         isSelected={treeNode.isPublic === false}
-        label="Private. Only you can view the Sketch."
+        label={nls.localize(
+          'arduino/cloud/privateVisibility',
+          'Private. Only you can view the Sketch.'
+        )}
         value="private"
         isDisabled={loading}
       />
@@ -75,14 +86,17 @@ export const ShareSketchComponent = ({
         changed={radioChangeHandler}
         id="2"
         isSelected={treeNode.isPublic === true}
-        label="Public. Anyone with the link can view the Sketch."
+        label={nls.localize(
+          'arduino/cloud/publicVisibility',
+          'Public. Anyone with the link can view the Sketch.'
+        )}
         value="public"
         isDisabled={loading}
       />
 
       {treeNode.isPublic && (
         <div>
-          <p>Link:</p>
+          <p>{nls.localize('arduino/cloud/link', 'Link:')}</p>
           <div className="sketch-link">
             <input
               type="text"
@@ -91,14 +105,14 @@ export const ShareSketchComponent = ({
               className="theia-input"
             />
             <button
-              onClick={() => clipboard.writeText(sketchLink)}
+              onClick={() => writeClipboard(sketchLink)}
               value="copy"
               className="theia-button secondary"
             >
-              Copy
+              {nls.localize('vscode/textInputActions/copy', 'Copy')}
             </button>
           </div>
-          <p>Embed:</p>
+          <p>{nls.localize('arduino/cloud/embed', 'Embed:')}</p>
           <div className="sketch-link-embed">
             <textarea
               readOnly
@@ -112,45 +126,53 @@ export const ShareSketchComponent = ({
   );
 };
 
-@injectable()
 export class ShareSketchWidget extends ReactWidget {
-  constructor(private treeNode: any, private createApi: CreateApi) {
+  private readonly writeClipboard = (text: string) =>
+    this.clipboardService.writeText(text);
+
+  constructor(
+    private treeNode: TreeNode,
+    private createApi: CreateApi,
+    private clipboardService: ClipboardService
+  ) {
     super();
   }
 
-  protected render(): React.ReactNode {
+  protected override render(): React.ReactNode {
     return (
       <ShareSketchComponent
         treeNode={this.treeNode}
         createApi={this.createApi}
+        writeClipboard={this.writeClipboard}
       />
     );
   }
 }
 
-@injectable()
 export class ShareSketchDialogProps extends DialogProps {
-  readonly node: any;
+  readonly node: TreeNode;
   readonly createApi: CreateApi;
+  readonly clipboardService: ClipboardService;
 }
 
-@injectable()
 export class ShareSketchDialog extends AbstractDialog<void> {
   protected widget: ShareSketchWidget;
 
-  constructor(
-    @inject(ShareSketchDialogProps)
-    protected readonly props: ShareSketchDialogProps
-  ) {
+  constructor(protected override readonly props: ShareSketchDialogProps) {
     super({ title: props.title });
     this.contentNode.classList.add('arduino-share-sketch-dialog');
-    this.widget = new ShareSketchWidget(props.node, props.createApi);
+    this.widget = new ShareSketchWidget(
+      props.node,
+      props.createApi,
+      props.clipboardService
+    );
   }
 
-  get value(): void {
+  override get value(): void {
     return;
   }
-  protected onAfterAttach(msg: Message): void {
+
+  protected override onAfterAttach(msg: Message): void {
     if (this.widget.isAttached) {
       Widget.detach(this.widget);
     }
@@ -159,12 +181,12 @@ export class ShareSketchDialog extends AbstractDialog<void> {
     this.update();
   }
 
-  protected onUpdateRequest(msg: Message): void {
+  protected override onUpdateRequest(msg: Message): void {
     super.onUpdateRequest(msg);
     this.widget.update();
   }
 
-  protected onActivateRequest(msg: Message): void {
+  protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.widget.activate();
   }

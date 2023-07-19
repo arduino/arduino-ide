@@ -1,17 +1,15 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
+import type { Props, StylesConfig, ThemeConfig } from 'react-select';
 import Select from 'react-select';
-import { Styles } from 'react-select/src/styles';
-import { Props } from 'react-select/src/components';
-import { ThemeConfig } from 'react-select/src/theme';
 
-export class ArduinoSelect<T> extends Select<T> {
-  constructor(props: Readonly<Props<T, false>>) {
+export class ArduinoSelect extends React.Component<Props> {
+  constructor(props: Props) {
     super(props);
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const controlHeight = 27; // from `monitor.css` -> `.serial-monitor-container .head` (`height: 27px;`)
-    const styles: Styles<T, false> = {
+    const styles: StylesConfig = {
       control: (styles) => ({
         ...styles,
         minWidth: 120,

@@ -1,16 +1,27 @@
-.arduino-settings-dialog {
-    width: 740px;
+#arduino-settings-dialog-container > .dialogBlock {
+    height: 531px;;
+    max-width: 740px !important;
+    width: calc(100% - 96px);
+}
+
+#arduino-settings-dialog-container > .dialogBlock > .dialogContent {
+    justify-content: flex-start;
+    overflow: auto;
+}
+
+#arduino-settings-dialog-container > .dialogBlock > .dialogControl {
+    padding: 16px 0 26px;
 }
 
 .arduino-settings-dialog .content {
     padding: 5px;
-    height: 300px;
 }
 
 .arduino-settings-dialog .flex-line {
     display: flex;
     align-items: center;
     white-space: nowrap;
+    flex-wrap: wrap;
 }
 
 .arduino-settings-dialog .with-margin {
@@ -26,8 +37,13 @@
     vertical-align: middle;
 }
 
+.arduino-settings-dialog .column-container {
+    display: flex;
+    gap: 20px;
+}
+
 .arduino-settings-dialog .stretch {
-    width: 100% !important;
+    flex: 1;
 }
 
 .arduino-settings-dialog .flex-line .theia-button.shrink {
@@ -50,10 +66,35 @@
 .additional-urls-dialog .link:hover {
     color: var(--theia-textLink-activeForeground);
 }
-.arduino-settings-dialog .react-tabs__tab-panel {
-    padding-bottom: 25px;
+
+.arduino-settings-dialog .react-tabs__tab--selected {
+    background: var(--theia-editorWidget-background);
+    border-color: var(--theia-tab-activeBorder);
+    color: var(--theia-tab-activeForeground);
+    border-radius: 5px 5px 0 0;
 }
+
+.arduino-settings-dialog .react-tabs__tab-list {
+    border-color: var(--theia-tab-activeBorder);
+}
+
+.arduino-settings-dialog .react-tabs__tab-panel {
+    padding-bottom: 8px;
+}
+
 .arduino-settings-dialog .react-tabs__tab-list {
     display: flex;
     justify-content: center;
+}
+
+.additional-urls-dialog textarea {
+    resize: none;
+    white-space: nowrap;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent.additional-urls-dialog {
+    display: flex;
+    overflow: hidden;
+    padding: 0 1px;
+    margin: 0 -1px;
 }

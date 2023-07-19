@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "{0} အကြောင်း"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "ဘုတ်{0}",
+      "boardConfigDialogTitle": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ပါ",
+      "boardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်",
+      "boards": "ဘုတ်များ",
+      "configDialog1": "ကုတ်ဖိုင်တစ်ခုကို upload တင်လိုပါက ဘုတ်နှင့်အပေါက် နှစ်ခုလုံးကို ရွေးပေးပါ။",
+      "configDialog2": "သင် ဘုတ်တစ်ခုထဲကိုသာ ရွေးချယ်ထားပါက compile ပြုလုပ်နိုင်သော်လည်း ကုဒ်ဖိုင်ကိုတော့ upload မတင်နိုင်ပါ။",
+      "couldNotFindPreviouslySelected": "တပ်ဆင်ထားသည့် ပလက်ဖောင်း '{1}' ထဲမှာ ယခင်ရွေးချယ်ထားသည့်ဘုတ် '{0}' ကို ရှာမတွေ့ပါ။ ကျေးဇူးပြု၍ မိမိအသုံးပြုလိုသည့် ဘုတ်ကို မိမိကိုယ်တိုင် ပြန်လည်ရွေးချယ်ပေးပါ။ သင်အခု ပြန်လည်ရွေးချယ် လိုပါသလား?",
+      "disconnected": "မချိတ်ဆက်ထားပါ",
+      "getBoardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်ရယူမည်",
+      "inSketchbook": " (Sketchbook ဖိုင်တွဲထဲ)",
+      "installNow": "လက်ရှိရွေးချယ်ထားသည့် \"{2}\" ဘုတ်အတွက် \"{0} {1}\" core အား တပ်ဆင်ဖို့လိုပါသည်။ သင်ယခု တပ်ဆင်လိုပါသလား?",
+      "noBoardsFound": "\"{0}\"အတွက် ဘုတ်ရှာမတွေ့ပါ",
+      "noFQBN": "ရွေးချယ်ထားသည့် ဘုတ် \"{0}\" အတွက် FQBN မရနိုင်သေးပါ။ သင့်မှာ သက်ဆိုင်ရာတပ်ဆင်ထားသည့် core ရှိပါသလား?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "မည်သည့်အပေါက်မှမတွေ့ပါ",
+      "noPortsSelected": "'{0}' ဘုတ် အတွက် မည်သည့်အပေါက်မှ မရွေးချယ်ထားပါ။",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "ဘုတ်မရွေးချယ်ထားပါ။",
+      "openBoardsConfig": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ရန်...",
+      "pleasePickBoard": "သင်ရွေးချယ်ထားသော အပေါက်နှင့် ချိတ်ဆက်ထားသည့် ဘုတ်ကို ကျေးဇူးပြု၍ ရွေးပေးပါ။",
+      "port": "အပေါက်{0}",
+      "portLabel": "အပေါက် - {0}",
+      "ports": "အပေါက်များ",
+      "programmer": "ပရိုဂရမ်မာ",
+      "reselectLater": "နောက်မှ ပြန်ရွေးချယ်မည်",
+      "searchBoard": "ဘုတ်ရှာမည်",
+      "selectBoard": "ဘုတ်ရွေးချယ်မည်",
+      "selectPortForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် အပေါက်ကို ရွေးချယ်ပါ။",
+      "showAllAvailablePorts": "အမှန်ခြစ်ထားပါက ရွေးချယ်နိုင်သော အပေါက်များအားလုံးကို ဖော်ပြပေးမည်",
+      "showAllPorts": "အပေါက်အားလုံးပြ",
+      "succesfullyInstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ တပ်ဆင်ပြီးသည် :{1}",
+      "succesfullyUninstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ ဖြုတ်ချပြီးသည် :{1}",
+      "typeOfPorts": "{0} အပေါက်များ",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "ဘုတ်မန်နေဂျာ",
+    "boardsType": {
+      "arduinoCertified": "အာဒီနိုအသိမှတ်ပြု"
+    },
+    "bootloader": {
+      "burnBootloader": "ဘုလုတ်ဒါ ရေးသွင်းမည်",
+      "burningBootloader": "ဘုလုတ်ဒါ ရေးသွင်းနေသည်…",
+      "doneBurningBootloader": "ဘုလုတ်ဒါ ရေးသွင်းပြီးပါပြီ။"
+    },
+    "burnBootloader": {
+      "error": "ဘုလုတ်ဒါ ရေးသွင်းစဉ် အမှားအယွင်းဖြစ်ပေါ်သည် : {0}"
+    },
+    "certificate": {
+      "addNew": "အသစ်ထည့်မည်",
+      "addURL": "SSL လက်မှတ်ရယူရန် URL ထည့်သွင်းပါ",
+      "boardAtPort": "{1} တွင် {0}",
+      "certificatesUploaded": "လက်မှတ်များ တင်သွင်းပြီးပါပြီ။",
+      "enterURL": "URLရေးသွင်းပါ",
+      "noSupportedBoardConnected": "ထောက်ပံ့ပေးသည့် ဘုတ်ကို မချိတ်ဆက်ထားပါ",
+      "openContext": "ဆက်စပ်အကြောင်းအရာကြည့်မည်",
+      "remove": "ဖယ်ရှားမည်",
+      "selectBoard": "ဘုတ်တစ်ခုကို ရွေးချယ်ရန်...",
+      "selectCertificateToUpload": "1. အပ်လုတ်တင်ရန် လက်မှတ်ရွေးပါ",
+      "selectDestinationBoardToUpload": "2. ဦးတည်ထားသည့် ဘုတ်ကိုရွေးချယ်၍ လက်မှတ်ကို အပ်လုတ်တင်ပါ",
+      "upload": "အပ်လုတ်တင်မည်",
+      "uploadFailed": "အပ်လုတ်တင်ခြင်း မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။",
+      "uploadRootCertificates": "SSL Root လက်မှတ်များ အပ်လုတ်တင်ခြင်း",
+      "uploadingCertificates": "လက်မှတ်များကို အပ်လုတ်တင်နေသည်။"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "အာဒီနိုအပ်ဒိတ်စစ်မည်",
+      "installAll": "အားလုံးတပ်ဆင်မည်",
+      "noUpdates": "လတ်တလော အပ်ဒိတ်တင်ရန် မရှိသေးပါ။",
+      "promptUpdateBoards": "ဘုတ်အချို့တွက် အပ်ဒိတ်ရရှိပါပြီ။",
+      "promptUpdateLibraries": "ကုတ်ကြည့်တိုက်အချို့တွက် အပ်ဒိတ်ရရှိပါပြီ။",
+      "updatingBoards": "ဘုတ်အပ်ဒိတ်တင်နေသည်…",
+      "updatingLibraries": "ကုတ်ကြည့်တိုက်အပ်ဒိတ်တင်နေသည်"
+    },
+    "cli-error-parser": {
+      "keyboardError": "'ကီးဘုတ်' ရှာမတွေ့ပါ။ '#include <Keyboard.h>' ကုတ်စာကြောင်းကို သင့်ကုတ်ပုံကြမ်းထဲတွင် ထည့်ရေးထားပါသလား?",
+      "mouseError": "'မောက်စ်' ရှာမတွေ့ပါ။ '#include <Mouse.h>' ကုတ်စာကြောင်းကို သင့်ကုတ်ပုံကြမ်းထဲတွင် ထည့်ရေးထားပါသလား?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "သင့်ကုတ်ပုံကြမ်း၏ မြင်နိုင်စွမ်းအား ရွေးချယ်ခြင်း - ",
+      "cloudSketchbook": "တိမ်တိုက် Sketchbook ဖိုင်တွဲ",
+      "connected": "ချိတ်ဆက်ထားသည်",
+      "continue": "ဆက်သွားမည်",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "မြှုပ်သွင်းထားသော -",
+      "emptySketchbook": "သင့်ကုတ်ပုံကြမ်းဖိုင်တွဲထဲတွင် ဘာမှမရှိပါ",
+      "goToCloud": "ကလောက်သို့သွားမည်",
+      "learnMore": "ပိုမိုလေ့လာရန်",
+      "link": "လင့်ခ်-",
+      "notYetPulled": "Cloudသို့တွန်းပို့၍မရသေးပါ။ မဆွဲယူရသေးသောကြောင့်ဖြစ်သည်။",
+      "offline": "အော့ဖ်လိုင်း",
+      "openInCloudEditor": "Cloudအယ်ဒီတာတွင်ဖွင့်မည်",
+      "options": "ရွေးချယ်ချက်များ…",
+      "privateVisibility": "ကိုယ်ပိုင်။ သင်တစ်ဦးတည်းသာ ကုတ်ပုံကြမ်းကိုကြည့်ရှုနိုင်သည်။",
+      "profilePicture": "ပရိုဖိုင်ပုံ",
+      "publicVisibility": "အများပိုင်။ လင့်ခ်နဲ့လာသည့်မည်သူမဆို ကုတ်ပုံကြမ်းကို ကြည့်ရှုနိုင်သည်။",
+      "pull": "ဆွဲယူမည်",
+      "pullFirst": "Cloudသို့တွန်းပို့နိုင်ရန် အရင် ဆွဲယူရမည်ဖြစ်သည်။",
+      "pullSketch": "ကုတ်ဖိုင်လ်ဆွဲယူမည်",
+      "pullSketchMsg": "ဤကုတ်ဖိုင်လ်ကို Cloudမှဆွဲယူခြင်းသည် သင့်စက်တွင်းရှိပြီးသားဖိုင်လ်အားအစားထိုးသွားမည်ဖြစ်သည်။ သင် ဆက်လုပ်ချင်ပါသလား။",
+      "push": "တွန်းပို့မည်",
+      "pushSketch": "ကုတ်ဖိုင်လ်တင်မည်",
+      "pushSketchMsg": "ဤကုတ်ဖိုင်လ်သည် အများသုံးဖြစ်သည်။ မတင်မီ လျှိုဝှက်သင့်သောအချက်အလက်ကို arduino_secrets.h ဖိုင်လ်များတွင် သတ်မှတ်ထားပေးပါ။ သင်အနေဖြင့် 'ဝေမျှမည်'ပန်နယ်တွင် ကုတ်ဖိုင်လ်ကို ပုဂ္ဂလိကအဖြစ်သတ်မှတ်နိုင်သည်။",
+      "remote": "အဝေး",
+      "share": "ဝေမျှမည်…",
+      "shareSketch": "ကုတ်ဖိုင်လ်ဝေမျှမည်",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "လက်မှတ်ထိုးဝင်",
+      "signInToCloud": "Arduino Cloudသို့ လက်မှတ်ထိုးဝင်ရောက်ပါ",
+      "signOut": "လက်မှတ်ထိုးထွက်",
+      "sync": "ထပ်တူပြုခြင်း",
+      "syncEditSketches": "သင်၏Arduino Cloud ကုတ်ဖိုင်လ်များကို အင်တာနက်မှတဆင့် အချိန်နှင့်တပြေးညီ ရယူကိုက်ညီစေပြီး တည်းဖြတ်လိုက်ပါ",
+      "visitArduinoCloud": "ကလောက်ကုတ်ဖိုင်ဖန်တီးရန် Arduino Cloudသို့သွားပါ။"
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "အားလုံး",
+      "contributed": "ကူညီရေးသားထားသည်များ",
+      "installManually": "ကိုယ်တိုင်တပ်ဆင်မည်",
+      "later": "နောက်မှ",
+      "noBoardSelected": "ဘုတ် မရွေးချယ်ထားပါ",
+      "notConnected": "[မချိတ်ဆက်ထားပါ]",
+      "offlineIndicator": "အော့ဖ်လိုင်းဖြစ်နေသည်။ အင်တာနက်မရှိလျှင် Arduino CLIသည် လိုအပ်သော ဒေတာများမရယူနိုင်သောကြောင့် လုပ်ဆောင်ချက်ချို့ယွင်းမှုဖြစ်ပေါ်မည်။ အင်တာနက်နှင့်ချိတ်ဆက်ပြီး အပ္ပလီကေးရှင်းကို ပြန်စတင်ပေးပါ။",
+      "oldFormat": "'{0}'သည် မူပုံစံအဟောင်း `.pde`ကိုအသုံးပြုထားသည်။ ဖိုင်လ်တိုးချဲ့အမှတ်အသားအသစ် `.ino` သို့ ပြောင်းလဲမှာလား။",
+      "partner": "တွဲဘက်",
+      "processing": "အဆင့်ဆင့်ဆောင်ရွက်နေသည်",
+      "recommended": "အသုံးပြုရန်အကြုံပြုထားသည်များ",
+      "retired": "အငြိမ်းစား",
+      "selectedOn": "{0}တွင်",
+      "serialMonitor": "အတန်းလိုက်ဆက်သွယ်မှုမော်နီတာ",
+      "type": "အမျိုးအစား",
+      "unknown": "မသိ",
+      "updateable": "အပ်ဒိတ်တင်၍ရသော"
+    },
+    "compile": {
+      "error": "ကုတ်ပေါင်းခြင်းဆိုင်ရာအမှား- {0}"
+    },
+    "component": {
+      "boardsIncluded": "ဤပတ်ကေ့တွင်ပါဝင်သောဘုတ်များ-",
+      "by": "မှ",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "သင်၏ရှာဖွေမှုရလဒ်ကိုစစ်ထုတ်မည်…",
+      "install": "တပ်ဆင်မည်",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "နောက်ထပ်အချက်အလက်များ",
+      "otherVersions": "Other Versions",
+      "remove": "ဖယ်ရှားမည်",
+      "title": "{0} by {1}",
+      "uninstall": "ဖြုတ်ချ",
+      "uninstallMsg": "သင် {0} ကိုဖြုတ်ချချင်ပါသလား?",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "ဖိုင်လ်ထည့်မည်",
+      "fileAdded": "ကုတ်ပုံကြမ်းထဲသို့ ဖိုင်တစ်ခု ထည့်လိုက်သည်။",
+      "plotter": {
+        "couldNotOpen": "အတန်းလိုက်ပုံဆွဲကိရိယာကိုမဖွင့်နိုင်ခဲ့ပါ"
+      },
+      "replaceTitle": "အစားထိုးမည်"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "အားလုံး",
+        "default": "မူလ",
+        "more": "နောက်ထပ်",
+        "none": "မရှိ"
+      }
+    },
+    "coreContribution": {
+      "copyError": "အမှားပြစာများကို ကော်ပီဆွဲသည်",
+      "noBoardSelected": "မည်သည့်ဘုတ်မှ မရွေးထားပါ။ သင်၏အာဒီနိုဘုတ်ကို ကိရိယာများ>ဘုတ် မီနူးတွင် ရွေးချယ်ပါ။"
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Daemon ပြန်စမည်",
+      "start": "Daemon စတင်မည်",
+      "stop": "Daemon ရပ်မည်"
+    },
+    "debug": {
+      "debugWithMessage": "ပြစ်ချက်ရှာဖွေချက် - {0}",
+      "debuggingNotSupported": "ကုတ်ပြစ်ချက်ရှာဖွေမှုကို '{0}'မှ မပေးထားပါ",
+      "noPlatformInstalledFor": "'{0}' အတွက် ပလက်ဖောင်းကို မထည့်သွင်းရသေးပါ",
+      "optimizeForDebugging": "ကုတ်ပြစ်ချက်ရှာဖွေရန်အတွက်ဦးစားပေးမည်",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "နောက်ထပ်မမေးပါနှင့်"
+    },
+    "editor": {
+      "autoFormat": "အလိုအလျောက် ကုတ်ပုံစံချမည်",
+      "commentUncomment": "မှတ်ချက်ပေး/ဖြုတ်",
+      "copyForForum": "ဖိုရမ်အတွက် ကော်ပီဆွဲ(အမှတ်အသားပြုခြင်း)",
+      "decreaseFontSize": "ဖောင့်အရွယ်အစားလျော့မည်",
+      "decreaseIndent": "အင်တင်းခြင်းလျော့မည်",
+      "increaseFontSize": "ဖောင့်အရွယ်အစားတိုးမည်",
+      "increaseIndent": "အင်တင်းခြင်းတိုးမည်",
+      "nextError": "နောက်ကအမှား",
+      "previousError": "ရှေ့ကအမှား",
+      "revealError": "အမှားဖော်ပြ"
+    },
+    "electron": {
+      "couldNotSave": "ကုတ်ပုံကြမ်းကို မသိမ်းဆည်းနိုင်ခဲ့ပါ။ ကျေးဇူးပြု၍ သင်၏ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာ စာသားတည်းဖြတ်မှုဆော့ဖ်ဝဲထဲသို့ ကူးယူပြီး IDE ကို ပြန်စတင်ပါ။",
+      "unsavedChanges": "မသိမ်းရသေးသောပြောင်းလဲမှုများကိုသိမ်းမည်မဟုတ်ပါ။"
+    },
+    "examples": {
+      "builtInExamples": "နဂိုပါဝင်သောဥပမာများ",
+      "couldNotInitializeExamples": "နဂိုပါဝင်သောဥပမာများကို မစတင်နိုင်ခဲ့ပါ။",
+      "customLibrary": "စိတ်ကြိုက် Libraries များမှ ဥပမာများ",
+      "for": "{0} အတွက် ဥပမာများ",
+      "forAny": "ဘယ်ဘုတ်ပဲလာလာ အတွက် ဥပမာများ",
+      "menu": "ဥပမာများ"
+    },
+    "firmware": {
+      "checkUpdates": "အပ်ဒိတ်စစ်မည်",
+      "failedInstall": "ထည့်သွင်းခြင်း မအောင်မြင်ပါ။ ကျေးဇူးပြု၍ ထပ်မံကြိုးစားပါ။",
+      "install": "တပ်ဆင်မည်",
+      "installingFirmware": "ဖမ်းဝဲလ် သွင်းနေသည်။",
+      "overwriteSketch": "တပ်ဆင်မှုသည် ဘုတ်ပေါ်ရှိကုတ်ဖိုင်လ်ကို ဖျက်ရေးသွားမည်",
+      "selectBoard": "ဘုတ်ရွေးချယ်မည်",
+      "selectVersion": "ဖမ်းဝဲလ်ဗားရှင်း ရွေးပါ",
+      "successfullyInstalled": "ဖမ်းဝဲလ်ကို အောင်မြင်စွာ သွင်းပြီးပါပြီ။",
+      "updater": "WiFi101 / WiFiNINA ဖမ်းဝဲလ်မြှင့်ပေးသူ"
+    },
+    "help": {
+      "environment": "ဆော့ဖ်ဝဲလ်အကြောင်း",
+      "faq": "မကြာခဏမေးလေ့ရှိသော မေးခွန်းများ",
+      "findInReference": "ကိုးကားချက်ထဲတွင် ရှာဖွေမည်",
+      "gettingStarted": "စလိုက်ရအောင်",
+      "keyword": "သော့ချက်စကားလုံးရိုက်လိုက်ပါ",
+      "privacyPolicy": "ကိုယ်ရေးဆိုင်ရာအချက်အလက် မူဝါဒ",
+      "reference": "ကိုးကားချက်",
+      "search": "Arduino.cc မှာ သွားရှာမယ်",
+      "troubleshooting": "ပြဿနာဖြေရှင်းခြင်း",
+      "visit": "Arduino.cc ကိုသွားကြည့်မယ်ကွာ"
+    },
+    "ide-updater": {
+      "checkForUpdates": "အာဒီနိုအိုင်ဒီအီးအပ်ဒိတ်များစစ်မည်",
+      "closeAndInstallButton": "ပိတ်ပြီးသွင်းမယ်",
+      "closeToInstallNotice": "ဆော့ဖ်ဝဲလ်ပိတ်ပြီး  အသစ်ကိုသွင်းမယ်။",
+      "downloadButton": "ဒေါင်းလုတ်ဆွဲမယ်",
+      "downloadingNotice": "နောက်ဆုံးပေါ် Arduino IDE ဗားရှင်းကို ဒေါင်းလုတ်ဆွဲနေတယ်။",
+      "errorCheckingForUpdates": "Arduino IDE အပ်ဒိတ်တွေအတွက် စစ်ဆေးနေတုန်း ပြဿနာတက်သွားတယ်။\n{0}",
+      "goToDownloadButton": "ဒေါင်းလုတ်ကို သွားပါ",
+      "goToDownloadPage": "Arduino IDE အတွက် အပ်ဒိတ်အသစ်ရပါပြီ။ ဒါပေမယ့် ကျွန်ုပ်တို့တွေ အလိုအလျောက် ဒေါင်းလုတ်ဆွဲပြီး ထည့်သွင်းမပေးနိုင်ပါတော့ပါ။ ကျေးဇူးပြု၍ ဒေါင်းလုတ်စာမျက်နှာသို့သွားပြီး အဲ့ဒီကနေ နောက်ဆုံးပေါ်ဗားရှင်းကို ဒေါင်းလုတ်ဆွဲပါ။",
+      "ideUpdaterDialog": "ဆော့ဖ်ဝဲလ် အပ်ဒိတ်",
+      "newVersionAvailable": "Arduino IDE ဗားရှင်းအသစ် ({0}) ကို ဒေါင်းလုတ်ဆွဲနိုင်ပါပြီ။",
+      "noUpdatesAvailable": "Arduino IDE အတွက် လက်တလောတွင် ဆော့ဖ်ဝဲလ်အသစ်များ မရနိုင်သေးပါ",
+      "notNowButton": "ယခုမဟုတ်ပါ",
+      "skipVersionButton": "ဗားရှင်းကျော်မည်",
+      "updateAvailable": "အပ်ဒိတ်ရပါပြီ",
+      "versionDownloaded": "Arduino IDE {0} ကိုဒေါင်းလုတ်ဆွဲပြီးပါပြီ။"
+    },
+    "library": {
+      "addZip": "ကုတ်ကြည့်တိုက် .ZIPထည့်မည်…",
+      "arduinoLibraries": "Arduinoကုတ်ကြည့်တိုက်များ",
+      "contributedLibraries": "ပါဝင်ကူညီပေးထားသော libraries များ",
+      "include": "Library သွင်းမည်",
+      "installAll": "အားလုံးတပ်ဆင်မည်",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "လိုအပ်နေသော dependencies များအားလုံးကို ထည့်သွင်းလိုပါသလား?",
+      "installOneMissingDependency": "လိုအပ်နေသော dependency ကို ထည့်သွင်းလိုပါသလား?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "အောင်မြင်စွာ ထည့်သွင်းပြီးပါပြီ library {0}:{1}",
+      "libraryAlreadyExists": "Library ရှိပြီးသားပါ။ ထပ်ရေးလိုပါသလား?",
+      "manageLibraries": "Libraries စီမံခြင်း...",
+      "namedLibraryAlreadyExists": "{0} ခေါ် library ဖိုင်တွဲမှာရှိပြီးသားပါ။ ထပ်ရေးလိုပါသလား?",
+      "needsMultipleDependencies": "ကုတ်ကြည့်တိုက် <b>{0}:{1}</b> သည် မတပ်ဆင်ရသေးသော အခြားကုတ်ကြည့်တိုက်များကို လိုအပ်သည်-",
+      "needsOneDependency": "ကုတ်ကြည့်တိုက် <b>{0}:{1}</b> သည် မတပ်ဆင်ရသေးသော အခြားကုတ်ကြည့်တိုက်ကို လိုအပ်သည်-",
+      "overwriteExistingLibrary": "ရှိနေပြီးသား library ကို ထပ်ရေးလိုပါသလား?",
+      "successfullyInstalledZipLibrary": "{0} မှ ကုတ်ကြည့်တိုက်ကို အောင်မြင်စွာထည့်သွင်းပြီးပါပြီ",
+      "title": "ကုတ်ကြည့်တိုက်မန်နေဂျာ",
+      "uninstalledSuccessfully": "အောင်မြင်စွာ ဖြုတ်ချပြီးသော ကုတ်ကြည့်တိုက် {0}:{1}",
+      "zipLibrary": "ကုတ်ကြည့်တိုက်"
+    },
+    "librarySearchProperty": {
+      "topic": "ခေါင်းစဉ်"
+    },
+    "libraryTopic": {
+      "communication": "ဆယ်သွယ်ရေး",
+      "dataProcessing": "ဒေတာခွဲခြားစီမံခြင်း",
+      "dataStorage": "ဒေတာသိမ်းဆည်းမှု",
+      "deviceControl": "စက််ထိန်းချုပ်ရေး",
+      "display": "ရုပ်ပြမှန်ပြင်",
+      "other": "အခြား",
+      "sensors": "အာရုံခံစက်များ",
+      "signalInputOutput": "အချက်ပြ အသွင်း/အထုတ်",
+      "timing": "အချက်",
+      "uncategorized": "အမျိုးအစားခွဲမထားသော"
+    },
+    "libraryType": {
+      "installed": "တပ်ဆင်ထားပြီး"
+    },
+    "menu": {
+      "advanced": "အဆင့်မြင့်",
+      "sketch": "ကုတ်ဖိုင်လ်ဆိုင်ရာ",
+      "tools": "ကိရိယာများ"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "ဝက်ဘ်ဆော့ကတ်ကိုမပိတ်နိုင်ပါ",
+      "unableToConnectToWebSocket": "ဝက်ဘ်ဆော့ကတ်သို့မချိတ်ဆက်နိုင်ပါ"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "ကွန်ရက်",
+      "serial": "အတန်းလိုက်"
+    },
+    "preferences": {
+      "additionalManagerURLs": "နောက်ထပ်ဘုတ်မန်နေဂျာURLs",
+      "auth.audience": "OAuth2 ပရိတ်သတ်",
+      "auth.clientID": "OAuth2အသုံးပြုစက်အိုင်ဒီ",
+      "auth.domain": "OAuth2ဒိုမိန်း",
+      "auth.registerUri": "အသုံးပြုသူအသစ် မှတ်ပုံတင်ရန် သုံးသောURI",
+      "automatic": "အလိုအလျောက်",
+      "board.certificates": "ဘုတ်သို့အပ်လုတ်တင်နိုင်သောအသိအမှတ်ပြုစာချွန်လွှာစာရင်း",
+      "browse": "လျှောက်ကြည့်မည်",
+      "checkForUpdate": "အပ်ဒိတ်တင်ရန် အသိပေးချက်များ လက်ခံမည်။ တန်ဖိုးပြောင်းပါက ပရိုဂရမ်ကို ပြန်စတင်ရမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "choose": "ရွေးချယ်မည်",
+      "cli.daemonDebug": "ဒီဘက်မှတ်တမ်းတင်ခြင်းဖွင့်မည်။ မူရင်းတန်ဖိုး - အမှား",
+      "cloud.enabled": "ဆင့် ဖန်ရှင်းများ ဖွင့်မည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.pull.warn": "ကလောက်ကုတ်ဖိုင်လ်ကို စက်ထဲ့သို့ မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.push.warn": "ကလောက်ကုတ်ဖိုင်လ်သို့ ကုတ်ဖိုင်လ် မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.pushpublic.warn": "ကလောက်သို့ အများသုံးကုတ်ဖိုင်လ် မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.sketchSyncEndpoint": "နောက်ကွယ်လုပ်ဆောင်မှုစနစ်မှ ကုတ်ဖိုင်လ် ရယူခြင်း သို့ ပေးပို့ခြင်းလုပ်ရန် အသုံးပြုသော အဆုံးမှတ်။ မူရင်းတန်းဖိုး - အာဒီနိုကလောက်အေပီအိုင်သို့ ညွှန်ပြနေသည်။",
+      "compile": "စက်ဘာသာပြန်",
+      "compile.experimental": "ကုတ်ပေါင်းမှုဆိုင်ရာပြဿနာများအား အိုင်ဒီအီးမှ ကိုင်တွယ်မည်။ မူရင်းတန်ဖိုး - အမှား",
+      "compile.revealRange": "စစ်ဆေး/အပ်လုတ် မအောင်မြင်ခဲ့လျှင် အယ်ဒီတာတွင် ကုတ်ပေါင်းမှုဆိုင်ရာ အမှားအယွင်းဖော်ပြချက် ချိန်ညှိသည်။ အသုံးပြုနိုင်သော တန်ဖိုးများ - 'auto' - ဒေါင်လိုက်လှိမ့်ဆွဲပြီးစာကြောင်းသို့ သွားမည်။ 'center' - ဒေါင်လိုက်လှိမ့်ဆွဲပြီး စာကြောင်းကို အလယ်တည့်တည့်တွင် ထားမည်။ 'top' - ဒေါင်လိုက်လှိမ့်ဆွဲပြီး စာကြောင်းကို မြင်ကွင်း၏ထိပ်နားတွင် ပြမည်။ 'centerIfOutsideViewport' - စာကြောင်းသည် မြင်ကွင်းအပြင်ရောက်နေပါက ဒေါင်လိုက်လှိမ့်ဆွဲပြီး စာကြောင်းကို အလယ်တည့်တည့်တွင် ထားမည်။ မူရင်းတန်ဖိုး - {0}",
+      "compile.verbose": "ကုတ်ပေါင်းကိရိယာမှ အသေးစိတ်အချက်အလက်များ ထုတ်ပြမည်။ မူရင်းတန်ဖိုး - အမှား",
+      "compile.warnings": "အသုံးပြုမည့်gccသတိပေးမှုအဆင့်။ မူရင်းအဆင့် - 'None'",
+      "compilerWarnings": "စက်ဘာသာပြန်ကိရိယာသတိပေးချက်များ",
+      "editorFontSize": "အယ်ဒီတာဖောင့်အရွယ်အစား",
+      "editorQuickSuggestions": "အယ်ဒီတာအကြံပြုချက်များ",
+      "enterAdditionalURLs": "နောက်ထပ်URLများကို တစ်ခုလျှင် တစ်တန်းဆီ ရေးသွင်းပါ",
+      "files.inside.sketches": "ကုတ်ဖိုင်လ်များအတွင်း ဖိုင်လ်များပြမည်",
+      "ide.updateBaseUrl": "အပ်ဒိတ်များဒေါင်းလုတ်ဆွဲရန်အတွက် URL။ မူရင်းတန်ဖိုး - 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "အပ်ဒိတ်တင်ရန်အတွက် ထုတ်ဝေမှုချန်နယ်။ 'stable'သည်  တည်ငြိမ်မှုဦးစားပေးချန်နယ်။ 'nightly'သည် နောက်ဆုံးပေါ်ထုတ်ဝေမှုချန်နယ်။",
+      "interfaceScale": "အင်တာဖေ့စ်စကေး",
+      "invalid.editorFontSize": "အယ်ဒီတာဖောင့်အရွယ်အစားမမှန်ကန်ပါ။ အပေါင်းကိန်းပြည့်ဖြစ်ရပါမည်။",
+      "invalid.sketchbook.location": "မမှန်ကန်သောကုတ်ဖိုင်လ်စာအုပ်တည်နေရာ-{0}",
+      "invalid.theme": "မမှန်ကန်သောသင်း",
+      "language.log": "အမှန်ဖြစ်နေပါက Arduinoဘာသာစကားစစ်ဆေးမှုဆာဗာသည် မှတ်တမ်းဖိုင်လ်များကို ကုတ်ဖိုင်လ်ဖိုလ်ဒါတွင် ထုတ်ပေးမည်။ မူရင်းတန်းဖိုးသည် အမှားဖြစ်သည်။",
+      "language.realTimeDiagnostics": "အမှန်ခြစ်ထားပါက အယ်ဒီတာတွင် စာရေးသောအခါ ဘာသာစကားစစ်ဆေးမှုဆာဗာသည် အချိန်နှင့်တပြေးညီ စစ်ဆေးပေးမည်။ မူလတန်ဖိုးသည် အမှားဖြစ်သည်။",
+      "manualProxy": "ကိုယ်တိုင် ကြားခံကွန်ရက်ပြင်ဆင်ခြင်း",
+      "network": "ကွန်ရက်",
+      "newSketchbookLocation": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာအသစ်ရွေးမည်",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "ကြားခံကွန်ရက်မရှိ",
+      "proxySettings": {
+        "hostname": "အိမ်ရှင်အမည်",
+        "password": "စကားဝှက်",
+        "port": "အပေါက်နံပါတ်",
+        "username": "အသုံးပြုသူအမည်"
+      },
+      "showVerbose": "နောက်ပါလုပ်နေစဉ် အချက်အလက်များပိုမိုများပြားစွာပြမည်",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာ",
+      "sketchbook.showAllFiles": "အမှန်ဖြစ်ပါက ကုတ်ဖိုင်လ်အတွင်း ဖိုင်လ်အားလုံးပြမည်။ မူရင်းတန်ဖိုး - အမှား",
+      "survey.notification": "စစ်တမ်းကောက်ပါက အသုံးပြုသူကို အသိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "unofficialBoardSupport": "တရားမဝင်ဘုတ် ထောက်ပံ့မှုURLစာရင်းအတွက် ကလစ်လိုက်ပါ",
+      "upload": "အပ်လုတ်တင်",
+      "upload.verbose": "အပ်လုတ်တင်မှုဆိုင်အချက်အလက်များ အသေးစိတ်ဖော်ပြမည်။ မူရင်းတန်ဖိုး - အမှား",
+      "verifyAfterUpload": "အပ်လုတ်တင်ပြီးလျှင်ကုတ်ကိုစစ်ဆေးပါ",
+      "window.autoScale": "အမှန်ဖြစ်နေပါက အသုံးပြုသူအင်တာဖေ့သည် ဖောင့်အရွယ်အစားနှင့်အတူ အလိုလိုချိန်ညှိမည်။",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "{0}၏ရှိနှင့်ပြီးဗားရှင်းကို အစားထိုးမည်လား။",
+    "selectZip": "သင်ထည့်သွင်းချင်သော ကုတ်ကြည့်တိုက်ပါဝင်သည့်ဇစ်ဖိုင်လ်ရွေးပါ",
+    "serial": {
+      "autoscroll": "အလိုအလျောက်လှိမ့်ဆွဲခြင်း",
+      "carriageReturn": "လက်နှိပ်စက်အတံပြန်အက္ခရာ",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "စာတို (စာတိုကို  '{0}'သို့ '{1}'တွင် ပို့ရန် ရိုက်နှိပ်ပါ)",
+      "newLine": "စာကြောင်းအသစ်အက္ခရာ",
+      "newLineCarriageReturn": "စာကြောင်းအသစ်နှင့်လက်နှိပ်စက်အတံပြန်အက္ခရာနှစ်ခုလုံး",
+      "noLineEndings": "စာကြောင်းအဆုံးသတ်အက္ခရာမရှိ",
+      "notConnected": "မချိတ်ဆက်ထားပါ။ ဘုတ်နှင့်အပေါက်ကိုရွေးချယ်ပါ",
+      "openSerialPlotter": "အတန်းလိုက်ဆက်သွယ်မှုပုံဆွဲကိရိယာ",
+      "timestamp": "အချိန်တံဆိပ်ခေါင်း",
+      "toggleTimestamp": "အချိန်တံဆိပ်ဖွင့်/ပိတ်"
+    },
+    "sketch": {
+      "archiveSketch": "ကုတ်ဖိုင်လ်သိမ်းမည်",
+      "cantOpen": "\"{0}\" အမည်ဖြင့်ဖိုလ်ဒါရှိနှင့်ပြီးဖြစ်သည်။ ကုတ်ဖိုင်လ်ကို မဖွင့်နိုင်ပါ။",
+      "close": "ကုတ်ဖိုင်လ်ပိတ်မှာသေချာပါသလား။",
+      "compile": "ကုတ်ဖိုင်လ်ကို ကုတ်ပေါင်းနေသည်…",
+      "configureAndUpload": "ပြင်ဆင်၍အပ်လုတ်တင်မည်",
+      "createdArchive": "ဖန်းတီးပြီးသော သိမ်းဆည်းဖိုင်လ် '{0}'။",
+      "doneCompiling": "ကုတ်ပေါင်းပြီးပါပြီ။",
+      "doneUploading": "အပ်လုတ်တင်ပြီးပါပြီ။",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "ကုတ်ပေါင်းထားသောဘိုင်နရီဖိုင် ထုတ်ပို့မည်",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "ရွှေ့နေသည်",
+      "movingMsg": "ဖိုင်လ် \"{0}\" သည် ကုတ်ဖိုင်လ်ဖိုလ်ဒါ \"{1}\"အတွင်းရှိရန်လိုသည်။\nဖိုလ်ဒါတည်ဆောက်ပြီးဖိုင်လ်ကိုရွှေ့မည်လား။",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "ဖိုလ်ဒါဖွင့်မည်",
+      "openRecent": "လတ်တလောဖိုင်လ်ဖွင့်မည်",
+      "openSketchInNewWindow": "ကုတ်ဖိုင်လ်ကို ဝင်းဒိုးအသစ်တွင်ဖွင့်မည်",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "ကုတ်ဖိုင်လ် ဖိုလ်ဒါကို သိမ်းမည်…",
+      "saveSketch": "သင်၏ကုတ်ဖိုင်လ်ကို နောင်အခါပြန်ကြည့်၍ရရန် မှတ်သားပါ။",
+      "saveSketchAs": "ကုတ်ဖိုင်လ် ဖိုလ်ဒါကို သိမ်းမည်…",
+      "showFolder": "ကုတ်ပုံကြမ်းဖိုလ်ဒါပြမည်",
+      "sketch": "ကုတ်ပုံကြမ်း",
+      "sketchbook": "ကုတ်ဖိုင်လ်စာအုပ်",
+      "titleLocalSketchbook": "စက်တွင်းကုတ်ဖိုင်လ်စာအုပ်",
+      "titleSketchbook": "ကုတ်ဖိုင်လ်စာအုပ်",
+      "upload": "အပ်လုတ်",
+      "uploadUsingProgrammer": "ပရိုဂရမ်မာဘုတ်သုံး၍အပ်လုတ်တင်မည်",
+      "uploading": "အပ်လုတ်တင်နေသည်…",
+      "userFieldsNotFoundError": "ချိတ်ဆက်ထားသောဘုတ်အတွက်အသုံးပြုသူဆိုင်ရာအချက်အလက်များရှာမတွေ့ပါ",
+      "verify": "စစ်ဆေး",
+      "verifyOrCompile": "စစ်ဆေး/ကုတ်ပေါင်း"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "စစ်တမ်းကိုဖြေဆိုပါ",
+      "dismissSurvey": "နောက်ထပ်မပြပါနှင့်",
+      "surveyMessage": "ဤစစ်တမ်းကိုဖြေဆိုခြင်းအားဖြင့် ကျွန်ုပ်တို့အား ကူညီလိုက်ပါ။"
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "အပ်ဒိတ်စာရင်းများ",
+      "updateLibraryIndex": "ကုတ်ကြည့်တိုက်အပ်ဒိတ်စာရင်း",
+      "updatePackageIndex": "ပတ်ကေ့အပ်ဒိတ်စာရင်း"
+    },
+    "upload": {
+      "error": "{0} အမှား- {1}"
+    },
+    "userFields": {
+      "cancel": "ပယ်ဖျက်မည်",
+      "enterField": "{0} ရိုက်သွင်းပါ",
+      "upload": "အပ်လုတ်တင်မည်"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "ကျောရိုးပရိုဂရမ်သို့ ချိတ်ဆက်၍မရခဲ့ပါ။",
+      "cannotConnectDaemon": "CLIနောက်ကွယ်လုပ်ဆောင်ပရိုဂရမ်သို့ ဆက်သွယ်၍မရခဲ့ပါ။",
+      "couldNotSave": "ကုတ်ဖိုင်လ်ကိုမသိမ်းဆည်းနိုင်ခဲ့ပါ။ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာစာသားတည်းဖြတ်ပရိုဂရမ်သို့ ကူးယူပြီး အိုင်ဒီအီး ပြန်စတင်ပါ။",
+      "daemonOffline": "CLIနောက်ကွယ်လုပ်ဆောင်ပရိုဂရမ် အော့ဖ်လိုင်းဖြစ်နေသည်",
+      "offline": "အော့ဖ်လိုင်း",
+      "offlineText": "အော့ဖ်လိုင်း",
+      "quitTitle": "သင်ထွက်မှာသေချာပါသလား။"
+    },
+    "editor": {
+      "unsavedTitle": "မသိမ်းဆည်းရသေး – {0}"
+    },
+    "messages": {
+      "collapse": "စုမည်",
+      "expand": "ချဲ့မည်"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "ဖိုင်လ်အသစ်အတွက်အမည်",
+      "invalidExtension": ".{0}သည် မှန်ကန်သော တိုးချဲ့အမှတ်အသားမဟုတ်ပါ",
+      "newFileName": "ဖိုင်လ်အတွက်အမည်အသစ်"
+    }
+  }
+}

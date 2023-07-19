@@ -1,4 +1,4 @@
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { notEmpty } from '@theia/core/lib/common/objects';
 import {
@@ -6,9 +6,7 @@ import {
   Installable,
   BoardsPackage,
   Board,
-  Port,
   BoardDetails,
-  Tool,
   ConfigOption,
   ConfigValue,
   Programmer,
@@ -16,6 +14,11 @@ import {
   NotificationServiceServer,
   AvailablePorts,
   BoardWithPackage,
+  BoardUserField,
+  BoardSearch,
+  sortComponents,
+  SortGroup,
+  platformInstallFailed,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -31,13 +34,19 @@ import { CoreClientAware } from './core-client-provider';
 import {
   BoardDetailsRequest,
   BoardDetailsResponse,
+  BoardListAllRequest,
+  BoardListAllResponse,
   BoardSearchRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import {
   ListProgrammersAvailableForUploadRequest,
   ListProgrammersAvailableForUploadResponse,
+  SupportedUserFieldsRequest,
+  SupportedUserFieldsResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
-import { InstallWithProgress } from './grpc-installable';
+import { ExecuteWithProgress } from './grpc-progressible';
+import { ServiceError } from './service-error';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsServiceImpl
@@ -46,10 +55,6 @@ export class BoardsServiceImpl
 {
   @inject(ILogger)
   protected logger: ILogger;
-
-  @inject(ILogger)
-  @named('discovery')
-  protected discoveryLogger: ILogger;
 
   @inject(ResponseService)
   protected readonly responseService: ResponseService;
@@ -61,21 +66,13 @@ export class BoardsServiceImpl
   protected readonly boardDiscovery: BoardDiscovery;
 
   async getState(): Promise<AvailablePorts> {
-    return this.boardDiscovery.state;
-  }
-
-  async getAttachedBoards(): Promise<Board[]> {
-    return this.boardDiscovery.getAttachedBoards();
-  }
-
-  async getAvailablePorts(): Promise<Port[]> {
-    return this.boardDiscovery.getAvailablePorts();
+    return this.boardDiscovery.availablePorts;
   }
 
   async getBoardDetails(options: {
     fqbn: string;
   }): Promise<BoardDetails | undefined> {
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const { fqbn } = options;
     const detailsReq = new BoardDetailsRequest();
@@ -85,19 +82,7 @@ export class BoardsServiceImpl
       (resolve, reject) =>
         client.boardDetails(detailsReq, (err, resp) => {
           if (err) {
-            // Required cores are not installed manually: https://github.com/arduino/arduino-cli/issues/954
-            if (
-              (err.message.indexOf('missing platform release') !== -1 &&
-                err.message.indexOf('referenced by board') !== -1) ||
-              // Platform is not installed.
-              (err.message.indexOf('platform') !== -1 &&
-                err.message.indexOf('not installed') !== -1)
-            ) {
-              resolve(undefined);
-              return;
-            }
-            // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
-            if (err.message.indexOf('unknown package') !== -1) {
+            if (isMissingPlatformError(err)) {
               resolve(undefined);
               return;
             }
@@ -114,14 +99,11 @@ export class BoardsServiceImpl
 
     const debuggingSupported = detailsResp.getDebuggingSupported();
 
-    const requiredTools = detailsResp.getToolsDependenciesList().map(
-      (t) =>
-        <Tool>{
-          name: t.getName(),
-          packager: t.getPackager(),
-          version: t.getVersion(),
-        }
-    );
+    const requiredTools = detailsResp.getToolsDependenciesList().map((t) => ({
+      name: t.getName(),
+      packager: t.getPackager(),
+      version: t.getVersion(),
+    }));
 
     const configOptions = detailsResp.getConfigOptionsList().map(
       (c) =>
@@ -165,14 +147,15 @@ export class BoardsServiceImpl
 
     let VID = 'N/A';
     let PID = 'N/A';
-    const usbId = detailsResp
-      .getIdentificationPrefsList()
-      .map((item) => item.getUsbId())
+    const prop = detailsResp
+      .getIdentificationPropertiesList()
+      .map((item) => item.getPropertiesMap())
       .find(notEmpty);
-    if (usbId) {
-      VID = usbId.getVid();
-      PID = usbId.getPid();
+    if (prop) {
+      VID = prop.get('vid') || '';
+      PID = prop.get('pid') || '';
     }
+    const buildProperties = detailsResp.getBuildPropertiesList();
 
     return {
       fqbn,
@@ -182,6 +165,7 @@ export class BoardsServiceImpl
       debuggingSupported,
       VID,
       PID,
+      buildProperties
     };
   }
 
@@ -214,12 +198,32 @@ export class BoardsServiceImpl
   }: {
     query?: string;
   }): Promise<BoardWithPackage[]> {
-    const { instance, client } = await this.coreClient();
+    const { instance, client } = await this.coreClient;
     const req = new BoardSearchRequest();
     req.setSearchArgs(query || '');
     req.setInstance(instance);
+    return this.handleListBoards(client.boardSearch.bind(client), req);
+  }
+
+  async getInstalledBoards(): Promise<BoardWithPackage[]> {
+    const { instance, client } = await this.coreClient;
+    const req = new BoardListAllRequest();
+    req.setInstance(instance);
+    return this.handleListBoards(client.boardListAll.bind(client), req);
+  }
+
+  private async handleListBoards(
+    getBoards: (
+      request: BoardListAllRequest | BoardSearchRequest,
+      callback: (
+        error: ServiceError | null,
+        response: BoardListAllResponse
+      ) => void
+    ) => void,
+    request: BoardListAllRequest | BoardSearchRequest
+  ): Promise<BoardWithPackage[]> {
     const boards = await new Promise<BoardWithPackage[]>((resolve, reject) => {
-      client.boardSearch(req, (error, resp) => {
+      getBoards(request, (error, resp) => {
         if (error) {
           reject(error);
           return;
@@ -243,17 +247,59 @@ export class BoardsServiceImpl
     return boards;
   }
 
-  async search(options: { query?: string }): Promise<BoardsPackage[]> {
-    const coreClient = await this.coreClient();
+  async getBoardUserFields(options: {
+    fqbn: string;
+    protocol: string;
+  }): Promise<BoardUserField[]> {
+    const coreClient = await this.coreClient;
+    const { client, instance } = coreClient;
+
+    const req = new SupportedUserFieldsRequest();
+    req.setInstance(instance);
+    req.setFqbn(options.fqbn);
+    req.setProtocol(options.protocol);
+
+    const resp = await new Promise<SupportedUserFieldsResponse | undefined>(
+      (resolve, reject) => {
+        client.supportedUserFields(req, (err, resp) => {
+          if (err) {
+            if (isMissingPlatformError(err)) {
+              resolve(undefined);
+              return;
+            }
+            reject(err);
+            return;
+          }
+          resolve(resp);
+        });
+      }
+    );
+
+    if (!resp) {
+      return [];
+    }
+
+    return resp.getUserFieldsList().map((e) => ({
+      toolId: e.getToolId(),
+      name: e.getName(),
+      label: e.getLabel(),
+      secret: e.getSecret(),
+      value: '',
+    }));
+  }
+
+  async search(options: BoardSearch): Promise<BoardsPackage[]> {
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const installedPlatformsReq = new PlatformListRequest();
     installedPlatformsReq.setInstance(instance);
     const installedPlatformsResp = await new Promise<PlatformListResponse>(
-      (resolve, reject) =>
-        client.platformList(installedPlatformsReq, (err, resp) =>
-          (!!err ? reject : resolve)(!!err ? err : resp)
-        )
+      (resolve, reject) => {
+        client.platformList(installedPlatformsReq, (err, resp) => {
+          !!err ? reject(err) : resolve(resp);
+        });
+      }
     );
     const installedPlatforms =
       installedPlatformsResp.getInstalledPlatformsList();
@@ -262,10 +308,12 @@ export class BoardsServiceImpl
     req.setSearchArgs(options.query || '');
     req.setAllVersions(true);
     req.setInstance(instance);
-    const resp = await new Promise<PlatformSearchResponse>((resolve, reject) =>
-      client.platformSearch(req, (err, resp) =>
-        (!!err ? reject : resolve)(!!err ? err : resp)
-      )
+    const resp = await new Promise<PlatformSearchResponse>(
+      (resolve, reject) => {
+        client.platformSearch(req, (err, resp) => {
+          !!err ? reject(err) : resolve(resp);
+        });
+      }
     );
     const packages = new Map<string, BoardsPackage>();
     const toPackage = (platform: Platform) => {
@@ -286,8 +334,12 @@ export class BoardsServiceImpl
           .map((b) => b.getName())
           .join(', '),
         installable: true,
+        types: platform.getTypeList(),
         deprecated: platform.getDeprecated(),
-        summary: 'Boards included in this package:',
+        summary: nls.localize(
+          'arduino/component/boardsIncluded',
+          'Boards included in this package:'
+        ),
         installedVersion,
         boards: platform
           .getBoardsList()
@@ -301,8 +353,9 @@ export class BoardsServiceImpl
     const groupedById: Map<string, Platform[]> = new Map();
     for (const platform of resp.getSearchOutputList()) {
       const id = platform.getId();
-      if (groupedById.has(id)) {
-        groupedById.get(id)!.push(platform);
+      const idGroup = groupedById.get(id);
+      if (idGroup) {
+        idGroup.push(platform);
       } else {
         groupedById.set(id, [platform]);
       }
@@ -327,17 +380,20 @@ export class BoardsServiceImpl
       if (!leftInstalled && rightInstalled) {
         return 1;
       }
-      return Installable.Version.COMPARATOR(
-        left.getLatest(),
-        right.getLatest()
-      ); // Higher version comes first.
+
+      const invertedVersionComparator =
+        Installable.Version.COMPARATOR(left.getLatest(), right.getLatest()) *
+        -1;
+      // Higher version comes first.
+
+      return invertedVersionComparator;
     };
-    for (const id of groupedById.keys()) {
-      groupedById.get(id)!.sort(installedAwareVersionComparator);
+    for (const value of groupedById.values()) {
+      value.sort(installedAwareVersionComparator);
     }
 
-    for (const id of groupedById.keys()) {
-      for (const platform of groupedById.get(id)!) {
+    for (const value of groupedById.values()) {
+      for (const platform of value) {
         const id = platform.getId();
         const pkg = packages.get(id);
         if (pkg) {
@@ -349,19 +405,44 @@ export class BoardsServiceImpl
       }
     }
 
-    return [...packages.values()];
+    const filter = this.typePredicate(options);
+    const boardsPackages = [...packages.values()].filter(filter);
+    return sortComponents(boardsPackages, boardsPackageSortGroup);
+  }
+
+  private typePredicate(
+    options: BoardSearch
+  ): (item: BoardsPackage) => boolean {
+    const { type } = options;
+    if (!type || type === 'All') {
+      return () => true;
+    }
+    switch (options.type) {
+      case 'Updatable':
+        return Installable.Updateable;
+      case 'Arduino':
+      case 'Partner':
+      case 'Arduino@Heart':
+      case 'Contributed':
+      case 'Arduino Certified':
+        return ({ types }: BoardsPackage) => !!types && types?.includes(type);
+      default:
+        throw new Error(`Unhandled type: ${options.type}`);
+    }
   }
 
   async install(options: {
     item: BoardsPackage;
     progressId?: string;
     version?: Installable.Version;
+    noOverwrite?: boolean;
+    skipPostInstall?: boolean;
   }): Promise<void> {
     const item = options.item;
     const version = !!options.version
       ? options.version
       : item.availableVersions[0];
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const [platform, architecture] = item.id.split(':');
@@ -371,24 +452,35 @@ export class BoardsServiceImpl
     req.setArchitecture(architecture);
     req.setPlatformPackage(platform);
     req.setVersion(version);
+    req.setNoOverwrite(Boolean(options.noOverwrite));
+    if (options.skipPostInstall) {
+      req.setSkipPostInstall(true);
+    }
 
     console.info('>>> Starting boards package installation...', item);
+
+    // stop the board discovery
+    await this.boardDiscovery.stop();
+
     const resp = client.platformInstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId: options.progressId,
         responseService: this.responseService,
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
+        resolve();
+      });
       resp.on('error', (error) => {
         this.responseService.appendToOutput({
-          chunk: `Failed to install platform: ${item.id}.\n`,
+          chunk: `${platformInstallFailed(item.id, version)}\n`,
         });
         this.responseService.appendToOutput({
-          chunk: error.toString(),
+          chunk: `${error.toString()}\n`,
         });
         reject(error);
       });
@@ -397,7 +489,7 @@ export class BoardsServiceImpl
     const items = await this.search({});
     const updated =
       items.find((other) => BoardsPackage.equals(other, item)) || item;
-    this.notificationService.notifyPlatformInstalled({ item: updated });
+    this.notificationService.notifyPlatformDidInstall({ item: updated });
     console.info('<<< Boards package installation done.', item);
   }
 
@@ -406,7 +498,7 @@ export class BoardsServiceImpl
     progressId?: string;
   }): Promise<void> {
     const { item, progressId } = options;
-    const coreClient = await this.coreClient();
+    const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
     const [platform, architecture] = item.id.split(':');
@@ -417,21 +509,66 @@ export class BoardsServiceImpl
     req.setPlatformPackage(platform);
 
     console.info('>>> Starting boards package uninstallation...', item);
+
+    // stop the board discovery
+    await this.boardDiscovery.stop();
+
     const resp = client.platformUninstall(req);
     resp.on(
       'data',
-      InstallWithProgress.createDataCallback({
+      ExecuteWithProgress.createDataCallback({
         progressId,
         responseService: this.responseService,
       })
     );
     await new Promise<void>((resolve, reject) => {
-      resp.on('end', resolve);
+      resp.on('end', () => {
+        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
+        resolve();
+      });
       resp.on('error', reject);
     });
 
     // Here, unlike at `install` we send out the argument `item`. Otherwise, we would not know about the board FQBN.
-    this.notificationService.notifyPlatformUninstalled({ item });
+    this.notificationService.notifyPlatformDidUninstall({ item });
     console.info('<<< Boards package uninstallation done.', item);
   }
+}
+
+function isMissingPlatformError(error: unknown): boolean {
+  if (ServiceError.is(error)) {
+    const message = error.details;
+    // TODO: check gRPC status code? `9 FAILED_PRECONDITION` (https://grpc.github.io/grpc/core/md_doc_statuscodes.html)
+
+    // When installing a 3rd party core that depends on a missing Arduino core.
+    // https://github.com/arduino/arduino-cli/issues/954
+    if (
+      message.includes('missing platform release') &&
+      message.includes('referenced by board')
+    ) {
+      return true;
+    }
+
+    // When the platform is not installed.
+    if (message.includes('platform') && message.includes('not installed')) {
+      return true;
+    }
+
+    // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
+    if (message.includes('unknown package')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function boardsPackageSortGroup(boardsPackage: BoardsPackage): SortGroup {
+  const types: string[] = [];
+  if (boardsPackage.types.includes('Arduino')) {
+    types.push('Arduino');
+  }
+  if (boardsPackage.deprecated) {
+    types.push('Retired');
+  }
+  return types.join('-') as SortGroup;
 }

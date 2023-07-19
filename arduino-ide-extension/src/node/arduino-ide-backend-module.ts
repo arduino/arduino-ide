@@ -1,10 +1,9 @@
-import { ContainerModule } from 'inversify';
+import { ContainerModule, interfaces } from '@theia/core/shared/inversify';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import {
   ArduinoFirmwareUploader,
   ArduinoFirmwareUploaderPath,
 } from '../common/protocol/arduino-firmware-uploader';
-
 import { ILogger } from '@theia/core/lib/common/logger';
 import {
   BackendApplicationContribution,
@@ -18,7 +17,7 @@ import {
   BoardsService,
   BoardsServicePath,
 } from '../common/protocol/boards-service';
-import { LibraryServiceImpl } from './library-service-server-impl';
+import { LibraryServiceImpl } from './library-service-impl';
 import { BoardsServiceImpl } from './boards-service-impl';
 import { CoreServiceImpl } from './core-service-impl';
 import { CoreService, CoreServicePath } from '../common/protocol/core-service';
@@ -26,7 +25,7 @@ import { ConnectionContainerModule } from '@theia/core/lib/node/messaging/connec
 import { CoreClientProvider } from './core-client-provider';
 import { ConnectionHandler, JsonRpcConnectionHandler } from '@theia/core';
 import { DefaultWorkspaceServer } from './theia/workspace/default-workspace-server';
-import { WorkspaceServer as TheiaWorkspaceServer } from '@theia/workspace/lib/common';
+import { WorkspaceServer as TheiaWorkspaceServer } from '@theia/workspace/lib/common/workspace-protocol';
 import { SketchesServiceImpl } from './sketches-service-impl';
 import {
   SketchesService,
@@ -40,22 +39,21 @@ import {
   ArduinoDaemon,
   ArduinoDaemonPath,
 } from '../common/protocol/arduino-daemon';
-import { MonitorServiceImpl } from './monitor/monitor-service-impl';
-import {
-  MonitorService,
-  MonitorServicePath,
-  MonitorServiceClient,
-} from '../common/protocol/monitor-service';
-import { MonitorClientProvider } from './monitor/monitor-client-provider';
 import { ConfigServiceImpl } from './config-service-impl';
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { EnvVariablesServer } from './theia/env-variables/env-variables-server';
+import {
+  ConfigDirUriProvider,
+  EnvVariablesServer,
+} from './theia/env-variables/env-variables-server';
 import { NodeFileSystemExt } from './node-filesystem-ext';
 import {
   FileSystemExt,
   FileSystemExtPath,
 } from '../common/protocol/filesystem-ext';
-import { ExamplesServiceImpl } from './examples-service-impl';
+import {
+  BuiltInExamplesServiceImpl,
+  ExamplesServiceImpl,
+} from './examples-service-impl';
 import {
   ExamplesService,
   ExamplesServicePath,
@@ -77,8 +75,6 @@ import {
 } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
-import { DefaultGitInit } from './theia/git/git-init';
-import { GitInit } from '@theia/git/lib/node/init/git-init';
 import { AuthenticationServiceImpl } from './auth/authentication-service-impl';
 import {
   AuthenticationService,
@@ -86,6 +82,46 @@ import {
   AuthenticationServicePath,
 } from '../common/protocol/authentication-service';
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
+import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
+import { ArduinoLocalizationContribution } from './i18n/arduino-localization-contribution';
+import { LocalizationContribution } from '@theia/core/lib/node/i18n/localization-contribution';
+import { MonitorManagerProxyImpl } from './monitor-manager-proxy-impl';
+import { MonitorManager, MonitorManagerName } from './monitor-manager';
+import {
+  MonitorManagerProxy,
+  MonitorManagerProxyClient,
+  MonitorManagerProxyPath,
+} from '../common/protocol/monitor-service';
+import { MonitorService, MonitorServiceName } from './monitor-service';
+import { MonitorSettingsProvider } from './monitor-settings/monitor-settings-provider';
+import { MonitorSettingsProviderImpl } from './monitor-settings/monitor-settings-provider-impl';
+import {
+  MonitorServiceFactory,
+  MonitorServiceFactoryOptions,
+} from './monitor-service-factory';
+import WebSocketProviderImpl from './web-socket/web-socket-provider-impl';
+import { WebSocketProvider } from './web-socket/web-socket-provider';
+import { ClangFormatter } from './clang-formatter';
+import { FormatterPath } from '../common/protocol/formatter';
+import { HostedPluginLocalizationService } from './theia/plugin-ext/hosted-plugin-localization-service';
+import { HostedPluginLocalizationService as TheiaHostedPluginLocalizationService } from '@theia/plugin-ext/lib/hosted/node/hosted-plugin-localization-service';
+import { SurveyNotificationServiceImpl } from './survey-service-impl';
+import {
+  SurveyNotificationService,
+  SurveyNotificationServicePath,
+} from '../common/protocol/survey-service';
+import { IsTempSketch } from './is-temp-sketch';
+import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
+import { MessagingContribution } from './theia/core/messaging-contribution';
+import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
+import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
+import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
+import { PluginDeployer } from '@theia/plugin-ext/lib/common/plugin-protocol';
+import {
+  LocalDirectoryPluginDeployerResolverWithFallback,
+  PluginDeployer_GH_12064,
+} from './theia/plugin-ext/plugin-deployer';
+import { SettingsReader } from './settings-reader';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -117,6 +153,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  // Shared formatter
+  bind(ClangFormatter).toSelf().inSingletonScope();
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      ({ container }) =>
+        new JsonRpcConnectionHandler(FormatterPath, () =>
+          container.get(ClangFormatter)
+        )
+    )
+    .inSingletonScope();
+  // Built-in examples are not board specific, so it is possible to have one shared instance.
+  bind(BuiltInExamplesServiceImpl).toSelf().inSingletonScope();
 
   // Examples service. One per backend, each connected FE gets a proxy.
   bind(ConnectionContainerModule).toConstantValue(
@@ -174,6 +223,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   // Shared port/board discovery for the server
   bind(BoardDiscovery).toSelf().inSingletonScope();
+  bind(BackendApplicationContribution).toService(BoardDiscovery);
 
   // Core service -> `verify` and `upload`. Singleton per BE, each FE connection gets its proxy.
   bind(ConnectionContainerModule).toConstantValue(
@@ -189,24 +239,52 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(DefaultWorkspaceServer).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceServer).toService(DefaultWorkspaceServer);
 
+  bind(ConfigDirUriProvider).toSelf().inSingletonScope();
   bind(EnvVariablesServer).toSelf().inSingletonScope();
   rebind(TheiaEnvVariablesServer).toService(EnvVariablesServer);
 
   // #endregion Theia customizations
 
-  // Monitor client provider per connected frontend.
+  // a single MonitorManager is responsible for handling the actual connections to the pluggable monitors
+  bind(MonitorManager).toSelf().inSingletonScope();
+
+  // monitor service & factory bindings
+  bind(MonitorSettingsProviderImpl).toSelf().inSingletonScope();
+  bind(MonitorSettingsProvider).toService(MonitorSettingsProviderImpl);
+
+  bind(WebSocketProviderImpl).toSelf();
+  bind(WebSocketProvider).toService(WebSocketProviderImpl);
+
+  bind(MonitorServiceFactory).toFactory(
+    ({ container }) =>
+      (options: MonitorServiceFactoryOptions) => {
+        const child = container.createChild();
+        child
+          .bind<MonitorServiceFactoryOptions>(MonitorServiceFactoryOptions)
+          .toConstantValue({
+            ...options,
+          });
+        child.bind(MonitorService).toSelf();
+        return child.get<MonitorService>(MonitorService);
+      }
+  );
+
+  // Serial client provider per connected frontend.
   bind(ConnectionContainerModule).toConstantValue(
     ConnectionContainerModule.create(({ bind, bindBackendService }) => {
-      bind(MonitorClientProvider).toSelf().inSingletonScope();
-      bind(MonitorServiceImpl).toSelf().inSingletonScope();
-      bind(MonitorService).toService(MonitorServiceImpl);
-      bindBackendService<MonitorService, MonitorServiceClient>(
-        MonitorServicePath,
-        MonitorService,
-        (service, client) => {
-          service.setClient(client);
-          client.onDidCloseConnection(() => service.dispose());
-          return service;
+      bind(MonitorManagerProxyImpl).toSelf().inSingletonScope();
+      bind(MonitorManagerProxy).toService(MonitorManagerProxyImpl);
+      bindBackendService<MonitorManagerProxy, MonitorManagerProxyClient>(
+        MonitorManagerProxyPath,
+        MonitorManagerProxy,
+        (monitorMgrProxy, client) => {
+          monitorMgrProxy.setClient(client);
+          // when the client close the connection, the proxy is disposed.
+          // when the MonitorManagerProxy is disposed, it informs the MonitorManager
+          // telling him that it does not need an address/board anymore.
+          // the MonitorManager will then dispose the actual connection if there are no proxies using it
+          client.onDidCloseConnection(() => monitorMgrProxy.dispose());
+          return monitorMgrProxy;
         }
       );
     })
@@ -223,6 +301,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+  rebindNsfwFileSystemWatcher(rebind);
 
   // Output service per connection.
   bind(ConnectionContainerModule).toConstantValue(
@@ -251,67 +330,26 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     )
     .inSingletonScope();
 
-  bind(ArduinoFirmwareUploaderImpl).toSelf().inSingletonScope();
-  bind(ArduinoFirmwareUploader).toService(ArduinoFirmwareUploaderImpl);
-  bind(BackendApplicationContribution).toService(ArduinoFirmwareUploaderImpl);
-  bind(ConnectionHandler)
-    .toDynamicValue(
-      (context) =>
-        new JsonRpcConnectionHandler(ArduinoFirmwareUploaderPath, () =>
-          context.container.get(ArduinoFirmwareUploader)
-        )
-    )
-    .inSingletonScope();
-
-  // Logger for the Arduino daemon
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('daemon');
+  // Singleton per BE, each FE connection gets its proxy.
+  bind(ConnectionContainerModule).toConstantValue(
+    ConnectionContainerModule.create(({ bind, bindBackendService }) => {
+      bind(ArduinoFirmwareUploaderImpl).toSelf().inSingletonScope();
+      bind(ArduinoFirmwareUploader).toService(ArduinoFirmwareUploaderImpl);
+      bindBackendService(ArduinoFirmwareUploaderPath, ArduinoFirmwareUploader);
     })
-    .inSingletonScope()
-    .whenTargetNamed('daemon');
+  );
 
-  // Logger for the Arduino daemon
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('fwuploader');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('fwuploader');
+  [
+    'daemon', // Logger for the Arduino daemon
+    'fwuploader', // Arduino Firmware uploader
+    'discovery-log', // Boards discovery
+    'config', // Logger for the CLI config reading and manipulation
+    'sketches-service', // For creating, loading, and cloning sketches
+    MonitorManagerName, // Logger for the monitor manager and its services
+    MonitorServiceName,
+  ].forEach((name) => bindChildLogger(bind, name));
 
-  // Logger for the "serial discovery".
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('discovery');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('discovery');
-
-  // Logger for the CLI config service. From the CLI config (FS path aware), we make a URI-aware app config.
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('config');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('config');
-
-  // Logger for the monitor service.
-  bind(ILogger)
-    .toDynamicValue((ctx) => {
-      const parentLogger = ctx.container.get<ILogger>(ILogger);
-      return parentLogger.child('monitor-service');
-    })
-    .inSingletonScope()
-    .whenTargetNamed('monitor-service');
-
-  bind(DefaultGitInit).toSelf();
-  rebind(GitInit).toService(DefaultGitInit);
-
-  // Remote sketchbook bindings
+  // Cloud sketchbook bindings
   bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
   bind(AuthenticationService).toService(AuthenticationServiceImpl);
   bind(BackendApplicationContribution).toService(AuthenticationServiceImpl);
@@ -331,4 +369,54 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
+
+  bind(PlotterBackendContribution).toSelf().inSingletonScope();
+  bind(BackendApplicationContribution).toService(PlotterBackendContribution);
+  bind(ArduinoLocalizationContribution).toSelf().inSingletonScope();
+  bind(LocalizationContribution).toService(ArduinoLocalizationContribution);
+  bind(HostedPluginLocalizationService).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginLocalizationService).toService(
+    HostedPluginLocalizationService
+  );
+
+  // Survey notification bindings
+  // It's currently unused. https://github.com/arduino/arduino-ide/pull/1150
+  bind(SurveyNotificationServiceImpl).toSelf().inSingletonScope();
+  bind(SurveyNotificationService).toService(SurveyNotificationServiceImpl);
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      ({ container }) =>
+        new JsonRpcConnectionHandler(SurveyNotificationServicePath, () =>
+          container.get<SurveyNotificationService>(SurveyNotificationService)
+        )
+    )
+    .inSingletonScope();
+
+  bind(IsTempSketch).toSelf().inSingletonScope();
+  rebind(MessagingService.Identifier)
+    .to(MessagingContribution)
+    .inSingletonScope();
+
+  // Removed undesired contributions from VS Code extensions
+  // Such as the RTOS view from the `cortex-debug` extension
+  // https://github.com/arduino/arduino-ide/pull/1706#pullrequestreview-1195595080
+  bind(HostedPluginReader).toSelf().inSingletonScope();
+  rebind(TheiaHostedPluginReader).toService(HostedPluginReader);
+
+  // https://github.com/eclipse-theia/theia/issues/12064
+  bind(LocalDirectoryPluginDeployerResolverWithFallback)
+    .toSelf()
+    .inSingletonScope();
+  rebind(PluginDeployer).to(PluginDeployer_GH_12064).inSingletonScope();
+
+  bind(SettingsReader).toSelf().inSingletonScope();
 });
+
+function bindChildLogger(bind: interfaces.Bind, name: string): void {
+  bind(ILogger)
+    .toDynamicValue(({ container }) =>
+      container.get<ILogger>(ILogger).child(name)
+    )
+    .inSingletonScope()
+    .whenTargetNamed(name);
+}

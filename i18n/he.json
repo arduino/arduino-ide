@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "פרטים על {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "לוח{0}",
+      "boardConfigDialogTitle": "יש לבחור לוח ופורט אחר",
+      "boardInfo": "פרטי הלוח",
+      "boards": "boards",
+      "configDialog1": "נא לבחור סוג לוח ופורט כדי להעלות את הסקיצה.",
+      "configDialog2": "אם נבחר לוח ניתן יהיה לקמפל, אבל לא להעלות את הסקיצה.",
+      "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+      "disconnected": "מנותק",
+      "getBoardInfo": "פרטי הלוח",
+      "inSketchbook": "(בסקיצה)",
+      "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+      "noBoardsFound": "No boards found for \"{0}\"",
+      "noFQBN": "הFQBN אינו זמין ללוח \"{0}\". האם הותקן הליבה המתאימה?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "לא נמצאו פורטים",
+      "noPortsSelected": "לא נבחרו פורטים ללוחות '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "לא נבחרו לוחות.",
+      "openBoardsConfig": "בחר לוח ופורט אחר...",
+      "pleasePickBoard": "יש לבחור את הלוח המחובר לפורט הנבחר.",
+      "port": "פורט{0}",
+      "portLabel": "פורט: {0}",
+      "ports": "ports",
+      "programmer": "תכנת",
+      "reselectLater": "בחר מחדש מאוחר יותר",
+      "searchBoard": "חפש לוח",
+      "selectBoard": "בחר לוח",
+      "selectPortForInfo": "אנא בחר פורט לקבלת מידע אודותיו.",
+      "showAllAvailablePorts": "הצג את כל הפורטים הזמינים כשמופעל",
+      "showAllPorts": "Show all ports",
+      "succesfullyInstalledPlatform": "פלטפורמה הותקנה בהצלחה {0}:{1}",
+      "succesfullyUninstalledPlatform": "פלטפורמה הוסרה בהצלחה {0}:{1}",
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "מנהל לוחות",
+    "boardsType": {
+      "arduinoCertified": "מוסמך ע\"י ארדואינו"
+    },
+    "bootloader": {
+      "burnBootloader": "צריבת מנהל אתחול",
+      "burningBootloader": "צורב מנהל אתחול",
+      "doneBurningBootloader": "סיים לצרוב את מנהל האתחול"
+    },
+    "burnBootloader": {
+      "error": "שגיאה בעת צריבת מנהל אתחול: {0}"
+    },
+    "certificate": {
+      "addNew": "הוסף חדש",
+      "addURL": "הוסף קישור להביא את תעודת הSSL.",
+      "boardAtPort": "{0} ב{1}",
+      "certificatesUploaded": "התעודה עלתה.",
+      "enterURL": "הקלד כתובת",
+      "noSupportedBoardConnected": "לא מחובר לוח נתמח",
+      "openContext": "פתיחת הקשר",
+      "remove": "הסר",
+      "selectBoard": "בחר לוח...",
+      "selectCertificateToUpload": "1. בחר תעודה להעלות",
+      "selectDestinationBoardToUpload": "2. בחירת לוח והעלאת תעודה",
+      "upload": "העלאה",
+      "uploadFailed": "העלאה נכשלה. נסה שוב.",
+      "uploadRootCertificates": "העלאת תעודת SSL Root",
+      "uploadingCertificates": "העלאת תעודה."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "בדיקת עדכונים לארדואינו",
+      "installAll": "להתקין הכל",
+      "noUpdates": "אין עדכונים אחרונים זמינים.",
+      "promptUpdateBoards": "עדכונים זמינים ללוחות מסויימים.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "מעדכן לוחות...",
+      "updatingLibraries": "מעדכן ספריות..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "בחר.י נראות של הסקיצה שלך:",
+      "cloudSketchbook": "Cloud Sketchbook",
+      "connected": "מחובר",
+      "continue": "המשך",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "הטמע:",
+      "emptySketchbook": "הסקיצה ריקה.",
+      "goToCloud": "Go to Cloud",
+      "learnMore": "למדו עוד",
+      "link": "קישור:",
+      "notYetPulled": "לא ניתן לדחוף לענן. עדיין לא נמשך.",
+      "offline": "מנותק",
+      "openInCloudEditor": "פתיחה בעורך ענן Cloud Editor",
+      "options": "אפשרויות...",
+      "privateVisibility": "פרטי. רק את.ה תוכל.י לראות את הסקיצה",
+      "profilePicture": "תמונת פרופיל",
+      "publicVisibility": "ציבורי. כל אחד עם לינק יוכל לצפות בסקיצה.",
+      "pull": "משיכה",
+      "pullFirst": "יש לבצע קודם פעולת משיכה לפני שניתן יהיה לדחוף לענן.",
+      "pullSketch": "משיכת הסקיצה",
+      "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
+      "push": "דחיפה",
+      "pushSketch": "דחיפת הסקיצה.",
+      "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+      "remote": "מרוחק",
+      "share": "שיתוף...",
+      "shareSketch": "שיתוף הסקיצה",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "התחברות",
+      "signInToCloud": "התחברות לענן של ארדואינו Arduino Cloud",
+      "signOut": "התנתק",
+      "sync": "סנכרון",
+      "syncEditSketches": "סנכרון ועריכת הסקיצה בענן של ארדואינו",
+      "visitArduinoCloud": "כנס.י לענן של ארדואינו ליצור סקיצה בענן"
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "הכל",
+      "contributed": "נתרם",
+      "installManually": "התקן ידנית",
+      "later": "אחר כך",
+      "noBoardSelected": "לא נבחר לוח",
+      "notConnected": "[לא מחובר]",
+      "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
+      "oldFormat": "ה'{0}' עדיין משתמש בפורמט הישן `.pde`. האם תרצה להחליף לסיומת החדשה `.ino` ? ",
+      "partner": "שותף",
+      "processing": "מעבד",
+      "recommended": "מומלץ",
+      "retired": "פרש",
+      "selectedOn": "ב {0}",
+      "serialMonitor": "מוניטור סיריאלי",
+      "type": "סוג",
+      "unknown": "לא ידוע",
+      "updateable": "ניתן לעדכון"
+    },
+    "compile": {
+      "error": "שגיאת קומפילציה: {0}"
+    },
+    "component": {
+      "boardsIncluded": "לוחות המוכלים בחבילות הבאות:",
+      "by": "על ידי",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "סנן את החיפוש...",
+      "install": "התקן",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "מידע נוסף",
+      "otherVersions": "Other Versions",
+      "remove": "הסר",
+      "title": "{0} by {1}",
+      "uninstall": "הסרה",
+      "uninstallMsg": "האם ברצונך להסיר את {0}?",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "הוסף קובץ",
+      "fileAdded": "קובץ אחד נוסף לסקיצה.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
+      "replaceTitle": "החלף"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "הכל",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
+    "coreContribution": {
+      "copyError": "העתקת הודעת שגיאה",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "איתחול מחדש של Daemon",
+      "start": "התחל Daemon",
+      "stop": "עצור Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "דיבאג - {0}",
+      "debuggingNotSupported": "דיבאג לא נתמך על ידי '{0}'",
+      "noPlatformInstalledFor": "פלטפורמה אינה מותקנת עבור ׳{0}׳",
+      "optimizeForDebugging": "אופטימיזציה לדיבאג",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "אל תשאל שוב"
+    },
+    "editor": {
+      "autoFormat": "פורמט אוטומטי",
+      "commentUncomment": "הוסף\\הסר הערות",
+      "copyForForum": "Copy for Forum (Markdown)",
+      "decreaseFontSize": "הקטן גודל גופן",
+      "decreaseIndent": "הקטן הזחה",
+      "increaseFontSize": "הגדל גודל גופן",
+      "increaseIndent": "הגדל הזחה",
+      "nextError": "שגיאה הבאה.",
+      "previousError": "שגיאה קודמת.",
+      "revealError": "הראה שגיאה"
+    },
+    "electron": {
+      "couldNotSave": "לא ניתן לשמור את הסקיצה. נא להעתיק את העבודה הלא שמורה לתוך עורך טקסט חיצוני, ולהפעיל מחדש את הIDE.",
+      "unsavedChanges": "כל השינויים שלא נשמרו לא ישמרו."
+    },
+    "examples": {
+      "builtInExamples": "דוגמאות מובנות",
+      "couldNotInitializeExamples": "לא ניתן להפעיל את הדוגמאות מובנות מראש.",
+      "customLibrary": "דוגמאות מספריות בהתאמה אישית",
+      "for": "דוגמאות עבור {0}",
+      "forAny": "דוגמאות לכל לוח",
+      "menu": "דוגמאות"
+    },
+    "firmware": {
+      "checkUpdates": "בדוק עדכונים",
+      "failedInstall": "ההתקנה נכשלה. נסה.י שוב בבקשה",
+      "install": "התקן",
+      "installingFirmware": "מתקין קושחה.",
+      "overwriteSketch": "ההתקנה תדרוס את הסקיצה בלוח.",
+      "selectBoard": "בחר לוח",
+      "selectVersion": "בחירות גרסת קושחה",
+      "successfullyInstalled": "הקושחה הותקנה בהצלחה.",
+      "updater": "לעדכון הקושחה WiFi101 / WiFiNINA "
+    },
+    "help": {
+      "environment": "סביבה",
+      "faq": "שאלות נפוצות",
+      "findInReference": "למציאה בהפניה",
+      "gettingStarted": "איך מתחילים",
+      "keyword": "הקלד מילה",
+      "privacyPolicy": "מדיניות פרטיות",
+      "reference": "הפניה",
+      "search": "חיפוש ב Arduino.cc",
+      "troubleshooting": "פתרון תקלות",
+      "visit": "בקר ב Arduino.cc"
+    },
+    "ide-updater": {
+      "checkForUpdates": "בדיקת עדכונים לArduino IDE",
+      "closeAndInstallButton": "סגור והתקן",
+      "closeToInstallNotice": "סגור את התוכנה והתקן את העדכון על המכונה שלך.",
+      "downloadButton": "הורד",
+      "downloadingNotice": "מוריד את הגרסה המעודכנת האחרונה של Arduino IDE.",
+      "errorCheckingForUpdates": "שגיאה בעת בדיקת עדכונים ל Arduino IDE.\n{0}",
+      "goToDownloadButton": "לך להורדות",
+      "goToDownloadPage": "העדכון לArduino IDE זמין, אבל לא ניתן היה להוריד ולהתקין אותו אוטומטית. נא ללכת לדף ההורדות ולהוריד את הגרסה האחרונה משם.",
+      "ideUpdaterDialog": "עדכון תוכנה",
+      "newVersionAvailable": "גרסה חדשה של Arduino IDE ({0}) מוכנה להורדה.",
+      "noUpdatesAvailable": "אין עדכונים חדשים זמינים ל Arduino IDE",
+      "notNowButton": "לא עכשיו",
+      "skipVersionButton": "דלג גרסה",
+      "updateAvailable": "נמצא עדכון",
+      "versionDownloaded": "Arduino IDE {0} ירד בהצלחה"
+    },
+    "library": {
+      "addZip": "הוספת ספריית .zip",
+      "arduinoLibraries": "ספריות ארדואינו",
+      "contributedLibraries": "ספריות שנתרמו",
+      "include": "השתמש בספריה",
+      "installAll": "להתקין הכל",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "Would you like to install all the missing dependencies?",
+      "installOneMissingDependency": "Would you like to install the missing dependency?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "ספריה הותקנה בהצלחה {0}:{1}",
+      "libraryAlreadyExists": "הספריה כבר קיימת.  האם תרצ.י להחליץ אותה?",
+      "manageLibraries": "נהל ספריות...",
+      "namedLibraryAlreadyExists": "A library folder named {0} already exists. Do you want to overwrite it?",
+      "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
+      "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
+      "overwriteExistingLibrary": "Do you want to overwrite the existing library?",
+      "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
+      "title": "מנהל ספריות",
+      "uninstalledSuccessfully": "ספריה הוסרה בהצלחה {0}:{1}",
+      "zipLibrary": "ספריה"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "תקשורת",
+      "dataProcessing": "עיבוד מידע",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "צג",
+      "other": "אחר",
+      "sensors": "חיישנים",
+      "signalInputOutput": "קלט\\פלט אות",
+      "timing": "תזמון",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
+    "menu": {
+      "advanced": "מתקדם",
+      "sketch": "סקיצה",
+      "tools": "כלים"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "רשת",
+      "serial": "Serial"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Additional Boards Manager URLs",
+      "auth.audience": "The OAuth2 audience.",
+      "auth.clientID": "המזהה לקוח הייחודי של OAuth2 .",
+      "auth.domain": "הדומיין של OAuth2.",
+      "auth.registerUri": "URI זה משמש להרשמת משתמש.ת חדש.ה.",
+      "automatic": "אוטומטי",
+      "board.certificates": "רשימת תעודות שיכולות לעלות ללוח.",
+      "browse": "בחר",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "choose": "בחרו",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
+      "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
+      "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
+      "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "compile": "קומפילציה",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "True for verbose compile output. False by default",
+      "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
+      "compilerWarnings": "הערת קומפילציה",
+      "editorFontSize": "גודל פונט לעורך",
+      "editorQuickSuggestions": "Editor Quick Suggestions",
+      "enterAdditionalURLs": "הקלד כתובות נוספות, אחת לשורה",
+      "files.inside.sketches": "הראה קבצים בתוך הסקיצה",
+      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+      "interfaceScale": "מידת ממשק",
+      "invalid.editorFontSize": "גודל גופן לא חוקי. חייב להיות מספר חיובי.",
+      "invalid.sketchbook.location": "מיקום סקיצה לא חוקי: {0}",
+      "invalid.theme": "ערכת נושא לא חוקית.",
+      "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "manualProxy": "הגדרת פרוקסי ידנית",
+      "network": "רשת",
+      "newSketchbookLocation": "Select new sketchbook location",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "ללא פרוקסי",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
+      "showVerbose": "Show verbose output during",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "Sketchbook location",
+      "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+      "upload": "upload",
+      "upload.verbose": "True for verbose upload output. False by default.",
+      "verifyAfterUpload": "Verify code after upload",
+      "window.autoScale": "True if the user interface automatically scales with the font size.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "Replace the existing version of {0}?",
+    "selectZip": "Select a zip file containing the library you'd like to add",
+    "serial": {
+      "autoscroll": "גלילה אוטומטית",
+      "carriageReturn": "Carriage Return",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "newLine": "שורה חדשה",
+      "newLineCarriageReturn": "Both NL & CR",
+      "noLineEndings": "ללא סיום שורה",
+      "notConnected": "Not connected. Select a board and a port to connect automatically.",
+      "openSerialPlotter": "Serial Plotter",
+      "timestamp": "חתימת זמן",
+      "toggleTimestamp": "Toggle Timestamp"
+    },
+    "sketch": {
+      "archiveSketch": "Archive Sketch",
+      "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
+      "close": "בטוח.ה שתרצה.י לסגור את הסקיצה?",
+      "compile": "מקמפל סקיצה...",
+      "configureAndUpload": "Configure and Upload",
+      "createdArchive": "ארכיון ׳{0}׳ נוצר.",
+      "doneCompiling": "קומפילציה הסתיימה.",
+      "doneUploading": "העלאה הסתיימה.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "ייצוא בינארי מקומפל.",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "מעביר",
+      "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "פתח תיקיה",
+      "openRecent": "נפתח לאחרונה",
+      "openSketchInNewWindow": "Open Sketch in New Window",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "שמירת תיקיית הסקיצה כ...",
+      "saveSketch": "שמירת הסקיצה לפתיחה מאוחרת יותר.",
+      "saveSketchAs": "שמירת תיקיית הסקיצה כ...",
+      "showFolder": "הראה תיקית הסקיצה",
+      "sketch": "סקיצה",
+      "sketchbook": "ספר סקיצות",
+      "titleLocalSketchbook": "ספר סקיצות מקומי",
+      "titleSketchbook": "ספר סקיצות",
+      "upload": "העלאה",
+      "uploadUsingProgrammer": "העלאה על ידי התכנת",
+      "uploading": "עולה...",
+      "userFieldsNotFoundError": "לא נמצאו שדות משתמש ללוח המחובר",
+      "verify": "בדיקה",
+      "verifyOrCompile": "בדיקה\\קומפילציה"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "ענה על סקר",
+      "dismissSurvey": "אל תראה שוב.",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
+    "upload": {
+      "error": "{0} שגיאה: {1}"
+    },
+    "userFields": {
+      "cancel": "ביטול",
+      "enterField": "יש להקליד {0}",
+      "upload": "העלאה"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "אינו יכול להתחבר לצד שרת.",
+      "cannotConnectDaemon": "אינו יכול להתחבר לCLI daemon.",
+      "couldNotSave": "לא ניתן לשמור את הסקיצה. נא להעתיק את העבודה הלא שמורה לתוך עורך טקסט חיצוני, ולהפעיל מחדש את הIDE.",
+      "daemonOffline": "CLI daemon במצב לא מקוון",
+      "offline": "מנותק",
+      "offlineText": "מנותק",
+      "quitTitle": "בטוח.ה שתרצה.י לצאת?"
+    },
+    "editor": {
+      "unsavedTitle": "לא שמור – {0}"
+    },
+    "messages": {
+      "collapse": "כווץ",
+      "expand": "הרחב"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "שם הקובץ החדש",
+      "invalidExtension": "{0} אינה סיומת תקנית.",
+      "newFileName": "שם חדש לקובץ"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-.certificate-uploader-dialog {
+#certificate-uploader-dialog-container > .dialogBlock {
   width: 600px;
 }
 
@@ -7,7 +7,7 @@
 }
 .certificate-uploader-dialog .arduino-select__control {
   height: 31px;
-  background: var(--theia-menubar-selectionBackground) !important;
+  background: var(--theia-dropdown-background) !important;
 }
 
 .certificate-uploader-dialog .dialogRow > button{
@@ -15,9 +15,10 @@
 }
 
 .certificate-uploader-dialog .certificate-list {
-  border: 1px solid #BDC7C7;
+  border: 1px solid var(--theia-editorWidget-border);
   border-radius: 2px;;
-  background: var(--theia-menubar-selectionBackground) !important;
+  color: var(--theia-editor-foreground);
+  background-color: var(--theia-editor-background);
   overflow: auto;
   height: 120px;
   flex: 1;
@@ -60,9 +61,10 @@
 
 .certificate-add {
   padding: 16px;
-  background-color: var(--theia-list-hoverBackground);
   border-radius: 3px;
-  border: 1px solid #BDC7C7;
+  border: 1px solid var(--theia-editorWidget-border);
+  color: var(--theia-editorWidget-foreground);
+  background-color: var(--theia-editorWidget-background);
 }
 
 .certificate-add input {

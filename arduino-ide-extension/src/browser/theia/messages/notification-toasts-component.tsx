@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import { NotificationComponent } from './notification-component';
 import { NotificationToastsComponent as TheiaNotificationToastsComponent } from '@theia/messages/lib/browser/notification-toasts-component';
 
 export class NotificationToastsComponent extends TheiaNotificationToastsComponent {
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
       <div
         className={`theia-notifications-container theia-notification-toasts ${

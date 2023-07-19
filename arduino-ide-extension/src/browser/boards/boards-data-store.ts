@@ -1,7 +1,6 @@
-import { injectable, inject, named } from 'inversify';
+import { injectable, inject, named } from '@theia/core/shared/inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
-import { MaybePromise } from '@theia/core/lib/common/types';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import {
   FrontendApplicationContribution,
@@ -11,7 +10,6 @@ import { notEmpty } from '../../common/utils';
 import {
   BoardsService,
   ConfigOption,
-  Installable,
   BoardDetails,
   Programmer,
 } from '../../common/protocol';
@@ -32,20 +30,16 @@ export class BoardsDataStore implements FrontendApplicationContribution {
   @inject(LocalStorageService)
   protected readonly storageService: LocalStorageService;
 
-  protected readonly onChangedEmitter = new Emitter<void>();
+  protected readonly onChangedEmitter = new Emitter<string[]>();
 
   onStart(): void {
-    this.notificationCenter.onPlatformInstalled(async ({ item }) => {
-      const { installedVersion: version } = item;
-      if (!version) {
-        return;
-      }
-      let shouldFireChanged = false;
+    this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
+      const dataDidChangePerFqbn: string[] = [];
       for (const fqbn of item.boards
         .map(({ fqbn }) => fqbn)
         .filter(notEmpty)
         .filter((fqbn) => !!fqbn)) {
-        const key = this.getStorageKey(fqbn, version);
+        const key = this.getStorageKey(fqbn);
         let data = await this.storageService.getData<
           ConfigOption[] | undefined
         >(key);
@@ -55,50 +49,37 @@ export class BoardsDataStore implements FrontendApplicationContribution {
             data = details.configOptions;
             if (data.length) {
               await this.storageService.setData(key, data);
-              shouldFireChanged = true;
+              dataDidChangePerFqbn.push(fqbn);
             }
           }
         }
       }
-      if (shouldFireChanged) {
-        this.fireChanged();
+      if (dataDidChangePerFqbn.length) {
+        this.fireChanged(...dataDidChangePerFqbn);
       }
     });
   }
 
-  get onChanged(): Event<void> {
+  get onChanged(): Event<string[]> {
     return this.onChangedEmitter.event;
   }
 
   async appendConfigToFqbn(
     fqbn: string | undefined,
-    boardsPackageVersion: MaybePromise<
-      Installable.Version | undefined
-    > = this.getBoardsPackageVersion(fqbn)
   ): Promise<string | undefined> {
     if (!fqbn) {
       return undefined;
     }
-
-    const { configOptions } = await this.getData(fqbn, boardsPackageVersion);
+    const { configOptions } = await this.getData(fqbn);
     return ConfigOption.decorate(fqbn, configOptions);
   }
 
-  async getData(
-    fqbn: string | undefined,
-    boardsPackageVersion: MaybePromise<
-      Installable.Version | undefined
-    > = this.getBoardsPackageVersion(fqbn)
-  ): Promise<BoardsDataStore.Data> {
+  async getData(fqbn: string | undefined): Promise<BoardsDataStore.Data> {
     if (!fqbn) {
       return BoardsDataStore.Data.EMPTY;
     }
 
-    const version = await boardsPackageVersion;
-    if (!version) {
-      return BoardsDataStore.Data.EMPTY;
-    }
-    const key = this.getStorageKey(fqbn, version);
+    const key = this.getStorageKey(fqbn);
     let data = await this.storageService.getData<
       BoardsDataStore.Data | undefined
     >(key, undefined);
@@ -124,27 +105,18 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       fqbn,
       selectedProgrammer,
     }: { fqbn: string; selectedProgrammer: Programmer },
-    boardsPackageVersion: MaybePromise<
-      Installable.Version | undefined
-    > = this.getBoardsPackageVersion(fqbn)
   ): Promise<boolean> {
-    const data = deepClone(await this.getData(fqbn, boardsPackageVersion));
+    const data = deepClone(await this.getData(fqbn));
     const { programmers } = data;
     if (!programmers.find((p) => Programmer.equals(selectedProgrammer, p))) {
-      return false;
-    }
-
-    const version = await boardsPackageVersion;
-    if (!version) {
       return false;
     }
 
     await this.setData({
       fqbn,
       data: { ...data, selectedProgrammer },
-      version,
     });
-    this.fireChanged();
+    this.fireChanged(fqbn);
     return true;
   }
 
@@ -153,12 +125,9 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       fqbn,
       option,
       selectedValue,
-    }: { fqbn: string; option: string; selectedValue: string },
-    boardsPackageVersion: MaybePromise<
-      Installable.Version | undefined
-    > = this.getBoardsPackageVersion(fqbn)
+    }: { fqbn: string; option: string; selectedValue: string }
   ): Promise<boolean> {
-    const data = deepClone(await this.getData(fqbn, boardsPackageVersion));
+    const data = deepClone(await this.getData(fqbn));
     const { configOptions } = data;
     const configOption = configOptions.find((c) => c.option === option);
     if (!configOption) {
@@ -176,31 +145,24 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     if (!updated) {
       return false;
     }
-    const version = await boardsPackageVersion;
-    if (!version) {
-      return false;
-    }
-
-    await this.setData({ fqbn, data, version });
-    this.fireChanged();
+    await this.setData({ fqbn, data });
+    this.fireChanged(fqbn);
     return true;
   }
 
   protected async setData({
     fqbn,
     data,
-    version,
   }: {
     fqbn: string;
     data: BoardsDataStore.Data;
-    version: Installable.Version;
   }): Promise<void> {
-    const key = this.getStorageKey(fqbn, version);
+    const key = this.getStorageKey(fqbn);
     return this.storageService.setData(key, data);
   }
 
-  protected getStorageKey(fqbn: string, version: Installable.Version): string {
-    return `.arduinoIDE-configOptions-${version}-${fqbn}`;
+  protected getStorageKey(fqbn: string): string {
+    return `.arduinoIDE-configOptions-${fqbn}`;
   }
 
   protected async getBoardDetailsSafe(
@@ -228,23 +190,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
   }
 
-  protected fireChanged(): void {
-    this.onChangedEmitter.fire();
-  }
-
-  protected async getBoardsPackageVersion(
-    fqbn: string | undefined
-  ): Promise<Installable.Version | undefined> {
-    if (!fqbn) {
-      return undefined;
-    }
-    const boardsPackage = await this.boardsService.getContainerBoardPackage({
-      fqbn,
-    });
-    if (!boardsPackage) {
-      return undefined;
-    }
-    return boardsPackage.installedVersion;
+  protected fireChanged(...fqbn: string[]): void {
+    this.onChangedEmitter.fire(fqbn);
   }
 }
 

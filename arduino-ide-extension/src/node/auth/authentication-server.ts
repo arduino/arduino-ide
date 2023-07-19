@@ -1,9 +1,9 @@
-import * as http from 'http';
-import * as url from 'url';
+import * as http from 'node:http';
+import * as url from 'node:url';
 import { body } from './body';
+import { authServerPort } from '../../common/protocol/authentication-service';
 
 export const authCallbackPath = 'callback';
-export const serverPort = 9876;
 
 export function createServer(
   authCallback: (req: http.IncomingMessage, res: http.ServerResponse) => void
@@ -59,7 +59,7 @@ export async function startServer(server: http.Server): Promise<string> {
       reject(new Error('Closed'));
     });
 
-    server.listen(serverPort);
+    server.listen(authServerPort);
   });
 
   port.then(cancelPortTimer, cancelPortTimer);

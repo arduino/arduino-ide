@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { nls } from '@theia/core/lib/common';
+import * as React from '@theia/core/shared/react';
 import { AvailableBoard } from '../../boards/boards-service-provider';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 
@@ -39,7 +40,10 @@ export const SelectBoardComponent = ({
       return;
     }
 
-    let placeholderTxt = 'Select a board...';
+    let placeholderTxt = nls.localize(
+      'arduino/certificate/selectBoard',
+      'Select a board...'
+    );
     let selBoard = -1;
     const updatableBoards = availableBoards.filter(
       (board) => board.port && board.fqbn && updatableFqbns.includes(board.fqbn)
@@ -49,13 +53,21 @@ export const SelectBoardComponent = ({
         selBoard = i;
       }
       return {
-        label: `${board.name} at ${board.port?.address}`,
+        label: nls.localize(
+          'arduino/certificate/boardAtPort',
+          '{0} at {1}',
+          board.name,
+          board.port?.address ?? ''
+        ),
         value: board.fqbn || '',
       };
     });
 
     if (boardsList.length === 0) {
-      placeholderTxt = 'No supported board connected';
+      placeholderTxt = nls.localize(
+        'arduino/certificate/noSupportedBoardConnected',
+        'No supported board connected'
+      );
     }
 
     setSelectBoardPlaceholder(placeholderTxt);
@@ -80,7 +92,12 @@ export const SelectBoardComponent = ({
       value={
         (selectedBoard && {
           value: selectedBoard.fqbn,
-          label: `${selectedBoard.name} at ${selectedBoard.port?.address}`,
+          label: nls.localize(
+            'arduino/certificate/boardAtPort',
+            '{0} at {1}',
+            selectedBoard.name,
+            selectedBoard.port?.address ?? ''
+          ),
         }) ||
         null
       }

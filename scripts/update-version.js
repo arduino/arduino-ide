@@ -27,7 +27,6 @@ console.log(`🛠️ Updating current version from '${currentVersion}' to '${tar
 for (const toUpdate of [
     path.join(repoRootPath, 'package.json'),
     path.join(repoRootPath, 'electron-app', 'package.json'),
-    path.join(repoRootPath, 'browser-app', 'package.json'),
     path.join(repoRootPath, 'arduino-ide-extension', 'package.json')
 ]) {
     process.stdout.write(`  Updating ${toUpdate}'...`);
@@ -35,7 +34,7 @@ for (const toUpdate of [
     pkg.version = targetVersion;
     if ('dependencies' in pkg) {
         for (const dep of Object.keys(pkg['dependencies'])) {
-            if (dep.startsWith('arduino-')) {
+            if (dep.startsWith('arduino-ide-')) {
                 pkg['dependencies'][dep] = targetVersion;
             }
         }

@@ -1,5 +1,9 @@
-import debounce = require('p-debounce');
-import { inject, injectable, postConstruct } from 'inversify';
+import debounce from 'p-debounce';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
@@ -7,12 +11,16 @@ import { DebugConfiguration } from '@theia/debug/lib/common/debug-common';
 import { DebugConfigurationModel as TheiaDebugConfigurationModel } from '@theia/debug/lib/browser/debug-configuration-model';
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 import { SketchesService } from '../../../common/protocol';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
+import {
+  CurrentSketch,
+  SketchesServiceClientImpl,
+} from '../../sketches-service-client-impl';
 import { DebugConfigurationModel } from './debug-configuration-model';
 import {
   FileOperationError,
   FileOperationResult,
 } from '@theia/filesystem/lib/common/files';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
 
 @injectable()
 export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
@@ -25,6 +33,9 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
   @inject(FrontendApplicationStateService)
   protected readonly appStateService: FrontendApplicationStateService;
 
+  @inject(FileService)
+  protected readonly fileService: FileService;
+
   protected onTempContentDidChangeEmitter =
     new Emitter<TheiaDebugConfigurationModel.JsonContent>();
   get onTempContentDidChange(): Event<TheiaDebugConfigurationModel.JsonContent> {
@@ -32,7 +43,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
   }
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected override async init(): Promise<void> {
     super.init();
     this.appStateService.reachedState('ready').then(async () => {
       const tempContent = await this.getTempLaunchJsonContent();
@@ -69,7 +80,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     });
   }
 
-  protected updateModels = debounce(async () => {
+  protected override updateModels = debounce(async () => {
     await this.appStateService.reachedState('ready');
     const roots = await this.workspaceService.roots;
     const toDelete = new Set(this.models.keys());
@@ -109,7 +120,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     (TheiaDebugConfigurationModel.JsonContent & { uri: URI }) | URI | undefined
   > {
     const sketch = await this.sketchesServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return undefined;
     }
     const uri = await this.sketchesService.getIdeTempFolderUri(sketch);
@@ -119,7 +130,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
       const uri = tempFolderUri.resolve('launch.json');
       const { value } = await this.fileService.read(uri);
       const configurations = DebugConfigurationModel.parse(JSON.parse(value));
-      return { uri, configurations };
+      return { uri, configurations, compounds: [] };
     } catch (err) {
       if (
         err instanceof FileOperationError &&

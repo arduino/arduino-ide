@@ -1,11 +1,9 @@
-import { inject, injectable } from 'inversify';
-import { remote } from 'electron';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
   DisposableCollection,
   Disposable,
 } from '@theia/core/lib/common/disposable';
-import { firstToUpperCase } from '../../common/utils';
 import { BoardsConfig } from '../boards/boards-config';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { BoardsListWidget } from '../boards/boards-list-widget';
@@ -21,8 +19,10 @@ import {
   InstalledBoardWithPackage,
   AvailablePorts,
   Port,
+  getBoardInfo,
 } from '../../common/protocol';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
+import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardSelection extends SketchContribution {
@@ -46,59 +46,49 @@ export class BoardSelection extends SketchContribution {
 
   protected readonly toDisposeBeforeMenuRebuild = new DisposableCollection();
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(BoardSelection.Commands.GET_BOARD_INFO, {
       execute: async () => {
-        const { selectedBoard, selectedPort } =
-          this.boardsServiceProvider.boardsConfig;
-        if (!selectedBoard) {
-          this.messageService.info(
-            'Please select a board to obtain board info.'
-          );
+        const boardInfo = await getBoardInfo(
+          this.boardsServiceProvider.boardsConfig.selectedPort,
+          this.boardsService.getState()
+        );
+        if (typeof boardInfo === 'string') {
+          this.messageService.info(boardInfo);
           return;
         }
-        if (!selectedBoard.fqbn) {
-          this.messageService.info(
-            `The platform for the selected '${selectedBoard.name}' board is not installed.`
-          );
-          return;
-        }
-        if (!selectedPort) {
-          this.messageService.info(
-            'Please select a port to obtain board info.'
-          );
-          return;
-        }
-        const boardDetails = await this.boardsService.getBoardDetails({
-          fqbn: selectedBoard.fqbn,
-        });
-        if (boardDetails) {
-          const { VID, PID } = boardDetails;
-          const detail = `BN: ${selectedBoard.name}
+        const { BN, VID, PID, SN } = boardInfo;
+        const detail = `
+BN: ${BN}
 VID: ${VID}
-PID: ${PID}`;
-          await remote.dialog.showMessageBox(remote.getCurrentWindow(), {
-            message: 'Board Info',
-            title: 'Board Info',
-            type: 'info',
-            detail,
-            buttons: ['OK'],
-          });
-        }
+PID: ${PID}
+SN: ${SN}
+`.trim();
+        await this.dialogService.showMessageBox({
+          message: nls.localize('arduino/board/boardInfo', 'Board Info'),
+          title: nls.localize('arduino/board/boardInfo', 'Board Info'),
+          type: 'info',
+          detail,
+          buttons: [nls.localize('vscode/issueMainService/ok', 'OK')],
+        });
       },
     });
   }
 
-  onStart(): void {
+  override onStart(): void {
+    this.notificationCenter.onPlatformDidInstall(() => this.updateMenus());
+    this.notificationCenter.onPlatformDidUninstall(() => this.updateMenus());
+    this.boardsServiceProvider.onBoardsConfigChanged(() => this.updateMenus());
+    this.boardsServiceProvider.onAvailableBoardsChanged(() =>
+      this.updateMenus()
+    );
+    this.boardsServiceProvider.onAvailablePortsChanged(() =>
+      this.updateMenus()
+    );
+  }
+
+  override async onReady(): Promise<void> {
     this.updateMenus();
-    this.notificationCenter.onPlatformInstalled(this.updateMenus.bind(this));
-    this.notificationCenter.onPlatformUninstalled(this.updateMenus.bind(this));
-    this.boardsServiceProvider.onBoardsConfigChanged(
-      this.updateMenus.bind(this)
-    );
-    this.boardsServiceProvider.onAvailableBoardsChanged(
-      this.updateMenus.bind(this)
-    );
   }
 
   protected async updateMenus(): Promise<void> {
@@ -127,7 +117,11 @@ PID: ${PID}`;
     // The board specific items, and the rest, have order with `z`. We needed something between `0` and `z` with natural-order.
     this.menuModelRegistry.registerSubmenu(
       boardsSubmenuPath,
-      `Board${!!boardsSubmenuLabel ? `: "${boardsSubmenuLabel}"` : ''}`,
+      nls.localize(
+        'arduino/board/board',
+        'Board{0}',
+        !!boardsSubmenuLabel ? `: "${boardsSubmenuLabel}"` : ''
+      ),
       { order: '100' }
     );
     this.toDisposeBeforeMenuRebuild.push(
@@ -137,14 +131,15 @@ PID: ${PID}`;
     );
 
     // Ports submenu
-    const portsSubmenuPath = [
-      ...ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
-      '2_ports',
-    ];
+    const portsSubmenuPath = ArduinoMenus.TOOLS__PORTS_SUBMENU;
     const portsSubmenuLabel = config.selectedPort?.address;
     this.menuModelRegistry.registerSubmenu(
       portsSubmenuPath,
-      `Port${!!portsSubmenuLabel ? `: "${portsSubmenuLabel}"` : ''}`,
+      nls.localize(
+        'arduino/board/port',
+        'Port{0}',
+        portsSubmenuLabel ? `: "${portsSubmenuLabel}"` : ''
+      ),
       { order: '101' }
     );
     this.toDisposeBeforeMenuRebuild.push(
@@ -155,7 +150,7 @@ PID: ${PID}`;
 
     const getBoardInfo = {
       commandId: BoardSelection.Commands.GET_BOARD_INFO.id,
-      label: 'Get Board Info',
+      label: nls.localize('arduino/board/getBoardInfo', 'Get Board Info'),
       order: '103',
     };
     this.menuModelRegistry.registerMenuAction(
@@ -173,19 +168,26 @@ PID: ${PID}`;
 
     this.menuModelRegistry.registerMenuAction(boardsManagerGroup, {
       commandId: `${BoardsListWidget.WIDGET_ID}:toggle`,
-      label: 'Boards Manager...',
+      label: `${BoardsListWidget.WIDGET_LABEL}...`,
     });
 
     // Installed boards
-    for (const board of installedBoards) {
+    installedBoards.forEach((board, index) => {
       const { packageId, packageName, fqbn, name, manuallyInstalled } = board;
 
       const packageLabel =
-        packageName + `${manuallyInstalled ? ' (in Sketchbook)' : ''}`;
+        packageName +
+        `${
+          manuallyInstalled
+            ? nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)')
+            : ''
+        }`;
       // Platform submenu
       const platformMenuPath = [...boardsPackagesGroup, packageId];
       // Note: Registering the same submenu twice is a noop. No need to group the boards per platform.
-      this.menuModelRegistry.registerSubmenu(platformMenuPath, packageLabel);
+      this.menuModelRegistry.registerSubmenu(platformMenuPath, packageLabel, {
+        order: packageName.toLowerCase(),
+      });
 
       const id = `arduino-select-board--${fqbn}`;
       const command = { id };
@@ -211,29 +213,43 @@ PID: ${PID}`;
       };
 
       // Board menu
-      const menuAction = { commandId: id, label: name };
+      const menuAction = {
+        commandId: id,
+        label: name,
+        order: String(index).padStart(4), // pads with leading zeros for alphanumeric sort where order is 1, 2, 11, and NOT 1, 11, 2
+      };
       this.commandRegistry.registerCommand(command, handler);
       this.toDisposeBeforeMenuRebuild.push(
         Disposable.create(() => this.commandRegistry.unregisterCommand(command))
       );
       this.menuModelRegistry.registerMenuAction(platformMenuPath, menuAction);
       // Note: we do not dispose the menu actions individually. Calling `unregisterSubmenu` on the parent will wipe the children menu nodes recursively.
-    }
+    });
 
     // Installed ports
-    const registerPorts = (ports: AvailablePorts) => {
-      const addresses = Object.keys(ports);
-      if (!addresses.length) {
+    const registerPorts = (
+      protocol: string,
+      protocolOrder: number,
+      ports: AvailablePorts
+    ) => {
+      const portIDs = Object.keys(ports);
+      if (!portIDs.length) {
         return;
       }
 
       // Register placeholder for protocol
-      const [port] = ports[addresses[0]];
-      const protocol = port.protocol;
-      const menuPath = [...portsSubmenuPath, protocol];
+      const menuPath = [
+        ...portsSubmenuPath,
+        `${protocolOrder.toString()}_${protocol}`,
+      ];
       const placeholder = new PlaceholderMenuNode(
         menuPath,
-        `${firstToUpperCase(port.protocol)} ports`
+        nls.localize(
+          'arduino/board/typeOfPorts',
+          '{0} ports',
+          Port.Protocols.protocolLabel(protocol)
+        ),
+        { order: protocolOrder.toString().padStart(4) }
       );
       this.menuModelRegistry.registerMenuNode(menuPath, placeholder);
       this.toDisposeBeforeMenuRebuild.push(
@@ -242,69 +258,83 @@ PID: ${PID}`;
         )
       );
 
-      for (const address of addresses) {
-        if (!!ports[address]) {
-          const [port, boards] = ports[address];
-          if (!boards.length) {
-            boards.push({
-              name: '',
-            });
-          }
-          for (const { name, fqbn } of boards) {
-            const id = `arduino-select-port--${address}${
-              fqbn ? `--${fqbn}` : ''
-            }`;
-            const command = { id };
-            const handler = {
-              execute: () => {
-                if (
-                  !Port.equals(
-                    port,
-                    this.boardsServiceProvider.boardsConfig.selectedPort
-                  )
-                ) {
-                  this.boardsServiceProvider.boardsConfig = {
-                    selectedBoard:
-                      this.boardsServiceProvider.boardsConfig.selectedBoard,
-                    selectedPort: port,
-                  };
-                }
-              },
-              isToggled: () =>
-                Port.equals(
-                  port,
-                  this.boardsServiceProvider.boardsConfig.selectedPort
-                ),
-            };
-            const label = `${address}${name ? ` (${name})` : ''}`;
-            const menuAction = {
-              commandId: id,
-              label,
-              order: `1${label}`, // `1` comes after the placeholder which has order `0`
-            };
-            this.commandRegistry.registerCommand(command, handler);
-            this.toDisposeBeforeMenuRebuild.push(
-              Disposable.create(() =>
-                this.commandRegistry.unregisterCommand(command)
-              )
-            );
-            this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
-          }
+      // First we show addresses with recognized boards connected,
+      // then all the rest.
+      const sortedIDs = Object.keys(ports).sort(
+        (left: string, right: string): number => {
+          const [, leftBoards] = ports[left];
+          const [, rightBoards] = ports[right];
+          return rightBoards.length - leftBoards.length;
         }
+      );
+
+      for (let i = 0; i < sortedIDs.length; i++) {
+        const portID = sortedIDs[i];
+        const [port, boards] = ports[portID];
+        let label = `${port.addressLabel}`;
+        if (boards.length) {
+          const boardsList = boards.map((board) => board.name).join(', ');
+          label = `${label} (${boardsList})`;
+        }
+        const id = `arduino-select-port--${portID}`;
+        const command = { id };
+        const handler = {
+          execute: () => {
+            if (
+              !Port.sameAs(
+                port,
+                this.boardsServiceProvider.boardsConfig.selectedPort
+              )
+            ) {
+              this.boardsServiceProvider.boardsConfig = {
+                selectedBoard:
+                  this.boardsServiceProvider.boardsConfig.selectedBoard,
+                selectedPort: port,
+              };
+            }
+          },
+          isToggled: () =>
+            Port.sameAs(
+              port,
+              this.boardsServiceProvider.boardsConfig.selectedPort
+            ),
+        };
+        const menuAction = {
+          commandId: id,
+          label,
+          order: String(protocolOrder + i + 1).padStart(4),
+        };
+        this.commandRegistry.registerCommand(command, handler);
+        this.toDisposeBeforeMenuRebuild.push(
+          Disposable.create(() =>
+            this.commandRegistry.unregisterCommand(command)
+          )
+        );
+        this.menuModelRegistry.registerMenuAction(menuPath, menuAction);
       }
     };
 
-    const { serial, network, unknown } =
-      AvailablePorts.groupByProtocol(availablePorts);
-    registerPorts(serial);
-    registerPorts(network);
-    registerPorts(unknown);
+    const grouped = AvailablePorts.groupByProtocol(availablePorts);
+    let protocolOrder = 100;
+    // We first show serial and network ports, then all the rest
+    ['serial', 'network'].forEach((protocol) => {
+      const ports = grouped.get(protocol);
+      if (ports) {
+        registerPorts(protocol, protocolOrder, ports);
+        grouped.delete(protocol);
+        protocolOrder = protocolOrder + 100;
+      }
+    });
+    grouped.forEach((ports, protocol) => {
+      registerPorts(protocol, protocolOrder, ports);
+      protocolOrder = protocolOrder + 100;
+    });
 
     this.mainMenuManager.update();
   }
 
   protected async installedBoards(): Promise<InstalledBoardWithPackage[]> {
-    const allBoards = await this.boardsService.searchBoards({});
+    const allBoards = await this.boardsService.getInstalledBoards();
     return allBoards.filter(InstalledBoardWithPackage.is);
   }
 }

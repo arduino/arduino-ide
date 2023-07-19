@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Versiyon: {0}\nTarih: {1}{2}\nCLI Versiyonu: {3}\n\n{4}",
+      "label": "{0} Hakkında"
+    },
+    "account": {
+      "goToCloudEditor": "Bulut Düzenleyici'ye Git",
+      "goToIoTCloud": "IoT Bulut'a Git",
+      "goToProfile": "Profile Git",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Kart{0}",
+      "boardConfigDialogTitle": "Başka Kart ve Port Seç",
+      "boardInfo": "Kart Bilgisi",
+      "boards": "kartlar",
+      "configDialog1": "Bir eskiz yüklemek istiyorsanız Kart ve Port seçmelisiniz.",
+      "configDialog2": "Sadece Kart seçerseniz eskizinizi derleyebilir, ancak yükleyemezsiniz.",
+      "couldNotFindPreviouslySelected": "Kurulu '{1}' platformunda daha önce seçili kart '{0}' bulunamadı. Lütfen kullanmak istediğiniz kartı elle yeniden seçin. Şimdi tekrar seçmek istiyor musunuz?",
+      "disconnected": "Bağlantı Kesildi",
+      "getBoardInfo": "Kart Bilgisini Al",
+      "inSketchbook": "(Eskiz Defteri'nde)",
+      "installNow": "Mevcut seçili \"{2}\" kartı için \"{0} {1}\" çekirdeğinin kurulması gerekiyor. Bunu şimdi kurmak istiyor musunuz?",
+      "noBoardsFound": "\"{0}\" için kart bulunamadı",
+      "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
+      "noNativeSerialPort": "Yerel seri port, veri alınamıyor.",
+      "noPortsDiscovered": "Port bulunamadı",
+      "noPortsSelected": "'{0}' kartı için port seçilmedi",
+      "nonSerialPort": "Seri port değil, veri alınamıyor.",
+      "noneSelected": "Kart seçilmedi.",
+      "openBoardsConfig": "Başka Kart ve Port Seç",
+      "pleasePickBoard": "Lütfen seçtiğiniz porta bağlı kartı seçin.",
+      "port": "Port{0}",
+      "portLabel": "Port{0}",
+      "ports": "portlar",
+      "programmer": "Programlayıcı",
+      "reselectLater": "Daha sonra tekrar seç",
+      "searchBoard": "Kart ara",
+      "selectBoard": "Kart Seç",
+      "selectPortForInfo": "Kart bilgisi almak için lütfen bir port seçin.",
+      "showAllAvailablePorts": "Etkinleştirildiğinde tüm mevcut portları görüntüler",
+      "showAllPorts": "Tüm portları göster",
+      "succesfullyInstalledPlatform": "Platform başarıyla kuruldu {0}:{1}",
+      "succesfullyUninstalledPlatform": "Platform başarıyla kaldırıldı {0}:{1}",
+      "typeOfPorts": "{0} portlar",
+      "unknownBoard": "Bilinmeyen kart"
+    },
+    "boardsManager": "Kart Yöneticisi",
+    "boardsType": {
+      "arduinoCertified": "Arduino Onaylı"
+    },
+    "bootloader": {
+      "burnBootloader": "Bootloader'ı Yükle",
+      "burningBootloader": "Bootloader yükleniyor...",
+      "doneBurningBootloader": "Bootloader yüklemesi bitti."
+    },
+    "burnBootloader": {
+      "error": "Bootloaderı yüklerken hata: {0}"
+    },
+    "certificate": {
+      "addNew": "Yeni Ekle",
+      "addURL": "SSL sertifikasını almak için URL ekle",
+      "boardAtPort": "{0} / {1}",
+      "certificatesUploaded": "Sertifikalar yüklendi.",
+      "enterURL": "URL Gir",
+      "noSupportedBoardConnected": "Bağlı desteklenen kart yok",
+      "openContext": "İçeriği aç",
+      "remove": "Kaldır",
+      "selectBoard": "Kart Seçin...",
+      "selectCertificateToUpload": "1. Yüklenecek sertifikayı seç",
+      "selectDestinationBoardToUpload": "2. Hedef kartı seç ve sertifikayı yükle",
+      "upload": "Yükle",
+      "uploadFailed": "Yükleme başarısız. Lütfen tekrar deneyin.",
+      "uploadRootCertificates": "SSL Kök Sertifikalarını Yükle",
+      "uploadingCertificates": "Sertifikalar yükleniyor."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Arduino Güncellemelerini kontrol et",
+      "installAll": "Tümünü kur",
+      "noUpdates": "Yeni bir güncelleme bulunmuyor.",
+      "promptUpdateBoards": "Kartlarınızdan bazıları için güncelleme mevcut.",
+      "promptUpdateLibraries": "Kütüphanelerinizden bazıları için güncelleme mevcut.",
+      "updatingBoards": "Kartlar güncelleniyor...",
+      "updatingLibraries": "Kütüphaneler güncelleniyor..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' bulunamadı. Eskiziniz '#include <Keyboard.h>' satırını içeriyor mu?",
+      "mouseError": "'Mouse' bulunamadı. Eskiziniz '#include <Mouse.h>' satırını içeriyor mu? "
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Eskizinizin görünürlüğünü seçin",
+      "cloudSketchbook": "Bulut Eskiz Defteri",
+      "connected": "Bağlandı",
+      "continue": "Devam et",
+      "donePulling": "Çekme bitti: '{0}'.",
+      "donePushing": "Gönderme bitti: '{0}'.",
+      "embed": "Yerleştir:",
+      "emptySketchbook": "Eskiz Defteriniz boş",
+      "goToCloud": "Buluta Git",
+      "learnMore": "Daha fazlasını öğren",
+      "link": "Bağlantı:",
+      "notYetPulled": "Bulut'a gönderilemedi. Henüz çekilmemiş.",
+      "offline": "Çevrimdışı",
+      "openInCloudEditor": "Bulut Düzenleyici'de Aç",
+      "options": "Seçenekler...",
+      "privateVisibility": "Gizli. Eskizi sadece siz görebilirsiniz.",
+      "profilePicture": "Profil resmi",
+      "publicVisibility": "Herkese açık. Bağlantıya sahip herkes Eskiz'i görebilir.",
+      "pull": "Çek",
+      "pullFirst": "Bulut'a göndermeden önce çekmeniz gerekiyor.",
+      "pullSketch": "Eskizi Çek",
+      "pullSketchMsg": "Bu Eskizi Bulut'dan çekmek yerel versiyonunun üzerine yazacak. Devam etmek istediğinizden emin misiniz?",
+      "push": "Gönder",
+      "pushSketch": "Eskizi Gönder",
+      "pushSketchMsg": "Bu bir Herkese Açık Eskiz. Göndermeden önce tüm hassas bilgilerin arduino_secrets.h dosyaları içinde tanımlandığından emin olun. Eskizleri Paylaş panelinden gizli yapabilirsiniz.",
+      "remote": "Uzak",
+      "share": "Paylaş...",
+      "shareSketch": "Eskizi Paylaş",
+      "showHideSketchbook": "Bulut Eskiz Defteri'ni Göster/Gizle",
+      "signIn": "GİRİŞ YAP",
+      "signInToCloud": "Arduino Cloud'a giriş yap",
+      "signOut": "Çıkış Yap",
+      "sync": "Senkronize Et",
+      "syncEditSketches": "Arduino Cloud eskizlerinizi eşitleyin ve düzenleyin",
+      "visitArduinoCloud": "Bulut Eskizleri oluşturmak için Arduino Cloud'u ziyaret edin."
+    },
+    "cloudSketch": {
+      "alreadyExists": "'{0}' adlı bulut eskiz zaten mevcut.",
+      "creating": "Bulut eskiz '{0}' oluşturuluyor...",
+      "new": "Yeni Bulut Eskiz",
+      "notFound": "Bulut eskiz '{0}' çekilemedi. Böyle bir eskiz yok.",
+      "pulling": "Eskiz defteri eşitleniyor, '{0}' çekiliyor...",
+      "pushing": "Eskiz defteri eşitleniyor, '{0}' gönderiliyor...",
+      "renaming": "Bulut eskiz adı '{0}' dan '{1}''a değiştiriliyor...",
+      "synchronizingSketchbook": "Eskiz defteri eşitleniyor..."
+    },
+    "common": {
+      "all": "Tümü",
+      "contributed": "Eklenen",
+      "installManually": "Elle Kur",
+      "later": "Daha sonra",
+      "noBoardSelected": "Kart seçili değil",
+      "notConnected": "[bağlı değil]",
+      "offlineIndicator": "Çevrimdışı görünüyorsunuz. Arduino CLI internet bağlantısı olmadan gerekli kaynakları indiremeyebilir ve hatalı çalışabilir. Lütfen internete bağlanın ve uygulamayı yeniden başlatın.",
+      "oldFormat": "'{0}' hala eski `.pde` biçimini kullanıyor. Yeni `.ino` uzantısına geçmek istiyor musunuz?",
+      "partner": "Ortaklık",
+      "processing": "Processing",
+      "recommended": "Önerilen",
+      "retired": "Emekli",
+      "selectedOn": "- {0}",
+      "serialMonitor": "Seri Port Ekranı",
+      "type": "Tür",
+      "unknown": "Bilinmeyen",
+      "updateable": "Güncellenebilir"
+    },
+    "compile": {
+      "error": "Derleme hatası: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Bu pakete dahil kartlar:",
+      "by": "-",
+      "clickToOpen": "Tarayıca açmak için tıkla: {0}",
+      "filterSearch": "Aramayı Filtrele...",
+      "install": "Kur",
+      "installLatest": "En Yeniyi Kur",
+      "installVersion": "{0}'i kur",
+      "installed": "{0} kuruldu",
+      "moreInfo": "Daha fazla bilgi",
+      "otherVersions": "Diğer Sürümler",
+      "remove": "Kaldır",
+      "title": "{0} / {1}",
+      "uninstall": "Kaldır",
+      "uninstallMsg": "{0} kaldırılsın mı?",
+      "update": "Güncelle"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "'{0}': {1} konumundaki eskiz defterine erişilemedi"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Bağlantı koptu. Bulut eskiz işlemleri ve güncellemeleri kullanılamayacak."
+    },
+    "contributions": {
+      "addFile": "Dosya Ekle",
+      "fileAdded": "Eskize bir dosya eklendi.",
+      "plotter": {
+        "couldNotOpen": "Seri Çizici açılamadı"
+      },
+      "replaceTitle": "Değiştir"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Tümü",
+        "default": "Varsayılan",
+        "more": "Daha fazla",
+        "none": "Hiçbiri"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Hata mesajlarını kopyala",
+      "noBoardSelected": "Kart seçili değil. Lütfen Araçlar > Kart menüsünden Arduino kartınızı seçin."
+    },
+    "createCloudCopy": "Eskizi Bulut'a Gönder",
+    "daemon": {
+      "restart": "Arthizmeti Yeniden Başlat",
+      "start": "Arthizmeti Başlat",
+      "stop": "Arthizmeti Durdur"
+    },
+    "debug": {
+      "debugWithMessage": "Debug - {0}",
+      "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",
+      "noPlatformInstalledFor": "'{0}' için platform kurulmadı",
+      "optimizeForDebugging": "Debug için Optimize et",
+      "sketchIsNotCompiled": "Hata ayıklama -debug- oturumuna başlamadan önce '{0}' eskizi doğrulanmalıdır. Lütfen eskizi doğrulayın ve hata ayıklamayı yeniden başlatın. Eskizi şimdi doğrulamak ister misiniz?"
+    },
+    "dialog": {
+      "dontAskAgain": "Tekrar sorma"
+    },
+    "editor": {
+      "autoFormat": "Otomatik Biçimlendir",
+      "commentUncomment": "Yorum yap/Yorumu kaldır",
+      "copyForForum": "Forum için Kopyala (Markdown)",
+      "decreaseFontSize": "Yazı Tipi Boyutunu Küçült",
+      "decreaseIndent": "Girintiyi Azalt",
+      "increaseFontSize": "Yazı Tipi Boyutunu Büyüt",
+      "increaseIndent": "Girintiyi Artır",
+      "nextError": "Sonraki Hata",
+      "previousError": "Önceki Hata",
+      "revealError": "Gösterim Hatası"
+    },
+    "electron": {
+      "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
+      "unsavedChanges": "Kaydedilmemiş değişiklikler kaybedilecek."
+    },
+    "examples": {
+      "builtInExamples": "Dahili örnekler",
+      "couldNotInitializeExamples": "Dahili örnekler bulunamadı.",
+      "customLibrary": "Eklenen Kütüphanelerin Örnekleri",
+      "for": "{0} Örnekleri",
+      "forAny": "Herhangi bir kart için örnekler",
+      "menu": "Örnekler"
+    },
+    "firmware": {
+      "checkUpdates": "Güncellemeleri Kontrol Et",
+      "failedInstall": "Kurulum başarısız. Lütfen tekrar deneyin.",
+      "install": "Kur",
+      "installingFirmware": "Firmware kuruluyor.",
+      "overwriteSketch": "Kurulum karttaki Eskizin üzerine yazacak.",
+      "selectBoard": "Kart Seç",
+      "selectVersion": "Firmware versiyonunu seç",
+      "successfullyInstalled": "Firmware başarıyla kuruldu.",
+      "updater": "WiFi101 / WiFiNINA Firmware Güncelleyici"
+    },
+    "help": {
+      "environment": "Ortam",
+      "faq": "Sıkça Sorulan Sorular",
+      "findInReference": "Başvuruda Bul",
+      "gettingStarted": "Başlarken",
+      "keyword": "Bir anahtar kelime yazın",
+      "privacyPolicy": "Gizlilik Politikası",
+      "reference": "Başvuru",
+      "search": "Arduino.cc'de Ara",
+      "troubleshooting": "Sorun Giderme",
+      "visit": "Arduino.cc'yi Ziyaret Et"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Arduino IDE Güncellemelerini kontrol et",
+      "closeAndInstallButton": "Kapat ve Kur",
+      "closeToInstallNotice": "Yazılımı kapatın ve güncellemeyi makinanıza yükleyin.",
+      "downloadButton": "İndir",
+      "downloadingNotice": "Arduino IDE'nin son sürümü indiriliyor.",
+      "errorCheckingForUpdates": "Arduino IDE güncellemelerini kontrol ederken hata oluştu.{0}",
+      "goToDownloadButton": "İndirmeye Git",
+      "goToDownloadPage": "Arduino IDE için bir güncelleme mevcut, ancak otomatik olarak indirip kuramadık. Lütfen indirme sayfasına gidin ve son sürümü oradan indirin.",
+      "ideUpdaterDialog": "Yazılım Güncelleme",
+      "newVersionAvailable": "Yeni sürüm Arduino IDE ({0}) indirilmeye hazır.",
+      "noUpdatesAvailable": "Arduino IDE için yeni bir güncelleme bulunmuyor",
+      "notNowButton": "Şimdi değil",
+      "skipVersionButton": "Sürümü Atla",
+      "updateAvailable": "Güncelleme Mevcut",
+      "versionDownloaded": "Arduino IDE {0} indirildi."
+    },
+    "library": {
+      "addZip": ".ZIP Kütüphanesi Ekle...",
+      "arduinoLibraries": "Arduino kütüphaneleri",
+      "contributedLibraries": "Eklenmiş kütüphaneler",
+      "include": "Kütüphane Ekle",
+      "installAll": "Tümünü kur",
+      "installLibraryDependencies": "Kütüphane gerekliliklerini kur",
+      "installMissingDependencies": "Tüm eksik gereklilikleri kurmak ister misiniz?",
+      "installOneMissingDependency": "Eksik gereklilikleri kurmak istiyor musunuz?",
+      "installWithoutDependencies": "Gereklilikler olmadan kur",
+      "installedSuccessfully": "{0}:{1} kütüphanesi başarıyla kuruldu",
+      "libraryAlreadyExists": "Kütüphane zaten mevcut. Üzerine yazmak istiyor musunuz?",
+      "manageLibraries": "Kütüphaneleri Yönet...",
+      "namedLibraryAlreadyExists": " {0} adında bir kütüphane klasörü zaten mevcut. Üzerine yazmak istiyor musunuz?",
+      "needsMultipleDependencies": " <b>{0}:{1}</b> kütüphanesi henüz kurulu olmayan diğer bazı gerekliliklere ihtiyaç duyuyor:",
+      "needsOneDependency": " <b>{0}:{1}</b> kütüphanesinin henüz kurulu olmayan bir diğer gerekliliğe ihtiyaç duyuyor:",
+      "overwriteExistingLibrary": "Mevcut kütüphanenin üzerine yazmak istiyor musunuz?",
+      "successfullyInstalledZipLibrary": "{0} arşivindeki kütüphane başarıyla kuruldu",
+      "title": "Kütüphane Yöneticisi",
+      "uninstalledSuccessfully": "{0}:{1} kütüphanesi başarıyla kaldırıldı",
+      "zipLibrary": "Kütüphane"
+    },
+    "librarySearchProperty": {
+      "topic": "Konu"
+    },
+    "libraryTopic": {
+      "communication": "İletişim",
+      "dataProcessing": "Veri İşleme",
+      "dataStorage": "Veri Depolama",
+      "deviceControl": "Cihaz Kontrolü",
+      "display": "Ekran",
+      "other": "Diğer",
+      "sensors": "Sensörler",
+      "signalInputOutput": "Sinyal Giriş/Çıkış",
+      "timing": "Zamanlama",
+      "uncategorized": "Kategori Dışı"
+    },
+    "libraryType": {
+      "installed": "Kurulu"
+    },
+    "menu": {
+      "advanced": "Gelişmiş",
+      "sketch": "Eskiz",
+      "tools": "Araçlar"
+    },
+    "monitor": {
+      "alreadyConnectedError": " {0} {1} portuna bağlanılamadı. Zaten bağlı.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "{0} {1} portuna bağlanılamadı.",
+      "connectionFailedErrorWithDetails": "{0}  {1} {2} portuna bağlanılamadı.",
+      "connectionTimeout": "Zaman aşımı. IDE başarılı bağlantıdan sonra ekrandan 'başarılı' mesajını almadı",
+      "missingConfigurationError": " {0} {1} portuna bağlanılamadı. Ekran yapılandırması eksik.",
+      "notConnectedError": " {0} {1} portuna bağlı değil.",
+      "unableToCloseWebSocket": "Websocket kapatılamadı ",
+      "unableToConnectToWebSocket": "Websocket'e bağlanılamadı"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Yeni Bulut Eskiz'in adı"
+    },
+    "portProtocol": {
+      "network": "Ağ",
+      "serial": "Seri"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Ek Kart Yöneticisi URL'leri",
+      "auth.audience": "OAuth2 audience.",
+      "auth.clientID": "OAuth2 istemci ID.",
+      "auth.domain": "OAuth2 domain.",
+      "auth.registerUri": "URI yeni bir kullanıcı kaydetmek için kullanılır.",
+      "automatic": "Otomatik",
+      "board.certificates": "Kartlara yüklenebilecek sertifikaların listesi",
+      "browse": "Gözat",
+      "checkForUpdate": "IDE, kartlar ve kütüphaneler için mevcut güncellemelerin bildirimlerini al. Değişiklik sonrasında IDE'nin yeniden başlatılmasını gerektirir. Varsayılan olarak açık.",
+      "choose": "Seç",
+      "cli.daemonDebug": "Arduino CLI tarafına yapılan gRPC bağlantılarının debug kaydını etkinleştirir. Bu ayarın geçerli olması için IDE'nin yeniden başlatılması gerekir. Varsayılan olarak kapalıdır.",
+      "cloud.enabled": "Eskiz eşitleme fonksiyonları etkinse açın. Varsayılan: Açık.",
+      "cloud.pull.warn": "Kullanıcılar bir bulut eskizini çekmeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.push.warn": "Kullanıcılar bir bulut eskizini göndermeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.pushpublic.warn": "Kullanıcılar buluta herkese açık bir eskiz yüklemeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.sketchSyncEndpoint": "Ana yapıdan eskizler çekmek veya göndermek için son nokta kullanılır. Varsayılan: Arduino Cloud API.",
+      "compile": "derle",
+      "compile.experimental": "IDE'nin birden fazla derleme hatasını kontrol etmesini istiyorsanız açın. Varsayılan olarak kapalı.",
+      "compile.revealRange": "Tamamlanamayan bir doğrula/yükleme'den sonra editörün derleme hatalarını nasıl göstereceğini ayarlar. Seçenekler: 'auto': Gerekli oldukça kaydır ve satırı göster. 'center': Gerekli oldukça kaydır ve satırı ortada göster. 'top': Gerekli oldukça kaydır ve satırı görünüm alanının üzerine yakın bir yerde göster. 'centerIfOutsideViewport': Gerekli oldukça kaydır ve satır sadece görünen alanın dışındaysa ortada göster. Varsayılan değer '{0}'.",
+      "compile.verbose": "Ayrıntılı derleme çıktısı için açın. Varsayılan: Kapalı",
+      "compile.warnings": "gcc'ye hangi uyarı seviyesinin kullanılacağını söyler. Varsayılan: 'None'",
+      "compilerWarnings": "Derleyici uyarıları",
+      "editorFontSize": "Editör yazı tipi boyutu",
+      "editorQuickSuggestions": "Editör Hızlı Önerileri",
+      "enterAdditionalURLs": "Ek URL'leri gir, her satıra bir adet",
+      "files.inside.sketches": "Eskizlerin içindeki dosyaları görüntüle",
+      "ide.updateBaseUrl": "Güncellemelerin indirileceği ana link. Varsayılan: 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Güncelleme yapılacak dağıtım kanalı. 'stable' kararlı sürümdür, 'nightly' ise son geliştirme sürümüdür.",
+      "interfaceScale": "Arayüz ölçeği",
+      "invalid.editorFontSize": "Hatalı editör yazı tipi boyutu. Pozitif bir tam sayı olmalı.",
+      "invalid.sketchbook.location": "Hatalı eskiz defteri konumu: {0}",
+      "invalid.theme": "Hatalı tema.",
+      "language.log": "Arduino Language Server eskiz klasörüne log dosyaları oluşturacaksa True. Aksi takdirde false. Varsayılan: false.",
+      "language.realTimeDiagnostics": "Açılırsa, dil sunucusu editöre yazarken gerçek zamanlı kontroller sağlar. Varsayılan olarak kapalıdır.",
+      "manualProxy": "Elle vekil ayarlama",
+      "network": "Ağ",
+      "newSketchbookLocation": "Yeni eskiz defteri konumu seç",
+      "noCliConfig": "CLI yapılandırması yüklenemedi",
+      "noProxy": "Vekil yok",
+      "proxySettings": {
+        "hostname": "Host adı",
+        "password": "Parola",
+        "port": "Port numarası",
+        "username": "Kullanıcı adı"
+      },
+      "showVerbose": "Ayrıntılı çıktıyı görüntüle",
+      "sketch": {
+        "inoBlueprint": "Örnek `.ino` dosyasının tam dosya yoludur. Açıldığında IDE'de oluşturulan her yeni eskizde bu örnek dosya içeriği kullanılır. Açılmadığında eskizler varsayılan Arduino içeriği ile oluşturulur. Ulaşılamayan örnek dosyalar yoksayılır. Bu ayarın etkili olması için **IDE'nin yeniden başlatılması** gerekir."
+      },
+      "sketchbook.location": "Eskiz Defteri konumu",
+      "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için açın. Varsayılan: kapalı.",
+      "survey.notification": "Bir anket bulunduğunda kullanıcılara gösterilecekse açın. Varsayılan olarak açıktır.",
+      "unofficialBoardSupport": "Desteklenmeyen kart destek URL'leri listesi için tıklayın",
+      "upload": "yükle",
+      "upload.verbose": " Ayrıntılı yükleme çıktısı için açın. Varsayılan: Kapalı",
+      "verifyAfterUpload": "Yüklemeden sonra kodu doğrula",
+      "window.autoScale": "Kullanıcı arayüzü yazı tipi boyutu ile otomatik olarak ölçeklenecekse açın",
+      "window.zoomLevel": {
+        "deprecationMessage": "Kullanımdan kalktı. Yerine 'window.zoomLevel' kullanın."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "Bulut Eskiz'in yeni adı"
+    },
+    "replaceMsg": "{0}'un mevcut versiyonu değiştirilsin mi?",
+    "selectZip": "Eklemek istediğiniz kütüphaneyi içeren ZIP dosyasını seçin",
+    "serial": {
+      "autoscroll": "Otomatik Kaydırma",
+      "carriageReturn": "Satır Başı",
+      "connecting": "'{1}' üzerindeki '{0}' bağlantısı kuruluyor...",
+      "message": "Mesaj ('{0}' - '{1}''a mesaj göndermek için Enter'a basın)",
+      "newLine": "Yeni Satır",
+      "newLineCarriageReturn": "NL ve CR ile Birlikte",
+      "noLineEndings": "Satır Sonu Yok",
+      "notConnected": "Bağlı değil. Otomatik olarak bağlanacak bir kart ve bir port seçin.",
+      "openSerialPlotter": "Seri Çizici",
+      "timestamp": "Zaman",
+      "toggleTimestamp": "Zaman Damgasını Göster"
+    },
+    "sketch": {
+      "archiveSketch": "Eskizi Arşivle",
+      "cantOpen": "\"{0}\" klasörü zaten mevcut. Eskiz açılamadı.",
+      "close": "Eskizi kapatmak istediğinizden emin misiniz?",
+      "compile": "Eskiz derleniyor...",
+      "configureAndUpload": "Ayarla ve Yükle",
+      "createdArchive": "'{0}' arşivi oluşturuldu.",
+      "doneCompiling": "Derleme bitti.",
+      "doneUploading": "Yükleme bitti.",
+      "editInvalidSketchFolderLocationQuestion": "Eskizi farklı bir konuma kaydetmeyi denemek ister misiniz?",
+      "editInvalidSketchFolderQuestion": "Eskizi farklı bir isimle kaydetmeyi denemek ister misiniz?",
+      "exportBinary": "Derlenmiş Dosyayı Dışa Aktar",
+      "invalidCloudSketchName": "İsim bir harf, rakam veya altçizgi ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 36 karakterdir.",
+      "invalidSketchFolderLocationDetails": "Bir eskizi kendi içindeki bir klasöre kaydedemezsiniz.",
+      "invalidSketchFolderLocationMessage": "Hatalı eskiz klasörü konumu: {0}",
+      "invalidSketchFolderNameMessage": "Hatalı eskiz klasörü adı: {0}",
+      "invalidSketchName": "İsim bir harf, rakam veya altçizgi ile başlamalı, harfler, rakamlar, orta çizgi, nokta veya altçizgi ile devam etmelidir. Azami uzunluk 63 karakterdir.",
+      "moving": "Taşınıyor",
+      "movingMsg": "\"{0}\" dosyasının \"{1}\" isminde bir eskiz klasörünün içinde olması gerekiyor.\nKlasörü oluştur, dosyayı taşı ve devam et?",
+      "new": "Yeni Eskiz",
+      "noTrailingPeriod": "Dosya adı nokta ile bitemez",
+      "openFolder": "Klasörü Aç",
+      "openRecent": "Yakın Geçmiş",
+      "openSketchInNewWindow": "Eskizi Yeni Pencerede Aç",
+      "reservedFilename": "'{0}' rezerve bir isimdir, kullanılamaz.",
+      "saveFolderAs": "Eskiz klasörünü farklı kaydet...",
+      "saveSketch": "Daha sonra tekrar açmak için eskizinizi kaydedin.",
+      "saveSketchAs": "Eskiz klasörünü farklı kaydet...",
+      "showFolder": "Eskiz Klasörünü Göster",
+      "sketch": "Eskiz",
+      "sketchbook": "Eskiz Defteri",
+      "titleLocalSketchbook": "Yerel Eskiz Defteri",
+      "titleSketchbook": "Eskiz Defteri",
+      "upload": "Yükle",
+      "uploadUsingProgrammer": "Programlayıcı Kullanarak Yükle",
+      "uploading": "Yükleniyor...",
+      "userFieldsNotFoundError": "Bağlı kart için kullanıcı alanları bulunamadı",
+      "verify": "Doğrula",
+      "verifyOrCompile": "Doğrula/Derle"
+    },
+    "sketchbook": {
+      "newCloudSketch": "Yeni Bulut Eskiz",
+      "newSketch": "Yeni Eskiz"
+    },
+    "survey": {
+      "answerSurvey": "Anketi yanıtla",
+      "dismissSurvey": "Tekrar gösterme",
+      "surveyMessage": "Lütfen bu çok kısa anketi yanıtlayarak gelişmemize yardım edin. Topluluğumuza değer veriyoruz e destekçilerimizi biraz daha iyi tanımak isteriz."
+    },
+    "theme": {
+      "currentThemeNotFound": "Mevcut seçili tema bulunamadı: {0}. Arduino IDE kayıp olanın yerine uyumlu dahili bir tane seçti.",
+      "dark": "Koyu",
+      "deprecated": "{0} (kaldırıldı)",
+      "hc": "Yüksek Karşıtlık",
+      "light": "Açık",
+      "user": "{0} (kullanıcı)"
+    },
+    "title": {
+      "cloud": "Bulut"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Katalogları Güncelle",
+      "updateLibraryIndex": "Kütüphane Kataloğunu Güncelle",
+      "updatePackageIndex": "Paket Kataloğunu Güncelle"
+    },
+    "upload": {
+      "error": "{0} hata: {1}"
+    },
+    "userFields": {
+      "cancel": "İptal",
+      "enterField": "{0} gir",
+      "upload": "Yükle"
+    },
+    "validateSketch": {
+      "abortFixMessage": "Eskiz hala hatalı. Kalan sorunları çözmek ister misiniz? '{0}' butonuna tıklarsanız yeni bir eskiz açılır.",
+      "abortFixTitle": "Hatalı eskiz",
+      "renameSketchFileMessage": "'{0}' adlı eskiz kullanılamaz. {1} Eskiz dosyasını şimdi yeniden adlandırmak ister misiniz?",
+      "renameSketchFileTitle": "Hatalı eskiz dosya adı",
+      "renameSketchFolderMessage": "'{0}' eskizi kullanılamaz. {1} Bu mesajdan kurtulmak için eskizi yeniden adlandırın. Eskizi şimdi yeniden adlandırmak istiyor musunuz?",
+      "renameSketchFolderTitle": "Hatalı eskiz adı"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' zaten mevcut."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Ana yapıya bağlanılamadı.",
+      "cannotConnectDaemon": "CLI daemon'a bağlanılamadı.",
+      "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
+      "daemonOffline": "CLI Daemon Çevrimdışı",
+      "offline": "Çevrimdışı",
+      "offlineText": "Çevrimdışı",
+      "quitTitle": "Çıkmak istediğinizden emin misiniz?"
+    },
+    "editor": {
+      "unsavedTitle": "Kaydedilmedi – {0}"
+    },
+    "messages": {
+      "collapse": "Daralt",
+      "expand": "Genişlet"
+    },
+    "workspace": {
+      "deleteCloudSketch": "'{0}' bulut eskizi Arduino sunucularından ve yerel geçici saklamadan kalıcı olarak silinecek. Bu işlem geri alınamaz. Mevcut eskizi silmek istiyor musunuz?",
+      "deleteCurrentSketch": "'{0}' eskiz kalıcı olarak silinecek. Bu işlem geri alınamaz. Mevcut eskizi silmek istiyor musunuz?",
+      "fileNewName": "Yeni dosya için isim",
+      "invalidExtension": ".{0} geçerli bir uzantı değil",
+      "newFileName": "Dosya için yeni isim"
+    }
+  }
+}

@@ -1,34 +1,50 @@
-import { inject, injectable } from 'inversify';
-import { NewWindowOptions } from '@theia/core/lib/browser/window/window-service';
+import type { NewWindowOptions } from '@theia/core/lib/common/window';
 import { ElectronMainWindowServiceImpl as TheiaElectronMainWindowService } from '@theia/core/lib/electron-main/electron-main-window-service-impl';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { hasStartupTasks } from '../../electron-common/startup-task';
+import { ElectronArduinoRenderer } from '../electron-arduino';
 import { ElectronMainApplication } from './electron-main-application';
+import { TheiaRendererAPI } from '@theia/core/lib/electron-main/electron-api-main';
 
 @injectable()
 export class ElectronMainWindowServiceImpl extends TheiaElectronMainWindowService {
   @inject(ElectronMainApplication)
-  protected readonly app: ElectronMainApplication;
+  protected override readonly app: ElectronMainApplication;
 
-  openNewWindow(url: string, { external }: NewWindowOptions): undefined {
-    if (!external) {
-      const sanitizedUrl = this.sanitize(url);
-      const existing = this.app.windows.find(
-        (window) => this.sanitize(window.webContents.getURL()) === sanitizedUrl
+  override openNewWindow(url: string, options: NewWindowOptions): undefined {
+    // External window has highest precedence.
+    if (options?.external) {
+      return super.openNewWindow(url, options);
+    }
+
+    // Look for existing window with the same URL and focus it.
+    const existing = this.app.browserWindows.find(
+      ({ webContents }) => webContents.getURL() === url
+    );
+    if (existing) {
+      existing.focus();
+      return undefined;
+    }
+
+    // Default.
+    if (!hasStartupTasks(options)) {
+      return super.openNewWindow(url, options);
+    }
+
+    // Create new window and share the startup tasks.
+    this.app.createWindow().then((electronWindow) => {
+      const { webContents } = electronWindow;
+      const toDisposeOnReady = TheiaRendererAPI.onApplicationStateChanged(
+        webContents,
+        (state) => {
+          if (state === 'ready') {
+            ElectronArduinoRenderer.sendStartupTasks(webContents, options);
+            toDisposeOnReady.dispose();
+          }
+        }
       );
-      if (existing) {
-        existing.focus();
-        return;
-      }
-    }
-    return super.openNewWindow(url, { external });
-  }
-
-  private sanitize(url: string): string {
-    const copy = new URL(url);
-    const searchParams: string[] = [];
-    copy.searchParams.forEach((_, key) => searchParams.push(key));
-    for (const param of searchParams) {
-      copy.searchParams.delete(param);
-    }
-    return copy.toString();
+      return electronWindow.loadURL(url);
+    });
+    return undefined;
   }
 }

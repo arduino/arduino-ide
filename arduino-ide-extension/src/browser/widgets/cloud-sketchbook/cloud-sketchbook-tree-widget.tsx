@@ -1,19 +1,20 @@
-import * as React from 'react';
-import { inject, injectable, postConstruct } from 'inversify';
+import * as React from '@theia/core/shared/react';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { TreeModel } from '@theia/core/lib/browser/tree/tree-model';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { CloudSketchbookTree } from './cloud-sketchbook-tree';
-import { CloudUserCommands } from '../../auth/cloud-user-commands';
+import {
+  CloudUserCommands,
+  LEARN_MORE_URL,
+} from '../../auth/cloud-user-commands';
 import { NodeProps } from '@theia/core/lib/browser/tree/tree-widget';
 import { TreeNode } from '@theia/core/lib/browser/tree';
 import { CompositeTreeNode } from '@theia/core/lib/browser';
-import { shell } from 'electron';
 import { SketchbookTreeWidget } from '../sketchbook/sketchbook-tree-widget';
-
-const LEARN_MORE_URL =
-  'https://docs.arduino.cc/software/ide-v2/tutorials/ide-v2-cloud-sketch-sync';
+import { nls } from '@theia/core/lib/common';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
 
 @injectable()
 export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
@@ -26,41 +27,53 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
   @inject(CloudSketchbookTree)
   protected readonly cloudSketchbookTree: CloudSketchbookTree;
 
-  @postConstruct()
-  protected async init(): Promise<void> {
-    await super.init();
-    this.addClass('tree-container'); // Adds `height: 100%` to the tree. Otherwise you cannot see it.
-  }
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
 
-  protected renderTree(model: TreeModel): React.ReactNode {
+  protected override renderTree(model: TreeModel): React.ReactNode {
     if (this.shouldShowWelcomeView()) return this.renderViewWelcome();
     if (this.shouldShowEmptyView()) return this.renderEmptyView();
     return super.renderTree(model);
   }
 
-  protected renderEmptyView() {
+  protected renderEmptyView(): React.ReactNode {
     return (
       <div className="cloud-sketchbook-welcome center">
         <div className="center item">
           <div>
             <p>
-              <b>Your Sketchbook is empty</b>
+              <b>
+                {nls.localize(
+                  'arduino/cloud/emptySketchbook',
+                  'Your Sketchbook is empty'
+                )}
+              </b>
             </p>
-            <p>Visit Arduino Cloud to create Cloud Sketches.</p>
+            <p>
+              {nls.localize(
+                'arduino/cloud/visitArduinoCloud',
+                'Visit Arduino Cloud to create Cloud Sketches.'
+              )}
+            </p>
           </div>
         </div>
         <button
-          className="theia-button"
-          onClick={() => shell.openExternal('https://create.arduino.cc/editor')}
+          className="theia-button uppercase"
+          onClick={() =>
+            this.windowService.openNewWindow(
+              'https://create.arduino.cc/editor',
+              { external: true }
+            )
+          }
         >
-          GO TO CLOUD
+          {nls.localize('arduino/cloud/goToCloud', 'Go to Cloud')}
         </button>
         <div className="center item"></div>
       </div>
     );
   }
 
-  protected shouldShowWelcomeView(): boolean {
+  protected override shouldShowWelcomeView(): boolean {
     if (!this.model || this.model instanceof CloudSketchbookTreeModel) {
       return !this.authenticationService.session;
     }
@@ -72,7 +85,10 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return CompositeTreeNode.is(node) && node.children.length === 0;
   }
 
-  protected createNodeClassNames(node: any, props: NodeProps): string[] {
+  protected override createNodeClassNames(
+    node: any,
+    props: NodeProps
+  ): string[] {
     const classNames = super.createNodeClassNames(node, props);
 
     if (
@@ -86,15 +102,33 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return classNames;
   }
 
-  protected renderInlineCommands(node: any, props: NodeProps): React.ReactNode {
-    if (
-      CloudSketchbookTree.CloudSketchDirNode.is(node) &&
-      node.commands &&
-      (node.id === this.hoveredNodeId ||
-        this.currentSketchUri === node.uri.toString())
-    ) {
+  protected override renderIcon(
+    node: TreeNode,
+    props: NodeProps
+  ): React.ReactNode {
+    if (CloudSketchbookTree.CloudSketchDirNode.is(node)) {
+      const synced = CloudSketchbookTree.CloudSketchTreeNode.isSynced(node);
+      const offline = this.connectionStatus.offlineStatus === 'internet';
+      const icon = `fa fa-arduino-cloud${synced ? '-filled' : ''}${
+        offline ? '-offline' : ''
+      }`;
+      return (
+        <div
+          className={`theia-file-icons-js file-icon${
+            !synced && offline ? ' not-in-sync-offline' : ''
+          }`}
+        >
+          <div className={icon} />
+        </div>
+      );
+    }
+    return super.renderIcon(node, props);
+  }
+
+  protected override renderInlineCommands(node: any): React.ReactNode {
+    if (CloudSketchbookTree.CloudSketchDirNode.is(node) && node.commands) {
       return Array.from(new Set(node.commands)).map((command) =>
-        this.renderInlineCommand(command.id, node, {
+        this.renderInlineCommand(command, node, {
           username: this.authenticationService.session?.account?.label,
         })
       );
@@ -102,14 +136,22 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
     return undefined;
   }
 
-  protected renderViewWelcome(): React.ReactNode {
+  protected override renderViewWelcome(): React.ReactNode {
     return (
       <div className="cloud-sketchbook-welcome center">
         <div className="center item">
           <div>
-            <p className="sign-in-title">Sign in to Arduino Cloud</p>
+            <p className="sign-in-title">
+              {nls.localize(
+                'arduino/cloud/signInToCloud',
+                'Sign in to Arduino Cloud'
+              )}
+            </p>
             <p className="sign-in-desc">
-              Sync and edit your Arduino Cloud Sketches
+              {nls.localize(
+                'arduino/cloud/syncEditSketches',
+                'Sync and edit your Arduino Cloud Sketches'
+              )}
             </p>
           </div>
         </div>
@@ -119,7 +161,7 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
             this.commandRegistry.executeCommand(CloudUserCommands.LOGIN.id)
           }
         >
-          SIGN IN
+          {nls.localize('arduino/cloud/signIn', 'SIGN IN')}
         </button>
         <div className="center item">
           <div
@@ -130,14 +172,14 @@ export class CloudSketchbookTreeWidget extends SketchbookTreeWidget {
               })
             }
           >
-            Learn more
+            {nls.localize('arduino/cloud/learnMore', 'Learn more')}
           </div>
         </div>
       </div>
     );
   }
 
-  protected handleDblClickEvent(
+  protected override handleDblClickEvent(
     node: TreeNode,
     event: React.MouseEvent<HTMLElement>
   ): void {

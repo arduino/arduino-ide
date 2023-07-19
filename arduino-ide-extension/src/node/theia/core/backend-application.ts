@@ -1,4 +1,4 @@
-import { inject, injectable, named } from 'inversify';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { ContributionProvider } from '@theia/core/lib/common/contribution-provider';
 import {
   BackendApplication as TheiaBackendApplication,
@@ -11,9 +11,9 @@ export class BackendApplication extends TheiaBackendApplication {
   constructor(
     @inject(ContributionProvider)
     @named(BackendApplicationContribution)
-    protected readonly contributionsProvider: ContributionProvider<BackendApplicationContribution>,
+    protected override readonly contributionsProvider: ContributionProvider<BackendApplicationContribution>,
     @inject(BackendApplicationCliContribution)
-    protected readonly cliParams: BackendApplicationCliContribution
+    protected override readonly cliParams: BackendApplicationCliContribution
   ) {
     super(contributionsProvider, cliParams);
     // Workaround for Electron not installing a handler to ignore SIGPIPE

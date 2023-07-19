@@ -1,5 +1,5 @@
-import * as PQueue from 'p-queue';
-import { inject, injectable } from 'inversify';
+import PQueue from 'p-queue';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser';
@@ -15,6 +15,9 @@ import { LibraryListWidget } from '../library/library-list-widget';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { SketchContribution, Command, CommandRegistry } from './contribution';
 import { NotificationCenter } from '../notification-center';
+import { nls } from '@theia/core/lib/common';
+import * as monaco from '@theia/monaco-editor-core';
+import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class IncludeLibrary extends SketchContribution {
@@ -28,7 +31,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly mainMenuManager: MainMenuManager;
 
   @inject(EditorManager)
-  protected readonly editorManager: EditorManager;
+  protected override readonly editorManager: EditorManager;
 
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
@@ -42,34 +45,45 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
   protected readonly toDispose = new DisposableCollection();
 
-  onStart(): void {
-    this.updateMenuActions();
+  override onStart(): void {
     this.boardsServiceClient.onBoardsConfigChanged(() =>
       this.updateMenuActions()
     );
-    this.notificationCenter.onLibraryInstalled(() => this.updateMenuActions());
-    this.notificationCenter.onLibraryUninstalled(() =>
+    this.notificationCenter.onLibraryDidInstall(() => this.updateMenuActions());
+    this.notificationCenter.onLibraryDidUninstall(() =>
       this.updateMenuActions()
     );
+    this.notificationCenter.onDidReinitialize(() => this.updateMenuActions());
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override async onReady(): Promise<void> {
+    this.updateMenuActions();
+  }
+
+  override registerMenus(registry: MenuModelRegistry): void {
     // `Include Library` submenu
     const includeLibMenuPath = [
       ...ArduinoMenus.SKETCH__UTILS_GROUP,
       '0_include',
     ];
-    registry.registerSubmenu(includeLibMenuPath, 'Include Library', {
-      order: '1',
-    });
+    registry.registerSubmenu(
+      includeLibMenuPath,
+      nls.localize('arduino/library/include', 'Include Library'),
+      {
+        order: '1',
+      }
+    );
     // `Manage Libraries...` group.
     registry.registerMenuAction([...includeLibMenuPath, '0_manage'], {
       commandId: `${LibraryListWidget.WIDGET_ID}:toggle`,
-      label: 'Manage Libraries...',
+      label: nls.localize(
+        'arduino/library/manageLibraries',
+        'Manage Libraries...'
+      ),
     });
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(IncludeLibrary.Commands.INCLUDE_LIBRARY, {
       execute: async (arg) => {
         if (LibraryPackage.is(arg)) {
@@ -101,10 +115,17 @@ export class IncludeLibrary extends SketchContribution {
       const userMenuPath = [...includeLibMenuPath, '3_contributed'];
       const { user, rest } = LibraryPackage.groupByLocation(libraries);
       if (rest.length) {
-        (rest as any).unshift('Arduino libraries');
+        (rest as any).unshift(
+          nls.localize('arduino/library/arduinoLibraries', 'Arduino libraries')
+        );
       }
       if (user.length) {
-        (user as any).unshift('Contributed libraries');
+        (user as any).unshift(
+          nls.localize(
+            'arduino/library/contributedLibraries',
+            'Contributed libraries'
+          )
+        );
       }
 
       for (const library of user) {
@@ -153,7 +174,7 @@ export class IncludeLibrary extends SketchContribution {
 
   protected async includeLibrary(library: LibraryPackage): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
-    if (!sketch) {
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     // If the current editor is one of the additional files from the sketch, we use that.

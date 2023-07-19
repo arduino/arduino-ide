@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "درباره {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "بورد {0}",
+      "boardConfigDialogTitle": "انتخاب یک بورد و پورت دیگر",
+      "boardInfo": "مشخصات برد",
+      "boards": "بردها",
+      "configDialog1": "اگر می‌خواهید طرحی را آپلود کنید، هم یک تابلو و هم یک پورت انتخاب کنید.",
+      "configDialog2": "اگر فقط تابلو را انتخاب کنید، می توانید کامپایل کنید، اما نمی توانید طرح خود را آپلود کنید.",
+      "couldNotFindPreviouslySelected": "نمی توان برد انتخاب شده قبلی '{0}' در پلتفرم نصب شده '{1}' را پیدا کرد. لطفاً تابلویی را که می‌خواهید استفاده کنید، مجدداً به‌صورت دستی انتخاب کنید. آیا اکنون می خواهید آن را مجدداً انتخاب کنید؟",
+      "disconnected": "اتصال قطع شد",
+      "getBoardInfo": "دریافت راهنمای برد",
+      "inSketchbook": "(در منبع طرح ها)",
+      "installNow": "هسته \"{0}{1}\" باید برای برد \"{2}\" انتخاب شده فعلی نصب شود. آیا الان می خواهید نصبش کنید؟",
+      "noBoardsFound": "هیچ بردی پیدا نشد برای{0}",
+      "noFQBN": "FQBN برای برد انتخاب شده \"{0}\" موجود نیست. آیا هسته مربوطه را نصب کرده اید؟",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "هیچ پورتی پیدا نشد",
+      "noPortsSelected": "هیچ پورتی برای برد انتخاب نشده است.{0}",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "هیچ بردی انتخاب نشده است.",
+      "openBoardsConfig": "انتخاب سایر برد ها و پورت ها",
+      "pleasePickBoard": "لطفاً یک برد متصل به پورتی که انتخاب کرده اید را انتخاب کنید.",
+      "port": "پورت {0}",
+      "portLabel": "پورت: {0}",
+      "ports": "پورت ها",
+      "programmer": "برنامه ریز",
+      "reselectLater": "بعدا انتخاب کنید",
+      "searchBoard": "جستجوی بورد",
+      "selectBoard": "انتخاب برد",
+      "selectPortForInfo": "لطفاً یک پورت را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
+      "showAllAvailablePorts": "نمایش تمام پورت های موجود در صورت فعال بودن",
+      "showAllPorts": "نمایش تمام پورت ها",
+      "succesfullyInstalledPlatform": "نصب پلتفرم موفقیت آمیز بود {0}:{1}",
+      "succesfullyUninstalledPlatform": "لغو نصب پلتفرم موفقیت آمیز بود. {0}:{1}",
+      "typeOfPorts": "پورت ها{0}",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "مدیریت برد ها",
+    "boardsType": {
+      "arduinoCertified": "گواهی آردینو"
+    },
+    "bootloader": {
+      "burnBootloader": "بارگذاری بوت لودر.",
+      "burningBootloader": "بارگذاری بوت لودر",
+      "doneBurningBootloader": "اتمام بارگذاری بوت لودر."
+    },
+    "burnBootloader": {
+      "error": "خطای حیاتی حلقه بوت لودر : {0}"
+    },
+    "certificate": {
+      "addNew": "افزودن جدید",
+      "addURL": "افزودن لینک به سند واکشی SSL",
+      "boardAtPort": "{0} در {1}",
+      "certificatesUploaded": "سند بارگذاری شد.",
+      "enterURL": "لینک را بنویسید.",
+      "noSupportedBoardConnected": "برد متصل شده پشتیبانی نمی شود.",
+      "openContext": "زمینه باز",
+      "remove": "حذف",
+      "selectBoard": "انتخاب یک برد ...",
+      "selectCertificateToUpload": "1. انتخاب سند برای بارگذاری",
+      "selectDestinationBoardToUpload": "2. انتخاب برد مورد نظر و بارگذاری سند",
+      "upload": "آپلود",
+      "uploadFailed": "آپلود ناموفق بود. لطفا دوباره سعی کنید.",
+      "uploadRootCertificates": "بارگذاری سند ریشه SSL",
+      "uploadingCertificates": "در حال بارگذاری سند."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "بررسی به روزرسانی برای آردینو",
+      "installAll": "همه را نصب کنید",
+      "noUpdates": "هیچ به روز رسانی اخیر در دسترس نیست",
+      "promptUpdateBoards": "به روز رسانی برای برخی از بردها شما در دسترس است.",
+      "promptUpdateLibraries": "به روز رسانی برای برخی از کتابخانه های شما در دسترس است.",
+      "updatingBoards": "در حال به روز رسانی بردها ...",
+      "updatingLibraries": "در حال به روز رسانی کتابخانه ها..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "صفحه کلید پیدا نشد. آیا طرح شما شامل خط \"#include <Keyboard.h>\" است؟",
+      "mouseError": "\"موس\" پیدا نشد. آیا طرح شما شامل خط \"#include <Mouse.h>\" است؟"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "قابلیت مشاهده طرح خود را انتخاب کنید:",
+      "cloudSketchbook": "منبع ابری طرح ها",
+      "connected": "متصل",
+      "continue": "ادامه",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "قرار دادن:",
+      "emptySketchbook": "طرح شما خالی است",
+      "goToCloud": "به فضای ابری بروید",
+      "learnMore": "یادگیری بیشتر",
+      "link": "لینک:",
+      "notYetPulled": "نمی توان به ابر ارسال کرد. هنوز دریافت نشده است.",
+      "offline": "آفلاین",
+      "openInCloudEditor": "در ویرایشگر ابری باز کن",
+      "options": "تنظیمات...",
+      "privateVisibility": "خصوصی است. فقط شما می توانید طرح را مشاهده کنید.",
+      "profilePicture": "عکس پروفایل",
+      "publicVisibility": "عمومی است. هر کسی که پیوند را داشته باشد می تواند طرح را مشاهده کند.",
+      "pull": "دریافت",
+      "pullFirst": "ابتدا باید دریافت کنید تا بتوانید به سمت ابر ارسال کنید.",
+      "pullSketch": "دریافت طرح",
+      "pullSketchMsg": "با بیرون کشیدن این طرح از ابر، نسخه محلی آن بازنویسی می شود. آیا مطمئن هستید که میخواهید ادامه دهید؟",
+      "push": "ارسال",
+      "pushSketch": "ارسال طرح",
+      "pushSketchMsg": "این یک طرح عمومی است. قبل از ارسال، مطمئن شوید که اطلاعات حساس در فایل‌های arduino_secrets.h تعریف شده است. می‌توانید از پانل اشتراک‌گذاری یک طرح را خصوصی کنید.",
+      "remote": "از راه دور",
+      "share": "اشتراک گذاری...",
+      "shareSketch": "اشتراک طرح",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "ورود کاربر",
+      "signInToCloud": "ورود به ابر آردوینو",
+      "signOut": "خروج کاربر",
+      "sync": "همگام سازی",
+      "syncEditSketches": "طرح های ابر آردوینو خود را همگام سازی و ویرایش کنید",
+      "visitArduinoCloud": "بازدید از ابر آردوینو برای ساخت ابر طرح ها"
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "همه",
+      "contributed": "کمک کرد",
+      "installManually": "دستی نصب کن",
+      "later": "بعدا",
+      "noBoardSelected": "بردی انتخاب نشده",
+      "notConnected": "[متصل نشد]",
+      "offlineIndicator": "به نظر می رسد آفلاین هستید. بدون اتصال به اینترنت، رابط ترمینال آردوینو ممکن است نتواند منابع مورد نیاز را دانلود کند و باعث اختلال در عملکرد شود. لطفاً به اینترنت متصل شوید و برنامه را مجدداً راه اندازی کنید.",
+      "oldFormat": "'{0}' هنوز از قالب قدیمی `.pde` استفاده می کند. آیا می‌خواهید به برنامه افزودنی «.ino» جدید بروید؟",
+      "partner": "شریک",
+      "processing": "در حال محاسبه",
+      "recommended": "توصیه شده",
+      "retired": "بازنشسته",
+      "selectedOn": "روشن {0}",
+      "serialMonitor": "نمایشگر ترمینال سریال",
+      "type": "نوع",
+      "unknown": "نامعلوم",
+      "updateable": "قابل به روز رسانی"
+    },
+    "compile": {
+      "error": "خطای کامپایل : {0}"
+    },
+    "component": {
+      "boardsIncluded": "بردهای موجود در این بسته :",
+      "by": "توسط",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "محدود کردن جستجوی شما ...",
+      "install": "نصب",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "اطلاعات بیشتر",
+      "otherVersions": "Other Versions",
+      "remove": "حذف",
+      "title": "{0} by {1}",
+      "uninstall": "لغو نصب",
+      "uninstallMsg": "آیا شما می خواهید {0} را لغو نصب کنید؟",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "فایل اظافه کن",
+      "fileAdded": "یک فایل به طرح افزوده شد.",
+      "plotter": {
+        "couldNotOpen": "پلاتر سریال باز نشد"
+      },
+      "replaceTitle": "جایگذاری"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "همه",
+        "default": "پیش فرض",
+        "more": "بیشتر",
+        "none": "هیچ یک"
+      }
+    },
+    "coreContribution": {
+      "copyError": "کپی پیام های خطا",
+      "noBoardSelected": "هیچ بردی انتخاب نشده است. لطفاً برد آردوینو خود را از منوی Tools > Board انتخاب کنید"
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "راه اندازی مجدد Daemon",
+      "start": "شروع Daemon",
+      "stop": " متوقف کردن Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "رفع خطا {0}",
+      "debuggingNotSupported": "رفع خطا توسط {0} پشتیبانی نمی شود.",
+      "noPlatformInstalledFor": "دستگاه مورد نظر برای {0} نصب نشده است",
+      "optimizeForDebugging": "بهینه کردن برای رفع خطا",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "نمی تواند بپرسد."
+    },
+    "editor": {
+      "autoFormat": "دندانه گذاری خودکار",
+      "commentUncomment": "نظر / لغو نظر",
+      "copyForForum": "کپی از انجمن (Markdown)",
+      "decreaseFontSize": "کاهش اندازه فونت",
+      "decreaseIndent": "برداشتن دندانه",
+      "increaseFontSize": "افزایش اندازه فونت",
+      "increaseIndent": "افزودن دندانه",
+      "nextError": "خطای بعدی",
+      "previousError": "خطای قبلی",
+      "revealError": "فاش کردن خطا"
+    },
+    "electron": {
+      "couldNotSave": "ابر طرح را ذخیره نکرد. لطفا کار ذخیره نشده خود را به ویرایشگر متن مورد علاقه خود کپی کنید، و آردوینو را دوباره راه اندازی کنید.",
+      "unsavedChanges": "هر تغییری که انجام می دهید ذخیره نمی شود."
+    },
+    "examples": {
+      "builtInExamples": "نمونه های داخلی",
+      "couldNotInitializeExamples": "ابر نمی تواند نمونه های داخلی را مقدار دهی اولیه کند.",
+      "customLibrary": "مثال از کتابخانه شخصی",
+      "for": "مثال برای {0}",
+      "forAny": "مثال برای همه برد ها",
+      "menu": "مثال ها"
+    },
+    "firmware": {
+      "checkUpdates": "بررسی بروزرسانی",
+      "failedInstall": "نصب ناموفق بود. دوباره تلاش کنید.",
+      "install": "نصب",
+      "installingFirmware": "در حال نصب درایور.",
+      "overwriteSketch": "نصب کردن، طرح را روی برد بازنویسی می کند.",
+      "selectBoard": "انتخاب برد",
+      "selectVersion": "انتخاب نسخه درایور",
+      "successfullyInstalled": "نصب درایور موفقیت آمیز بود.",
+      "updater": "بروزرسان درایور WiFi101 / WiFiNINA"
+    },
+    "help": {
+      "environment": "محیط",
+      "faq": "سوالات سریع پاسخ داده شده",
+      "findInReference": "جستجو در دستورالعمل",
+      "gettingStarted": "آغاز کار",
+      "keyword": "کلید واژه را بنویسید",
+      "privacyPolicy": "حریم خصوصی",
+      "reference": "دستورالعمل",
+      "search": "جستجو در Arduino.cc",
+      "troubleshooting": "عیب یابی",
+      "visit": "بازدید از Arduino.cc"
+    },
+    "ide-updater": {
+      "checkForUpdates": "به روز رسانی آردوینو IDE را بررسی کنید",
+      "closeAndInstallButton": "بستن و نصب",
+      "closeToInstallNotice": "نرم افزار را ببندید و به روز رسانی را روی دستگاه خود نصب کنید.",
+      "downloadButton": "دانلود",
+      "downloadingNotice": "در حال بارگیری آخرین نسخه از آردوینو",
+      "errorCheckingForUpdates": "خطا در حلقه بررسی برای وجود بروزرسانی برای آردوینو رخ داد. {0}",
+      "goToDownloadButton": "برو به بارگیری ",
+      "goToDownloadPage": "یک به‌روزرسانی برای آردوینو در دسترس است، اما نمی‌توانیم آن را به‌طور خودکار دانلود و نصب کنیم. لطفا به صفحه دانلود بروید و آخرین نسخه را از آنجا دانلود کنید.",
+      "ideUpdaterDialog": "به روز رسانی نرم افزار",
+      "newVersionAvailable": "ورژن جدید ای دی ای آردوینو ({0}) آماده نصب است.",
+      "noUpdatesAvailable": "هیچ به روز رسانی جدیدی برای آردوینو موجود نیست",
+      "notNowButton": "الان ممکن نیست",
+      "skipVersionButton": "نسخه بعدی",
+      "updateAvailable": "به روز رسانی موجود است",
+      "versionDownloaded": "آردوینو {0} دانلود شده بوده است."
+    },
+    "library": {
+      "addZip": "اضافه کتابخانه ی .zip شده",
+      "arduinoLibraries": "کتابخانه های آردوینو",
+      "contributedLibraries": "کتابخانه های اشتراکی",
+      "include": "اضافه کتابخانه",
+      "installAll": "همه را نصب کنید",
+      "installLibraryDependencies": "وابستگی های کتابخانه را نصب کنید",
+      "installMissingDependencies": "آیا می خواهید تمام وابستگی های از دست رفته را نصب کنید؟",
+      "installOneMissingDependency": "آیا می خواهید وابستگی از دست رفته را نصب کنید؟",
+      "installWithoutDependencies": "بدون وابستگی نصب کنید",
+      "installedSuccessfully": "نصب کتابخانه {0}:{1} موفقیت آمیز بود.",
+      "libraryAlreadyExists": "یک کتابخانه از قبل وجود دارد. آیا میخواهید آن را بازنویسی کنید؟",
+      "manageLibraries": "مدیریت کتابخانه ها...",
+      "namedLibraryAlreadyExists": "یک پوشه کتابخانه به نام {0} از قبل وجود دارد. آیا می خواهید آن را بازنویسی کنید؟",
+      "needsMultipleDependencies": "کتابخانه <b>{0}:{1}</b> به برخی وابستگی های دیگر نیاز دارد که در حال حاضر نصب نشده اند:",
+      "needsOneDependency": "کتابخانه <b>{0}:{1}</b> به وابستگی دیگری نیاز دارد که در حال حاضر نصب نشده است:",
+      "overwriteExistingLibrary": "آیا می خواهید کتابخانه موجود را بازنویسی کنید؟",
+      "successfullyInstalledZipLibrary": "نصب کتابخانه از {0} موفقیت امیز بود.",
+      "title": "اداره کتابخانه ها",
+      "uninstalledSuccessfully": "لغو نصب کتابخانه {0}:{1} موفقیت آمیز بود.",
+      "zipLibrary": "کتابخانه"
+    },
+    "librarySearchProperty": {
+      "topic": "موضوع"
+    },
+    "libraryTopic": {
+      "communication": "ارتباط",
+      "dataProcessing": "پردازش داده ها",
+      "dataStorage": "ذخیره سازی داده ها",
+      "deviceControl": "کنترل دستگاه",
+      "display": "نمایش دادن",
+      "other": "دیگر",
+      "sensors": "سنسورها",
+      "signalInputOutput": "سیگنال ورودی/خروجی",
+      "timing": "زمان سنجی",
+      "uncategorized": "دسته بندی نشده"
+    },
+    "libraryType": {
+      "installed": "نصب شده است"
+    },
+    "menu": {
+      "advanced": "پیشرفته",
+      "sketch": "طرح",
+      "tools": "ابزار ها"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "بسته شدن وب سوکت ممکن نیست",
+      "unableToConnectToWebSocket": "اتصال به وب سوکت امکان پذیر نیست"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "نتورک",
+      "serial": "سریال"
+    },
+    "preferences": {
+      "additionalManagerURLs": "نشانی‌های اینترنتی مدیر تابلوهای افزوده",
+      "auth.audience": "حضار OAuth2(احراز هویت اینترنتی).",
+      "auth.clientID": "شناسه مشتری OAuth2(احراز هویت اینترنتی).",
+      "auth.domain": "دامنه OAuth2(احراز هویت اینترنتی).",
+      "auth.registerUri": "لینک برای ثبت یک کاربر جدید استفاده می شود.",
+      "automatic": "اتوماتیک",
+      "board.certificates": "فهرست گواهی‌هایی که می‌توان در تابلوها بارگذاری کرد",
+      "browse": "مرور کردن",
+      "checkForUpdate": "اعلان‌های به‌روزرسانی‌های موجود برای IDE، بردها و کتابخانه‌ها را دریافت کنید. پس از تغییر نیاز به راه اندازی مجدد IDE دارد. به طور پیش فرض درست است.",
+      "choose": "انتخاب",
+      "cli.daemonDebug": "ثبت اشکال زدایی تماس های gRPC به Arduino CLI را فعال کنید. برای اعمال این تنظیم به راه اندازی مجدد IDE نیاز است. به طور پیش فرض نادرست است",
+      "cloud.enabled": "اگر فعال بودن توابع همگام سازی طرح درست می باشد ، پیش فرض ها درست است",
+      "cloud.pull.warn": "اگر هشدار دادن به کاربران قبل از کشیدن یک طرح ابری درست می باشد ، پیش فرض ها صحیح است.",
+      "cloud.push.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح ابری درست است پیش فرض ها درست می باشد",
+      "cloud.pushpublic.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح عمومی به فضای درست می باشد پیش فرض ها درست است.",
+      "cloud.sketchSyncEndpoint": "نقطه ای برای ارسال و دریافت طرح ها استفاده می شود . به طور پیش فرض به رابط ابر آردوینو استفاده می کند.",
+      "compile": "کامپایل",
+      "compile.experimental": "درست است اگر IDE باید چندین خطای کامپایلر را مدیریت کند. به طور پیش فرض نادرست است",
+      "compile.revealRange": "نحوه آشکار شدن خطاهای کامپایلر در ویرایشگر پس از تأیید/آپلود ناموفق را تنظیم می کند. مقادیر ممکن: 'auto': در صورت لزوم به صورت عمودی اسکرول کنید و یک خط را نشان دهید. 'مرکز': در صورت لزوم به صورت عمودی اسکرول کنید و یک خط را در مرکز عمودی نشان دهید. 'بالا': در صورت لزوم به صورت عمودی اسکرول کنید و یک خط نزدیک به بالای نمای درگاه را نشان دهید که برای مشاهده تعریف کد بهینه شده است. 'centerIfOutsideViewport': در صورت لزوم به صورت عمودی اسکرول کنید و یک خط در مرکز عمودی را فقط در صورتی نشان دهید که خارج از درگاه دید قرار داشته باشد. مقدار پیش فرض است{0}",
+      "compile.verbose": "برای خروجی کامپایل پرمخاطب درست است. به طور پیش فرض نادرست است",
+      "compile.warnings": "به gcc می گوید از کدام سطح هشدار استفاده کند. به طور پیش فرض \"هیچ\" است",
+      "compilerWarnings": "هشدار های کامپایلر",
+      "editorFontSize": "اندازه فونت ویرایشگر",
+      "editorQuickSuggestions": "پیشنهادات سریع ویرایشگر",
+      "enterAdditionalURLs": "نشانی‌های وب اضافی، یکی برای هر ردیف وارد کنید",
+      "files.inside.sketches": "نمایش فایل ها در داخل طرح ها",
+      "ide.updateBaseUrl": "نشانی وب سایت که از آن برای به‌روزرسانی‌ها را دانلود کنیم. پیش‌فرض «https://downloads.arduino.cc/arduino-ide» است",
+      "ide.updateChannel": "برای به روز رسانی کانال را منتشر کنید 'stable' نسخه پایدار است، 'nightly' جدیدترین ساخت توسعه است.",
+      "interfaceScale": "مقیاس رابط",
+      "invalid.editorFontSize": "اندازه فونت ویرایشگر نامعتبر است. باید یک عدد صحیح مثبت باشد.",
+      "invalid.sketchbook.location": "مکان نامعتبر منبع طرح ها: {0}",
+      "invalid.theme": "طرح زمینه موجود نیست",
+      "language.log": "اگر سرور زبان آردوینو باید فایل های گزارش را در پوشه طرح ایجاد کند درست می باشد. در غیر این صورت، نادرست است. به طور پیش فرض نادرست است.",
+      "language.realTimeDiagnostics": "اگر درست باشد، سرور زبان هنگام تایپ در ویرایشگر، عیب‌یابی بی‌درنگ ارائه می‌کند. به طور پیش فرض نادرست است.",
+      "manualProxy": "پیکربندی دستی پروکسی",
+      "network": "نتورک",
+      "newSketchbookLocation": "مکان جدید منبع طرح ها را مشخص کنید",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "بدون پروکسی",
+      "proxySettings": {
+        "hostname": "نام میزبان",
+        "password": "رمز عبور",
+        "port": "شماره پورت",
+        "username": "نام کاربری"
+      },
+      "showVerbose": "نمایش خروجی پرمخاطب در طول",
+      "sketch": {
+        "inoBlueprint": "مسیر سیستم فایل مطلق به فایل طرح اولیه «.ino». در صورت مشخص شدن، محتوای فایل طرح اولیه برای هر طرح جدید ایجاد شده توسط IDE استفاده خواهد شد. اسکچ ها با محتوای پیش فرض آردوینو در صورتی که مشخص نشده باشند تولید می شوند. فایل های طرح اولیه غیرقابل دسترسی نادیده گرفته می شوند. **برای اعمال این تنظیم به راه اندازی مجدد IDE نیاز است**."
+      },
+      "sketchbook.location": "مکان منبع طرح ها",
+      "sketchbook.showAllFiles": "همه فایل‌های طرح را در داخل طرح نشان دهد درست است. به طور پیش فرض نادرست است.",
+      "survey.notification": "درست است اگر در صورت وجود نظرسنجی به کاربران اطلاع داده شود. به طور پیش فرض درست است.",
+      "unofficialBoardSupport": "برای لیستی از آدرس های اینترنتی پشتیبانی هیئت مدیره غیررسمی کلیک کنید",
+      "upload": "آپلود",
+      "upload.verbose": "برای خروجی آپلود پرمخاطب درست است. به طور پیش فرض نادرست است.",
+      "verifyAfterUpload": "تائید کد بعد از آپلود",
+      "window.autoScale": "اگر رابط کاربری به طور خودکار با اندازه فونت تغییر کند درست است.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "آیا می خواهید نسخه موجود را با {0} جایگزین کنید؟",
+    "selectZip": "یک فایل فشرده حاوی کتابخانه ای را که می خواهید اضافه کنید انتخاب کنید",
+    "serial": {
+      "autoscroll": "پیمایش خودکار",
+      "carriageReturn": "رفتن به سر سطر",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "پیام (برای ارسال پیام به '' د{0}ر '' وارد شوید{1})",
+      "newLine": "خط جدید",
+      "newLineCarriageReturn": "هم NL و هم CR",
+      "noLineEndings": "بدون پایان خط",
+      "notConnected": "متصل نشد. برد و پورت را انتخاب کنید تا بطور خودکار متصل شود.",
+      "openSerialPlotter": "سریال رسام",
+      "timestamp": "برچسب زمانی",
+      "toggleTimestamp": "اتصال برچسب زمان"
+    },
+    "sketch": {
+      "archiveSketch": "آرشیو طرح",
+      "cantOpen": "پوشه ای با نام \"{0}\" از قبل وجود دارد. طرح را نمی توان باز کرد",
+      "close": "آیا شما می خواهید این طرح را ببندید؟",
+      "compile": "تدوین طرح...",
+      "configureAndUpload": "پیکری بندی و بارگذاری",
+      "createdArchive": "آرشیو {0} ایجاد شد.",
+      "doneCompiling": "پایان کامپایل کردن",
+      "doneUploading": "پایان بارگذاری",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "دریافت خروجی باینری کامپایل شده",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "جابجا کردن",
+      "movingMsg": "فایل \"{0}\" باید داخل یک پوشه طرح به نام \"{1}\" باشد.\nاین پوشه را ایجاد کنید، فایل را منتقل کنید و ادامه دهید؟",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "بازکردن پوشه",
+      "openRecent": "باز کردن آخرین ها",
+      "openSketchInNewWindow": "باز کردن طرح در پنجره جدید.",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "ذخیره پوشه طرح در ...",
+      "saveSketch": "طرح خود را ذخیره کنید تا بعداً دوباره باز شود.",
+      "saveSketchAs": "ذخیره پوشه طرح در ...",
+      "showFolder": "نمایش پوشه ظرح",
+      "sketch": "طرح",
+      "sketchbook": "منبع طرح ها",
+      "titleLocalSketchbook": "منبع طرح محلی",
+      "titleSketchbook": "منبع طرح ها",
+      "upload": "آپلود",
+      "uploadUsingProgrammer": "بارگذاری با استفاده از پروگرامر",
+      "uploading": "درحال بارگذاری...",
+      "userFieldsNotFoundError": "عدم یافت شدن فیلد های کاربر برای برد متصل",
+      "verify": "تائید",
+      "verifyOrCompile": "تائید / کامپایل"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "به نظرسنجی پاسخ دهید",
+      "dismissSurvey": "دیگر نشان نده",
+      "surveyMessage": "لطفاً با پاسخ دادن به این نظرسنجی فوق العاده کوتاه ما را در پیشرفت خود یاری کنید. ما برای جامعه خود ارزش قائلیم و دوست داریم حامیان خود را کمی بهتر بشناسیم."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "به روز رسانی شاخص ها",
+      "updateLibraryIndex": "به روز رسانی فهرست کتابخانه",
+      "updatePackageIndex": "به روز رسانی فهرست بسته"
+    },
+    "upload": {
+      "error": "خطا {0} : {1}"
+    },
+    "userFields": {
+      "cancel": "لغو",
+      "enterField": "ورود{0}",
+      "upload": "بارگذاری"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "اتصال به سرور ناموفق بود.",
+      "cannotConnectDaemon": "نمی توان به CLI پس زمینه متصل شد.",
+      "couldNotSave": "ابر طرح را ذخیره نکرد. لطفا کار ذخیره نشده خود را به ویرایشگر متن مورد علاقه خود کپی کنید، و آردوینو را دوباره راه اندازی کنید.",
+      "daemonOffline": "CLI آفلاین پس زمینه",
+      "offline": "آفلاین",
+      "offlineText": "آفلاین",
+      "quitTitle": "آیا مطمئن هستید که می خواهید خارج شوید؟"
+    },
+    "editor": {
+      "unsavedTitle": "ذخیره نشده – {0}"
+    },
+    "messages": {
+      "collapse": "فروکش",
+      "expand": "باز کردن."
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "نام برای فایل جدید",
+      "invalidExtension": "افزونه {0} نادرست است.",
+      "newFileName": "نام جدید برای فایل"
+    }
+  }
+}

@@ -1,7 +1,8 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import { CloudSketchbookCompositeWidget } from './cloud-sketchbook-composite-widget';
 import { SketchbookWidget } from '../sketchbook/sketchbook-widget';
 import { ArduinoPreferences } from '../../arduino-preferences';
+import { BaseSketchbookCompositeWidget } from '../sketchbook/sketchbook-composite-widget';
 
 @injectable()
 export class CloudSketchbookWidget extends SketchbookWidget {
@@ -12,15 +13,15 @@ export class CloudSketchbookWidget extends SketchbookWidget {
   protected readonly arduinoPreferences: ArduinoPreferences;
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
   }
 
-  getTreeWidget(): any {
+  override getTreeWidget(): any {
     const widget: any = this.sketchbookTreesContainer.selectedWidgets().next();
 
-    if (widget && typeof widget.getTreeWidget !== 'undefined') {
-      return (widget as CloudSketchbookCompositeWidget).getTreeWidget();
+    if (widget instanceof BaseSketchbookCompositeWidget) {
+      return widget.treeWidget;
     }
     return widget;
   }
@@ -30,13 +31,13 @@ export class CloudSketchbookWidget extends SketchbookWidget {
       this.sketchbookTreesContainer.activateWidget(this.widget);
     } else {
       this.sketchbookTreesContainer.activateWidget(
-        this.localSketchbookTreeWidget
+        this.sketchbookCompositeWidget
       );
     }
     this.setDocumentMode();
   }
 
-  setDocumentMode() {
+  setDocumentMode(): void {
     if (this.arduinoPreferences['arduino.cloud.enabled']) {
       this.sketchbookTreesContainer.mode = 'multiple-document';
     } else {
@@ -44,7 +45,7 @@ export class CloudSketchbookWidget extends SketchbookWidget {
     }
   }
 
-  protected onAfterAttach(msg: any) {
+  protected override onAfterAttach(msg: any): void {
     this.sketchbookTreesContainer.addWidget(this.widget);
     this.setDocumentMode();
     this.arduinoPreferences.onPreferenceChanged((event) => {

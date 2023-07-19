@@ -1,7 +1,5 @@
-import { injectable } from 'inversify';
-import { remote } from 'electron';
-import * as dateFormat from 'dateformat';
-import URI from '@theia/core/lib/common/uri';
+import { injectable } from '@theia/core/shared/inversify';
+import dateFormat from 'dateformat';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
   SketchContribution,
@@ -9,40 +7,42 @@ import {
   CommandRegistry,
   MenuModelRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/common';
+import { CurrentSketch } from '../sketches-service-client-impl';
 
 @injectable()
 export class ArchiveSketch extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(ArchiveSketch.Commands.ARCHIVE_SKETCH, {
       execute: () => this.archiveSketch(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: ArchiveSketch.Commands.ARCHIVE_SKETCH.id,
-      label: 'Archive Sketch',
+      label: nls.localize('arduino/sketch/archiveSketch', 'Archive Sketch'),
       order: '1',
     });
   }
 
-  protected async archiveSketch(): Promise<void> {
-    const [sketch, config] = await Promise.all([
-      this.sketchServiceClient.currentSketch(),
-      this.configService.getConfiguration(),
-    ]);
-    if (!sketch) {
+  private async archiveSketch(): Promise<void> {
+    const sketch = await this.sketchServiceClient.currentSketch();
+    if (!CurrentSketch.isValid(sketch)) {
       return;
     }
     const archiveBasename = `${sketch.name}-${dateFormat(
       new Date(),
       'yymmdd'
     )}a.zip`;
-    const defaultPath = await this.fileService.fsPath(
-      new URI(config.sketchDirUri).resolve(archiveBasename)
-    );
-    const { filePath, canceled } = await remote.dialog.showSaveDialog({
-      title: 'Save sketch folder as...',
+    const defaultContainerUri = await this.defaultUri();
+    const defaultUri = defaultContainerUri.resolve(archiveBasename);
+    const defaultPath = await this.fileService.fsPath(defaultUri);
+    const { filePath, canceled } = await this.dialogService.showSaveDialog({
+      title: nls.localize(
+        'arduino/sketch/saveSketchAs',
+        'Save sketch folder as...'
+      ),
       defaultPath,
     });
     if (!filePath || canceled) {
@@ -52,10 +52,17 @@ export class ArchiveSketch extends SketchContribution {
     if (!destinationUri) {
       return;
     }
-    await this.sketchService.archive(sketch, destinationUri.toString());
-    this.messageService.info(`Created archive '${archiveBasename}'.`, {
-      timeout: 2000,
-    });
+    await this.sketchesService.archive(sketch, destinationUri.toString());
+    this.messageService.info(
+      nls.localize(
+        'arduino/sketch/createdArchive',
+        "Created archive '{0}'.",
+        archiveBasename
+      ),
+      {
+        timeout: 2000,
+      }
+    );
   }
 }
 

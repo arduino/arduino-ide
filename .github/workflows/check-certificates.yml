@@ -3,6 +3,7 @@ name: Check Certificates
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 on:
+  create:
   push:
     paths:
       - '.github/workflows/check-certificates.ya?ml'
@@ -20,12 +21,49 @@ env:
   EXPIRATION_WARNING_PERIOD: 30
 
 jobs:
+  run-determination:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.determination.outputs.result }}
+    steps:
+      - name: Determine if the rest of the workflow should run
+        id: determination
+        run: |
+          RELEASE_BRANCH_REGEX="refs/heads/[0-9]+.[0-9]+.x"
+          REPO_SLUG="arduino/arduino-ide"
+          if [[
+            (
+              # Only run on branch creation when it is a release branch.
+              # The `create` event trigger doesn't support `branches` filters, so it's necessary to use Bash instead.
+              "${{ github.event_name }}" != "create" ||
+              "${{ github.ref }}" =~ $RELEASE_BRANCH_REGEX
+            ) &&
+            (
+              # Only run when the workflow will have access to the certificate secrets.
+              # This could be done via a GitHub Actions workflow conditional, but makes more sense to do it here as well.
+              (
+                "${{ github.event_name }}" != "pull_request" &&
+                "${{ github.repository }}" == "$REPO_SLUG"
+              ) ||
+              (
+                "${{ github.event_name }}" == "pull_request" &&
+                "${{ github.event.pull_request.head.repo.full_name }}" == "$REPO_SLUG"
+              )
+            )
+          ]]; then
+            # Run the other jobs.
+            RESULT="true"
+          else
+            # There is no need to run the other jobs.
+            RESULT="false"
+          fi
+
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
   check-certificates:
     name: ${{ matrix.certificate.identifier }}
-    # Only run when the workflow will have access to the certificate secrets.
-    if: >
-      (github.event_name != 'pull_request' && github.repository == 'arduino/arduino-ide') ||
-      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == 'arduino/arduino-ide')
+    needs: run-determination
+    if: needs.run-determination.outputs.result == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -59,7 +97,9 @@ jobs:
           (
             openssl pkcs12 \
               -in "${{ env.CERTIFICATE_PATH }}" \
-              -noout -passin env:CERTIFICATE_PASSWORD
+              -legacy \
+              -noout \
+              -passin env:CERTIFICATE_PASSWORD
           ) || (
             echo "::error::Verification of ${{ matrix.certificate.identifier }} failed!!!"
             exit 1
@@ -87,6 +127,7 @@ jobs:
               openssl pkcs12 \
                 -in "${{ env.CERTIFICATE_PATH }}" \
                 -clcerts \
+                -legacy \
                 -nodes \
                 -passin env:CERTIFICATE_PASSWORD
             ) | (
@@ -108,7 +149,7 @@ jobs:
           echo "Certificate expiration date: $EXPIRATION_DATE"
           echo "Days remaining before expiration: $DAYS_BEFORE_EXPIRATION"
 
-          echo "::set-output name=days::$DAYS_BEFORE_EXPIRATION"
+          echo "days=$DAYS_BEFORE_EXPIRATION" >> $GITHUB_OUTPUT
 
       - name: Check if expiration notification period has been reached
         id: check-expiration

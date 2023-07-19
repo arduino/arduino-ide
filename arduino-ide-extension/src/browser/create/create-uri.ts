@@ -1,4 +1,4 @@
-import { URI as Uri } from 'vscode-uri';
+import { URI as Uri } from '@theia/core/shared/vscode-uri';
 import URI from '@theia/core/lib/common/uri';
 import { toPosixPath, parentPosix, posix } from './create-paths';
 import { Create } from './typings';
@@ -7,7 +7,9 @@ export namespace CreateUri {
   export const scheme = 'arduino-create';
   export const root = toUri(posix.sep);
 
-  export function toUri(posixPathOrResource: string | Create.Resource): URI {
+  export function toUri(
+    posixPathOrResource: string | Create.Resource | Create.Sketch
+  ): URI {
     const posixPath =
       typeof posixPathOrResource === 'string'
         ? posixPathOrResource

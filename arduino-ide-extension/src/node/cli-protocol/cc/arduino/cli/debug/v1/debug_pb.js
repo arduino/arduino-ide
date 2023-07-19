@@ -13,10 +13,18 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = Function('return this')();
+var global = (function() {
+  if (this) { return this; }
+  if (typeof window !== 'undefined') { return window; }
+  if (typeof global !== 'undefined') { return global; }
+  if (typeof self !== 'undefined') { return self; }
+  return Function('return this')();
+}.call(null));
 
 var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cli/commands/v1/common_pb.js');
 goog.object.extend(proto, cc_arduino_cli_commands_v1_common_pb);
+var cc_arduino_cli_commands_v1_port_pb = require('../../../../../cc/arduino/cli/commands/v1/port_pb.js');
+goog.object.extend(proto, cc_arduino_cli_commands_v1_port_pb);
 goog.exportSymbol('proto.cc.arduino.cli.debug.v1.DebugConfigRequest', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.debug.v1.DebugRequest', null, global);
 goog.exportSymbol('proto.cc.arduino.cli.debug.v1.DebugResponse', null, global);
@@ -375,7 +383,7 @@ proto.cc.arduino.cli.debug.v1.DebugConfigRequest.toObject = function(includeInst
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
     sketchPath: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    port: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    port: (f = msg.getPort()) && cc_arduino_cli_commands_v1_port_pb.Port.toObject(includeInstance, f),
     interpreter: jspb.Message.getFieldWithDefault(msg, 5, ""),
     importDir: jspb.Message.getFieldWithDefault(msg, 8, ""),
     programmer: jspb.Message.getFieldWithDefault(msg, 9, "")
@@ -429,7 +437,8 @@ proto.cc.arduino.cli.debug.v1.DebugConfigRequest.deserializeBinaryFromReader = f
       msg.setSketchPath(value);
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readString());
+      var value = new cc_arduino_cli_commands_v1_port_pb.Port;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_port_pb.Port.deserializeBinaryFromReader);
       msg.setPort(value);
       break;
     case 5:
@@ -496,10 +505,11 @@ proto.cc.arduino.cli.debug.v1.DebugConfigRequest.serializeBinaryToWriter = funct
     );
   }
   f = message.getPort();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f != null) {
+    writer.writeMessage(
       4,
-      f
+      f,
+      cc_arduino_cli_commands_v1_port_pb.Port.serializeBinaryToWriter
     );
   }
   f = message.getInterpreter();
@@ -600,20 +610,39 @@ proto.cc.arduino.cli.debug.v1.DebugConfigRequest.prototype.setSketchPath = funct
 
 
 /**
- * optional string port = 4;
- * @return {string}
+ * optional cc.arduino.cli.commands.v1.Port port = 4;
+ * @return {?proto.cc.arduino.cli.commands.v1.Port}
  */
 proto.cc.arduino.cli.debug.v1.DebugConfigRequest.prototype.getPort = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type{?proto.cc.arduino.cli.commands.v1.Port} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_port_pb.Port, 4));
 };
 
 
 /**
- * @param {string} value
+ * @param {?proto.cc.arduino.cli.commands.v1.Port|undefined} value
+ * @return {!proto.cc.arduino.cli.debug.v1.DebugConfigRequest} returns this
+*/
+proto.cc.arduino.cli.debug.v1.DebugConfigRequest.prototype.setPort = function(value) {
+  return jspb.Message.setWrapperField(this, 4, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.debug.v1.DebugConfigRequest} returns this
  */
-proto.cc.arduino.cli.debug.v1.DebugConfigRequest.prototype.setPort = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+proto.cc.arduino.cli.debug.v1.DebugConfigRequest.prototype.clearPort = function() {
+  return this.setPort(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.debug.v1.DebugConfigRequest.prototype.hasPort = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 

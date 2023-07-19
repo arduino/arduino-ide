@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
@@ -9,13 +9,13 @@ import {
   CommandContribution,
 } from '@theia/core/lib/common/command';
 import {
+  AuthOptions,
   AuthenticationService,
   AuthenticationServiceClient,
   AuthenticationSession,
+  authServerPort,
 } from '../../common/protocol/authentication-service';
 import { CloudUserCommands } from './cloud-user-commands';
-import { serverPort } from '../../node/auth/authentication-server';
-import { AuthOptions } from '../../node/auth/types';
 import { ArduinoPreferences } from '../arduino-preferences';
 
 @injectable()
@@ -43,13 +43,15 @@ export class AuthenticationClientService
 
   readonly onSessionDidChange = this.onSessionDidChangeEmitter.event;
 
-  onStart(): void {
+  async onStart(): Promise<void> {
     this.toDispose.push(this.onSessionDidChangeEmitter);
     this.service.setClient(this);
     this.service
       .session()
       .then((session) => this.notifySessionDidChange(session));
-    this.setOptions();
+
+    this.setOptions().then(() => this.service.initAuthSession());
+
     this.arduinoPreferences.onPreferenceChanged((event) => {
       if (event.preferenceName.startsWith('arduino.auth.')) {
         this.setOptions();
@@ -57,9 +59,9 @@ export class AuthenticationClientService
     });
   }
 
-  setOptions(): void {
-    this.service.setOptions({
-      redirectUri: `http://localhost:${serverPort}/callback`,
+  setOptions(): Promise<void> {
+    return this.service.setOptions({
+      redirectUri: `http://localhost:${authServerPort}/callback`,
       responseType: 'code',
       clientID: this.arduinoPreferences['arduino.auth.clientID'],
       domain: this.arduinoPreferences['arduino.auth.domain'],
@@ -81,9 +83,13 @@ export class AuthenticationClientService
   registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(CloudUserCommands.LOGIN, {
       execute: () => this.service.login(),
+      isEnabled: () => !this._session,
+      isVisible: () => !this._session,
     });
     registry.registerCommand(CloudUserCommands.LOGOUT, {
       execute: () => this.service.logout(),
+      isEnabled: () => !!this._session,
+      isVisible: () => !!this._session,
     });
   }
 

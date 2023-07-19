@@ -26,6 +26,9 @@ export class PlatformInstallRequest extends jspb.Message {
     getSkipPostInstall(): boolean;
     setSkipPostInstall(value: boolean): PlatformInstallRequest;
 
+    getNoOverwrite(): boolean;
+    setNoOverwrite(value: boolean): PlatformInstallRequest;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallRequest.AsObject;
@@ -44,6 +47,7 @@ export namespace PlatformInstallRequest {
         architecture: string,
         version: string,
         skipPostInstall: boolean,
+        noOverwrite: boolean,
     }
 }
 
@@ -75,6 +79,23 @@ export namespace PlatformInstallResponse {
     export type AsObject = {
         progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
         taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+    }
+}
+
+export class PlatformLoadingError extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformLoadingError.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformLoadingError): PlatformLoadingError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformLoadingError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformLoadingError;
+    static deserializeBinaryFromReader(message: PlatformLoadingError, reader: jspb.BinaryReader): PlatformLoadingError;
+}
+
+export namespace PlatformLoadingError {
+    export type AsObject = {
     }
 }
 
@@ -194,6 +215,23 @@ export namespace PlatformUninstallResponse {
     }
 }
 
+export class AlreadyAtLatestVersionError extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): AlreadyAtLatestVersionError.AsObject;
+    static toObject(includeInstance: boolean, msg: AlreadyAtLatestVersionError): AlreadyAtLatestVersionError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: AlreadyAtLatestVersionError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): AlreadyAtLatestVersionError;
+    static deserializeBinaryFromReader(message: AlreadyAtLatestVersionError, reader: jspb.BinaryReader): AlreadyAtLatestVersionError;
+}
+
+export namespace AlreadyAtLatestVersionError {
+    export type AsObject = {
+    }
+}
+
 export class PlatformUpgradeRequest extends jspb.Message { 
 
     hasInstance(): boolean;
@@ -244,6 +282,12 @@ export class PlatformUpgradeResponse extends jspb.Message {
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformUpgradeResponse;
 
 
+    hasPlatform(): boolean;
+    clearPlatform(): void;
+    getPlatform(): cc_arduino_cli_commands_v1_common_pb.Platform | undefined;
+    setPlatform(value?: cc_arduino_cli_commands_v1_common_pb.Platform): PlatformUpgradeResponse;
+
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformUpgradeResponse): PlatformUpgradeResponse.AsObject;
@@ -258,6 +302,7 @@ export namespace PlatformUpgradeResponse {
     export type AsObject = {
         progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
         taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        platform?: cc_arduino_cli_commands_v1_common_pb.Platform.AsObject,
     }
 }
 

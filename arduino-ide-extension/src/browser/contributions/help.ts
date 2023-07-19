@@ -1,10 +1,10 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { CommandHandler } from '@theia/core/lib/common/command';
-import { QuickInputService } from '@theia/core/lib/browser/quick-open/quick-input-service';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { QuickInputService } from '@theia/core/lib/browser/quick-input/quick-input-service';
 import {
   Contribution,
   Command,
@@ -12,6 +12,10 @@ import {
   CommandRegistry,
   KeybindingRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/common';
+import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
+import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
+import * as monaco from '@theia/monaco-editor-core';
 
 @injectable()
 export class Help extends Contribution {
@@ -24,7 +28,7 @@ export class Help extends Contribution {
   @inject(QuickInputService)
   protected readonly quickInputService: QuickInputService;
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     const open = (url: string) =>
       this.windowService.openNewWindow(url, { external: true });
     const createOpenHandler = (url: string) =>
@@ -37,7 +41,9 @@ export class Help extends Contribution {
     );
     registry.registerCommand(
       Help.Commands.ENVIRONMENT,
-      createOpenHandler('https://www.arduino.cc/en/Guide/Environment')
+      createOpenHandler(
+        'https://docs.arduino.cc/software/ide-v2/tutorials/getting-started-ide-v2'
+      )
     );
     registry.registerCommand(
       Help.Commands.TROUBLESHOOTING,
@@ -60,9 +66,9 @@ export class Help extends Contribution {
           }
         }
         if (!searchFor) {
-          searchFor = await this.quickInputService.open({
-            prompt: 'Search on Arduino.cc',
-            placeHolder: 'Type a keyword',
+          searchFor = await this.quickInputService.input({
+            prompt: nls.localize('arduino/help/search', 'Search on Arduino.cc'),
+            placeHolder: nls.localize('arduino/help/keyword', 'Type a keyword'),
           });
         }
         if (searchFor) {
@@ -82,9 +88,17 @@ export class Help extends Contribution {
       Help.Commands.VISIT_ARDUINO,
       createOpenHandler('https://www.arduino.cc/')
     );
+    registry.registerCommand(
+      Help.Commands.PRIVACY_POLICY,
+      createOpenHandler('https://www.arduino.cc/en/privacy-policy')
+    );
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
+    registry.unregisterMenuAction({
+      commandId: ElectronCommands.TOGGLE_DEVELOPER_TOOLS.id,
+    });
+
     registry.registerMenuAction(ArduinoMenus.HELP__MAIN_GROUP, {
       commandId: Help.Commands.GETTING_STARTED.id,
       order: '0',
@@ -114,9 +128,17 @@ export class Help extends Contribution {
       commandId: Help.Commands.VISIT_ARDUINO.id,
       order: '6',
     });
+    registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
+      commandId: Help.Commands.PRIVACY_POLICY.id,
+      order: '7',
+    });
+    registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
+      commandId: IDEUpdaterCommands.CHECK_FOR_UPDATES.id,
+      order: '8',
+    });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: Help.Commands.FIND_IN_REFERENCE.id,
       keybinding: 'CtrlCmd+Shift+F',
@@ -128,37 +150,42 @@ export namespace Help {
   export namespace Commands {
     export const GETTING_STARTED: Command = {
       id: 'arduino-getting-started',
-      label: 'Getting Started',
+      label: nls.localize('arduino/help/gettingStarted', 'Getting Started'),
       category: 'Arduino',
     };
     export const ENVIRONMENT: Command = {
       id: 'arduino-environment',
-      label: 'Environment',
+      label: nls.localize('arduino/help/environment', 'Environment'),
       category: 'Arduino',
     };
     export const TROUBLESHOOTING: Command = {
       id: 'arduino-troubleshooting',
-      label: 'Troubleshooting',
+      label: nls.localize('arduino/help/troubleshooting', 'Troubleshooting'),
       category: 'Arduino',
     };
     export const REFERENCE: Command = {
       id: 'arduino-reference',
-      label: 'Reference',
+      label: nls.localize('arduino/help/reference', 'Reference'),
       category: 'Arduino',
     };
     export const FIND_IN_REFERENCE: Command = {
       id: 'arduino-find-in-reference',
-      label: 'Find in Reference',
+      label: nls.localize('arduino/help/findInReference', 'Find in Reference'),
       category: 'Arduino',
     };
     export const FAQ: Command = {
       id: 'arduino-faq',
-      label: 'Frequently Asked Questions',
+      label: nls.localize('arduino/help/faq', 'Frequently Asked Questions'),
       category: 'Arduino',
     };
     export const VISIT_ARDUINO: Command = {
       id: 'arduino-visit-arduino',
-      label: 'Visit Arduino.cc',
+      label: nls.localize('arduino/help/visit', 'Visit Arduino.cc'),
+      category: 'Arduino',
+    };
+    export const PRIVACY_POLICY: Command = {
+      id: 'arduino-privacy-policy',
+      label: nls.localize('arduino/help/privacyPolicy', 'Privacy Policy'),
       category: 'Arduino',
     };
   }

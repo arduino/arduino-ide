@@ -1,5 +1,15 @@
 import { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
-import { AuthOptions } from '../../node/auth/types';
+export const authServerPort = 9876;
+
+export interface AuthOptions {
+  redirectUri: string;
+  responseType: string;
+  clientID: string;
+  domain: string;
+  audience: string;
+  registerUri: string;
+  scopes: string[];
+}
 
 export interface AuthenticationSession {
   readonly id: string;
@@ -22,7 +32,8 @@ export interface AuthenticationService
   logout(): Promise<void>;
   session(): Promise<AuthenticationSession | undefined>;
   disposeClient(client: AuthenticationServiceClient): void;
-  setOptions(authOptions: AuthOptions): void;
+  setOptions(authOptions: AuthOptions): Promise<void>;
+  initAuthSession(): Promise<void>;
 }
 
 export interface AuthenticationServiceClient {

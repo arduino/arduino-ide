@@ -1,0 +1,62 @@
+name: themes-weekly-pull
+
+on:
+  schedule:
+    # run every friday at 5AM
+    - cron: '0 5 * * 5'
+  workflow_dispatch:
+
+env:
+  # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
+  GO_VERSION: "1.19"
+  NODE_VERSION: 16.x
+
+jobs:
+  pull-from-jsonbin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.x
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run themes:pull script
+        run: yarn run themes:pull
+        env:
+          JSONBIN_MASTER_KEY: ${{ secrets.JSONBIN_MASTER_KEY }}
+          JSONBIN_ID: ${{ secrets.JSONBIN_ID }}
+
+      - name: Generate dark tokens
+        run: npx token-transformer scripts/themes/tokens/arduino-tokens.json scripts/themes/tokens/dark.json core,ide-default,ide-dark,theia core,ide-default,ide-dark
+
+      - name: Generate default tokens
+        run: npx token-transformer scripts/themes/tokens/arduino-tokens.json scripts/themes/tokens/default.json core,ide-default,theia core,ide-default
+
+      - name: Run themes:generate script
+        run: yarn run themes:generate
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: Updated themes
+          title: Update themes
+          branch: themes/themes-update
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>

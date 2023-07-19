@@ -6,8 +6,8 @@ import { DebugConfigurationModel as TheiaDebugConfigurationModel } from '@theia/
 
 export class DebugConfigurationModel extends TheiaDebugConfigurationModel {
   constructor(
-    readonly workspaceFolderUri: string,
-    protected readonly preferences: PreferenceService,
+    override readonly workspaceFolderUri: string,
+    protected override readonly preferences: PreferenceService,
     protected readonly config: DebugConfiguration[],
     protected configUri: URI | undefined,
     protected readonly onConfigDidChange: Event<TheiaDebugConfigurationModel.JsonContent>
@@ -25,10 +25,11 @@ export class DebugConfigurationModel extends TheiaDebugConfigurationModel {
     this.reconcile();
   }
 
-  protected parseConfigurations(): TheiaDebugConfigurationModel.JsonContent {
+  protected override parseConfigurations(): TheiaDebugConfigurationModel.JsonContent {
     return {
       uri: this.configUri,
       configurations: this.config,
+      compounds: [],
     };
   }
 }

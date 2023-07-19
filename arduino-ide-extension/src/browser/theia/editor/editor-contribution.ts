@@ -1,22 +1,21 @@
-import { injectable } from 'inversify';
-import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
+import { injectable } from '@theia/core/shared/inversify';
 import { TextEditor } from '@theia/editor/lib/browser';
-import { StatusBarAlignment } from '@theia/core/lib/browser';
+import { EditorContribution as TheiaEditorContribution } from '@theia/editor/lib/browser/editor-contribution';
 
 @injectable()
 export class EditorContribution extends TheiaEditorContribution {
-  protected updateLanguageStatus(editor: TextEditor | undefined): void {}
+  protected override updateLanguageStatus(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
+    editor: TextEditor | undefined
+  ): void {
+    // NOOP
+  }
 
-  protected setCursorPositionStatus(editor: TextEditor | undefined): void {
-    if (!editor) {
-      this.statusBar.removeElement('editor-status-cursor-position');
-      return;
-    }
-    const { cursor } = editor;
-    this.statusBar.setElement('editor-status-cursor-position', {
-      text: `${cursor.line + 1}`,
-      alignment: StatusBarAlignment.LEFT,
-      priority: 100,
-    });
+  protected override updateEncodingStatus(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
+    editor: TextEditor | undefined
+  ): void {
+    // https://github.com/arduino/arduino-ide/issues/1393
+    // NOOP
   }
 }

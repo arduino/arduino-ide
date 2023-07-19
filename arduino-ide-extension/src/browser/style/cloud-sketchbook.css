@@ -13,12 +13,23 @@
     margin-bottom: 20px;
 }
 
-
-.cloud-sketchbook-tree-icon {
-    background: url("./cloud-sketchbook-tree-icon.svg") center center no-repeat;
-    width: var(--theia-icon-size);
+.p-TabBar-tabIcon.cloud-sketchbook-tree-icon {
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(../icons/arduino-cloud.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    width: 19px !important;
     height: var(--theia-icon-size);
-    background-size: auto 90%;
+    -webkit-mask-size: 100%;
+}
+
+.p-mod-current
+.cloud-sketchbook-tree-icon {
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(../icons/arduino-cloud-filled.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100%;
 }
 
 .sketchbook-trees-container
@@ -65,7 +76,7 @@
 .p-Widget.p-TabBar.p-DockPanel-tabBar
 > ul
 > li.p-TabBar-tab.p-mod-current {
-    border-bottom: 2px solid var(--theia-statusBar-background);
+    border-bottom: 2px solid var(--theia-activityBar-activeBorder);
 }
 
 .sketchbook-trees-container .center {
@@ -85,25 +96,12 @@
 
 .cloud-sketchbook-welcome > .item .link {
     cursor: pointer;
-    color: var(--theia-arduino-branding-primary);
-}
-
-.pull-sketch-icon {
-    background: url("./pull-sketch-icon.svg") center center no-repeat;
-    width: var(--theia-icon-size);
-    height: var(--theia-icon-size);
-}
-
-.push-sketch-icon {
-    background: url("./push-sketch-icon.svg") center center no-repeat;
-    width: var(--theia-icon-size);
-    height: var(--theia-icon-size);
+    color: var(--theia-textLink-foreground);
 }
 
 .account-icon {
-    background: url("./account-icon.svg") center center no-repeat;
-    width: var(--theia-icon-size);
-    height: var(--theia-icon-size);
+    width: var(--theia-private-sidebar-icon-size);
+    height: var(--theia-private-sidebar-icon-size);
     border-radius: 50%;
     overflow: hidden;
 }
@@ -181,4 +179,13 @@
 
 .arduino-share-sketch-dialog .sketch-link-embed textarea {
     width: 100%;
+}
+
+.actions.item.flex-line .fa,
+.theia-file-icons-js.file-icon .fa {
+    font-size: var(--theia-icon-size);
+}
+
+.theia-file-icons-js.file-icon.not-in-sync-offline .fa {
+    color: var(--theia-activityBar-inactiveForeground);
 }

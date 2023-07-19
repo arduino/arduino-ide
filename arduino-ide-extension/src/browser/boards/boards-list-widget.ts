@@ -1,47 +1,55 @@
-import { inject, injectable, postConstruct } from 'inversify';
 import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
+import {
+  BoardSearch,
   BoardsPackage,
   BoardsService,
 } from '../../common/protocol/boards-service';
 import { ListWidget } from '../widgets/component-list/list-widget';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
+import { nls } from '@theia/core/lib/common';
+import { BoardsFilterRenderer } from '../widgets/component-list/filter-renderer';
 
 @injectable()
-export class BoardsListWidget extends ListWidget<BoardsPackage> {
+export class BoardsListWidget extends ListWidget<BoardsPackage, BoardSearch> {
   static WIDGET_ID = 'boards-list-widget';
-  static WIDGET_LABEL = 'Boards Manager';
+  static WIDGET_LABEL = nls.localize('arduino/boardsManager', 'Boards Manager');
 
   constructor(
-    @inject(BoardsService) protected service: BoardsService,
-    @inject(ListItemRenderer)
-    protected itemRenderer: ListItemRenderer<BoardsPackage>
+    @inject(BoardsService) service: BoardsService,
+    @inject(ListItemRenderer) itemRenderer: ListItemRenderer<BoardsPackage>,
+    @inject(BoardsFilterRenderer) filterRenderer: BoardsFilterRenderer
   ) {
     super({
       id: BoardsListWidget.WIDGET_ID,
       label: BoardsListWidget.WIDGET_LABEL,
-      iconClass: 'fa fa-microchip',
+      iconClass: 'fa fa-arduino-boards',
       searchable: service,
       installable: service,
       itemLabel: (item: BoardsPackage) => item.name,
-      itemDeprecated: (item: BoardsPackage) => item.deprecated,
       itemRenderer,
+      filterRenderer,
+      defaultSearchOptions: { query: '', type: 'All' },
     });
   }
 
   @postConstruct()
-  protected init(): void {
+  protected override init(): void {
     super.init();
     this.toDispose.pushAll([
-      this.notificationCenter.onPlatformInstalled(() =>
+      this.notificationCenter.onPlatformDidInstall(() =>
         this.refresh(undefined)
       ),
-      this.notificationCenter.onPlatformUninstalled(() =>
+      this.notificationCenter.onPlatformDidUninstall(() =>
         this.refresh(undefined)
       ),
     ]);
   }
 
-  protected async install({
+  protected override async install({
     item,
     progressId,
     version,
@@ -52,12 +60,17 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
   }): Promise<void> {
     await super.install({ item, progressId, version });
     this.messageService.info(
-      `Successfully installed platform ${item.name}:${version}`,
+      nls.localize(
+        'arduino/board/succesfullyInstalledPlatform',
+        'Successfully installed platform {0}:{1}',
+        item.name,
+        version
+      ),
       { timeout: 3000 }
     );
   }
 
-  protected async uninstall({
+  protected override async uninstall({
     item,
     progressId,
   }: {
@@ -66,7 +79,12 @@ export class BoardsListWidget extends ListWidget<BoardsPackage> {
   }): Promise<void> {
     await super.uninstall({ item, progressId });
     this.messageService.info(
-      `Successfully uninstalled platform ${item.name}:${item.installedVersion}`,
+      nls.localize(
+        'arduino/board/succesfullyUninstalledPlatform',
+        'Successfully uninstalled platform {0}:{1}',
+        item.name,
+        item.installedVersion!
+      ),
       { timeout: 3000 }
     );
   }

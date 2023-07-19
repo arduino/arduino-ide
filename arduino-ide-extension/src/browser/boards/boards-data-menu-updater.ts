@@ -1,5 +1,5 @@
-import * as PQueue from 'p-queue';
-import { inject, injectable } from 'inversify';
+import PQueue from 'p-queue';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
@@ -12,6 +12,8 @@ import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { BoardsDataStore } from './boards-data-store';
 import { MainMenuManager } from '../../common/main-menu-manager';
 import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/common';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
@@ -30,11 +32,20 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
   @inject(BoardsServiceProvider)
   protected readonly boardsServiceClient: BoardsServiceProvider;
 
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
+
   protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
   protected readonly toDisposeOnBoardChange = new DisposableCollection();
 
   async onStart(): Promise<void> {
-    this.updateMenuActions(this.boardsServiceClient.boardsConfig.selectedBoard);
+    this.appStateService
+      .reachedState('ready')
+      .then(() =>
+        this.updateMenuActions(
+          this.boardsServiceClient.boardsConfig.selectedBoard
+        )
+      );
     this.boardsDataStore.onChanged(() =>
       this.updateMenuActions(
         this.boardsServiceClient.boardsConfig.selectedBoard
@@ -69,16 +80,16 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                 string,
                 Disposable & { label: string }
               >();
+              let selectedValue = '';
               for (const value of values) {
                 const id = `${fqbn}-${option}--${value.value}`;
                 const command = { id };
-                const selectedValue = value.value;
                 const handler = {
                   execute: () =>
                     this.boardsDataStore.selectConfigOption({
                       fqbn,
                       option,
-                      selectedValue,
+                      selectedValue: value.value,
                     }),
                   isToggled: () => value.selected,
                 };
@@ -89,8 +100,14 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                     { label: value.label }
                   )
                 );
+                if (value.selected) {
+                  selectedValue = value.label;
+                }
               }
-              this.menuRegistry.registerSubmenu(menuPath, label);
+              this.menuRegistry.registerSubmenu(
+                menuPath,
+                `${label}${selectedValue ? `: "${selectedValue}"` : ''}`
+              );
               this.toDisposeOnBoardChange.pushAll([
                 ...commands.values(),
                 Disposable.create(() =>
@@ -100,7 +117,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
                   const { label } = commands.get(commandId)!;
                   this.menuRegistry.registerMenuAction(menuPath, {
                     commandId,
-                    order: `${i}`,
+                    order: String(i).padStart(4),
                     label,
                   });
                   return Disposable.create(() =>
@@ -115,9 +132,13 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
               ...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP,
               'z02_programmers',
             ];
+            const programmerNls = nls.localize(
+              'arduino/board/programmer',
+              'Programmer'
+            );
             const label = selectedProgrammer
-              ? `Programmer: "${selectedProgrammer.name}"`
-              : 'Programmer';
+              ? `${programmerNls}: "${selectedProgrammer.name}"`
+              : programmerNls;
             this.menuRegistry.registerSubmenu(programmersMenuPath, label);
             this.toDisposeOnBoardChange.push(
               Disposable.create(() =>

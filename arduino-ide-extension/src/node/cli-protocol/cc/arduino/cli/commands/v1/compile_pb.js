@@ -13,7 +13,13 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = Function('return this')();
+var global = (function() {
+  if (this) { return this; }
+  if (typeof window !== 'undefined') { return window; }
+  if (typeof global !== 'undefined') { return global; }
+  if (typeof self !== 'undefined') { return self; }
+  return Function('return this')();
+}.call(null));
 
 var google_protobuf_wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
 goog.object.extend(proto, google_protobuf_wrappers_pb);
@@ -137,7 +143,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     warnings: jspb.Message.getFieldWithDefault(msg, 9, ""),
     verbose: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
     quiet: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
-    vidPid: jspb.Message.getFieldWithDefault(msg, 12, ""),
     jobs: jspb.Message.getFieldWithDefault(msg, 14, 0),
     librariesList: (f = jspb.Message.getRepeatedField(msg, 15)) == null ? undefined : f,
     optimizeForDebug: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
@@ -146,7 +151,12 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.toObject = function(includeInsta
     createCompilationDatabaseOnly: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
     sourceOverrideMap: (f = msg.getSourceOverrideMap()) ? f.toObject(includeInstance, undefined) : [],
     exportBinaries: (f = msg.getExportBinaries()) && google_protobuf_wrappers_pb.BoolValue.toObject(includeInstance, f),
-    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f
+    libraryList: (f = jspb.Message.getRepeatedField(msg, 24)) == null ? undefined : f,
+    keysKeychain: jspb.Message.getFieldWithDefault(msg, 25, ""),
+    signKey: jspb.Message.getFieldWithDefault(msg, 26, ""),
+    encryptKey: jspb.Message.getFieldWithDefault(msg, 27, ""),
+    skipLibrariesDiscovery: jspb.Message.getBooleanFieldWithDefault(msg, 28, false),
+    doNotExpandBuildProperties: jspb.Message.getBooleanFieldWithDefault(msg, 29, false)
   };
 
   if (includeInstance) {
@@ -228,10 +238,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setQuiet(value);
       break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setVidPid(value);
-      break;
     case 14:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setJobs(value);
@@ -270,6 +276,26 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.deserializeBinaryFromReader = fu
     case 24:
       var value = /** @type {string} */ (reader.readString());
       msg.addLibrary(value);
+      break;
+    case 25:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setKeysKeychain(value);
+      break;
+    case 26:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSignKey(value);
+      break;
+    case 27:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEncryptKey(value);
+      break;
+    case 28:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkipLibrariesDiscovery(value);
+      break;
+    case 29:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDoNotExpandBuildProperties(value);
       break;
     default:
       reader.skipField();
@@ -378,13 +404,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
       f
     );
   }
-  f = message.getVidPid();
-  if (f.length > 0) {
-    writer.writeString(
-      12,
-      f
-    );
-  }
   f = message.getJobs();
   if (f !== 0) {
     writer.writeInt32(
@@ -443,6 +462,41 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeRepeatedString(
       24,
+      f
+    );
+  }
+  f = message.getKeysKeychain();
+  if (f.length > 0) {
+    writer.writeString(
+      25,
+      f
+    );
+  }
+  f = message.getSignKey();
+  if (f.length > 0) {
+    writer.writeString(
+      26,
+      f
+    );
+  }
+  f = message.getEncryptKey();
+  if (f.length > 0) {
+    writer.writeString(
+      27,
+      f
+    );
+  }
+  f = message.getSkipLibrariesDiscovery();
+  if (f) {
+    writer.writeBool(
+      28,
+      f
+    );
+  }
+  f = message.getDoNotExpandBuildProperties();
+  if (f) {
+    writer.writeBool(
+      29,
       f
     );
   }
@@ -686,24 +740,6 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setQuiet = function(va
 
 
 /**
- * optional string vid_pid = 12;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getVidPid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setVidPid = function(value) {
-  return jspb.Message.setProto3StringField(this, 12, value);
-};
-
-
-/**
  * optional int32 jobs = 14;
  * @return {number}
  */
@@ -926,13 +962,103 @@ proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.clearLibraryList = fun
 };
 
 
+/**
+ * optional string keys_keychain = 25;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getKeysKeychain = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 25, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setKeysKeychain = function(value) {
+  return jspb.Message.setProto3StringField(this, 25, value);
+};
+
+
+/**
+ * optional string sign_key = 26;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getSignKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 26, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSignKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 26, value);
+};
+
+
+/**
+ * optional string encrypt_key = 27;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getEncryptKey = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 27, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setEncryptKey = function(value) {
+  return jspb.Message.setProto3StringField(this, 27, value);
+};
+
+
+/**
+ * optional bool skip_libraries_discovery = 28;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getSkipLibrariesDiscovery = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 28, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setSkipLibrariesDiscovery = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 28, value);
+};
+
+
+/**
+ * optional bool do_not_expand_build_properties = 29;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.getDoNotExpandBuildProperties = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 29, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileRequest.prototype.setDoNotExpandBuildProperties = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 29, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.CompileResponse.repeatedFields_ = [4,5];
+proto.cc.arduino.cli.commands.v1.CompileResponse.repeatedFields_ = [4,5,9];
 
 
 
@@ -971,7 +1097,11 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.toObject = function(includeInst
     usedLibrariesList: jspb.Message.toObjectList(msg.getUsedLibrariesList(),
     cc_arduino_cli_commands_v1_lib_pb.Library.toObject, includeInstance),
     executableSectionsSizeList: jspb.Message.toObjectList(msg.getExecutableSectionsSizeList(),
-    proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.toObject, includeInstance),
+    boardPlatform: (f = msg.getBoardPlatform()) && cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.toObject(includeInstance, f),
+    buildPlatform: (f = msg.getBuildPlatform()) && cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.toObject(includeInstance, f),
+    progress: (f = msg.getProgress()) && cc_arduino_cli_commands_v1_common_pb.TaskProgress.toObject(includeInstance, f),
+    buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 9)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1029,6 +1159,25 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.deserializeBinaryFromReader = f
       var value = new proto.cc.arduino.cli.commands.v1.ExecutableSectionSize;
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.deserializeBinaryFromReader);
       msg.addExecutableSectionsSize(value);
+      break;
+    case 6:
+      var value = new cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.deserializeBinaryFromReader);
+      msg.setBoardPlatform(value);
+      break;
+    case 7:
+      var value = new cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.deserializeBinaryFromReader);
+      msg.setBuildPlatform(value);
+      break;
+    case 8:
+      var value = new cc_arduino_cli_commands_v1_common_pb.TaskProgress;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.TaskProgress.deserializeBinaryFromReader);
+      msg.setProgress(value);
+      break;
+    case 9:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBuildProperties(value);
       break;
     default:
       reader.skipField();
@@ -1094,6 +1243,37 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.serializeBinaryToWriter = funct
       5,
       f,
       proto.cc.arduino.cli.commands.v1.ExecutableSectionSize.serializeBinaryToWriter
+    );
+  }
+  f = message.getBoardPlatform();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.serializeBinaryToWriter
+    );
+  }
+  f = message.getBuildPlatform();
+  if (f != null) {
+    writer.writeMessage(
+      7,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference.serializeBinaryToWriter
+    );
+  }
+  f = message.getProgress();
+  if (f != null) {
+    writer.writeMessage(
+      8,
+      f,
+      cc_arduino_cli_commands_v1_common_pb.TaskProgress.serializeBinaryToWriter
+    );
+  }
+  f = message.getBuildPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      9,
+      f
     );
   }
 };
@@ -1274,6 +1454,154 @@ proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.addExecutableSections
  */
 proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearExecutableSectionsSizeList = function() {
   return this.setExecutableSectionsSizeList([]);
+};
+
+
+/**
+ * optional InstalledPlatformReference board_platform = 6;
+ * @return {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBoardPlatform = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference, 6));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBoardPlatform = function(value) {
+  return jspb.Message.setWrapperField(this, 6, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearBoardPlatform = function() {
+  return this.setBoardPlatform(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasBoardPlatform = function() {
+  return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional InstalledPlatformReference build_platform = 7;
+ * @return {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBuildPlatform = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.InstalledPlatformReference, 7));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.InstalledPlatformReference|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBuildPlatform = function(value) {
+  return jspb.Message.setWrapperField(this, 7, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearBuildPlatform = function() {
+  return this.setBuildPlatform(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasBuildPlatform = function() {
+  return jspb.Message.getField(this, 7) != null;
+};
+
+
+/**
+ * optional TaskProgress progress = 8;
+ * @return {?proto.cc.arduino.cli.commands.v1.TaskProgress}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getProgress = function() {
+  return /** @type{?proto.cc.arduino.cli.commands.v1.TaskProgress} */ (
+    jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.TaskProgress, 8));
+};
+
+
+/**
+ * @param {?proto.cc.arduino.cli.commands.v1.TaskProgress|undefined} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+*/
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setProgress = function(value) {
+  return jspb.Message.setWrapperField(this, 8, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearProgress = function() {
+  return this.setProgress(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.hasProgress = function() {
+  return jspb.Message.getField(this, 8) != null;
+};
+
+
+/**
+ * repeated string build_properties = 9;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.getBuildPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 9));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.setBuildPropertiesList = function(value) {
+  return jspb.Message.setField(this, 9, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.addBuildProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 9, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.CompileResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.CompileResponse.prototype.clearBuildPropertiesList = function() {
+  return this.setBuildPropertiesList([]);
 };
 
 

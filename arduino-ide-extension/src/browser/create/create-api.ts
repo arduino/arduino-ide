@@ -1,15 +1,20 @@
-import { injectable, inject } from 'inversify';
+import { MaybePromise } from '@theia/core/lib/common/types';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { fetch } from 'cross-fetch';
+import { SketchesService } from '../../common/protocol';
+import { uint8ArrayToString } from '../../common/utils';
+import { ArduinoPreferences } from '../arduino-preferences';
+import { AuthenticationClientService } from '../auth/authentication-client-service';
+import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
 import * as createPaths from './create-paths';
 import { posix } from './create-paths';
-import { AuthenticationClientService } from '../auth/authentication-client-service';
-import { ArduinoPreferences } from '../arduino-preferences';
-import { SketchCache } from '../widgets/cloud-sketchbook/cloud-sketch-cache';
 import { Create, CreateError } from './typings';
 
-export interface ResponseResultProvider {
+interface ResponseResultProvider {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (response: Response): Promise<any>;
 }
-export namespace ResponseResultProvider {
+namespace ResponseResultProvider {
   export const NOOP: ResponseResultProvider = async () => undefined;
   export const TEXT: ResponseResultProvider = (response) => response.text();
   export const JSON: ResponseResultProvider = (response) => response.json();
@@ -20,20 +25,13 @@ type ResourceType = 'f' | 'd';
 @injectable()
 export class CreateApi {
   @inject(SketchCache)
-  protected sketchCache: SketchCache;
-
-  protected authenticationService: AuthenticationClientService;
-  protected arduinoPreferences: ArduinoPreferences;
-
-  public init(
-    authenticationService: AuthenticationClientService,
-    arduinoPreferences: ArduinoPreferences
-  ): CreateApi {
-    this.authenticationService = authenticationService;
-    this.arduinoPreferences = arduinoPreferences;
-
-    return this;
-  }
+  readonly sketchCache: SketchCache;
+  @inject(AuthenticationClientService)
+  private readonly authenticationService: AuthenticationClientService;
+  @inject(ArduinoPreferences)
+  private readonly arduinoPreferences: ArduinoPreferences;
+  @inject(SketchesService)
+  private readonly sketchesService: SketchesService;
 
   getSketchSecretStat(sketch: Create.Sketch): Create.Resource {
     return {
@@ -59,28 +57,74 @@ export class CreateApi {
     return result;
   }
 
-  async sketches(): Promise<Create.Sketch[]> {
-    const url = new URL(`${this.domain()}/sketches`);
-    url.searchParams.set('user_id', 'me');
+  /**
+   * `sketchPath` is not the POSIX path but the path with the user UUID, username, etc.
+   * See [Create.Resource#path](./typings.ts). If `cache` is `true` and a sketch exists with the path,
+   * the cache will be updated with the new state of the sketch.
+   */
+  // TODO: no nulls in API
+  async sketchByPath(
+    sketchPath: string,
+    cache = false
+  ): Promise<Create.Sketch | null> {
+    const url = new URL(`${this.domain()}/sketches/byPath/${sketchPath}`);
     const headers = await this.headers();
-    const result = await this.run<{ sketches: Create.Sketch[] }>(url, {
+    const sketch = await this.run<Create.Sketch>(url, {
       method: 'GET',
       headers,
     });
-    result.sketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
-    return result.sketches;
+    if (sketch && cache) {
+      this.sketchCache.addSketch(sketch);
+      const posixPath = createPaths.toPosixPath(sketch.path);
+      this.sketchCache.purgeByPath(posixPath);
+    }
+    return sketch;
+  }
+
+  async sketches(limit = 50): Promise<Create.Sketch[]> {
+    const url = new URL(`${this.domain()}/sketches`);
+    url.searchParams.set('user_id', 'me');
+    url.searchParams.set('limit', limit.toString());
+    const headers = await this.headers();
+    const allSketches: Create.Sketch[] = [];
+    let currentOffset = 0;
+    while (true) {
+      url.searchParams.set('offset', currentOffset.toString());
+      const { sketches } = await this.run<{ sketches: Create.Sketch[] }>(url, {
+        method: 'GET',
+        headers,
+      });
+      allSketches.push(...sketches);
+      if (sketches.length < limit) {
+        break;
+      }
+      currentOffset += limit;
+      // The create API doc show that there is `next` and `prev` pages, but it does not work
+      // https://api2.arduino.cc/create/docs#!/sketches95v2/sketches_v2_search
+      // IF sketchCount mod limit === 0, an extra fetch must happen to detect the end of the pagination.
+    }
+    allSketches.forEach((sketch) => this.sketchCache.addSketch(sketch));
+    return allSketches;
   }
 
   async createSketch(
     posixPath: string,
-    content: string = CreateApi.defaultInoContent
+    contentProvider: MaybePromise<string> = this.sketchesService.defaultInoContent(),
+    payloadOverride: Record<
+      string,
+      string | boolean | number | Record<string, unknown>
+    > = {}
   ): Promise<Create.Sketch> {
     const url = new URL(`${this.domain()}/sketches`);
-    const headers = await this.headers();
+    const [headers, content] = await Promise.all([
+      this.headers(),
+      contentProvider,
+    ]);
     const payload = {
       ino: btoa(content),
       path: posixPath,
       user_id: 'me',
+      ...payloadOverride,
     };
     const init = {
       method: 'PUT',
@@ -196,7 +240,17 @@ export class CreateApi {
         return data;
       }
 
-      const sketch = this.sketchCache.getSketch(createPaths.parentPosix(path));
+      const posixPath = createPaths.parentPosix(path);
+      let sketch = this.sketchCache.getSketch(posixPath);
+      // Workaround for https://github.com/arduino/arduino-ide/issues/1999.
+      if (!sketch) {
+        // Convert the ordinary sketch POSIX path to the Create path.
+        // For example, `/sketch_apr6a` will be transformed to `8a694e4b83878cc53472bd75ee928053:kittaakos/sketches_v2/sketch_apr6a`.
+        const createPathPrefix = this.sketchCache.createPathPrefix;
+        if (createPathPrefix) {
+          sketch = await this.sketchByPath(createPathPrefix + posixPath, true);
+        }
+      }
 
       if (
         sketch &&
@@ -235,7 +289,7 @@ export class CreateApi {
       this.sketchCache.addSketch(sketch);
 
       let file = '';
-      if (sketch && sketch.secrets) {
+      if (sketch.secrets) {
         for (const item of sketch.secrets) {
           file += `#define ${item.name} "${item.value}"\r\n`;
         }
@@ -272,12 +326,9 @@ export class CreateApi {
       if (sketch) {
         const url = new URL(`${this.domain()}/sketches/${sketch.id}`);
         const headers = await this.headers();
-
         // parse the secret file
         const secrets = (
-          typeof content === 'string'
-            ? content
-            : new TextDecoder().decode(content)
+          typeof content === 'string' ? content : uint8ArrayToString(content)
         )
           .split(/\r?\n/)
           .reduce((prev, curr) => {
@@ -327,7 +378,7 @@ export class CreateApi {
       return;
     }
 
-    // do not upload "do_not_sync" files/directoris and their descendants
+    // do not upload "do_not_sync" files/directories and their descendants
     const segments = posixPath.split(posix.sep) || [];
     if (
       segments.some((segment) => Create.do_not_sync_files.includes(segment))
@@ -341,7 +392,7 @@ export class CreateApi {
     const headers = await this.headers();
 
     let data: string =
-      typeof content === 'string' ? content : new TextDecoder().decode(content);
+      typeof content === 'string' ? content : uint8ArrayToString(content);
     data = await this.toggleSecretsInclude(posixPath, data, 'remove');
 
     const payload = { data: btoa(data) };
@@ -359,6 +410,21 @@ export class CreateApi {
 
   async deleteDirectory(posixPath: string): Promise<void> {
     await this.delete(posixPath, 'd');
+  }
+
+  /**
+   * `sketchPath` is not the POSIX path but the path with the user UUID, username, etc.
+   * See [Create.Resource#path](./typings.ts). Unlike other endpoints, it does not support the `$HOME`
+   * variable substitution. The DELETE directory endpoint is bogus and responses with HTTP 500
+   * instead of 404 when deleting a non-existing resource.
+   */
+  async deleteSketch(sketchPath: string): Promise<void> {
+    const url = new URL(`${this.domain()}/sketches/byPath/${sketchPath}`);
+    const headers = await this.headers();
+    await this.run(url, {
+      method: 'DELETE',
+      headers,
+    });
   }
 
   private async delete(posixPath: string, type: ResourceType): Promise<void> {
@@ -420,15 +486,18 @@ export class CreateApi {
     await this.run(url, init, ResponseResultProvider.NOOP);
   }
 
+  private fetchCounter = 0;
   private async run<T>(
-    requestInfo: RequestInfo | URL,
+    requestInfo: URL,
     init: RequestInit | undefined,
     resultProvider: ResponseResultProvider = ResponseResultProvider.JSON
   ): Promise<T> {
-    const response = await fetch(
-      requestInfo instanceof URL ? requestInfo.toString() : requestInfo,
-      init
-    );
+    const fetchCount = `[${++this.fetchCounter}]`;
+    const fetchStart = performance.now();
+    const method = init?.method ? `${init.method}: ` : '';
+    const url = requestInfo.toString();
+    const response = await fetch(requestInfo.toString(), init);
+    const fetchEnd = performance.now();
     if (!response.ok) {
       let details: string | undefined = undefined;
       try {
@@ -439,7 +508,18 @@ export class CreateApi {
       const { statusText, status } = response;
       throw new CreateError(statusText, status, details);
     }
+    const parseStart = performance.now();
     const result = await resultProvider(response);
+    const parseEnd = performance.now();
+    console.debug(
+      `HTTP ${fetchCount} ${method}${url} [fetch: ${(
+        fetchEnd - fetchStart
+      ).toFixed(2)} ms, parse: ${(parseEnd - parseStart).toFixed(
+        2
+      )} ms] body: ${
+        typeof result === 'string' ? result : JSON.stringify(result)
+      }`
+    );
     return result;
   }
 
@@ -453,27 +533,12 @@ export class CreateApi {
   }
 
   private domain(apiVersion = 'v2'): string {
-    const endpoint = this.arduinoPreferences['arduino.cloud.sketchSyncEnpoint'];
+    const endpoint =
+      this.arduinoPreferences['arduino.cloud.sketchSyncEndpoint'];
     return `${endpoint}/${apiVersion}`;
   }
 
   private async token(): Promise<string> {
     return this.authenticationService.session?.accessToken || '';
   }
-}
-
-export namespace CreateApi {
-  export const defaultInoContent = `/*
-
-*/
-
-void setup() {
-  
-}
-
-void loop() {
-  
-}
-
-`;
 }

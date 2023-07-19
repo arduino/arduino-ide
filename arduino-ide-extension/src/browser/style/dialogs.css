@@ -1,16 +1,26 @@
 .p-Widget.dialogOverlay .dialogBlock {
     border-radius: 3px;
-    padding: 0 28px;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
-    min-height: 0px;
+    margin: 15px 20px;
+
+    /* 
+       padding (left + right) = 56px
+       margin (left + right) = 40px
+       total = padding + margin = 96px
+    */
+    max-width: calc(100% - 96px) !important;
+    
+    min-width: 424px;
+    max-height: 560px;
+    padding: 0 var(--arduino-button-height);
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogTitle {
-    padding: 36px 0 28px;
+    padding: 20px 0;
     font-weight: 500;
     background-color: transparent;
     font-size: var(--theia-ui-font-size2);
-    color: var(--theia-list-inactiveSelectionForeground);
+    color: var(--theia-editorWidget-foreground);
     min-height: 0;
 }
 
@@ -21,6 +31,11 @@
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent {
     padding: 0;
+    overflow: auto;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent > input {
+    margin-bottom: var(--arduino-button-height);
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent > div {
@@ -28,7 +43,7 @@
 }
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection {
-    margin-top: 28px;
+    margin-top: var(--arduino-button-height);
 }
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection:first-child {
     margin-top: 0;
@@ -40,6 +55,7 @@
     align-items: center;
 }
 
+.p-Widget.dialogOverlay .dialogControl .spinner,
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow .spinner {
     background: var(--theia-icon-loading) center center no-repeat;
     animation: theia-spin 1.25s linear infinite;
@@ -49,9 +65,10 @@
 
 .p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow:first-child {
     margin-top: 0px;
+    height: 32px;
 }
 
-.fl1{
+.fl1 {
     flex: 1;
 }
 
@@ -62,4 +79,15 @@
 
 .fa.disabled {
     opacity: .4;
+}
+
+@media only screen and (max-height: 560px) {
+    .p-Widget.dialogOverlay .dialogBlock {
+        max-height: 400px;
+    }
+}
+
+.p-Widget.dialogOverlay .error.progress {
+    color: var(--theia-button-background);
+    align-self: center;
 }

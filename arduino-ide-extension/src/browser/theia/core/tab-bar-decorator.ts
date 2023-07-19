@@ -1,33 +1,38 @@
-import { inject, injectable, postConstruct } from 'inversify';
+import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
-import { Title, Widget } from '@phosphor/widgets';
-import { ILogger } from '@theia/core/lib/common/logger';
+import { Title, Widget } from '@theia/core/shared/@phosphor/widgets';
 import { EditorWidget } from '@theia/editor/lib/browser';
 import { WidgetDecoration } from '@theia/core/lib/browser/widget-decoration';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
-import { ConfigService } from '../../../common/protocol/config-service';
+import { ConfigServiceClient } from '../../config/config-service-client';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 
 @injectable()
 export class TabBarDecoratorService extends TheiaTabBarDecoratorService {
-  @inject(ConfigService)
-  protected readonly configService: ConfigService;
+  @inject(ConfigServiceClient)
+  private readonly configService: ConfigServiceClient;
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
-  @inject(ILogger)
-  protected readonly logger: ILogger;
-
-  protected dataDirUri: URI | undefined;
+  private dataDirUri: URI | undefined;
 
   @postConstruct()
   protected init(): void {
-    this.configService
-      .getConfiguration()
-      .then(({ dataDirUri }) => (this.dataDirUri = new URI(dataDirUri)))
-      .catch((err) =>
-        this.logger.error(`Failed to determine the data directory: ${err}`)
-      );
+    const fireDidChange = () =>
+      this.appStateService
+        .reachedState('ready')
+        .then(() => this.fireDidChangeDecorations());
+    this.dataDirUri = this.configService.tryGetDataDirUri();
+    this.configService.onDidChangeDataDirUri((dataDirUri) => {
+      this.dataDirUri = dataDirUri;
+      fireDidChange();
+    });
+    if (this.dataDirUri) {
+      fireDidChange();
+    }
   }
 
-  getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
+  override getDecorations(title: Title<Widget>): WidgetDecoration.Data[] {
     if (title.owner instanceof EditorWidget) {
       const editor = title.owner.editor;
       if (this.dataDirUri && this.dataDirUri.isEqualOrParent(editor.uri)) {

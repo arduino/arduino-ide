@@ -1,136 +1,99 @@
-import { inject, injectable } from 'inversify';
-import { TreeNode } from '@theia/core/lib/browser/tree';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { Command, CommandRegistry } from '@theia/core/lib/common/command';
 import {
   ContextMenuRenderer,
   RenderContextMenuOptions,
-} from '@theia/core/lib/browser';
+} from '@theia/core/lib/browser/context-menu-renderer';
+import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import {
+  PreferenceScope,
+  PreferenceService,
+} from '@theia/core/lib/browser/preferences/preference-service';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
+import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { CommandRegistry } from '@theia/core/lib/common/command';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
-import { CloudSketchbookTree } from './cloud-sketchbook-tree';
-import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
-import { CloudUserCommands } from '../../auth/cloud-user-commands';
-import { ShareSketchDialog } from '../../dialogs/cloud-share-sketch-dialog';
-import { CreateApi } from '../../create/create-api';
-import {
-  PreferenceService,
-  PreferenceScope,
-} from '@theia/core/lib/browser/preferences/preference-service';
-import { ArduinoMenus, PlaceholderMenuNode } from '../../menu/arduino-menus';
-import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
-import { SketchesServiceClientImpl } from '../../../common/protocol/sketches-service-client-impl';
-import { Contribution } from '../../contributions/contribution';
+import { nls } from '@theia/core/lib/common/nls';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { ArduinoPreferences } from '../../arduino-preferences';
-import { MainMenuManager } from '../../../common/main-menu-manager';
+import { ConfigServiceClient } from '../../config/config-service-client';
+import { CloudSketchContribution } from '../../contributions/cloud-contribution';
+import {
+  Sketch,
+  TabBarToolbarRegistry,
+} from '../../contributions/contribution';
+import { ShareSketchDialog } from '../../dialogs/cloud-share-sketch-dialog';
+import { ArduinoMenus, PlaceholderMenuNode } from '../../menu/arduino-menus';
+import { CurrentSketch } from '../../sketches-service-client-impl';
+import { ApplicationConnectionStatusContribution } from '../../theia/core/connection-status-service';
+import { SketchbookCommands } from '../sketchbook/sketchbook-commands';
+import { CloudSketchbookCommands } from './cloud-sketchbook-commands';
+import { CloudSketchbookTree } from './cloud-sketchbook-tree';
+import { CreateUri } from '../../create/create-uri';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 
-export const SKETCHBOOKSYNC__CONTEXT = ['arduino-sketchbook-sync--context'];
+const SKETCHBOOKSYNC__CONTEXT = ['arduino-sketchbook-sync--context'];
 
 // `Open Folder`, `Open in New Window`
-export const SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP = [
+const SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP = [
   ...SKETCHBOOKSYNC__CONTEXT,
   '0_main',
 ];
 
-export const CLOUD_USER__CONTEXT = ['arduino-cloud-user--context'];
-export const CLOUD_USER__CONTEXT__USERNAME = [
-  ...CLOUD_USER__CONTEXT,
-  '0_username',
-];
-export const CLOUD_USER__CONTEXT__MAIN_GROUP = [
-  ...CLOUD_USER__CONTEXT,
-  '1_main',
-];
-
-export namespace CloudSketchbookCommands {
-  export interface Arg {
-    model: CloudSketchbookTreeModel;
-    node: TreeNode;
-    event?: MouseEvent;
-  }
-  export namespace Arg {
-    export function is(arg: Partial<Arg> | undefined): arg is Arg {
-      return (
-        !!arg && !!arg.node && arg.model instanceof CloudSketchbookTreeModel
-      );
-    }
-  }
-
-  export const TOGGLE_CLOUD_SKETCHBOOK: Command = {
-    id: 'arduino-cloud-sketchbook--disable',
-    label: 'Show/Hide Remote Sketchbook',
-  };
-
-  export const PULL_SKETCH: Command = {
-    id: 'arduino-cloud-sketchbook--pull-sketch',
-    label: 'Pull Sketch',
-    iconClass: 'pull-sketch-icon',
-  };
-
-  export const PUSH_SKETCH: Command = {
-    id: 'arduino-cloud-sketchbook--push-sketch',
-    label: 'Push Sketch',
-    iconClass: 'push-sketch-icon',
-  };
-
-  export const OPEN_IN_CLOUD_EDITOR: Command = {
-    id: 'arduino-cloud-sketchbook--open-in-cloud-editor',
-    label: 'Open in Cloud Editor',
-  };
-
-  export const OPEN_SKETCHBOOKSYNC_CONTEXT_MENU: Command = {
-    id: 'arduino-sketchbook-sync--open-sketch-context-menu',
-    label: 'Options...',
-    iconClass: 'sketchbook-tree__opts',
-  };
-
-  export const OPEN_SKETCH_SHARE_DIALOG: Command = {
-    id: 'arduino-cloud-sketchbook--share-modal',
-    label: 'Share...',
-  };
-
-  export const OPEN_PROFILE_CONTEXT_MENU: Command = {
-    id: 'arduino-cloud-sketchbook--open-profile-menu',
-    label: 'Contextual menu',
-  };
-}
-
 @injectable()
-export class CloudSketchbookContribution extends Contribution {
-  @inject(FileService)
-  protected readonly fileService: FileService;
-
+export class CloudSketchbookContribution extends CloudSketchContribution {
   @inject(ContextMenuRenderer)
-  protected readonly contextMenuRenderer: ContextMenuRenderer;
-
+  private readonly contextMenuRenderer: ContextMenuRenderer;
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
-
-  @inject(SketchesServiceClientImpl)
-  protected readonly sketchServiceClient: SketchesServiceClientImpl;
-
+  private readonly menuRegistry: MenuModelRegistry;
+  @inject(CommandRegistry)
+  private readonly commandRegistry: CommandRegistry;
   @inject(WindowService)
-  protected readonly windowService: WindowService;
-
-  @inject(CreateApi)
-  protected readonly createApi: CreateApi;
-
+  private readonly windowService: WindowService;
   @inject(ArduinoPreferences)
-  protected readonly arduinoPreferences: ArduinoPreferences;
-
+  private readonly arduinoPreferences: ArduinoPreferences;
   @inject(PreferenceService)
-  protected readonly preferenceService: PreferenceService;
+  private readonly preferenceService: PreferenceService;
+  @inject(ConfigServiceClient)
+  private readonly configServiceClient: ConfigServiceClient;
+  @inject(ApplicationConnectionStatusContribution)
+  private readonly connectionStatus: ApplicationConnectionStatusContribution;
+  @inject(ClipboardService)
+  private readonly clipboardService: ClipboardService;
 
-  @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
+  private readonly onDidChangeToolbarEmitter = new Emitter<void>();
+  private readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
+  private readonly toDisposeOnStop = new DisposableCollection(
+    this.onDidChangeToolbarEmitter,
+    this.toDisposeBeforeNewContextMenu
+  );
+  private shell: ApplicationShell | undefined;
 
-  protected readonly toDisposeBeforeNewContextMenu = new DisposableCollection();
+  override onStart(app: FrontendApplication): void {
+    this.shell = app.shell;
+    this.toDisposeOnStop.pushAll([
+      this.connectionStatus.onOfflineStatusDidChange((offlineStatus) => {
+        if (!offlineStatus || offlineStatus === 'internet') {
+          this.fireToolbarChange();
+        }
+      }),
+      this.createFeatures.onDidChangeSession(() => this.fireToolbarChange()),
+      this.createFeatures.onDidChangeEnabled(() => this.fireToolbarChange()),
+      this.createFeatures.onDidChangeCloudSketchState(() =>
+        this.fireToolbarChange()
+      ),
+    ]);
+  }
 
-  registerMenus(menus: MenuModelRegistry): void {
+  onStop(): void {
+    this.toDisposeOnStop.dispose();
+  }
+
+  override registerMenus(menus: MenuModelRegistry): void {
     menus.registerMenuAction(ArduinoMenus.FILE__ADVANCED_SUBMENU, {
       commandId: CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK.id,
       label: CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK.label,
@@ -138,7 +101,24 @@ export class CloudSketchbookContribution extends Contribution {
     });
   }
 
-  registerCommands(registry: CommandRegistry): void {
+  override registerToolbarItems(registry: TabBarToolbarRegistry): void {
+    registry.registerItem({
+      id: CloudSketchbookCommands.PULL_SKETCH__TOOLBAR.id,
+      command: CloudSketchbookCommands.PULL_SKETCH__TOOLBAR.id,
+      tooltip: CloudSketchbookCommands.PULL_SKETCH__TOOLBAR.label,
+      priority: -2,
+      onDidChange: this.onDidChangeToolbar,
+    });
+    registry.registerItem({
+      id: CloudSketchbookCommands.PUSH_SKETCH__TOOLBAR.id,
+      command: CloudSketchbookCommands.PUSH_SKETCH__TOOLBAR.id,
+      tooltip: CloudSketchbookCommands.PUSH_SKETCH__TOOLBAR.label,
+      priority: -1,
+      onDidChange: this.onDidChangeToolbar,
+    });
+  }
+
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(CloudSketchbookCommands.TOGGLE_CLOUD_SKETCHBOOK, {
       execute: () => {
         this.preferenceService.set(
@@ -147,30 +127,39 @@ export class CloudSketchbookContribution extends Contribution {
           PreferenceScope.User
         );
       },
-      isEnabled: () => true,
-      isVisible: () => true,
     });
 
     registry.registerCommand(CloudSketchbookCommands.PULL_SKETCH, {
       execute: (arg) => arg.model.sketchbookTree().pull(arg),
-      isEnabled: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node),
-      isVisible: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node),
+      isEnabled: (arg) => this.isCloudSketchDirNodeCommandArg(arg),
+      isVisible: (arg) => this.isCloudSketchDirNodeCommandArg(arg),
     });
 
     registry.registerCommand(CloudSketchbookCommands.PUSH_SKETCH, {
       execute: (arg) => arg.model.sketchbookTree().push(arg.node),
       isEnabled: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node) &&
+        this.isCloudSketchDirNodeCommandArg(arg) &&
         CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node),
       isVisible: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node) &&
+        this.isCloudSketchDirNodeCommandArg(arg) &&
         CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node),
+    });
+
+    registry.registerCommand(CloudSketchbookCommands.PUSH_SKETCH__TOOLBAR, {
+      execute: () =>
+        this.executeDelegateWithCurrentSketch(
+          CloudSketchbookCommands.PUSH_SKETCH.id
+        ),
+      isEnabled: (arg) => this.isEnabledCloudSketchToolbar(arg),
+      isVisible: (arg) => this.isVisibleCloudSketchToolbar(arg),
+    });
+    registry.registerCommand(CloudSketchbookCommands.PULL_SKETCH__TOOLBAR, {
+      execute: () =>
+        this.executeDelegateWithCurrentSketch(
+          CloudSketchbookCommands.PULL_SKETCH.id
+        ),
+      isEnabled: (arg) => this.isEnabledCloudSketchToolbar(arg),
+      isVisible: (arg) => this.isVisibleCloudSketchToolbar(arg),
     });
 
     registry.registerCommand(CloudSketchbookCommands.OPEN_IN_CLOUD_EDITOR, {
@@ -180,28 +169,21 @@ export class CloudSketchbookContribution extends Contribution {
           { external: true }
         );
       },
-      isEnabled: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node),
-      isVisible: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node),
+      isEnabled: (arg) => this.isCloudSketchDirNodeCommandArg(arg),
+      isVisible: (arg) => this.isCloudSketchDirNodeCommandArg(arg),
     });
 
     registry.registerCommand(CloudSketchbookCommands.OPEN_SKETCH_SHARE_DIALOG, {
       execute: (arg) => {
         new ShareSketchDialog({
           node: arg.node,
-          title: 'Share Sketch',
+          title: nls.localize('arduino/cloud/shareSketch', 'Share Sketch'),
           createApi: this.createApi,
+          clipboardService: this.clipboardService,
         }).open();
       },
-      isEnabled: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node),
-      isVisible: (arg) =>
-        CloudSketchbookCommands.Arg.is(arg) &&
-        CloudSketchbookTree.CloudSketchDirNode.is(arg.node),
+      isEnabled: (arg) => this.isCloudSketchDirNodeCommandArg(arg),
+      isVisible: (arg) => this.isCloudSketchDirNodeCommandArg(arg),
     });
 
     registry.registerCommand(
@@ -260,7 +242,8 @@ export class CloudSketchbookContribution extends Contribution {
           // disable the "open sketch" command for the current sketch and for those not in sync
           if (
             !CloudSketchbookTree.CloudSketchTreeNode.isSynced(arg.node) ||
-            (currentSketch && currentSketch.uri === arg.node.uri.toString())
+            (CurrentSketch.isValid(currentSketch) &&
+              currentSketch.uri === arg.node.uri.toString())
           ) {
             const placeholder = new PlaceholderMenuNode(
               SKETCHBOOKSYNC__CONTEXT__MAIN_GROUP,
@@ -298,59 +281,124 @@ export class CloudSketchbookContribution extends Contribution {
               x: container.getBoundingClientRect().left,
               y: container.getBoundingClientRect().top + container.offsetHeight,
             },
-            args: arg,
+            args: [arg],
           };
           this.contextMenuRenderer.render(options);
         },
       }
     );
+  }
 
-    registry.registerCommand(CloudUserCommands.OPEN_PROFILE_CONTEXT_MENU, {
-      execute: async (arg) => {
-        this.toDisposeBeforeNewContextMenu.dispose();
-        const container = arg.event.target;
-        if (!container) {
-          return;
-        }
+  private get currentCloudSketch(): Sketch | undefined {
+    const currentSketch = this.sketchServiceClient.tryGetCurrentSketch();
+    // could not load sketch via CLI
+    if (!CurrentSketch.isValid(currentSketch)) {
+      return undefined;
+    }
+    // cannot determine if the sketch is in the cloud cache folder
+    const dataDirUri = this.configServiceClient.tryGetDataDirUri();
+    if (!dataDirUri) {
+      return undefined;
+    }
+    // sketch is not in the cache folder
+    if (!this.createFeatures.isCloud(currentSketch, dataDirUri)) {
+      return undefined;
+    }
+    return currentSketch;
+  }
 
-        this.menuRegistry.registerMenuAction(CLOUD_USER__CONTEXT__MAIN_GROUP, {
-          commandId: CloudUserCommands.LOGOUT.id,
-          label: CloudUserCommands.LOGOUT.label,
-        });
-        this.toDisposeBeforeNewContextMenu.push(
-          Disposable.create(() =>
-            this.menuRegistry.unregisterMenuAction(CloudUserCommands.LOGOUT)
-          )
+  private isVisibleCloudSketchToolbar(arg: unknown): boolean {
+    // cloud preference is disabled
+    if (!this.createFeatures.enabled) {
+      return false;
+    }
+    if (!this.currentCloudSketch) {
+      return false;
+    }
+    if (arg instanceof Widget) {
+      return !!this.shell && this.shell.getWidgets('main').indexOf(arg) !== -1;
+    }
+    return false;
+  }
+
+  private isEnabledCloudSketchToolbar(arg: unknown): boolean {
+    if (!this.isVisibleCloudSketchToolbar(arg)) {
+      return false;
+    }
+    // not logged in
+    if (!this.createFeatures.session) {
+      return false;
+    }
+    // no Internet connection
+    if (this.connectionStatus.offlineStatus === 'internet') {
+      return false;
+    }
+    // no pull/push context for the current cloud sketch
+    const sketch = this.currentCloudSketch;
+    if (sketch) {
+      const cloudUri = this.createFeatures.cloudUri(sketch);
+      if (cloudUri) {
+        return !this.createFeatures.cloudSketchState(
+          CreateUri.toUri(cloudUri.path.toString())
         );
+      }
+    }
+    return false;
+  }
 
-        const placeholder = new PlaceholderMenuNode(
-          CLOUD_USER__CONTEXT__USERNAME,
-          arg.username
-        );
-        this.menuRegistry.registerMenuNode(
-          CLOUD_USER__CONTEXT__USERNAME,
-          placeholder
-        );
-        this.toDisposeBeforeNewContextMenu.push(
-          Disposable.create(() =>
-            this.menuRegistry.unregisterMenuNode(placeholder.id)
-          )
-        );
+  private isCloudSketchDirNodeCommandArg(
+    arg: unknown
+  ): arg is CloudSketchbookCommands.Arg & {
+    node: CloudSketchbookTree.CloudSketchDirNode;
+  } {
+    return (
+      CloudSketchbookCommands.Arg.is(arg) &&
+      CloudSketchbookTree.CloudSketchDirNode.is(arg.node) &&
+      !this.createFeatures.cloudSketchState(arg.node.remoteUri)
+    );
+  }
 
-        const options: RenderContextMenuOptions = {
-          menuPath: CLOUD_USER__CONTEXT,
-          anchor: {
-            x: container.getBoundingClientRect().left,
-            y:
-              container.getBoundingClientRect().top -
-              3.5 * container.offsetHeight,
-          },
-          args: arg,
-        };
-        this.contextMenuRenderer.render(options);
-      },
-    });
+  private async commandArgFromCurrentSketch(): Promise<
+    CloudSketchbookCommands.Arg | undefined
+  > {
+    const sketch = this.currentCloudSketch;
+    if (!sketch) {
+      return undefined;
+    }
+    const model = await this.treeModel();
+    if (!model) {
+      return undefined;
+    }
+    const cloudUri = this.createFeatures.cloudUri(sketch);
+    if (!cloudUri) {
+      return undefined;
+    }
+    const posixPath = cloudUri.path.toString();
+    const node = model.getNode(posixPath);
+    if (CloudSketchbookTree.CloudSketchDirNode.is(node)) {
+      return { model, node };
+    }
+    return undefined;
+  }
 
-    this.registerMenus(this.menuRegistry);
+  private async executeDelegateWithCurrentSketch(id: string): Promise<unknown> {
+    const arg = await this.commandArgFromCurrentSketch();
+    if (!arg) {
+      return;
+    }
+    if (!this.commandRegistry.getActiveHandler(id, arg)) {
+      throw new Error(
+        `No active handler was available for the delegate command: ${id}. Cloud sketch tree node: ${arg.node.id}`
+      );
+    }
+    return this.commandRegistry.executeCommand(id, arg);
+  }
+
+  private fireToolbarChange(): void {
+    this.onDidChangeToolbarEmitter.fire();
+  }
+
+  private get onDidChangeToolbar(): Event<void> {
+    return this.onDidChangeToolbarEmitter.event;
   }
 }

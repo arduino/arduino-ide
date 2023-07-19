@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "About {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Board{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardInfo": "Board Info",
+      "boards": "boards",
+      "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
+      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+      "disconnected": "Disconnected",
+      "getBoardInfo": "Get Board Info",
+      "inSketchbook": " (in Sketchbook)",
+      "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+      "noBoardsFound": "No boards found for \"{0}\"",
+      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "No ports discovered",
+      "noPortsSelected": "No ports selected for board: '{0}'.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "No boards selected.",
+      "openBoardsConfig": "Select other board and port…",
+      "pleasePickBoard": "Please pick a board connected to the port you have selected.",
+      "port": "Port{0}",
+      "portLabel": "Port: {0}",
+      "ports": "ports",
+      "programmer": "Programmer",
+      "reselectLater": "Reselect later",
+      "searchBoard": "Search board",
+      "selectBoard": "Select Board",
+      "selectPortForInfo": "Please select a port to obtain board info.",
+      "showAllAvailablePorts": "Shows all available ports when enabled",
+      "showAllPorts": "Show all ports",
+      "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
+      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "Boards Manager",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
+    "bootloader": {
+      "burnBootloader": "Burn Bootloader",
+      "burningBootloader": "Burning bootloader...",
+      "doneBurningBootloader": "Done burning bootloader."
+    },
+    "burnBootloader": {
+      "error": "Error while burning the bootloader: {0}"
+    },
+    "certificate": {
+      "addNew": "Add New",
+      "addURL": "Add URL to fetch SSL certificate",
+      "boardAtPort": "{0} at {1}",
+      "certificatesUploaded": "Certificates uploaded.",
+      "enterURL": "Enter URL",
+      "noSupportedBoardConnected": "No supported board connected",
+      "openContext": "Open context",
+      "remove": "Remove",
+      "selectBoard": "Select a board...",
+      "selectCertificateToUpload": "1. Select certificate to upload",
+      "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
+      "upload": "Upload",
+      "uploadFailed": "Upload failed. Please try again.",
+      "uploadRootCertificates": "Upload SSL Root Certificates",
+      "uploadingCertificates": "Uploading certificates."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Choose visibility of your Sketch:",
+      "cloudSketchbook": "Cloud Sketchbook",
+      "connected": "Connected",
+      "continue": "Continue",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "Embed:",
+      "emptySketchbook": "Your Sketchbook is empty",
+      "goToCloud": "Go to Cloud",
+      "learnMore": "Learn more",
+      "link": "Link:",
+      "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
+      "offline": "Offline",
+      "openInCloudEditor": "Open in Cloud Editor",
+      "options": "Options...",
+      "privateVisibility": "Private. Only you can view the Sketch.",
+      "profilePicture": "Profile picture",
+      "publicVisibility": "Public. Anyone with the link can view the Sketch.",
+      "pull": "Pull",
+      "pullFirst": "You have to pull first to be able to push to the Cloud.",
+      "pullSketch": "Pull Sketch",
+      "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
+      "push": "Push",
+      "pushSketch": "Push Sketch",
+      "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+      "remote": "Remote",
+      "share": "Share...",
+      "shareSketch": "Share Sketch",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "SIGN IN",
+      "signInToCloud": "Sign in to Arduino Cloud",
+      "signOut": "Sign Out",
+      "sync": "Sync",
+      "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
+      "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Install Manually",
+      "later": "Later",
+      "noBoardSelected": "बोर्ड चयन गरिएको छैन।",
+      "notConnected": "[ जोडिएको छैन ]",
+      "offlineIndicator": "तपाईं अफलाइन हुनुहुन्छ। इन्टरनेट जडान बिना, Arduino CLI  आवश्यक स्रोतहरू डाउनलोड गर्न सक्षम नहुन सक्छ र यसले खराबी निम्त्याउन सक्छ। कृपया इन्टरनेट जडान गर्नुहोस् र एप पुन: सुरु गर्नुहोस्।",
+      "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
+      "partner": "Partner",
+      "processing": "Processing",
+      "recommended": "Recommended",
+      "retired": "Retired",
+      "selectedOn": "on {0}",
+      "serialMonitor": "सिरियल मनिटर",
+      "type": "Type",
+      "unknown": "Unknown",
+      "updateable": "Updatable"
+    },
+    "compile": {
+      "error": "Compilation error: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Boards included in this package:",
+      "by": "by",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "Filter your search...",
+      "install": "Install",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "More info",
+      "otherVersions": "Other Versions",
+      "remove": "Remove",
+      "title": "{0} by {1}",
+      "uninstall": "Uninstall",
+      "uninstallMsg": "Do you want to uninstall {0}?",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "Add File",
+      "fileAdded": "One file added to the sketch.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
+      "replaceTitle": "Replace"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Debug - {0}",
+      "debuggingNotSupported": "Debugging is not supported by '{0}'",
+      "noPlatformInstalledFor": "Platform is not installed for '{0}'",
+      "optimizeForDebugging": "Optimize for Debugging",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "Don't ask again"
+    },
+    "editor": {
+      "autoFormat": "Auto Format",
+      "commentUncomment": "Comment/Uncomment",
+      "copyForForum": "Copy for Forum (Markdown)",
+      "decreaseFontSize": "Decrease Font Size",
+      "decreaseIndent": "Decrease Indent",
+      "increaseFontSize": "Increase Font Size",
+      "increaseIndent": "Increase Indent",
+      "nextError": "Next Error",
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
+    },
+    "electron": {
+      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+      "unsavedChanges": "Any unsaved changes will not be saved."
+    },
+    "examples": {
+      "builtInExamples": "Built-in examples",
+      "couldNotInitializeExamples": "Could not initialize built-in examples.",
+      "customLibrary": "Examples from Custom Libraries",
+      "for": "Examples for {0}",
+      "forAny": "Examples for any board",
+      "menu": "Examples"
+    },
+    "firmware": {
+      "checkUpdates": "Check Updates",
+      "failedInstall": "Installation failed. Please try again.",
+      "install": "Install",
+      "installingFirmware": "Installing firmware.",
+      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "selectBoard": "Select Board",
+      "selectVersion": "Select firmware version",
+      "successfullyInstalled": "Firmware successfully installed.",
+      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+    },
+    "help": {
+      "environment": "Environment",
+      "faq": "Frequently Asked Questions",
+      "findInReference": "Find in Reference",
+      "gettingStarted": "Getting Started",
+      "keyword": "Type a keyword",
+      "privacyPolicy": "Privacy Policy",
+      "reference": "Reference",
+      "search": "Search on Arduino.cc",
+      "troubleshooting": "Troubleshooting",
+      "visit": "Visit Arduino.cc"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE Updates",
+      "closeAndInstallButton": "Close and Install",
+      "closeToInstallNotice": "Close the software and install the update on your machine.",
+      "downloadButton": "Download",
+      "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+      "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+      "goToDownloadButton": "Go To Download",
+      "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+      "ideUpdaterDialog": "Software Update",
+      "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+      "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
+      "notNowButton": "Not now",
+      "skipVersionButton": "Skip Version",
+      "updateAvailable": "Update Available",
+      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "library": {
+      "addZip": "Add .ZIP Library...",
+      "arduinoLibraries": "Arduino libraries",
+      "contributedLibraries": "Contributed libraries",
+      "include": "Include Library",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "Would you like to install all the missing dependencies?",
+      "installOneMissingDependency": "Would you like to install the missing dependency?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "Successfully installed library {0}:{1}",
+      "libraryAlreadyExists": "A library already exists. Do you want to overwrite it?",
+      "manageLibraries": "Manage Libraries...",
+      "namedLibraryAlreadyExists": "A library folder named {0} already exists. Do you want to overwrite it?",
+      "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
+      "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
+      "overwriteExistingLibrary": "Do you want to overwrite the existing library?",
+      "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
+      "title": "Library Manager",
+      "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
+      "zipLibrary": "Library"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
+    "menu": {
+      "advanced": "Advanced",
+      "sketch": "Sketch",
+      "tools": "Tools"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "Network",
+      "serial": "Serial"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Additional Boards Manager URLs",
+      "auth.audience": "The OAuth2 audience.",
+      "auth.clientID": "The OAuth2 client ID.",
+      "auth.domain": "The OAuth2 domain.",
+      "auth.registerUri": "The URI used to register a new user.",
+      "automatic": "Automatic",
+      "board.certificates": "List of certificates that can be uploaded to boards",
+      "browse": "Browse",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "choose": "Choose",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
+      "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
+      "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
+      "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "compile": "compile",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "True for verbose compile output. False by default",
+      "compile.warnings": "Tells gcc which warning level to use. It's 'None' by default",
+      "compilerWarnings": "Compiler warnings",
+      "editorFontSize": "Editor font size",
+      "editorQuickSuggestions": "Editor Quick Suggestions",
+      "enterAdditionalURLs": "Enter additional URLs, one for each row",
+      "files.inside.sketches": "Show files inside Sketches",
+      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+      "interfaceScale": "Interface scale",
+      "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
+      "invalid.sketchbook.location": "Invalid sketchbook location: {0}",
+      "invalid.theme": "Invalid theme.",
+      "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "manualProxy": "Manual proxy configuration",
+      "network": "Network",
+      "newSketchbookLocation": "Select new sketchbook location",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "No proxy",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
+      "showVerbose": "Show verbose output during",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "Sketchbook location",
+      "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
+      "upload": "upload",
+      "upload.verbose": "True for verbose upload output. False by default.",
+      "verifyAfterUpload": "Verify code after upload",
+      "window.autoScale": "True if the user interface automatically scales with the font size.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "Replace the existing version of {0}?",
+    "selectZip": "Select a zip file containing the library you'd like to add",
+    "serial": {
+      "autoscroll": "Autoscroll",
+      "carriageReturn": "Carriage Return",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "newLine": "New Line",
+      "newLineCarriageReturn": "Both NL & CR",
+      "noLineEndings": "No Line Ending",
+      "notConnected": "Not connected. Select a board and a port to connect automatically.",
+      "openSerialPlotter": "Serial Plotter",
+      "timestamp": "Timestamp",
+      "toggleTimestamp": "Toggle Timestamp"
+    },
+    "sketch": {
+      "archiveSketch": "Archive Sketch",
+      "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
+      "close": "Are you sure you want to close the sketch?",
+      "compile": "Compiling sketch...",
+      "configureAndUpload": "Configure and Upload",
+      "createdArchive": "Created archive '{0}'.",
+      "doneCompiling": "Done compiling.",
+      "doneUploading": "Done uploading.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "Export Compiled Binary",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "Moving",
+      "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "Open Folder",
+      "openRecent": "Open Recent",
+      "openSketchInNewWindow": "Open Sketch in New Window",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "Save sketch folder as...",
+      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketchAs": "Save sketch folder as...",
+      "showFolder": "Show Sketch Folder",
+      "sketch": "Sketch",
+      "sketchbook": "Sketchbook",
+      "titleLocalSketchbook": "Local Sketchbook",
+      "titleSketchbook": "Sketchbook",
+      "upload": "Upload",
+      "uploadUsingProgrammer": "Upload Using Programmer",
+      "uploading": "Uploading...",
+      "userFieldsNotFoundError": "Can't find user fields for connected board",
+      "verify": "Verify",
+      "verifyOrCompile": "Verify/Compile"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
+    "upload": {
+      "error": "{0} error: {1}"
+    },
+    "userFields": {
+      "cancel": "Cancel",
+      "enterField": "Enter {0}",
+      "upload": "Upload"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Cannot connect to the backend.",
+      "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
+      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+      "daemonOffline": "CLI Daemon Offline",
+      "offline": "Offline",
+      "offlineText": "Offline",
+      "quitTitle": "Are you sure you want to quit?"
+    },
+    "editor": {
+      "unsavedTitle": "Unsaved – {0}"
+    },
+    "messages": {
+      "collapse": "Collapse",
+      "expand": "Expand"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "Name for new file",
+      "invalidExtension": ".{0} is not a valid extension",
+      "newFileName": "New name for file"
+    }
+  }
+}

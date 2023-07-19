@@ -1,17 +1,17 @@
 import * as PQueue from 'p-queue';
-import { injectable } from 'inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { OutputUri } from '@theia/output/lib/common/output-uri';
-import { IReference } from '@theia/monaco/lib/browser/monaco-text-model-service';
+import { IReference } from '@theia/monaco-editor-core/esm/vs/base/common/lifecycle';
 import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';
 import {
   OutputChannelManager as TheiaOutputChannelManager,
   OutputChannel as TheiaOutputChannel,
-} from '@theia/output/lib/common/output-channel';
+} from '@theia/output/lib/browser/output-channel';
 
 @injectable()
 export class OutputChannelManager extends TheiaOutputChannelManager {
-  getChannel(name: string): TheiaOutputChannel {
+  override getChannel(name: string): TheiaOutputChannel {
     const existing = this.channels.get(name);
     if (existing) {
       return existing;
@@ -40,10 +40,18 @@ export class OutputChannelManager extends TheiaOutputChannelManager {
     }
     return channel;
   }
+
+  async contentOfChannel(name: string): Promise<string | undefined> {
+    const resource = this.resources.get(name);
+    if (resource) {
+      return resource.readContents();
+    }
+    return undefined;
+  }
 }
 
 export class OutputChannel extends TheiaOutputChannel {
-  dispose(): void {
+  override dispose(): void {
     super.dispose();
     if ((this as any).disposed) {
       const textModifyQueue: PQueue = (this as any).textModifyQueue;

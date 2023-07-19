@@ -1,37 +1,39 @@
-import { injectable, inject } from 'inversify';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { injectable, inject } from '@theia/core/shared/inversify';
 import { CommandService } from '@theia/core/lib/common/command';
 import { WorkspaceService } from '@theia/workspace/lib/browser/workspace-service';
 import { FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { SketchesService } from '../../../common/protocol';
-import { ArduinoCommands } from '../../arduino-commands';
+import { OpenSketchFiles } from '../../contributions/open-sketch-files';
 
 @injectable()
 export class FrontendApplication extends TheiaFrontendApplication {
-  @inject(FileService)
-  protected readonly fileService: FileService;
-
   @inject(WorkspaceService)
-  protected readonly workspaceService: WorkspaceService;
+  private readonly workspaceService: WorkspaceService;
 
   @inject(CommandService)
-  protected readonly commandService: CommandService;
+  private readonly commandService: CommandService;
 
   @inject(SketchesService)
-  protected readonly sketchesService: SketchesService;
+  private readonly sketchesService: SketchesService;
 
-  protected async initializeLayout(): Promise<void> {
+  private layoutWasRestored = false;
+
+  protected override async initializeLayout(): Promise<void> {
     await super.initializeLayout();
-    const roots = await this.workspaceService.roots;
-    for (const root of roots) {
-      const exists = await this.fileService.exists(root.resource);
-      if (exists) {
-        this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
+    this.workspaceService.roots.then(async (roots) => {
+      for (const root of roots) {
         await this.commandService.executeCommand(
-          ArduinoCommands.OPEN_SKETCH_FILES.id,
-          root.resource
+          OpenSketchFiles.Commands.OPEN_SKETCH_FILES.id,
+          root.resource,
+          !this.layoutWasRestored
         );
+        this.sketchesService.markAsRecentlyOpened(root.resource.toString()); // no await, will get the notification later and rebuild the menu
       }
-    }
+    });
+  }
+
+  protected override async restoreLayout(): Promise<boolean> {
+    this.layoutWasRestored = await super.restoreLayout();
+    return this.layoutWasRestored;
   }
 }

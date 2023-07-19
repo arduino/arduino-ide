@@ -1,5 +1,4 @@
-import { injectable } from 'inversify';
-import { remote } from 'electron';
+import { injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
@@ -9,24 +8,25 @@ import {
   MenuModelRegistry,
   KeybindingRegistry,
 } from './contribution';
+import { nls } from '@theia/core/lib/common/nls';
 
 @injectable()
 export class OpenSketchExternal extends SketchContribution {
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenSketchExternal.Commands.OPEN_EXTERNAL, {
       execute: () => this.openExternal(),
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.SKETCH__UTILS_GROUP, {
       commandId: OpenSketchExternal.Commands.OPEN_EXTERNAL.id,
-      label: 'Show Sketch Folder',
+      label: nls.localize('arduino/sketch/showFolder', 'Show Sketch Folder'),
       order: '0',
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: OpenSketchExternal.Commands.OPEN_EXTERNAL.id,
       keybinding: 'CtrlCmd+Alt+K',
@@ -36,11 +36,11 @@ export class OpenSketchExternal extends SketchContribution {
   protected async openExternal(): Promise<void> {
     const uri = await this.sketchServiceClient.currentSketchFile();
     if (uri) {
-      const exists = this.fileService.exists(new URI(uri));
+      const exists = await this.fileService.exists(new URI(uri));
       if (exists) {
         const fsPath = await this.fileService.fsPath(new URI(uri));
         if (fsPath) {
-          remote.shell.showItemInFolder(fsPath);
+          window.electronTheiaCore.showItemInFolder(fsPath);
         }
       }
     }

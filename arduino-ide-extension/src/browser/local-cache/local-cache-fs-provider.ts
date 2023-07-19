@@ -1,5 +1,5 @@
-import { inject, injectable } from 'inversify';
-import { URI as Uri } from 'vscode-uri';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { URI as Uri } from '@theia/core/shared/vscode-uri';
 import URI from '@theia/core/lib/common/uri';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
@@ -16,6 +16,10 @@ import {
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { AuthenticationSession } from '../../common/protocol/authentication-service';
 import { ConfigService } from '../../common/protocol';
+import {
+  ARDUINO_CLOUD_FOLDER,
+  REMOTE_SKETCHBOOK_FOLDER,
+} from '../utils/constants';
 
 export namespace LocalCacheUri {
   export const scheme = 'arduino-local-cache';
@@ -34,7 +38,6 @@ export class LocalCacheFsProvider
   @inject(AuthenticationClientService)
   protected readonly authenticationService: AuthenticationClientService;
 
-  // TODO: do we need this? Cannot we `await` on the `init` call from `registerFileSystemProviders`?
   readonly ready = new Deferred<void>();
 
   private _localCacheRoot: URI;
@@ -89,9 +92,26 @@ export class LocalCacheFsProvider
   }
 
   protected async init(fileService: FileService): Promise<void> {
-    const config = await this.configService.getConfiguration();
-    this._localCacheRoot = new URI(config.dataDirUri);
-    for (const segment of ['RemoteSketchbook', 'ArduinoCloud']) {
+    const { config } = await this.configService.getConfiguration();
+    // Any possible CLI config errors are ignored here. IDE2 does not verify the `directories.data` folder.
+    // If the data dir is accessible, IDE2 creates the cache folder for the cloud sketches. Otherwise, it does not.
+    // The data folder can be configured outside of the IDE2, and the new data folder will be picked up with a
+    // subsequent IDE2 start.
+    if (!config?.dataDirUri) {
+      return; // the deferred promise will never resolve
+    }
+    const localCacheUri = new URI(config.dataDirUri);
+    try {
+      await fileService.access(localCacheUri);
+    } catch (err) {
+      console.error(
+        `'directories.data' location is inaccessible at ${config.dataDirUri}`,
+        err
+      );
+      return;
+    }
+    this._localCacheRoot = localCacheUri;
+    for (const segment of [REMOTE_SKETCHBOOK_FOLDER, ARDUINO_CLOUD_FOLDER]) {
       this._localCacheRoot = this._localCacheRoot.resolve(segment);
       await fileService.createFolder(this._localCacheRoot);
     }
@@ -153,7 +173,7 @@ export class LocalCacheFsProvider
     return uri;
   }
 
-  private toUri(session: AuthenticationSession): URI {
+  toUri(session: AuthenticationSession): URI {
     // Hack: instead of getting the UUID only, we get `auth0|UUID` after the authentication. `|` cannot be part of filesystem path or filename.
     return this._localCacheRoot.resolve(session.id.split('|')[1]);
   }

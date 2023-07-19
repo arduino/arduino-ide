@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { WorkspaceCommands } from '@theia/workspace/lib/browser/workspace-commands';
 import { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
@@ -13,14 +13,14 @@ import { WorkspacePreferences } from '@theia/workspace/lib/browser/workspace-pre
 export class FileNavigatorContribution extends TheiaFileNavigatorContribution {
   constructor(
     @inject(FileNavigatorPreferences)
-    protected readonly fileNavigatorPreferences: FileNavigatorPreferences,
-    @inject(OpenerService) protected readonly openerService: OpenerService,
+    protected override readonly fileNavigatorPreferences: FileNavigatorPreferences,
+    @inject(OpenerService) protected override readonly openerService: OpenerService,
     @inject(FileNavigatorFilter)
-    protected readonly fileNavigatorFilter: FileNavigatorFilter,
+    protected override readonly fileNavigatorFilter: FileNavigatorFilter,
     @inject(WorkspaceService)
-    protected readonly workspaceService: WorkspaceService,
+    protected override readonly workspaceService: WorkspaceService,
     @inject(WorkspacePreferences)
-    protected readonly workspacePreferences: WorkspacePreferences
+    protected override readonly workspacePreferences: WorkspacePreferences
   ) {
     super(
       fileNavigatorPreferences,
@@ -32,11 +32,11 @@ export class FileNavigatorContribution extends TheiaFileNavigatorContribution {
     this.options.defaultWidgetOptions.rank = 1;
   }
 
-  async initializeLayout(app: FrontendApplication): Promise<void> {
+  override async initializeLayout(app: FrontendApplication): Promise<void> {
     // NOOP
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     super.registerKeybindings(registry);
     [WorkspaceCommands.FILE_RENAME, WorkspaceCommands.FILE_DELETE].forEach(
       registry.unregisterKeybinding.bind(registry)

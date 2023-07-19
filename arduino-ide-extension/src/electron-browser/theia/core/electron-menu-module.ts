@@ -1,31 +1,22 @@
-import { ContainerModule } from 'inversify';
-import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { ContextMenuRenderer } from '@theia/core/lib/browser/context-menu-renderer';
 import { ElectronMainMenuFactory as TheiaElectronMainMenuFactory } from '@theia/core/lib/electron-browser/menu/electron-main-menu-factory';
 import { ElectronMenuContribution as TheiaElectronMenuContribution } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
-import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
-import {
-  SplashService,
-  splashServicePath,
-} from '../../../electron-common/splash-service';
+import { ContainerModule } from '@theia/core/shared/inversify';
 import { MainMenuManager } from '../../../common/main-menu-manager';
-import { ElectronWindowService } from '../../electron-window-service';
+import { ElectronContextMenuRenderer } from './electron-context-menu-renderer';
 import { ElectronMainMenuFactory } from './electron-main-menu-factory';
-import { ElectronMenuContribution } from './electron-menu-contribution';
+import {
+  ElectronMenuContribution,
+  ElectronMenuUpdater,
+} from './electron-menu-contribution';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(ElectronMenuContribution).toSelf().inSingletonScope();
-  bind(MainMenuManager).toService(ElectronMenuContribution);
-  rebind(TheiaElectronMenuContribution).to(ElectronMenuContribution);
-  bind(ElectronMainMenuFactory).toSelf().inRequestScope();
+  bind(ElectronMenuUpdater).toSelf().inSingletonScope();
+  bind(MainMenuManager).toService(ElectronMenuUpdater);
+  bind(ElectronContextMenuRenderer).toSelf().inSingletonScope();
+  rebind(ContextMenuRenderer).toService(ElectronContextMenuRenderer);
+  rebind(TheiaElectronMenuContribution).toService(ElectronMenuContribution);
+  bind(ElectronMainMenuFactory).toSelf().inSingletonScope();
   rebind(TheiaElectronMainMenuFactory).toService(ElectronMainMenuFactory);
-  bind(ElectronWindowService).toSelf().inSingletonScope();
-  rebind(WindowService).toService(ElectronWindowService);
-  bind(SplashService)
-    .toDynamicValue((context) =>
-      ElectronIpcConnectionProvider.createProxy(
-        context.container,
-        splashServicePath
-      )
-    )
-    .inSingletonScope();
 });

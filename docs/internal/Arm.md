@@ -2,19 +2,18 @@
 
 Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`):
 
-1. Install Node.js 10.x with [nvm](https://github.com/nvm-sh/nvm#install--update-script):
+1. Install Node.js 16.x with [nvm](https://github.com/nvm-sh/nvm#install--update-script):
     ```
     wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
     ```
     Restart your shell then:
     ```
-    nvm install 12.14.1
-    nvm use 12.14.1
+    nvm install 16
+    nvm use 16
     ```
     Verify:
     ```
     node -v
-    v12.14.1
     ```
 
 2. Install [Yarn](https://classic.yarnpkg.com/en/docs/install/#debian-stable):
@@ -42,10 +41,10 @@ Building the Pro IDE on Linux `armv7l` (aka `armhf`) and `aarch64` (aka `arm64`)
     - `libx11-dev`, and
     - `libxkbfile-dev`
 
-4. [Build it](https://github.com/bcmi-labs/arduino-editor#build-from-source) from the source:
+4. [Build it](../development.md#build-from-source) from the source:
     ```
-    git clone https://github.com/bcmi-labs/arduino-editor.git \
-    && cd arduino-editor \
+    git clone https://github.com/arduino/arduino-ide.git \
+    && cd arduino-ide \
     && yarn \
     && yarn rebuild:electron \
     && yarn --cwd ./electron-app start

@@ -1,7 +1,6 @@
-import { inject, injectable } from 'inversify';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
-import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
 import { MonacoEditorService } from '@theia/monaco/lib/browser/monaco-editor-service';
 import {
   Contribution,
@@ -11,21 +10,21 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { nls } from '@theia/core/lib/common';
+import type { ICodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/browser/editorBrowser';
+import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneCodeEditor';
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
 @injectable()
 export class EditContributions extends Contribution {
   @inject(MonacoEditorService)
-  protected readonly codeEditorService: MonacoEditorService;
+  private readonly codeEditorService: MonacoEditorService;
 
   @inject(ClipboardService)
-  protected readonly clipboardService: ClipboardService;
+  private readonly clipboardService: ClipboardService;
 
-  @inject(PreferenceService)
-  protected readonly preferences: PreferenceService;
-
-  registerCommands(registry: CommandRegistry): void {
+  override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(EditContributions.Commands.GO_TO_LINE, {
       execute: () => this.run('editor.action.gotoLine'),
     });
@@ -42,37 +41,13 @@ export class EditContributions extends Contribution {
       execute: () => this.run('actions.find'),
     });
     registry.registerCommand(EditContributions.Commands.FIND_NEXT, {
-      execute: () => this.run('actions.findWithSelection'),
+      execute: () => this.run('editor.action.nextMatchFindAction'),
     });
     registry.registerCommand(EditContributions.Commands.FIND_PREVIOUS, {
-      execute: () => this.run('editor.action.nextMatchFindAction'),
+      execute: () => this.run('editor.action.previousMatchFindAction'),
     });
     registry.registerCommand(EditContributions.Commands.USE_FOR_FIND, {
       execute: () => this.run('editor.action.previousSelectionMatchFindAction'),
-    });
-    registry.registerCommand(EditContributions.Commands.INCREASE_FONT_SIZE, {
-      execute: async () => {
-        const settings = await this.settingsService.settings();
-        if (settings.autoScaleInterface) {
-          settings.interfaceScale = settings.interfaceScale + 1;
-        } else {
-          settings.editorFontSize = settings.editorFontSize + 1;
-        }
-        await this.settingsService.update(settings);
-        await this.settingsService.save();
-      },
-    });
-    registry.registerCommand(EditContributions.Commands.DECREASE_FONT_SIZE, {
-      execute: async () => {
-        const settings = await this.settingsService.settings();
-        if (settings.autoScaleInterface) {
-          settings.interfaceScale = settings.interfaceScale - 1;
-        } else {
-          settings.editorFontSize = settings.editorFontSize - 1;
-        }
-        await this.settingsService.update(settings);
-        await this.settingsService.save();
-      },
     });
     /* Tools */ registry.registerCommand(
       EditContributions.Commands.AUTO_FORMAT,
@@ -82,25 +57,17 @@ export class EditContributions extends Contribution {
       execute: async () => {
         const value = await this.currentValue();
         if (value !== undefined) {
-          this.clipboardService.writeText(`[code]
+          this.clipboardService.writeText(`
+\`\`\`cpp
 ${value}
-[/code]`);
-        }
-      },
-    });
-    registry.registerCommand(EditContributions.Commands.COPY_FOR_GITHUB, {
-      execute: async () => {
-        const value = await this.currentValue();
-        if (value !== undefined) {
-          this.clipboardService.writeText(`\`\`\`cpp
-${value}
-\`\`\``);
+\`\`\`
+`);
         }
       },
     });
   }
 
-  registerMenus(registry: MenuModelRegistry): void {
+  override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: CommonCommands.CUT.id,
       order: '0',
@@ -111,93 +78,95 @@ ${value}
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.COPY_FOR_FORUM.id,
-      label: 'Copy for Forum',
+      label: nls.localize(
+        'arduino/editor/copyForForum',
+        'Copy for Forum (Markdown)'
+      ),
       order: '2',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-      commandId: EditContributions.Commands.COPY_FOR_GITHUB.id,
-      label: 'Copy for GitHub',
+      commandId: CommonCommands.PASTE.id,
       order: '3',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-      commandId: CommonCommands.PASTE.id,
+      commandId: CommonCommands.SELECT_ALL.id,
       order: '4',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
-      commandId: CommonCommands.SELECT_ALL.id,
-      order: '5',
-    });
-    registry.registerMenuAction(ArduinoMenus.EDIT__TEXT_CONTROL_GROUP, {
       commandId: EditContributions.Commands.GO_TO_LINE.id,
-      label: 'Go to Line...',
-      order: '6',
+      label: nls.localize(
+        'vscode/standaloneStrings/gotoLineActionLabel',
+        'Go to Line...'
+      ),
+      order: '5',
     });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.TOGGLE_COMMENT.id,
-      label: 'Comment/Uncomment',
+      label: nls.localize(
+        'arduino/editor/commentUncomment',
+        'Comment/Uncomment'
+      ),
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.INDENT_LINES.id,
-      label: 'Increase Indent',
+      label: nls.localize('arduino/editor/increaseIndent', 'Increase Indent'),
       order: '1',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
       commandId: EditContributions.Commands.OUTDENT_LINES.id,
-      label: 'Decrease Indent',
+      label: nls.localize('arduino/editor/decreaseIndent', 'Decrease Indent'),
       order: '2',
     });
-
-    registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
-      commandId: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      label: 'Increase Font Size',
-      order: '0',
-    });
-    registry.registerMenuAction(ArduinoMenus.EDIT__FONT_CONTROL_GROUP, {
-      commandId: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      label: 'Decrease Font Size',
-      order: '1',
+    registry.registerMenuAction(ArduinoMenus.EDIT__CODE_CONTROL_GROUP, {
+      commandId: EditContributions.Commands.AUTO_FORMAT.id,
+      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'),
+      order: '3',
     });
 
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND.id,
-      label: 'Find',
+      label: nls.localize('vscode/findController/startFindAction', 'Find'),
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND_NEXT.id,
-      label: 'Find Next',
+      label: nls.localize(
+        'vscode/findController/findNextMatchAction',
+        'Find Next'
+      ),
       order: '1',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.FIND_PREVIOUS.id,
-      label: 'Find Previous',
+      label: nls.localize(
+        'vscode/findController/findPreviousMatchAction',
+        'Find Previous'
+      ),
       order: '2',
     });
     registry.registerMenuAction(ArduinoMenus.EDIT__FIND_GROUP, {
       commandId: EditContributions.Commands.USE_FOR_FIND.id,
-      label: 'Use Selection for Find', // XXX: The Java IDE uses `Use Selection For Find`.
+      label: nls.localize(
+        'vscode/findController/startFindWithSelectionAction',
+        'Use Selection for Find'
+      ), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '3',
     });
 
     // `Tools`
     registry.registerMenuAction(ArduinoMenus.TOOLS__MAIN_GROUP, {
       commandId: EditContributions.Commands.AUTO_FORMAT.id,
-      label: 'Auto Format', // XXX: The Java IDE uses `Use Selection For Find`.
+      label: nls.localize('arduino/editor/autoFormat', 'Auto Format'), // XXX: The Java IDE uses `Use Selection For Find`.
       order: '0',
     });
   }
 
-  registerKeybindings(registry: KeybindingRegistry): void {
+  override registerKeybindings(registry: KeybindingRegistry): void {
     registry.registerKeybinding({
       command: EditContributions.Commands.COPY_FOR_FORUM.id,
       keybinding: 'CtrlCmd+Shift+C',
-      when: 'editorFocus',
-    });
-    registry.registerKeybinding({
-      command: EditContributions.Commands.COPY_FOR_GITHUB.id,
-      keybinding: 'CtrlCmd+Alt+C',
       when: 'editorFocus',
     });
     registry.registerKeybinding({
@@ -210,15 +179,6 @@ ${value}
       command: EditContributions.Commands.TOGGLE_COMMENT.id,
       keybinding: 'CtrlCmd+/',
       when: 'editorFocus',
-    });
-
-    registry.registerKeybinding({
-      command: EditContributions.Commands.INCREASE_FONT_SIZE.id,
-      keybinding: 'CtrlCmd+=',
-    });
-    registry.registerKeybinding({
-      command: EditContributions.Commands.DECREASE_FONT_SIZE.id,
-      keybinding: 'CtrlCmd+-',
     });
 
     registry.registerKeybinding({
@@ -245,10 +205,13 @@ ${value}
     });
   }
 
-  protected async current(): Promise<monaco.editor.ICodeEditor | undefined> {
+  protected async current(): Promise<
+    ICodeEditor | StandaloneCodeEditor | undefined
+  > {
     return (
       this.codeEditorService.getFocusedCodeEditor() ||
-      this.codeEditorService.getActiveCodeEditor()
+      this.codeEditorService.getActiveCodeEditor() ||
+      undefined
     );
   }
 
@@ -280,9 +243,6 @@ export namespace EditContributions {
     export const COPY_FOR_FORUM: Command = {
       id: 'arduino-copy-for-forum',
     };
-    export const COPY_FOR_GITHUB: Command = {
-      id: 'arduino-copy-for-github',
-    };
     export const GO_TO_LINE: Command = {
       id: 'arduino-go-to-line',
     };
@@ -306,12 +266,6 @@ export namespace EditContributions {
     };
     export const USE_FOR_FIND: Command = {
       id: 'arduino-for-find',
-    };
-    export const INCREASE_FONT_SIZE: Command = {
-      id: 'arduino-increase-font-size',
-    };
-    export const DECREASE_FONT_SIZE: Command = {
-      id: 'arduino-decrease-font-size',
     };
     export const AUTO_FORMAT: Command = {
       id: 'arduino-auto-format', // `Auto Format` should belong to `Tool`.

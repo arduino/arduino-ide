@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from '@theia/core/shared/react';
 import {
   TabBarToolbar,
   TabBarToolbarRegistry,
@@ -71,7 +71,7 @@ export class ArduinoToolbarComponent extends React.Component<
     );
   };
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     const tooltip = (
       <div key="arduino-toolbar-tooltip" className={'arduino-toolbar-tooltip'}>
         {this.state.tooltip}

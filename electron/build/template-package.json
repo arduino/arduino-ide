@@ -3,30 +3,29 @@
   "author": "Arduino SA",
   "resolutions": {
     "**/fs-extra": "^4.0.3",
-    "electron-builder": "22.7.0"
+    "electron-builder": "23.6.0"
   },
   "dependencies": {
     "node-log-rotate": "^0.1.5"
   },
   "devDependencies": {
-    "@theia/cli": "next",
+    "@theia/cli": "1.37.0",
     "cross-env": "^7.0.2",
-    "electron-builder": "22.7.0",
-    "electron-notarize": "^0.3.0",
+    "electron-builder": "23.6.0",
+    "electron-notarize": "^1.1.1",
     "is-ci": "^2.0.0",
     "ncp": "^2.0.0",
     "shelljs": "^0.8.3"
   },
   "scripts": {
-    "build": "yarn download:plugins && theia build --mode development && yarn patch",
-    "build:publish": "yarn download:plugins && theia build --mode production && yarn patch",
+    "build": "yarn download:plugins && theia build --mode production && yarn patch",
+    "rebuild": "yarn theia rebuild:electron",
     "package": "cross-env DEBUG=* && electron-builder --publish=never",
-    "package:publish": "cross-env DEBUG=* && electron-builder --publish=always",
     "download:plugins": "theia download:plugins",
-    "patch": "ncp ./patch/main.js ./src-gen/backend/main.js"
+    "patch": "ncp ./patch/backend/main.js ./src-gen/backend/main.js"
   },
   "engines": {
-    "node": ">=12.14.1 <13"
+    "node": ">=16.14.0 <17"
   },
   "repository": {
     "type": "git",
@@ -37,11 +36,6 @@
   ],
   "theia": {
     "target": "electron",
-    "frontend": {
-      "config": {
-        "disallowReloadKeybinding": true
-      }
-    },
     "backend": {
       "config": {
         "singleInstance": true
@@ -51,9 +45,18 @@
   "build": {
     "productName": "Arduino IDE",
     "asar": false,
+    "detectUpdateChannel": false,
+    "generateUpdatesFilesForAllChannels": true,
+    "npmRebuild": false,
     "directories": {
       "buildResources": "resources"
     },
+    "fileAssociations": [
+      {
+        "ext": "ino",
+        "role": "Editor"
+      }
+    ],
     "files": [
       "src-gen",
       "lib",
@@ -63,9 +66,9 @@
       "!node_modules/@theia/**/test/*",
       "!node_modules/@theia/**/src/*.ts",
       "!node_modules/@theia/**/lib/*browser/*",
+      "node_modules/@theia/core/lib/browser/*",
       "!node_modules/@typefox/monaco-editor-core/*",
-      "!node_modules/oniguruma/*",
-      "!node_modules/onigasm/*"
+      "!node_modules/electron/**"
     ],
     "extraResources": [
       {
@@ -86,18 +89,20 @@
       "gatekeeperAssess": false,
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
-      "target": [
-        "dmg"
-      ]
+      "target": {
+        "target": "default"
+      }
     },
     "linux": {
       "target": [
-        {
-          "target": "zip"
-        }
+        "zip",
+        "AppImage"
       ],
       "category": "Development",
       "icon": "resources/icons"
+    },
+    "msi": {
+      "runAfterFinish": false
     },
     "nsis": {
       "oneClick": false,
@@ -134,13 +139,5 @@
         "path": "arduino-ide/nightly"
       }
     ]
-  },
-  "theiaPluginsDir": "plugins",
-  "theiaPlugins": {
-    "vscode-builtin-cpp": "https://open-vsx.org/api/vscode/cpp/1.52.1/file/vscode.cpp-1.52.1.vsix",
-    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/nightly/vscode-arduino-tools-0.0.1-beta.1.vsix",
-    "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
-    "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://open-vsx.org/api/marus25/cortex-debug/0.3.10/file/marus25.cortex-debug-0.3.10.vsix"
   }
 }

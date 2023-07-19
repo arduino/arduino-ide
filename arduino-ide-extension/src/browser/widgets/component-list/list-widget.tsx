@@ -1,10 +1,13 @@
-import * as React from 'react';
-import { injectable, postConstruct, inject } from 'inversify';
-import { Widget } from '@phosphor/widgets';
-import { Message } from '@phosphor/messaging';
-import { Deferred } from '@theia/core/lib/common/promise-util';
+import * as React from '@theia/core/shared/react';
+import {
+  injectable,
+  postConstruct,
+  inject,
+} from '@theia/core/shared/inversify';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
+import { Message } from '@theia/core/shared/@phosphor/messaging';
 import { Emitter } from '@theia/core/lib/common/event';
-import { MaybePromise } from '@theia/core/lib/common/types';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import { ReactWidget } from '@theia/core/lib/browser/widgets/react-widget';
 import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
@@ -12,38 +15,43 @@ import {
   Installable,
   Searchable,
   ArduinoComponent,
+  ResponseServiceClient,
 } from '../../../common/protocol';
 import { FilterableListContainer } from './filterable-list-container';
 import { ListItemRenderer } from './list-item-renderer';
 import { NotificationCenter } from '../../notification-center';
-import { ResponseServiceImpl } from '../../response-service-impl';
+import { FilterRenderer } from './filter-renderer';
 
 @injectable()
 export abstract class ListWidget<
-  T extends ArduinoComponent
+  T extends ArduinoComponent,
+  S extends Searchable.Options
 > extends ReactWidget {
   @inject(MessageService)
   protected readonly messageService: MessageService;
-
-  @inject(CommandService)
-  protected readonly commandService: CommandService;
-
-  @inject(ResponseServiceImpl)
-  protected readonly responseService: ResponseServiceImpl;
-
   @inject(NotificationCenter)
   protected readonly notificationCenter: NotificationCenter;
+  @inject(CommandService)
+  private readonly commandService: CommandService;
+  @inject(ResponseServiceClient)
+  private readonly responseService: ResponseServiceClient;
 
   /**
    * Do not touch or use it. It is for setting the focus on the `input` after the widget activation.
    */
-  protected focusNode: HTMLElement | undefined;
-  protected readonly deferredContainer = new Deferred<HTMLElement>();
-  protected readonly filterTextChangeEmitter = new Emitter<
-    string | undefined
+  private focusNode: HTMLElement | undefined;
+  private readonly didReceiveFirstFocus = new Deferred();
+  private readonly searchOptionsChangeEmitter = new Emitter<
+    Partial<S> | undefined
   >();
+  private readonly onDidShowEmitter = new Emitter<void>();
+  /**
+   * Instead of running an `update` from the `postConstruct` `init` method,
+   * we use this variable to track first activate, then run.
+   */
+  private firstUpdate = true;
 
-  constructor(protected options: ListWidget.Options<T>) {
+  constructor(protected options: ListWidget.Options<T, S>) {
     super();
     const { id, label, iconClass } = options;
     this.id = id;
@@ -53,43 +61,59 @@ export abstract class ListWidget<
     this.title.closable = true;
     this.addClass('arduino-list-widget');
     this.node.tabIndex = 0; // To be able to set the focus on the widget.
-    this.scrollOptions = {
-      suppressScrollX: true,
-    };
-    this.toDispose.push(this.filterTextChangeEmitter);
+    this.scrollOptions = undefined;
+    this.toDispose.pushAll([
+      this.searchOptionsChangeEmitter,
+      this.onDidShowEmitter,
+    ]);
   }
 
   @postConstruct()
   protected init(): void {
-    this.update();
     this.toDispose.pushAll([
-      this.notificationCenter.onIndexUpdated(() => this.refresh(undefined)),
-      this.notificationCenter.onDaemonStarted(() => this.refresh(undefined)),
-      this.notificationCenter.onDaemonStopped(() => this.refresh(undefined)),
+      this.notificationCenter.onIndexUpdateDidComplete(() =>
+        this.refresh(undefined)
+      ),
+      this.notificationCenter.onDaemonDidStart(() => this.refresh(undefined)),
+      this.notificationCenter.onDaemonDidStop(() => this.refresh(undefined)),
     ]);
   }
 
-  protected getScrollContainer(): MaybePromise<HTMLElement> {
-    return this.deferredContainer.promise;
+  protected override onAfterShow(message: Message): void {
+    this.maybeUpdateOnFirstRender();
+    super.onAfterShow(message);
+    this.onDidShowEmitter.fire();
   }
 
-  protected onActivateRequest(message: Message): void {
+  private maybeUpdateOnFirstRender() {
+    if (this.firstUpdate) {
+      this.firstUpdate = false;
+      this.update();
+      this.didReceiveFirstFocus.promise.then(() => this.focusNode?.focus());
+    }
+  }
+
+  protected override onActivateRequest(message: Message): void {
+    this.maybeUpdateOnFirstRender();
     super.onActivateRequest(message);
     (this.focusNode || this.node).focus();
   }
 
-  protected onUpdateRequest(message: Message): void {
+  protected override onUpdateRequest(message: Message): void {
     super.onUpdateRequest(message);
     this.render();
   }
 
-  protected onResize(message: Widget.ResizeMessage): void {
+  protected override onResize(message: Widget.ResizeMessage): void {
     super.onResize(message);
     this.updateScrollBar();
   }
 
-  protected onFocusResolved = (element: HTMLElement | undefined) => {
+  private readonly onFocusResolved = (
+    element: HTMLElement | undefined
+  ): void => {
     this.focusNode = element;
+    this.didReceiveFirstFocus.resolve();
   };
 
   protected async install({
@@ -114,22 +138,23 @@ export abstract class ListWidget<
     return this.options.installable.uninstall({ item, progressId });
   }
 
-  render(): React.ReactNode {
+  override render(): React.ReactNode {
     return (
-      <FilterableListContainer<T>
+      <FilterableListContainer<T, S>
+        defaultSearchOptions={this.options.defaultSearchOptions}
         container={this}
-        resolveContainer={this.deferredContainer.resolve}
         resolveFocus={this.onFocusResolved}
         searchable={this.options.searchable}
         install={this.install.bind(this)}
         uninstall={this.uninstall.bind(this)}
         itemLabel={this.options.itemLabel}
-        itemDeprecated={this.options.itemDeprecated}
         itemRenderer={this.options.itemRenderer}
-        filterTextChangeEvent={this.filterTextChangeEmitter.event}
+        filterRenderer={this.options.filterRenderer}
+        searchOptionsDidChange={this.searchOptionsChangeEmitter.event}
         messageService={this.messageService}
         commandService={this.commandService}
         responseService={this.responseService}
+        onDidShow={this.onDidShowEmitter.event}
       />
     );
   }
@@ -138,9 +163,9 @@ export abstract class ListWidget<
    * If `filterText` is defined, sets the filter text to the argument.
    * If it is `undefined`, updates the view state by re-running the search with the current `filterText` term.
    */
-  refresh(filterText: string | undefined): void {
-    this.deferredContainer.promise.then(() =>
-      this.filterTextChangeEmitter.fire(filterText)
+  refresh(searchOptions: Partial<S> | undefined): void {
+    this.didReceiveFirstFocus.promise.then(() =>
+      this.searchOptionsChangeEmitter.fire(searchOptions)
     );
   }
 
@@ -152,14 +177,25 @@ export abstract class ListWidget<
 }
 
 export namespace ListWidget {
-  export interface Options<T extends ArduinoComponent> {
+  export interface Options<
+    T extends ArduinoComponent,
+    S extends Searchable.Options
+  > {
     readonly id: string;
     readonly label: string;
     readonly iconClass: string;
     readonly installable: Installable<T>;
-    readonly searchable: Searchable<T>;
+    readonly searchable: Searchable<T, S>;
     readonly itemLabel: (item: T) => string;
-    readonly itemDeprecated: (item: T) => boolean;
     readonly itemRenderer: ListItemRenderer<T>;
+    readonly filterRenderer: FilterRenderer<S>;
+    readonly defaultSearchOptions: S;
+  }
+}
+
+export class UserAbortError extends Error {
+  constructor(message = 'User abort') {
+    super(message);
+    Object.setPrototypeOf(this, UserAbortError.prototype);
   }
 }

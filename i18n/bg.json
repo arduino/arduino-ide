@@ -1,0 +1,538 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "Относно {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Платка{0}",
+      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardInfo": "Информация за платка",
+      "boards": "boards",
+      "configDialog1": "Изберете както платка, така и порт, ако искате да качите скица.",
+      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "couldNotFindPreviouslySelected": "Не можа да се намери по-рано избрана платка „{0}“ в инсталираната платформа „{1}“. Моля, изберете отново ръчно платката, която искате да използвате. Искате ли да я изберете отново сега?",
+      "disconnected": "Disconnected",
+      "getBoardInfo": "Вземи информация за платката",
+      "inSketchbook": "(в Скицника)",
+      "installNow": "Ядрото „{0} {1}“ трябва да бъде инсталирано за текущо избраната платка „{2}“. Искате ли да го инсталирате сега?",
+      "noBoardsFound": "No boards found for \"{0}\"",
+      "noFQBN": "FQBN не е наличен за избраната платка „{0}“. Имате ли инсталирано съответното ядро?",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "No ports discovered",
+      "noPortsSelected": "Няма избрани портове за платка: „{0}“.",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noneSelected": "Няма избрани платка.",
+      "openBoardsConfig": "Изберете друга платка и порт...",
+      "pleasePickBoard": "Моля, изберете платка, свързана към порта, който сте избрали.",
+      "port": "Порт{0}",
+      "portLabel": "Port: {0}",
+      "ports": "ports",
+      "programmer": "Програматор",
+      "reselectLater": "Изберете отново по-късно",
+      "searchBoard": "Search board",
+      "selectBoard": "Изберете платка",
+      "selectPortForInfo": "Моля, изберете порт, за да получите информация за платката.",
+      "showAllAvailablePorts": "Показва всички налични портове, когато е активиран",
+      "showAllPorts": "Show all ports",
+      "succesfullyInstalledPlatform": "Успешно инсталирана платформа {0}:{1}",
+      "succesfullyUninstalledPlatform": "Успешно деинсталирана платформа {0}:{1}",
+      "typeOfPorts": "{0} ports",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "Мениджър на платки",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
+    "bootloader": {
+      "burnBootloader": "Запишете буутлоудъра",
+      "burningBootloader": "Burning bootloader...",
+      "doneBurningBootloader": "Записването на буутлоудъра приключи."
+    },
+    "burnBootloader": {
+      "error": "Грешка при записване на зареждащия инструмент: {0}"
+    },
+    "certificate": {
+      "addNew": "Добави нов",
+      "addURL": "Добавете URL за извличане на SSL сертификат",
+      "boardAtPort": "{0} в {1}",
+      "certificatesUploaded": "Качени сертификати.",
+      "enterURL": "Въведете URL",
+      "noSupportedBoardConnected": "Няма свързана поддържана платка",
+      "openContext": "Отворен контекст",
+      "remove": "Премахване",
+      "selectBoard": "Изберете платка,,,",
+      "selectCertificateToUpload": "1. Изберете сертификат за качване",
+      "selectDestinationBoardToUpload": "2. Изберете платка и качете сертификат",
+      "upload": "Качване",
+      "uploadFailed": "Качването не бе успешно. Моля, опитайте отново.",
+      "uploadRootCertificates": "Качете SSL коренни сертификати",
+      "uploadingCertificates": "Качване на сертификати."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Изберете видимост на вашата скица:",
+      "cloudSketchbook": "Облачен скицник",
+      "connected": "Свързано",
+      "continue": "Продължи",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "Вграждане:",
+      "emptySketchbook": "Вашият Скицник е празен",
+      "goToCloud": "Go to Cloud",
+      "learnMore": "Научете повече",
+      "link": "Връзка:",
+      "notYetPulled": "Не може да се изпрати към облака. Още не е изтеглен.",
+      "offline": "Офлайн",
+      "openInCloudEditor": "Отворете в Cloud Editor",
+      "options": "Настроики...",
+      "privateVisibility": "Частен. Само вие можете да видите скицата.",
+      "profilePicture": "Снимка на профила",
+      "publicVisibility": "Обществени. Всеки с връзката може да види скицата.",
+      "pull": "Изтегли",
+      "pullFirst": "Първо трябва да дръпнете, за да можете да изпратите към облака.",
+      "pullSketch": "Издърпайте скица",
+      "pullSketchMsg": "Изтеглянето на тази скица от облака ще презапише нейната локална версия. Сигурен ли си, че искаш да продължиш?",
+      "push": "Изпрати",
+      "pushSketch": "Изпрати скица",
+      "pushSketchMsg": "Това е публична скица. Преди да я изпратите, уверете се, че всяка чувствителна информация е дефинирана във файловете arduino_secrets.h. Можете да направите скица частна от панела за споделяне.",
+      "remote": "Отдалечен",
+      "share": "Сподели...",
+      "shareSketch": "Споделете скица",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "ВПИШИ СЕ",
+      "signInToCloud": "Влезте в Arduino Cloud",
+      "signOut": "Отписване",
+      "sync": "Sync",
+      "syncEditSketches": "Синхронизирайте и редактирайте на вашите Arduino облачни скици",
+      "visitArduinoCloud": "Посетете Arduino Cloud, за да създадете облачни скици."
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Инсталирай ръчно",
+      "later": "По-късно",
+      "noBoardSelected": "Не е избрана платка",
+      "notConnected": "[няма връзка]",
+      "offlineIndicator": "Изглежда, че сте офлайн. Без интернет връзка, Arduino CLI може да не успее да изтегли необходимите ресурси и може да причини неизправност. Моля, свържете се с интернет и рестартирайте приложението.",
+      "oldFormat": "„{0}“ все още използва стария формат .pde. Искате ли да преминете към новото разширение `.ino`?",
+      "partner": "Partner",
+      "processing": "Обработва се",
+      "recommended": "Recommended",
+      "retired": "Retired",
+      "selectedOn": "на {0}",
+      "serialMonitor": "Сериен Монитор",
+      "type": "Type",
+      "unknown": "Неизвестно",
+      "updateable": "Updatable"
+    },
+    "compile": {
+      "error": "Грешка при компилация: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Boards included in this package:",
+      "by": "от",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "Филтрирайте търсенето си...",
+      "install": "Инсталирай",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "Повече информация",
+      "otherVersions": "Other Versions",
+      "remove": "Премахване",
+      "title": "{0} by {1}",
+      "uninstall": "Деинсталиране",
+      "uninstallMsg": "Искате ли да деинсталирате {0}?",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "Добави файл",
+      "fileAdded": "Към скицата е добавен един файл.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
+      "replaceTitle": "Замени"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Отстраняване на грешки - {0}",
+      "debuggingNotSupported": "Отстраняването на грешки не се поддържа от „{0}“",
+      "noPlatformInstalledFor": "Платформата не е инсталирана за „{0}“",
+      "optimizeForDebugging": "Оптимизиране за отстраняване на грешки",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "dialog": {
+      "dontAskAgain": "Не питай отново"
+    },
+    "editor": {
+      "autoFormat": "Автоматично форматиране",
+      "commentUncomment": "Коментиране/Премахване на коментар",
+      "copyForForum": "Копиране за форум (Markdown)",
+      "decreaseFontSize": "Намаляване на размера на шрифта",
+      "decreaseIndent": "Намаляване на отстъпа",
+      "increaseFontSize": "Увеличете размера на шрифта",
+      "increaseIndent": "Увеличете отстъпа",
+      "nextError": "Next Error",
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
+    },
+    "electron": {
+      "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
+      "unsavedChanges": "Всички незапазени промени няма да бъдат запазени."
+    },
+    "examples": {
+      "builtInExamples": "Вградени примери",
+      "couldNotInitializeExamples": "Не можа да се инициализира вградените примери.",
+      "customLibrary": "Примери от персонализирани библиотеки",
+      "for": "Примери за {0}",
+      "forAny": "Примери за всяка платка",
+      "menu": "Примери"
+    },
+    "firmware": {
+      "checkUpdates": "Проверете актуализации",
+      "failedInstall": "Неуспешно инсталиране. Моля, опитайте отново.",
+      "install": "Инсталирай",
+      "installingFirmware": "Инсталиране на фърмуер.",
+      "overwriteSketch": "Инсталацията ще презапише скицата на платката.",
+      "selectBoard": "Изберете платка",
+      "selectVersion": "Изберете версия на фърмуера",
+      "successfullyInstalled": "Firmware successfully installed.",
+      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+    },
+    "help": {
+      "environment": "Околна среда",
+      "faq": "Често задавани въпроси",
+      "findInReference": "Намерете в Референцията",
+      "gettingStarted": "Да започнем",
+      "keyword": "Въведете ключова дума",
+      "privacyPolicy": "Privacy Policy",
+      "reference": "Референция",
+      "search": "Търсете в Arduino.cc",
+      "troubleshooting": "Отстраняване на неизправности",
+      "visit": "Посетете Arduino.cc"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE Updates",
+      "closeAndInstallButton": "Close and Install",
+      "closeToInstallNotice": "Close the software and install the update on your machine.",
+      "downloadButton": "Download",
+      "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
+      "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+      "goToDownloadButton": "Go To Download",
+      "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+      "ideUpdaterDialog": "Software Update",
+      "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
+      "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
+      "notNowButton": "Not now",
+      "skipVersionButton": "Skip Version",
+      "updateAvailable": "Update Available",
+      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "library": {
+      "addZip": "Добавяне на .ZIP библиотека...",
+      "arduinoLibraries": "Arduino библиотеки",
+      "contributedLibraries": "Допринесени библиотеки",
+      "include": "Включи библиотека",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "Искате ли да инсталирате всички липсващи зависимости?",
+      "installOneMissingDependency": "Искате ли да инсталирате липсващата зависимост?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "Успешно инсталирана библиотека {0}:{1}",
+      "libraryAlreadyExists": "Библиотека вече съществува. Искате ли да я презапишете?",
+      "manageLibraries": "Управление на библиотеки...",
+      "namedLibraryAlreadyExists": "Библиотечна папка с име {0} вече съществува. Искате ли да я презапишете?",
+      "needsMultipleDependencies": "Библиотеката <b>{0}:{1}</b> се нуждае от някои други зависимости, които в момента не са инсталирани:",
+      "needsOneDependency": "Библиотеката <b>{0}:{1}</b> се нуждае от друга зависимост, която в момента не е инсталирана:",
+      "overwriteExistingLibrary": "Искате ли да презапишете съществуващата библиотека?",
+      "successfullyInstalledZipLibrary": "Успешно инсталирана библиотека от {0} архив",
+      "title": "Управител на библиотеки",
+      "uninstalledSuccessfully": "Успешно деинсталирана библиотека {0}:{1}",
+      "zipLibrary": "Библиотека"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
+    "menu": {
+      "advanced": "Advanced",
+      "sketch": "Скица",
+      "tools": "Инструменти"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "Мрежа",
+      "serial": "Serial"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Допълнителни URL адреси на мениджър на платки",
+      "auth.audience": "OAuth2 аудиторията.",
+      "auth.clientID": "OAuth2 клиентски идентификатор.",
+      "auth.domain": "OAuth2 домейнът.",
+      "auth.registerUri": "URI, използван за регистриране на нов потребител.",
+      "automatic": "Автоматично",
+      "board.certificates": "Списък със сертификати, които могат да бъдат качени на платката",
+      "browse": "Прегледай",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "choose": "Изберете",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cloud.enabled": "True , ако функциите за синхронизиране на скицата са активирани. По подразбиране е true.",
+      "cloud.pull.warn": "True е, ако потребителите трябва да бъдат предупредени, преди да се изтегли скица от облака. По подразбиране е true.",
+      "cloud.push.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде пусната скица в облака. По подразбиране е true.",
+      "cloud.pushpublic.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде изпратена публична скица в облака. По подразбиране е true.",
+      "cloud.sketchSyncEndpoint": "Крайната точка, използвана за изпращане и изтегляне на скици от бекенда. По подразбиране той сочи към Arduino Cloud API.",
+      "compile": "компилиране",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "True за подробен изход за компилиране. False по подразбиране",
+      "compile.warnings": "Указва на gcc кое ниво на предупреждение да използва. По подразбиране е „None“.",
+      "compilerWarnings": "Компилационни предупреждения",
+      "editorFontSize": "Размер на шрифта на редактора",
+      "editorQuickSuggestions": "Бързи предложения на редактора",
+      "enterAdditionalURLs": "Въведете допълнителни URL адреси, по един за всеки ред",
+      "files.inside.sketches": "Показване на файлове в Sketches",
+      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
+      "interfaceScale": "Мащаб на интерфейса",
+      "invalid.editorFontSize": "Невалиден размер на шрифта на редактора. Трябва да е положително цяло число.",
+      "invalid.sketchbook.location": "Невалидно местоположение на скицника: {0}",
+      "invalid.theme": "Невалидна тема.",
+      "language.log": "True, ако езиковият сървър на Arduino трябва да генерира лог файлове в папката за скици. В противен случай false. По подразбиране е false.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "manualProxy": "Ръчна конфигурация на прокси",
+      "network": "Мрежа",
+      "newSketchbookLocation": "Изберете местоположение за новата скицниката",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "Без прокси",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
+      "showVerbose": "Показване на подробен изход по време на",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "Местоположение на скицника",
+      "sketchbook.showAllFiles": "True , за да се покажат всички файлове вътре в скицата. По подразбиране е false.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "unofficialBoardSupport": "Щракнете за списък с неофициално поддържаните URL адреси на платки",
+      "upload": "качване",
+      "upload.verbose": "True за подробен изход за качване. False по подразбиране.",
+      "verifyAfterUpload": "Потвърдете кода след качване",
+      "window.autoScale": "True , ако потребителският интерфейс автоматично се мащабира с размера на шрифта.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "Да се замени ли съществуващата версия на {0}?",
+    "selectZip": "Изберете zip файл, съдържащ библиотеката, която искате да добавите",
+    "serial": {
+      "autoscroll": "Автоматично превъртане",
+      "carriageReturn": "Carriage Return",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "newLine": "Нов ред",
+      "newLineCarriageReturn": "Както NL, така и CR",
+      "noLineEndings": "Без край на реда",
+      "notConnected": "Няма връзка. Изберете платка и порт за автоматично свързване.",
+      "openSerialPlotter": "Serial Plotter",
+      "timestamp": "Печат за време",
+      "toggleTimestamp": "Превключване на клеймото за време"
+    },
+    "sketch": {
+      "archiveSketch": "Архивирай скица",
+      "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
+      "close": "Наистина ли искате да затворите скицата?",
+      "compile": "Compiling sketch...",
+      "configureAndUpload": "Configure and Upload",
+      "createdArchive": "Създаден е архив „{0}“.",
+      "doneCompiling": "Готово е компилирането.",
+      "doneUploading": "Качването приключи.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "Експортиране на компилиран двоичен файл",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "Преместване",
+      "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "Отвори папка",
+      "openRecent": "Отвори Скорошен",
+      "openSketchInNewWindow": "Отвори скицата в нов прозорец",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "Запазете папката със скица като...",
+      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketchAs": "Запазете папката със скици като...",
+      "showFolder": "Показване на папка за скици",
+      "sketch": "Скица",
+      "sketchbook": "Скицник",
+      "titleLocalSketchbook": "Локален скицник",
+      "titleSketchbook": "Скицник",
+      "upload": "Качване",
+      "uploadUsingProgrammer": "Качване с помощта на програмист",
+      "uploading": "Uploading...",
+      "userFieldsNotFoundError": "Не мога да намеря потребителски полета за свързаната платка",
+      "verify": "Потвърдете",
+      "verifyOrCompile": "Проверете/компилирайте"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
+    "upload": {
+      "error": "{0} грешка: {1}"
+    },
+    "userFields": {
+      "cancel": "Отмяна",
+      "enterField": "Enter {0}",
+      "upload": "Качване"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Не може да се свърже с бекенда.",
+      "cannotConnectDaemon": "Не може да се свърже с демона на CLI.",
+      "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
+      "daemonOffline": "CLI Daemon офлайн",
+      "offline": "Офлайн",
+      "offlineText": "Офлайн",
+      "quitTitle": "Are you sure you want to quit?"
+    },
+    "editor": {
+      "unsavedTitle": "Незапазено – {0}"
+    },
+    "messages": {
+      "collapse": "Свиване",
+      "expand": "Разгънете"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "Име за нов файл",
+      "invalidExtension": ".{0} не е валидно разширение",
+      "newFileName": "Ново име на файла"
+    }
+  }
+}

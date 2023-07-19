@@ -28,21 +28,26 @@ export namespace Instance {
 }
 
 export class DownloadProgress extends jspb.Message { 
-    getUrl(): string;
-    setUrl(value: string): DownloadProgress;
 
-    getFile(): string;
-    setFile(value: string): DownloadProgress;
+    hasStart(): boolean;
+    clearStart(): void;
+    getStart(): DownloadProgressStart | undefined;
+    setStart(value?: DownloadProgressStart): DownloadProgress;
 
-    getTotalSize(): number;
-    setTotalSize(value: number): DownloadProgress;
 
-    getDownloaded(): number;
-    setDownloaded(value: number): DownloadProgress;
+    hasUpdate(): boolean;
+    clearUpdate(): void;
+    getUpdate(): DownloadProgressUpdate | undefined;
+    setUpdate(value?: DownloadProgressUpdate): DownloadProgress;
 
-    getCompleted(): boolean;
-    setCompleted(value: boolean): DownloadProgress;
 
+    hasEnd(): boolean;
+    clearEnd(): void;
+    getEnd(): DownloadProgressEnd | undefined;
+    setEnd(value?: DownloadProgressEnd): DownloadProgress;
+
+
+    getMessageCase(): DownloadProgress.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DownloadProgress.AsObject;
@@ -56,11 +61,96 @@ export class DownloadProgress extends jspb.Message {
 
 export namespace DownloadProgress {
     export type AsObject = {
+        start?: DownloadProgressStart.AsObject,
+        update?: DownloadProgressUpdate.AsObject,
+        end?: DownloadProgressEnd.AsObject,
+    }
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+    
+    START = 1,
+
+    UPDATE = 2,
+
+    END = 3,
+
+    }
+
+}
+
+export class DownloadProgressStart extends jspb.Message { 
+    getUrl(): string;
+    setUrl(value: string): DownloadProgressStart;
+
+    getLabel(): string;
+    setLabel(value: string): DownloadProgressStart;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DownloadProgressStart.AsObject;
+    static toObject(includeInstance: boolean, msg: DownloadProgressStart): DownloadProgressStart.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DownloadProgressStart, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DownloadProgressStart;
+    static deserializeBinaryFromReader(message: DownloadProgressStart, reader: jspb.BinaryReader): DownloadProgressStart;
+}
+
+export namespace DownloadProgressStart {
+    export type AsObject = {
         url: string,
-        file: string,
-        totalSize: number,
+        label: string,
+    }
+}
+
+export class DownloadProgressUpdate extends jspb.Message { 
+    getDownloaded(): number;
+    setDownloaded(value: number): DownloadProgressUpdate;
+
+    getTotalSize(): number;
+    setTotalSize(value: number): DownloadProgressUpdate;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DownloadProgressUpdate.AsObject;
+    static toObject(includeInstance: boolean, msg: DownloadProgressUpdate): DownloadProgressUpdate.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DownloadProgressUpdate, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DownloadProgressUpdate;
+    static deserializeBinaryFromReader(message: DownloadProgressUpdate, reader: jspb.BinaryReader): DownloadProgressUpdate;
+}
+
+export namespace DownloadProgressUpdate {
+    export type AsObject = {
         downloaded: number,
-        completed: boolean,
+        totalSize: number,
+    }
+}
+
+export class DownloadProgressEnd extends jspb.Message { 
+    getSuccess(): boolean;
+    setSuccess(value: boolean): DownloadProgressEnd;
+
+    getMessage(): string;
+    setMessage(value: string): DownloadProgressEnd;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DownloadProgressEnd.AsObject;
+    static toObject(includeInstance: boolean, msg: DownloadProgressEnd): DownloadProgressEnd.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DownloadProgressEnd, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DownloadProgressEnd;
+    static deserializeBinaryFromReader(message: DownloadProgressEnd, reader: jspb.BinaryReader): DownloadProgressEnd;
+}
+
+export namespace DownloadProgressEnd {
+    export type AsObject = {
+        success: boolean,
+        message: string,
     }
 }
 
@@ -73,6 +163,9 @@ export class TaskProgress extends jspb.Message {
 
     getCompleted(): boolean;
     setCompleted(value: boolean): TaskProgress;
+
+    getPercent(): number;
+    setPercent(value: number): TaskProgress;
 
 
     serializeBinary(): Uint8Array;
@@ -90,6 +183,7 @@ export namespace TaskProgress {
         name: string,
         message: string,
         completed: boolean,
+        percent: number,
     }
 }
 
@@ -155,6 +249,23 @@ export class Platform extends jspb.Message {
     getDeprecated(): boolean;
     setDeprecated(value: boolean): Platform;
 
+    clearTypeList(): void;
+    getTypeList(): Array<string>;
+    setTypeList(value: Array<string>): Platform;
+    addType(value: string, index?: number): string;
+
+
+    hasHelp(): boolean;
+    clearHelp(): void;
+    getHelp(): HelpResources | undefined;
+    setHelp(value?: HelpResources): Platform;
+
+    getIndexed(): boolean;
+    setIndexed(value: boolean): Platform;
+
+    getMissingMetadata(): boolean;
+    setMissingMetadata(value: boolean): Platform;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -178,6 +289,43 @@ export namespace Platform {
         boardsList: Array<Board.AsObject>,
         manuallyInstalled: boolean,
         deprecated: boolean,
+        typeList: Array<string>,
+        help?: HelpResources.AsObject,
+        indexed: boolean,
+        missingMetadata: boolean,
+    }
+}
+
+export class InstalledPlatformReference extends jspb.Message { 
+    getId(): string;
+    setId(value: string): InstalledPlatformReference;
+
+    getVersion(): string;
+    setVersion(value: string): InstalledPlatformReference;
+
+    getInstallDir(): string;
+    setInstallDir(value: string): InstalledPlatformReference;
+
+    getPackageUrl(): string;
+    setPackageUrl(value: string): InstalledPlatformReference;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): InstalledPlatformReference.AsObject;
+    static toObject(includeInstance: boolean, msg: InstalledPlatformReference): InstalledPlatformReference.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: InstalledPlatformReference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): InstalledPlatformReference;
+    static deserializeBinaryFromReader(message: InstalledPlatformReference, reader: jspb.BinaryReader): InstalledPlatformReference;
+}
+
+export namespace InstalledPlatformReference {
+    export type AsObject = {
+        id: string,
+        version: string,
+        installDir: string,
+        packageUrl: string,
     }
 }
 
@@ -203,5 +351,51 @@ export namespace Board {
     export type AsObject = {
         name: string,
         fqbn: string,
+    }
+}
+
+export class Profile extends jspb.Message { 
+    getName(): string;
+    setName(value: string): Profile;
+
+    getFqbn(): string;
+    setFqbn(value: string): Profile;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Profile.AsObject;
+    static toObject(includeInstance: boolean, msg: Profile): Profile.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Profile, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Profile;
+    static deserializeBinaryFromReader(message: Profile, reader: jspb.BinaryReader): Profile;
+}
+
+export namespace Profile {
+    export type AsObject = {
+        name: string,
+        fqbn: string,
+    }
+}
+
+export class HelpResources extends jspb.Message { 
+    getOnline(): string;
+    setOnline(value: string): HelpResources;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): HelpResources.AsObject;
+    static toObject(includeInstance: boolean, msg: HelpResources): HelpResources.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: HelpResources, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): HelpResources;
+    static deserializeBinaryFromReader(message: HelpResources, reader: jspb.BinaryReader): HelpResources;
+}
+
+export namespace HelpResources {
+    export type AsObject = {
+        online: string,
     }
 }

@@ -1,6 +1,14 @@
 /* Show the dirty indicator on unclosable widgets. On hover, it should still show the dot instead of the X. */
 /* https://github.com/arduino/arduino-pro-ide/issues/380 */
-.p-TabBar.theia-app-centers .p-TabBar-tab.p-mod-closable.theia-mod-dirty > .p-TabBar-tabCloseIcon:hover {
-    background-size: 13px;
-    background-image: var(--theia-icon-circle);
+.p-TabBar.theia-app-centers .p-TabBar-tab.p-mod-closable.a-mod-uncloseable.theia-mod-dirty > .p-TabBar-tabCloseIcon:before {
+  content: "\ea71";
+}
+
+.monaco-list-row.show-file-icons.focused {
+    background-color: var(--theia-quickInputList-focusBackground);
+}
+
+.monaco-editor .view-overlays .compiler-error {
+    background-color: var(--theia-inputValidation-errorBackground);
+    opacity: 0.4 !important;
 }

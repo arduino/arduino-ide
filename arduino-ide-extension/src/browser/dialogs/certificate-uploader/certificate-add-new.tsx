@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { nls } from '@theia/core/lib/common';
+import * as React from '@theia/core/shared/react';
 
 export const CertificateAddComponent = ({
   addCertificate,
@@ -7,9 +8,12 @@ export const CertificateAddComponent = ({
 }): React.ReactElement => {
   const [value, setValue] = React.useState('');
 
-  const handleChange = React.useCallback((event) => {
-    setValue(event.target.value);
-  }, []);
+  const handleChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setValue(event.target.value);
+    },
+    []
+  );
 
   return (
     <form
@@ -22,10 +26,18 @@ export const CertificateAddComponent = ({
       }}
     >
       <label>
-        <div>Add URL to fetch SSL certificate</div>
+        <div>
+          {nls.localize(
+            'arduino/certificate/addURL',
+            'Add URL to fetch SSL certificate'
+          )}
+        </div>
         <input
           className="theia-input"
-          placeholder="Enter URL"
+          placeholder={nls.localize(
+            'arduino/certificate/enterURL',
+            'Enter URL'
+          )}
           type="text"
           name="add"
           onChange={handleChange}
