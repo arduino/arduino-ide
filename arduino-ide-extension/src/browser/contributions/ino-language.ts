@@ -6,7 +6,6 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { Mutex } from 'async-mutex';
 import {
   ArduinoDaemon,
-  assertSanitizedFqbn,
   BoardsService,
   ExecutableService,
   sanitizeFqbn,
@@ -93,8 +92,10 @@ export class InoLanguage extends SketchContribution {
               `Failed to sanitize the FQBN of the running language server. FQBN with the board settings was: ${this.languageServerFqbn}`
             );
           }
+          // The incoming FQBNs might contain custom boards configs, sanitize them before the comparison.
+          // https://github.com/arduino/arduino-ide/pull/2113#pullrequestreview-1499998328
           const matchingFqbn = dataChangePerFqbn.find(
-            (fqbn) => sanitizedFqbn === fqbn
+            (fqbn) => sanitizedFqbn === sanitizeFqbn(fqbn)
           );
           const { boardsConfig } = this.boardsServiceProvider;
           if (
@@ -151,7 +152,6 @@ export class InoLanguage extends SketchContribution {
         }
         return;
       }
-      assertSanitizedFqbn(fqbn);
       const fqbnWithConfig = await this.boardDataStore.appendConfigToFqbn(fqbn);
       if (!fqbnWithConfig) {
         throw new Error(
