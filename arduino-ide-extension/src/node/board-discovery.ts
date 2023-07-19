@@ -10,7 +10,6 @@ import { Disposable } from '@theia/core/lib/common/disposable';
 import { v4 } from 'uuid';
 import { Unknown } from '../common/nls';
 import {
-  AttachedBoardsChangeEvent,
   AvailablePorts,
   Board,
   NotificationServiceServer,
@@ -251,57 +250,14 @@ export class BoardDiscovery
       return;
     }
 
-    const detectedPort = resp.getPort();
-    if (detectedPort) {
-      const { port, boards } = this.fromRpc(detectedPort);
-      if (!port) {
-        if (!!boards.length) {
-          console.warn(
-            `Could not detect the port, but unexpectedly received discovered boards. This is most likely a bug! Response was: ${this.toJson(
-              resp
-            )}`
-          );
-        }
-        return;
-      }
-      const oldState = deepClone(this._availablePorts);
-      const newState = deepClone(this._availablePorts);
-      const key = Port.keyOf(port);
-
-      if (eventType === EventType.Add) {
-        if (newState[key]) {
-          const [, knownBoards] = newState[key];
-          this.logger.warn(
-            `Port '${Port.toString(
-              port
-            )}' was already available. Known boards before override: ${JSON.stringify(
-              knownBoards
-            )}`
-          );
-        }
-        newState[key] = [port, boards];
-      } else if (eventType === EventType.Remove) {
-        if (!newState[key]) {
-          this.logger.warn(
-            `Port '${Port.toString(port)}' was not available. Skipping`
-          );
-          return;
-        }
-        delete newState[key];
-      }
-
-      const event: AttachedBoardsChangeEvent = {
-        oldState: {
-          ...AvailablePorts.split(oldState),
-        },
-        newState: {
-          ...AvailablePorts.split(newState),
-        },
-        uploadInProgress: this.uploadInProgress,
-      };
-
-      this._availablePorts = newState;
-      this.notificationService.notifyAttachedBoardsDidChange(event);
+    const rpcDetectedPort = resp.getPort();
+    if (rpcDetectedPort) {
+      const detectedPort = this.fromRpc(rpcDetectedPort);
+      this.fireSoon({ detectedPort, eventType });
+    } else if (resp.getError()) {
+      this.logger.error(
+        `Could not extract any detected 'port' from the board list watch response. An 'error' has occurred: ${resp.getError()}`
+      );
     }
   }
 
@@ -332,6 +288,75 @@ export class BoardDiscovery
       hardwareId: rpcPort.getHardwareId(),
     };
   }
+
+  private fireSoonHandle?: NodeJS.Timeout;
+  private bufferedEvents: DetectedPortChangeEvent[] = [];
+  private fireSoon(event: DetectedPortChangeEvent): void {
+    this.bufferedEvents.push(event);
+    clearTimeout(this.fireSoonHandle);
+    this.fireSoonHandle = setTimeout(() => {
+      const prevState = deepClone(this.availablePorts);
+      const newState = this.calculateNewState(this.bufferedEvents, prevState);
+      if (!AvailablePorts.sameAs(prevState, newState)) {
+        this._availablePorts = newState;
+        this.notificationService.notifyAttachedBoardsDidChange({
+          newState: AvailablePorts.split(newState),
+          oldState: AvailablePorts.split(prevState),
+          uploadInProgress: this.uploadInProgress,
+        });
+      }
+      this.bufferedEvents.length = 0;
+    }, 100);
+  }
+
+  private calculateNewState(
+    events: DetectedPortChangeEvent[],
+    prevState: AvailablePorts
+  ): AvailablePorts {
+    const newState = deepClone(prevState);
+    for (const { detectedPort, eventType } of events) {
+      if (!DetectedPort.hasPort(detectedPort)) {
+        if (!!detectedPort.boards.length) {
+          console.warn(
+            `Could not detect the port, but unexpectedly received discovered boards. This is most likely a bug! Detected port was: ${JSON.stringify(
+              detectedPort
+            )}`
+          );
+        } else {
+          console.warn(
+            `Could not detect the port. Skipping: ${JSON.stringify(
+              detectedPort
+            )}`
+          );
+        }
+        continue;
+      }
+      const { port, boards } = detectedPort;
+      const key = Port.keyOf(port);
+      if (eventType === EventType.Add) {
+        const alreadyDetectedPort = newState[key];
+        if (alreadyDetectedPort) {
+          console.warn(
+            `Detected a new port that has been already discovered. The old value will be overridden. Old value: ${JSON.stringify(
+              alreadyDetectedPort
+            )}, new value: ${JSON.stringify(detectedPort)}`
+          );
+        }
+        newState[key] = [port, boards];
+      } else if (eventType === EventType.Remove) {
+        const alreadyDetectedPort = newState[key];
+        if (!alreadyDetectedPort) {
+          console.warn(
+            `Detected a port removal but it has not been discovered. This is most likely a bug! Detected port was: ${JSON.stringify(
+              detectedPort
+            )}`
+          );
+        }
+        delete newState[key];
+      }
+    }
+    return newState;
+  }
 }
 
 enum EventType {
@@ -356,8 +381,18 @@ namespace EventType {
     }
   }
 }
-
 interface DetectedPort {
   port: Port | undefined;
   boards: Board[];
+}
+namespace DetectedPort {
+  export function hasPort(
+    detectedPort: DetectedPort
+  ): detectedPort is DetectedPort & { port: Port } {
+    return !!detectedPort.port;
+  }
+}
+interface DetectedPortChangeEvent {
+  detectedPort: DetectedPort;
+  eventType: EventType.Add | EventType.Remove;
 }
