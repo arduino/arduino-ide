@@ -1,6 +1,8 @@
 // @ts-check
 
 const transifex = require('./transifex');
+const path = require('path');
+const fs = require('node:fs/promises');
 const util = require('util');
 const shell = require('shelljs');
 const fetch = require('node-fetch');
@@ -105,6 +107,15 @@ const getTranslationDownloadStatus = async (language, downloadRequestId) => {
 
     const languages = await getLanguages(organization, project);
     shell.echo('translations found:', languages.join(', '));
+
+    // Remove data managed on Transifex to avoid accumulation of vestigial files
+    const translationFilenames = await fs.readdir(translationsDirectory);
+    for (const filename of translationFilenames) {
+        if (filename === 'en.json' || !filename.endsWith('.json')) {
+            continue;
+        }
+        await fs.unlink(path.join(translationsDirectory, filename));
+    }
 
     let downloadIds = [];
     for (const language of languages) {
