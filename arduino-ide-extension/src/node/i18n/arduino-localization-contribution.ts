@@ -23,7 +23,6 @@ export class ArduinoLocalizationContribution
     // ['id'], Does not have Transifex translations, but has a VS Code language pack available on Open VSX.
     ['it'],
     ['ja'],
-    ['zh-tw', 'zh-Hant'],
     ['ko'],
     ['nl'],
     ['pl'],
@@ -32,6 +31,7 @@ export class ArduinoLocalizationContribution
     ['tr'],
     ['uk', 'uk_UA'],
     ['zh-cn', 'zh'],
+    ['zh-tw', 'zh-Hant'],
   ];
 
   async registerLocalizations(registry: LocalizationRegistry): Promise<void> {

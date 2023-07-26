@@ -90,7 +90,7 @@
     "vscode-language-pack-ru": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ru/1.70.0/file/MS-CEINTL.vscode-language-pack-ru-1.70.0.vsix",
     "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.70.0/file/MS-CEINTL.vscode-language-pack-tr-1.70.0.vsix",
     "vscode-language-pack-uk": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-uk/1.48.3/file/MS-CEINTL.vscode-language-pack-uk-1.48.3.vsix",
-    "vscode-language-pack-zh-hant": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hant/1.70.0/file/MS-CEINTL.vscode-language-pack-zh-hant-1.70.0.vsix",
-    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.70.0/file/MS-CEINTL.vscode-language-pack-zh-hans-1.70.0.vsix"
+    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.70.0/file/MS-CEINTL.vscode-language-pack-zh-hans-1.70.0.vsix",
+    "vscode-language-pack-zh-hant": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hant/1.70.0/file/MS-CEINTL.vscode-language-pack-zh-hant-1.70.0.vsix"
   }
 }
