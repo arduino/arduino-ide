@@ -31,6 +31,7 @@ export class ArduinoLocalizationContribution
     ['tr'],
     ['uk', 'uk_UA'],
     ['zh-cn', 'zh'],
+    ['zh-tw', 'zh-Hant'],
   ];
 
   async registerLocalizations(registry: LocalizationRegistry): Promise<void> {
