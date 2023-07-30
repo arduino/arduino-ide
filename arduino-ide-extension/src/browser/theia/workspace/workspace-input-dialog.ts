@@ -28,6 +28,11 @@ export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
     protected override readonly labelProvider: LabelProvider
   ) {
     super(props, labelProvider);
+    if (this.contentNode.contains(this.errorMessageNode)) {
+      // Reverts https://github.com/eclipse-theia/theia/pull/12585/files#diff-068570364d86f936ca72dfc52f8bfa93f14f6d971e2e6fa19216f33cb322244bR533-R534
+      this.contentNode.removeChild(this.errorMessageNode);
+      this.controlPanel.prepend(this.errorMessageNode);
+    }
     this.node.classList.add('workspace-input-dialog');
     this.appendCloseButton(Dialog.CANCEL);
   }
