@@ -1,10 +1,14 @@
 const chmodr = require('chmodr');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('node:path');
+const fs = require('node:fs/promises');
 const resolvePackagePath = require('resolve-package-path');
 const webpack = require('webpack');
 const frontend = require('./gen-webpack.config');
 const backend = require('./gen-webpack.node.config');
+
+const isWindows = process.platform === 'win32';
+const isMacOS = process.platform === 'darwin';
 
 // https://github.com/browserify/node-util/issues/57#issuecomment-764436352
 const mainWindowConfig = frontend[0];
@@ -37,7 +41,19 @@ class PermissionsPlugin {
    */
   apply(compiler) {
     compiler.hooks.afterEmit.tap('PermissionsPlugin', () => {
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
+        let trashBinaryFilename = undefined;
+        if (isWindows) {
+          trashBinaryFilename = 'windows-trash.exe';
+        } else if (isMacOS) {
+          trashBinaryFilename = 'macos-trash';
+        }
+        if (trashBinaryFilename) {
+          await fs.chmod(
+            path.join(__dirname, 'lib', 'backend', trashBinaryFilename),
+            0o755
+          );
+        }
         chmodr(
           path.join(__dirname, 'lib', 'backend', 'resources'),
           0o755,
@@ -48,42 +64,64 @@ class PermissionsPlugin {
   }
 }
 
+const trashBinariesPath = path.join(
+  resolvePackagePath('trash', __dirname),
+  '..',
+  'lib'
+);
+
+const copyOptions = {
+  patterns: [
+    // binaries
+    {
+      from: path.join(
+        resolvePackagePath('arduino-ide-extension', __dirname),
+        '..',
+        'src',
+        'node',
+        'resources'
+      ),
+      to: path.resolve(__dirname, 'lib', 'backend', 'resources'),
+      globOptions: {
+        ignore: ['**/i18n/**'],
+      },
+    },
+    // plotter app
+    {
+      from: path.join(
+        resolvePackagePath('arduino-serial-plotter-webapp', __dirname),
+        '..',
+        'build'
+      ),
+      to: path.resolve(
+        __dirname,
+        'lib',
+        'backend',
+        'resources',
+        'arduino-serial-plotter-webapp'
+      ),
+    },
+  ],
+};
+
+// workaround for https://github.com/eclipse-theia/theia/issues/12780
+// copy the Windows (`windows-trash.exe`) and macOS (`macos-trash`) executables for `trash`
+if (isWindows) {
+  copyOptions.patterns.push({
+    from: path.join(trashBinariesPath, 'windows-trash.exe'),
+    to: path.resolve(__dirname, 'lib', 'backend'),
+  });
+} else if (isMacOS) {
+  copyOptions.patterns.push({
+    from: path.join(trashBinariesPath, 'macos-trash'),
+    to: path.resolve(__dirname, 'lib', 'backend'),
+  });
+}
+
 // Copy all the IDE2 binaries and the plotter web app.
 // XXX: For whatever reason it is important to use `unshift` instead of `push`, and execute the additional webpack plugins before the Theia contributed ones kick in. Otherwise ours do not work.
 backend.config.plugins.unshift(
-  new CopyWebpackPlugin({
-    patterns: [
-      // binaries
-      {
-        from: path.join(
-          resolvePackagePath('arduino-ide-extension', __dirname),
-          '..',
-          'src',
-          'node',
-          'resources'
-        ),
-        to: path.resolve(__dirname, 'lib', 'backend', 'resources'),
-        globOptions: {
-          ignore: ['**/i18n/**'],
-        },
-      },
-      // plotter app
-      {
-        from: path.join(
-          resolvePackagePath('arduino-serial-plotter-webapp', __dirname),
-          '..',
-          'build'
-        ),
-        to: path.resolve(
-          __dirname,
-          'lib',
-          'backend',
-          'resources',
-          'arduino-serial-plotter-webapp'
-        ),
-      },
-    ],
-  }),
+  new CopyWebpackPlugin(copyOptions),
   new PermissionsPlugin()
 );
 
