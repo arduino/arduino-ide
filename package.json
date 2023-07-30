@@ -42,6 +42,7 @@
     "start": "yarn --cwd ./electron-app start",
     "watch": "lerna run watch --parallel",
     "build": "lerna run build",
+    "build:dev": "lerna run build:dev",
     "test": "lerna run test",
     "test:slow": "lerna run test:slow",
     "update:version": "node ./scripts/update-version.js",

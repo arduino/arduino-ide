@@ -16,6 +16,7 @@
     "lint": "eslint",
     "prebuild": "rimraf lib",
     "build": "tsc",
+    "build:dev": "yarn build",
     "postbuild": "ncp ./src/node/cli-protocol/ ./lib/node/cli-protocol/",
     "watch": "tsc -w",
     "test": "cross-env IDE2_TEST=true mocha \"./lib/test/**/*.test.js\"",
