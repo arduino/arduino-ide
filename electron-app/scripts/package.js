@@ -18,6 +18,8 @@ async function run() {
     electronVersion.slice(1), // removes the leading ^ from the version. TODO: user `semver` to clean it.
     '-c.extraMetadata.version',
     version,
+    '-c.extraMetadata.name',
+    'arduino-ide', // overrides the `name` in the `package.json` to keep the `localStorage` location. (https://github.com/arduino/arduino-ide/pull/2144#pullrequestreview-1554005028)
     `-c.${platform}.artifactName`,
     artifactName,
     '-c.extraMetadata.theia.frontend.config.buildDate',
