@@ -3,8 +3,6 @@
   "name": "electron-app",
   "version": "2.1.2",
   "license": "AGPL-3.0-or-later",
-  "author": "Arduino SA",
-  "description": "Arduino IDE",
   "main": "arduino-ide-electron-main.js",
   "dependencies": {
     "@theia/core": "1.39.0",
@@ -97,6 +95,8 @@
       }
     }
   },
+  "author": "Arduino SA",
+  "description": "Arduino IDE",
   "build": {
     "appId": "cc.arduino.IDE2",
     "productName": "Arduino IDE",
