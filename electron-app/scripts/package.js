@@ -27,10 +27,12 @@ async function run() {
   ];
   const updateChannel = getChannel();
   if (updateChannel) {
-    args.push(
-      '-c.extraMetadata.theia.frontend.config.arduino.ide.updateChannel',
-      updateChannel
-    );
+    // TODO: fix the default nightly update channel preference value if required.
+    // It's disabled for now: https://github.com/arduino/arduino-ide/issues/2157.
+    // args.push(
+    //   '-c.extraMetadata.theia.frontend.config.arduino.ide.updateChannel',
+    //   updateChannel
+    // );
   }
   const cp = exec('electron-builder', args, { stdio: 'inherit' });
   await cp;
