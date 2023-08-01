@@ -10,6 +10,9 @@ async function run() {
     require('../package.json').devDependencies['electron'];
   const platform = electronPlatform();
   const version = await getVersion();
+  /** @type {string|unknown} */
+  const cliVersion = require('../../arduino-ide-extension/package.json')
+    .arduino['arduino-cli'].version;
   const artifactName = await getArtifactName(version);
   const args = [
     '--publish',
@@ -22,6 +25,10 @@ async function run() {
     'arduino-ide', // overrides the `name` in the `package.json` to keep the `localStorage` location. (https://github.com/arduino/arduino-ide/pull/2144#pullrequestreview-1554005028)
     `-c.${platform}.artifactName`,
     artifactName,
+    '-c.extraMetadata.theia.frontend.config.appVersion',
+    version,
+    '-c.extraMetadata.theia.frontend.config.cliVersion',
+    typeof cliVersion === 'string' ? cliVersion : '',
     '-c.extraMetadata.theia.frontend.config.buildDate',
     new Date().toISOString(),
   ];

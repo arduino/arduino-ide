@@ -10,7 +10,7 @@ import {
 import { v4 } from 'uuid';
 import type { Sketch } from '../common/protocol/sketches-service';
 import {
-  CHANNEL_APP_VERSION,
+  CHANNEL_APP_INFO,
   CHANNEL_IS_FIRST_WINDOW,
   CHANNEL_MAIN_MENU_ITEM_DID_CLICK,
   CHANNEL_OPEN_PATH,
@@ -76,7 +76,7 @@ const api: ElectronArduino = {
     ipcRenderer.invoke(CHANNEL_SHOW_OPEN_DIALOG, options),
   showSaveDialog: (options: SaveDialogOptions) =>
     ipcRenderer.invoke(CHANNEL_SHOW_SAVE_DIALOG, options),
-  appVersion: () => ipcRenderer.invoke(CHANNEL_APP_VERSION),
+  appInfo: () => ipcRenderer.invoke(CHANNEL_APP_INFO),
   quitApp: () => ipcRenderer.send(CHANNEL_QUIT_APP),
   isFirstWindow: () => ipcRenderer.invoke(CHANNEL_IS_FIRST_WINDOW),
   requestReload: (options: StartupTasks) =>

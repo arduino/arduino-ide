@@ -131,10 +131,6 @@ export class ConfigServiceImpl
     return this.configChangeEmitter.event;
   }
 
-  async getVersion(): Promise<string> {
-    return require('../../package.json').arduino?.cli?.version || '';
-  }
-
   private async initConfig(): Promise<void> {
     this.logger.info('>>> Initializing CLI configuration...');
     try {

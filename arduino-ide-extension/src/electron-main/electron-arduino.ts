@@ -18,7 +18,8 @@ import { createDisposableListener } from '@theia/core/lib/electron-main/event-ut
 import { injectable } from '@theia/core/shared/inversify';
 import { WebContents } from '@theia/electron/shared/electron';
 import {
-  CHANNEL_APP_VERSION,
+  AppInfo,
+  CHANNEL_APP_INFO,
   CHANNEL_IS_FIRST_WINDOW,
   CHANNEL_MAIN_MENU_ITEM_DID_CLICK,
   CHANNEL_OPEN_PATH,
@@ -85,8 +86,8 @@ export class ElectronArduino implements ElectronMainApplicationContribution {
         return result;
       }
     );
-    ipcMain.handle(CHANNEL_APP_VERSION, async () => {
-      return app.appVersion;
+    ipcMain.handle(CHANNEL_APP_INFO, async (): Promise<AppInfo> => {
+      return app.appInfo;
     });
     ipcMain.on(CHANNEL_QUIT_APP, () => app.requestStop());
     ipcMain.handle(CHANNEL_IS_FIRST_WINDOW, async (event) => {

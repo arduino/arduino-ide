@@ -44,6 +44,7 @@
     "prepare": "theia download:plugins",
     "prebuild": "rimraf lib",
     "build": "theia build",
+    "prebuild:dev": "yarn prebuild",
     "build:dev": "theia build --mode development",
     "test": "mocha \"./test/**/*.test.js\"",
     "start": "theia start --plugins=local-dir:../plugins",
