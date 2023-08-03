@@ -3,14 +3,9 @@ import {
   DialogProps,
 } from '@theia/core/lib/browser/dialogs';
 import { ReactDialog as TheiaReactDialog } from '@theia/core/lib/browser/dialogs/react-dialog';
-import { codiconArray, Message } from '@theia/core/lib/browser/widgets/widget';
-import {
-  Disposable,
-  DisposableCollection,
-} from '@theia/core/lib/common/disposable';
+import { codiconArray } from '@theia/core/lib/browser/widgets/widget';
+import type { Message } from '@theia/core/shared/@phosphor/messaging';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import * as React from '@theia/core/shared/react';
-import { createRoot } from '@theia/core/shared/react-dom/client';
 
 @injectable()
 export abstract class AbstractDialog<T> extends TheiaAbstractDialog<T> {
@@ -25,38 +20,26 @@ export abstract class AbstractDialog<T> extends TheiaAbstractDialog<T> {
 
 @injectable()
 export abstract class ReactDialog<T> extends TheiaReactDialog<T> {
-  protected override onUpdateRequest(msg: Message): void {
-    // This is tricky to bypass the default Theia code.
-    // Otherwise, there is a warning when opening the dialog for the second time.
-    // You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it.
-    const disposables = new DisposableCollection();
-    if (!this.isMounted) {
-      // toggle the `isMounted` logic for the time being of the super call so that the `createRoot` does not run
-      this.isMounted = true;
-      disposables.push(Disposable.create(() => (this.isMounted = false)));
+  private _isOnCloseRequestInProgress = false;
+
+  override dispose(): void {
+    // There is a bug in Theia, and the React component's `componentWillUnmount` will not be called, as the Theia widget is already disposed when closing and reopening a dialog.
+    // Widget lifecycle issue in Theia: https://github.com/eclipse-theia/theia/issues/12093
+    // Bogus react widget lifecycle management PR: https://github.com/eclipse-theia/theia/pull/11687
+    // Do not call super. Do not let the Phosphor widget to be disposed on dialog close.
+    if (this._isOnCloseRequestInProgress) {
+      // Do not let the widget dispose on close.
+      return;
     }
+    super.dispose();
+  }
 
-    // Always unset the `contentNodeRoot` so there is no double update when calling super.
-    const restoreContentNodeRoot = this.contentNodeRoot;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.contentNodeRoot as any) = undefined;
-    disposables.push(
-      Disposable.create(() => (this.contentNodeRoot = restoreContentNodeRoot))
-    );
-
+  protected override onCloseRequest(message: Message): void {
+    this._isOnCloseRequestInProgress = true;
     try {
-      super.onUpdateRequest(msg);
+      super.onCloseRequest(message);
     } finally {
-      disposables.dispose();
+      this._isOnCloseRequestInProgress = false;
     }
-
-    // Use the patched rendering.
-    if (!this.isMounted) {
-      this.contentNodeRoot = createRoot(this.contentNode);
-      // Resetting the prop is missing from the Theia code.
-      // https://github.com/eclipse-theia/theia/blob/v1.31.1/packages/core/src/browser/dialogs/react-dialog.tsx#L41-L47
-      this.isMounted = true;
-    }
-    this.contentNodeRoot?.render(<>{this.render()}</>);
   }
 }
