@@ -5,14 +5,16 @@ This page includes technical documentation for developers who want to build the 
 ## Architecture overview
 
 The IDE consists of three major parts:
- - the _Electron main_ process,
- - the _backend_, and 
- - the _frontend_.
+
+- the _Electron main_ process,
+- the _backend_, and
+- the _frontend_.
 
 The _Electron main_ process is responsible for:
- - creating the application,
- - managing the application lifecycle via listeners, and
- - creating and managing the web pages for the app.
+
+- creating the application,
+- managing the application lifecycle via listeners, and
+- creating and managing the web pages for the app.
 
 In Electron, the process that runs the main entry JavaScript file is called the main process. The _Electron main_ process can display a GUI by creating web pages. An Electron app always has exactly one main process.
 
@@ -21,13 +23,14 @@ By default, whenever the _Electron main_ process creates a web page, it will ins
 In normal browsers, web pages usually run in a sandboxed environment, and accessing native resources are disallowed. However, Electron has the power to use Node.js APIs in the web pages allowing lower-level OS interactions. Due to security reasons, accessing native resources is an undesired behavior in the IDE. So by convention, we do not use Node.js APIs. (Note: the Node.js integration is [not yet disabled](https://github.com/eclipse-theia/theia/issues/2018) although it is not used). In the IDE, only the _backend_ allows OS interaction.
 
 The _backend_ process is responsible for:
- - providing access to the filesystem,
- - communicating with the [Arduino CLI](https://github.com/arduino/arduino-cli) via gRPC,
- - running your terminal,
- - exposing additional RESTful APIs,
- - performing the Git commands in the local repositories,
- - hosting and running any VS Code extensions, or
- - executing VS Code tasks<sup>[[2]]</sup>.
+
+- providing access to the filesystem,
+- communicating with the [Arduino CLI](https://github.com/arduino/arduino-cli) via gRPC,
+- running your terminal,
+- exposing additional RESTful APIs,
+- performing the Git commands in the local repositories,
+- hosting and running any VS Code extensions, or
+- executing VS Code tasks<sup>[[2]]</sup>.
 
 The _Electron main_ process spawns the _backend_ process. There is always exactly one _backend_ process. However, due to performance considerations, the _backend_ spawns several sub-processes for the filesystem watching, Git repository discovery, etc. The communication between the _backend_ process and its sub-processes is established via IPC. Besides spawning sub-processes, the _backend_ will start an HTTP server on a random available port, and serves the web application as static content. When the sub-processes are up and running, and the HTTP server is also listening, the _backend_ process sends the HTTP server port to the _Electron main_ process via IPC. The _Electron main_ process will load the _backend_'s endpoint in the `BrowserWindow`.
 
@@ -42,6 +45,11 @@ This repository contains the main code, but two more repositories are included d
 
 - [vscode-arduino-tools](https://github.com/arduino/vscode-arduino-tools): provides support for the language server and the debugger
 - [arduino-language-server](https://github.com/arduino/arduino-language-server): provides the language server that parses Arduino code
+
+## Prerequisites
+
+- To build the application, follow the Theia IDE [prerequisites](https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#prerequisites).
+- This project recommends using [Visual Studio Code (VS Code)](https://code.visualstudio.com/) for the development.
 
 ## Build from source
 
@@ -61,33 +69,86 @@ Once you have all the tools installed, you can build the editor following these 
 
 If you want to develop the application, do the following:
 
-1. Install the dependencies
+1. Clone the project from Git and change directory to the `arduino-ide` folder:
+
+   ```sh
+   git clone https://github.com/arduino/arduino-ide.git
+   ```
+
+   ```sh
+   cd arduino-ide
+   ```
+
+2. Install the dependencies
 
    ```sh
    yarn
    ```
 
-2. Rebuild the native dependencies for electron
+3. Build the application in development mode
+
+   ```sh
+   yarn build:dev
+   ```
+
+4. Open the project in VS Code
+
+   ```sh
+   code .
+   ```
+
+   > **ⓘ** For more details on how to start VS Code form the command line, see [here](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
+
+5. Rebuild the native dependencies for electron
 
    - <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open the _Command Palette_.
    - Type `Tasks: Run Task` and press <kbd>Enter</kbd>.
    - Type `Rebuild App` and press <kbd>Enter</kbd>.
    - Wait for the "Rebuild App" task to finish, as indicated by a "✔ Rebuild Complete" message in the Terminal.
 
-3. Start the TypeScript compiler + `webpack` in watch mode
+6. Start the TypeScript compiler + `webpack` in watch mode
 
    - <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
    - Type `Tasks: Run Task` and press <kbd>Enter</kbd>.
    - Type `Watch All` and press <kbd>Enter</kbd>.
    - Select how you want to scan the task output. You can press <kbd>Enter</kbd> or <kbd>Esc</kbd>. [Click](https://code.visualstudio.com/docs/editor/tasks#_defining-a-problem-matcher) here to learn more.
 
-4. Start the application in debug mode
+7. Start the application in debug mode
    - Open the _Run and Debug_ view with <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>,
    - Select `App` from the dropdown,
    - Start debugging with <kbd>F5</kbd>.
 
 If you change the backend application, you must restart the electron app in debug mode to use the changes.
-If you change the frontend application, it's sufficient to reload the board window with _Reload Windows_ command from the _Command Palette_.
+If you change the frontend application, it's sufficient to reload the board window with _Reload Window_ command from the _Command Palette_.
+
+### Bundle the Application
+
+If you want to bundle the application, execute the followings:
+
+1. Rebuild the native dependencies for electron
+
+   ```sh
+   yarn --cwd electron-app rebuild
+   ```
+
+2. Bundle the frontend and backend applications with `webpack`
+
+   ```sh
+   yarn --cwd electron-app build
+   ```
+
+3. Package the application
+   ```sh
+   yarn --cwd electron-app package
+   ```
+
+### Notes for Windows contributors
+
+Windows requires the Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine.
+
+In case it's not already present, it can be downloaded from the "**Tools for Visual Studio 20XX**" section of the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) via the "**Build Tools for Visual Studio 20XX**" (e.g., "**Build Tools for Visual Studio 2022**") download link.
+
+Select "**Desktop development with C++**" from the "**Workloads**" tab during the installation procedure.
 
 ## Running Checks
 
@@ -112,61 +173,32 @@ To run the tests, you must rebuild the native dependencies for the browser targe
 
 If you want to debug an individual file, open the test module (`*.test.ts` or `*.slow-test.ts`), open the _Run and Debug_ view, select the `Run Test [current]` and press <kbd>F5</kbd>.
 
-### Bundle the Application
-
-If you want to bundle the application, execute the followings:
-
-1. Rebuild the native dependencies for electron
-
-   ```sh
-   yarn --cwd electron-app rebuild
-   ```
-
-2. Bundle the frontend and backend applications with `webpack`
-
-   ```sh
-   yarn --cwd electron-app build
-   ```
-
-3. Package the application
-   ```sh
-   yarn --cwd electron-app package
-   ```
-
-
-### Notes for Windows contributors
-Windows requires the Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine.
-
-In case it's not already present, it can be downloaded from the "**Tools for Visual Studio 20XX**" section of the Visual Studio [downloads page](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) via the "**Build Tools for Visual Studio 20XX**" (e.g., "**Build Tools for Visual Studio 2022**") download link.
-
-Select "**Desktop development with C++**" from the "**Workloads**" tab during the installation procedure.
-
 ### CI
 
 This project is built on [GitHub Actions](https://github.com/arduino/arduino-ide/actions).
 
- - _Snapshot_ builds run when changes are pushed to the `main` branch, or when a PR is created against the `main` branch. For the sake of the review and verification process, the build artifacts for each operating system can be downloaded from the GitHub Actions page.
- - _Nightly_ builds run every day at 03:00 GMT from the `main` branch.
- - _Release_ builds run when a new tag is pushed to the remote. The tag must follow the [semver](https://semver.org/). For instance, `1.2.3` is a correct tag, but `v2.3.4` won't work. Steps to trigger a new release build:
-   - Create a local tag:
-    ```sh
-    git tag -a 1.2.3 -m "Creating a new tag for the `1.2.3` release."
-    ```
-   - Push it to the remote:
-   ```sh
-    git push origin 1.2.3
-   ```
+- _Snapshot_ builds run when changes are pushed to the `main` branch, or when a PR is created against the `main` branch. For the sake of the review and verification process, the build artifacts for each operating system can be downloaded from the GitHub Actions page.
+- _Nightly_ builds run every day at 03:00 GMT from the `main` branch.
+- _Release_ builds run when a new tag is pushed to the remote. The tag must follow the [semver](https://semver.org/). For instance, `1.2.3` is a correct tag, but `v2.3.4` won't work. Steps to trigger a new release build:
+  - Create a local tag:
+  ```sh
+  git tag -a 1.2.3 -m "Creating a new tag for the `1.2.3` release."
+  ```
+  - Push it to the remote:
+  ```sh
+   git push origin 1.2.3
+  ```
 
 ## FAQ
 
-* *Can I manually change the version of the [`arduino-cli`](https://github.com/arduino/arduino-cli/) used by the IDE?*
+- _Can I manually change the version of the [`arduino-cli`](https://github.com/arduino/arduino-cli/) used by the IDE?_
 
-    Yes. It is possible but not recommended. The CLI exposes a set of functionality via [gRPC](https://github.com/arduino/arduino-cli/tree/master/rpc) and the IDE uses this API to communicate with the CLI. Before we build a new version of IDE, we pin a specific version of CLI and use the corresponding `proto` files to generate TypeScript modules for gRPC. This means, a particular version of IDE is compliant only with the pinned version of CLI. Mismatching IDE and CLI versions might not be able to communicate with each other. This could cause unpredictable IDE behavior.
+  Yes. It is possible but not recommended. The CLI exposes a set of functionality via [gRPC](https://github.com/arduino/arduino-cli/tree/master/rpc) and the IDE uses this API to communicate with the CLI. Before we build a new version of IDE, we pin a specific version of CLI and use the corresponding `proto` files to generate TypeScript modules for gRPC. This means, a particular version of IDE is compliant only with the pinned version of CLI. Mismatching IDE and CLI versions might not be able to communicate with each other. This could cause unpredictable IDE behavior.
 
-* *I have understood that not all versions of the CLI are compatible with my version of IDE but how can I manually update the `arduino-cli` inside the IDE?*
+- _I have understood that not all versions of the CLI are compatible with my version of IDE but how can I manually update the `arduino-cli` inside the IDE?_
 
-    [Get](https://arduino.github.io/arduino-cli/installation) the desired version of `arduino-cli` for your platform and manually replace the one inside the IDE. The CLI can be found inside the IDE at:
-    - Windows: `C:\path\to\Arduino IDE\resources\app\lib\backend\resources\arduino-cli.exe`,
-    - macOS: `/path/to/Arduino IDE.app/Contents/Resources/app/lib/backend/resources/arduino-cli`, and
-    - Linux: `/path/to/Arduino IDE/resources/app/lib/backend/resources/arduino-cli`.
+  [Get](https://arduino.github.io/arduino-cli/installation) the desired version of `arduino-cli` for your platform and manually replace the one inside the IDE. The CLI can be found inside the IDE at:
 
+  - Windows: `C:\path\to\Arduino IDE\resources\app\lib\backend\resources\arduino-cli.exe`,
+  - macOS: `/path/to/Arduino IDE.app/Contents/Resources/app/lib/backend/resources/arduino-cli`, and
+  - Linux: `/path/to/Arduino IDE/resources/app/lib/backend/resources/arduino-cli`.
