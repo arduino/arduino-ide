@@ -86,6 +86,8 @@ If you want to develop the application, do the following:
 If you change the backend application, you must restart the electron app in debug mode to use the changes.
 If you change the frontend application, it's sufficient to reload the board window with _Reload Windows_ command from the _Command Palette_.
 
+## Running Checks
+
 To run the tests, you must rebuild the native dependencies for the browser target. See [this](https://github.com/arduino/arduino-ide/pull/1823#issuecomment-1400511031) for the technical explanation.
 
 1. Rebuild the native dependencies for the browser
