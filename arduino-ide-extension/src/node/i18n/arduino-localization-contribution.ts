@@ -36,7 +36,7 @@ export class ArduinoLocalizationContribution
     es: esJson,
     fr: frJson,
     hu: huJson,
-    // ['id'], Does not have Transifex translations, but has a VS Code language pack available on Open VSX.
+    // id: Does not have Transifex translations, but has a VS Code language pack available on Open VSX.
     it: itJson,
     ja: jaJson,
     ko: koJson,
