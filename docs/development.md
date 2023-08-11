@@ -110,6 +110,8 @@ To run the tests, you must rebuild the native dependencies for the browser targe
 
 If you want to debug an individual file, open the test module (`*.test.ts` or `*.slow-test.ts`), open the _Run and Debug_ view, select the `Run Test [current]` and press <kbd>F5</kbd>.
 
+### Bundle the Application
+
 If you want to bundle the application, execute the followings:
 
 1. Rebuild the native dependencies for electron
