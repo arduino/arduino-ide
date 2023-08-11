@@ -70,6 +70,7 @@ If you want to develop the application, do the following:
    - <kbd>Ctrl/⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> to open the _Command Palette_.
    - Type `Tasks: Run Task` and press <kbd>Enter</kbd>.
    - Type `Rebuild App` and press <kbd>Enter</kbd>.
+   - Wait for the "Rebuild App" task to finish, as indicated by a "✔ Rebuild Complete" message in the Terminal.
 
 3. Start the TypeScript compiler + `webpack` in watch mode
 
