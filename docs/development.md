@@ -57,7 +57,7 @@ Please refer to the [Theia IDE prerequisites](https://github.com/eclipse-theia/t
 
 Once you have all the tools installed, you can build the editor following these steps
 
-If you want to develop the application, do the followings:
+If you want to develop the application, do the following:
 
 1. Install the dependencies
 
