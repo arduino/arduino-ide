@@ -1,0 +1,11 @@
+git clone https://github.com/koendv/arduino-ide-raspberrypi
+git clone https://github.com/your_git_account/arduino-ide
+cd arduino-ide
+patch -p1 < ../arduino-ide-raspberrypi/self_hosted_runner.patch
+git add .github/workflows/build.yml
+git add arduino-ide-extension/src/test/node/boards-service-impl.slow-test.ts
+git add arduino-ide-extension/src/test/node/test-bindings.ts
+git commit -m arm64
+git push
+git tag -a 2.1.1-arm64 -m self-hosted
+git push --tags
