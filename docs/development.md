@@ -123,7 +123,7 @@ If you change the frontend application, it's sufficient to reload the board wind
 
 ### Bundle the Application
 
-If you want to bundle the application, execute the followings:
+If you want to bundle the application, execute the following:
 
 1. Rebuild the native dependencies for electron
 
