@@ -138,7 +138,7 @@ jobs:
           fi
 
           npx node-gyp install
-          yarn install --immutable
+          yarn install --immutable --network-timeout 1000000
 
           yarn --cwd arduino-ide-extension build
           yarn test
