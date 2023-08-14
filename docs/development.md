@@ -97,7 +97,7 @@ If you want to develop the application, do the following:
    code .
    ```
 
-   > **ⓘ** For more details on how to start VS Code form the command line, see [here](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
+   > **ⓘ** For more details on how to start VS Code from the command line, see [here](https://code.visualstudio.com/docs/editor/command-line#_launching-from-command-line).
 
 5. Rebuild the native dependencies for electron
 
