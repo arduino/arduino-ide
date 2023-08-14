@@ -1,5 +1,5 @@
-import * as http from 'node:http';
-import * as url from 'node:url';
+import http from 'node:http';
+import url from 'node:url';
 import { body } from './body';
 import { authServerPort } from '../../common/protocol/authentication-service';
 

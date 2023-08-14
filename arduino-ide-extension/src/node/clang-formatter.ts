@@ -6,7 +6,9 @@ import { constants, promises as fs } from 'node:fs';
 import { join } from 'node:path';
 import { ConfigService } from '../common/protocol';
 import { Formatter, FormatterOptions } from '../common/protocol/formatter';
-import { getExecPath, spawnCommand } from './exec-util';
+import { spawnCommand } from './exec-util';
+import { clangFormatPath } from './resources';
+import defaultClangFormat from './default-formatter-config.json';
 
 @injectable()
 export class ClangFormatter implements Formatter {
@@ -37,7 +39,7 @@ export class ClangFormatter implements Formatter {
   }
 
   private execPath(): string {
-    return getExecPath('clang-format');
+    return clangFormatPath;
   }
 
   /**
@@ -129,10 +131,9 @@ function styleJson({
   TabWidth,
   UseTab,
 }: ClangFormatOptions): Record<string, unknown> {
-  // Source: https://github.com/arduino/tooling-project-assets/tree/main/other/clang-format-configuration
-  const defaultConfig = require('../../src/node/default-formatter-config.json');
   return {
-    ...defaultConfig,
+    // Source: https://github.com/arduino/tooling-project-assets/tree/main/other/clang-format-configuration
+    ...defaultClangFormat,
     TabWidth,
     UseTab,
   };

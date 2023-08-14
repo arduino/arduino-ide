@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import type { Root } from '@theia/core/shared/react-dom/client';
 import {
   inject,

@@ -10,7 +10,7 @@ import { fork } from 'node:child_process';
 import { AddressInfo } from 'node:net';
 import { join, isAbsolute, resolve } from 'node:path';
 import { promises as fs, rm, rmSync } from 'node:fs';
-import { MaybePromise } from '@theia/core/lib/common/types';
+import type { MaybePromise, Mutable } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
 import {
@@ -31,6 +31,8 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { Sketch } from '../../common/protocol';
 import {
+  AppInfo,
+  appInfoPropertyLiterals,
   CHANNEL_PLOTTER_WINDOW_DID_CLOSE,
   CHANNEL_SCHEDULE_DELETION,
   CHANNEL_SHOW_PLOTTER_WINDOW,
@@ -72,6 +74,11 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   private readonly isTempSketch: IsTempSketch;
   private startup = false;
   private _firstWindowId: number | undefined;
+  private _appInfo: AppInfo = {
+    appVersion: '',
+    cliVersion: '',
+    buildDate: '',
+  };
   private openFilePromise = new Deferred();
   /**
    * It contains all things the IDE2 must clean up before a normal stop.
@@ -111,7 +118,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     const cwd = process.cwd();
     this.attachFileAssociations(cwd);
     this.useNativeWindowFrame = this.getTitleBarStyle(config) === 'native';
-    this._config = config;
+    this._config = await updateFrontendApplicationConfigFromPackageJson(config);
+    this._appInfo = updateAppInfo(this._appInfo, this._config);
     this.hookApplicationEvents();
     const [port] = await Promise.all([this.startBackend(), app.whenReady()]);
     this.startContentTracing();
@@ -615,8 +623,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return this._firstWindowId;
   }
 
-  get appVersion(): string {
-    return app.getVersion();
+  get appInfo(): AppInfo {
+    return this._appInfo;
   }
 
   private async delete(sketch: Sketch): Promise<void> {
@@ -680,4 +688,85 @@ class InterruptWorkspaceRestoreError extends Error {
     );
     Object.setPrototypeOf(this, InterruptWorkspaceRestoreError.prototype);
   }
+}
+
+// This is a workaround for a limitation with the Theia CLI and `electron-builder`.
+// It is possible to run the `electron-builder` with `-c.extraMetadata.foo.bar=36` option.
+// On the fly, a `package.json` file will be generated for the final bundled application with the additional `{ "foo": { "bar": 36 } }` metadata.
+// The Theia build (via the CLI) requires the extra `foo.bar=36` metadata to be in the `package.json` at build time (before `electron-builder` time).
+// See the generated `./electron-app/src-gen/backend/electron-main.js` and how this works.
+// This method merges in any additional required properties defined in the current! `package.json` of the application. For example, the `buildDate`.
+// The current package.json is the package.json of the `electron-app` if running from the source code,
+// but it's the `package.json` inside the `resources/app/` folder if it's the final bundled app.
+// See https://github.com/arduino/arduino-ide/pull/2144#pullrequestreview-1556343430.
+async function updateFrontendApplicationConfigFromPackageJson(
+  config: FrontendApplicationConfig
+): Promise<FrontendApplicationConfig> {
+  try {
+    const modulePath = __filename;
+    // must go from `./lib/backend/electron-main.js` to `./package.json` when the app is webpacked.
+    const packageJsonPath = join(modulePath, '..', '..', '..', 'package.json');
+    console.debug(
+      `Checking for frontend application configuration customizations. Module path: ${modulePath}, destination 'package.json': ${packageJsonPath}`
+    );
+    const rawPackageJson = await fs.readFile(packageJsonPath, {
+      encoding: 'utf8',
+    });
+    const packageJson = JSON.parse(rawPackageJson);
+    if (packageJson?.theia?.frontend?.config) {
+      const packageJsonConfig: Record<string, string> =
+        packageJson?.theia?.frontend?.config;
+      for (const property of appInfoPropertyLiterals) {
+        const value = packageJsonConfig[property];
+        if (value && !config[property]) {
+          if (!config[property]) {
+            console.debug(
+              `Setting 'theia.frontend.config.${property}' application configuration value to: ${JSON.stringify(
+                value
+              )} (type of ${typeof value})`
+            );
+          } else {
+            console.warn(
+              `Overriding 'theia.frontend.config.${property}' application configuration value with: ${JSON.stringify(
+                value
+              )} (type of ${typeof value}). Original value: ${JSON.stringify(
+                config[property]
+              )}`
+            );
+          }
+          config[property] = value;
+        }
+      }
+      console.debug(
+        `Frontend application configuration after modifications: ${JSON.stringify(
+          config
+        )}`
+      );
+      return config;
+    }
+  } catch (err) {
+    console.error(
+      `Could not read the frontend application configuration from the 'package.json' file. Falling back to (the Theia CLI) generated default config: ${JSON.stringify(
+        config
+      )}`,
+      err
+    );
+  }
+  return config;
+}
+
+/**
+ * Mutates the `toUpdate` argument and returns with it.
+ */
+function updateAppInfo(
+  toUpdate: Mutable<AppInfo>,
+  updateWith: Record<string, unknown>
+): AppInfo {
+  appInfoPropertyLiterals.forEach((property) => {
+    const newValue = updateWith[property];
+    if (typeof newValue === 'string') {
+      toUpdate[property] = newValue;
+    }
+  });
+  return toUpdate;
 }

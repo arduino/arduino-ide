@@ -30,7 +30,7 @@ import {
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { EditorCommands } from '@theia/editor/lib/browser/editor-command';
 import { EditorMainMenu } from '@theia/editor/lib/browser/editor-menu';
 import { MonacoMenus } from '@theia/monaco/lib/browser/monaco-menu';
@@ -69,7 +69,7 @@ export class ArduinoFrontendContribution
   private readonly appStateService: FrontendApplicationStateService;
 
   @postConstruct()
-  protected async init(): Promise<void> {
+  protected init(): void {
     if (!window.navigator.onLine) {
       // tslint:disable-next-line:max-line-length
       this.messageService.warn(

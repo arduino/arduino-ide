@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { dirname } from 'node:path';
-import * as yaml from 'js-yaml';
+import yaml from 'js-yaml';
 import * as grpc from '@grpc/grpc-js';
 import { injectable, inject, named } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
@@ -129,10 +129,6 @@ export class ConfigServiceImpl
     newState: ConfigState;
   }> {
     return this.configChangeEmitter.event;
-  }
-
-  async getVersion(): Promise<string> {
-    return require('../../package.json').arduino?.cli?.version || '';
   }
 
   private async initConfig(): Promise<void> {

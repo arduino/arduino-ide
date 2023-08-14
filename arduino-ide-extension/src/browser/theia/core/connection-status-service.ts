@@ -118,7 +118,7 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
   private readonly connectionProvider: WebSocketConnectionProvider;
 
   @postConstruct()
-  protected override async init(): Promise<void> {
+  protected override init(): void {
     this.schedulePing();
     const refresh = debounce(() => {
       this.updateStatus(Boolean(this.daemonPort.port) && this.isOnline.online);

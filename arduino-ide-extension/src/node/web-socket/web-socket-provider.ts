@@ -1,9 +1,9 @@
 import { Event } from '@theia/core/lib/common/event';
-import * as WebSocket from '@theia/core/shared/ws';
+import type { AddressInfo } from '@theia/core/shared/ws';
 
 export const WebSocketProvider = Symbol('WebSocketProvider');
 export interface WebSocketProvider {
-  getAddress(): WebSocket.AddressInfo;
+  getAddress(): AddressInfo;
   sendMessage(message: string): void;
   onMessageReceived: Event<string>;
   onClientsNumberChanged: Event<number>;

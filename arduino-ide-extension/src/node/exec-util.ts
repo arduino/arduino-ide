@@ -1,18 +1,4 @@
 import { spawn } from 'node:child_process';
-import os from 'node:os';
-import { join } from 'node:path';
-
-export type ArduinoBinaryName =
-  | 'arduino-cli'
-  | 'arduino-fwuploader'
-  | 'arduino-language-server';
-export type ClangBinaryName = 'clangd' | 'clang-format';
-export type BinaryName = ArduinoBinaryName | ClangBinaryName;
-
-export function getExecPath(binaryName: BinaryName): string {
-  const filename = `${binaryName}${os.platform() === 'win32' ? '.exe' : ''}`;
-  return join(__dirname, '..', '..', 'build', filename);
-}
 
 export function spawnCommand(
   command: string,

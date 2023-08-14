@@ -4,9 +4,7 @@ const transifex = require('./transifex');
 const path = require('path');
 const fs = require('node:fs/promises');
 const util = require('util');
-const shell = require('shelljs');
-const fetch = require('node-fetch');
-const download = require('download');
+const { default: fetch } = require('node-fetch');
 
 const getLanguages = async (organization, project) => {
     const url = transifex.url(
@@ -14,8 +12,8 @@ const getLanguages = async (organization, project) => {
     );
     const json = await fetch(url, { headers: transifex.authHeader() })
         .catch(err => {
-            shell.echo(err);
-            shell.exit(1);
+            console.error(err)
+            process.exit(1);
         })
         .then(res => res.json());
     let languages = [];
@@ -46,8 +44,8 @@ const requestTranslationDownload = async (relationships) => {
         body: JSON.stringify(data)
     })
         .catch(err => {
-            shell.echo(err);
-            shell.exit(1);
+            console.error(err)
+            process.exit(1);
         })
         .then(res => res.json());
 
@@ -62,13 +60,14 @@ const getTranslationDownloadStatus = async (language, downloadRequestId) => {
         const url = transifex.url(
             util.format('resource_translations_async_downloads/%s', downloadRequestId)
         );
+        /** @type {import('node-fetch').RequestInit} */
         const options = {
             headers: transifex.authHeader(),
             redirect: 'manual'
         };
         const res = await fetch(url, options).catch(err => {
-            shell.echo(err);
-            shell.exit(1);
+            console.error(err)
+            process.exit(1);
         });
 
         if (res.status === 303) {
@@ -101,12 +100,12 @@ const getTranslationDownloadStatus = async (language, downloadRequestId) => {
     const { organization, project, resource } = await transifex.credentials();
     const translationsDirectory = process.argv[2];
     if (!translationsDirectory) {
-        shell.echo('Translations directory not specified');
-        shell.exit(1);
+        console.error('Translations directory not specified')
+        process.exit(1);
     }
 
     const languages = await getLanguages(organization, project);
-    shell.echo('translations found:', languages.join(', '));
+    console.log('translations found:', languages.join(', '));
 
     // Remove data managed on Transifex to avoid accumulation of vestigial files
     const translationFilenames = await fs.readdir(translationsDirectory);
@@ -141,10 +140,11 @@ const getTranslationDownloadStatus = async (language, downloadRequestId) => {
     const res = await Promise.all(
         downloadIds.map(d => getTranslationDownloadStatus(d['language'], d['id']))
     ).catch(err => {
-        shell.echo(err);
-        shell.exit(1);
+        console.error(err)
+        process.exit(1);
     });
 
+    const { default: download } = await import('@xhmikosr/downloader');
     await Promise.all(
         res.map(r => {
             return download(r['downloadUrl'], translationsDirectory, {
@@ -152,9 +152,9 @@ const getTranslationDownloadStatus = async (language, downloadRequestId) => {
             });
         })
     ).catch(err => {
-        shell.echo(err);
-        shell.exit(1);
+        console.error(err)
+        process.exit(1);
     });
 
-    shell.echo('Translation files downloaded.');
+    console.log('Translation files downloaded.');
 })();

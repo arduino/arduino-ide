@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
-const download = require('download');
 const decompress = require('decompress');
 const unzip = require('decompress-unzip');
 const untargz = require('decompress-targz');
@@ -47,6 +46,7 @@ exports.downloadUnzipFile = async (
   }
 
   shell.echo(`>>> Downloading from '${url}'...`);
+  const { default: download } = await import('@xhmikosr/downloader');
   const data = await download(url);
   shell.echo(`<<< Download succeeded.`);
 
@@ -107,6 +107,7 @@ exports.downloadUnzipAll = async (
   }
 
   shell.echo(`>>> Downloading from '${url}'...`);
+  const { default: download } = await import('@xhmikosr/downloader');
   const data = await download(url);
   shell.echo(`<<< Download succeeded.`);
 

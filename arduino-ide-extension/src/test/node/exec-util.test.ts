@@ -1,14 +1,15 @@
 import { assert, expect } from 'chai';
 import fs from 'node:fs';
 import path from 'node:path';
-import {
-  ArduinoBinaryName,
-  BinaryName,
-  ClangBinaryName,
-  getExecPath,
-  spawnCommand,
-} from '../../node/exec-util';
+import { spawnCommand } from '../../node/exec-util';
 import temp from 'temp';
+import {
+  arduinoCliPath,
+  arduinoFirmwareUploaderPath,
+  arduinoLanguageServerPath,
+  clangdPath,
+  clangFormatPath,
+} from '../../node/resources';
 
 describe('exec-utils', () => {
   describe('spawnCommand', () => {
@@ -26,7 +27,7 @@ describe('exec-utils', () => {
 
     it("should execute the command without 'shell:true' even if the path contains spaces but is not escaped", async () => {
       const segment = 'with some spaces';
-      const cliPath = getExecPath('arduino-cli');
+      const cliPath = arduinoCliPath;
       const filename = path.basename(cliPath);
       const tempPath = tracked.mkdirSync();
       const tempPathWitSpaces = path.join(tempPath, segment);
@@ -44,7 +45,7 @@ describe('exec-utils', () => {
     type AssertOutput = (stdout: string) => void;
 
     interface GetExecPathTestSuite {
-      readonly name: BinaryName;
+      readonly binaryName: string;
       readonly flags?: string[];
       readonly assertOutput: AssertOutput;
       /**
@@ -54,29 +55,29 @@ describe('exec-utils', () => {
       readonly expectNonZeroExit?: boolean;
     }
 
-    const binaryNameToVersionMapping: Record<BinaryName, string> = {
-      'arduino-cli': 'cli',
-      'arduino-language-server': 'languageServer',
-      'arduino-fwuploader': 'fwuploader',
-      clangd: 'clangd',
-      'clang-format': 'clangd',
+    const binaryNameToPathMapping: Record<string, string> = {
+      'arduino-cli': arduinoCliPath,
+      'arduino-language-server': arduinoLanguageServerPath,
+      'arduino-fwuploader': arduinoFirmwareUploaderPath,
+      clangd: clangdPath,
+      'clang-format': clangFormatPath,
     };
 
-    function readVersionFromPackageJson(name: BinaryName): string {
+    function readVersionFromPackageJson(binaryName: string): string {
       const raw = fs.readFileSync(
         path.join(__dirname, '..', '..', '..', 'package.json'),
         { encoding: 'utf8' }
       );
       const json = JSON.parse(raw);
       expect(json.arduino).to.be.not.undefined;
-      const mappedName = binaryNameToVersionMapping[name];
-      expect(mappedName).to.be.not.undefined;
-      const version = json.arduino[mappedName].version;
+      const version =
+        json.arduino[binaryName === 'clang-format' ? 'clangd' : binaryName]
+          .version;
       expect(version).to.be.not.undefined;
       return version;
     }
 
-    function createTaskAssert(name: ArduinoBinaryName): AssertOutput {
+    function createTaskAssert(name: string): AssertOutput {
       const version = readVersionFromPackageJson(name);
       if (typeof version === 'string') {
         return (stdout: string) => {
@@ -91,7 +92,7 @@ describe('exec-utils', () => {
       };
     }
 
-    function createClangdAssert(name: ClangBinaryName): AssertOutput {
+    function createClangdAssert(name: string): AssertOutput {
       const version = readVersionFromPackageJson(name);
       return (stdout: string) => {
         expect(stdout.includes(name)).to.be.true;
@@ -101,17 +102,17 @@ describe('exec-utils', () => {
 
     const suites: GetExecPathTestSuite[] = [
       {
-        name: 'arduino-cli',
+        binaryName: 'arduino-cli',
         flags: ['version'],
         assertOutput: createTaskAssert('arduino-cli'),
       },
       {
-        name: 'arduino-fwuploader',
+        binaryName: 'arduino-fwuploader',
         flags: ['version'],
         assertOutput: createTaskAssert('arduino-fwuploader'),
       },
       {
-        name: 'arduino-language-server',
+        binaryName: 'arduino-language-server',
         assertOutput: (stderr: string) => {
           expect(stderr.includes('Path to ArduinoCLI config file must be set.'))
             .to.be.true;
@@ -119,12 +120,12 @@ describe('exec-utils', () => {
         expectNonZeroExit: true,
       },
       {
-        name: 'clangd',
+        binaryName: 'clangd',
         flags: ['--version'],
         assertOutput: createClangdAssert('clangd'),
       },
       {
-        name: 'clang-format',
+        binaryName: 'clang-format',
         flags: ['--version'],
         assertOutput: createClangdAssert('clang-format'),
       },
@@ -133,13 +134,13 @@ describe('exec-utils', () => {
     // This is not a functional test but it ensures all executables provided by IDE2 are tested.
     it('should cover all provided executables', () => {
       expect(suites.length).to.be.equal(
-        Object.keys(binaryNameToVersionMapping).length
+        Object.keys(binaryNameToPathMapping).length
       );
     });
 
     suites.map((suite) =>
-      it(`should resolve '${suite.name}'`, async () => {
-        const execPath = getExecPath(suite.name);
+      it(`should resolve '${suite.binaryName}'`, async () => {
+        const execPath = binaryNameToPathMapping[suite.binaryName];
         expect(execPath).to.be.not.undefined;
         expect(execPath).to.be.not.empty;
         expect(fs.accessSync(execPath, fs.constants.X_OK)).to.be.undefined;

@@ -4,7 +4,6 @@ import { nls } from '@theia/core/lib/common/nls';
 import { isOSX, isWindows } from '@theia/core/lib/common/os';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import moment from 'moment';
-import { ConfigService } from '../../common/protocol';
 import { AppService } from '../app-service';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {
@@ -18,8 +17,6 @@ import {
 export class About extends Contribution {
   @inject(ClipboardService)
   private readonly clipboardService: ClipboardService;
-  @inject(ConfigService)
-  private readonly configService: ConfigService;
   @inject(AppService)
   private readonly appService: AppService;
 
@@ -42,11 +39,9 @@ export class About extends Contribution {
   }
 
   private async showAbout(): Promise<void> {
-    const [appVersion, cliVersion] = await Promise.all([
-      this.appService.version(),
-      this.configService.getVersion(),
-    ]);
-    const buildDate = this.buildDate;
+    const appInfo = await this.appService.info();
+    const { appVersion, cliVersion, buildDate } = appInfo;
+
     const detail = (showAll: boolean) =>
       nls.localize(
         'arduino/about/detail',
@@ -82,10 +77,6 @@ export class About extends Contribution {
 
   private get applicationName(): string {
     return FrontendApplicationConfigProvider.get().applicationName;
-  }
-
-  private get buildDate(): string | undefined {
-    return FrontendApplicationConfigProvider.get().buildDate;
   }
 
   private ago(isoTime: string): string {

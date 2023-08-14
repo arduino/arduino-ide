@@ -18,7 +18,7 @@
       return undefined;
     }
 
-    const { fwuploader } = arduino;
+    const fwuploader = arduino['arduino-fwuploader'];
     if (!fwuploader) {
       return undefined;
     }
@@ -35,11 +35,17 @@
   }
 
   const { platform, arch } = process;
-  const buildFolder = path.join(__dirname, '..', 'build');
+  const resourcesFolder = path.join(
+    __dirname,
+    '..',
+    'src',
+    'node',
+    'resources'
+  );
   const fwuploderName = `arduino-fwuploader${
     platform === 'win32' ? '.exe' : ''
   }`;
-  const destinationPath = path.join(buildFolder, fwuploderName);
+  const destinationPath = path.join(resourcesFolder, fwuploderName);
 
   if (typeof version === 'string') {
     const suffix = (() => {

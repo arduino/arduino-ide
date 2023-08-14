@@ -11,6 +11,17 @@ import type {
   InternalMenuDto as TheiaInternalMenuDto,
   MenuDto,
 } from '@theia/core/lib/electron-common/electron-api';
+
+export const appInfoPropertyLiterals = [
+  'appVersion',
+  'cliVersion',
+  'buildDate',
+] as const;
+export type AppInfoProperty = (typeof appInfoPropertyLiterals)[number];
+export type AppInfo = {
+  readonly [P in AppInfoProperty]: string;
+};
+
 import type { Sketch } from '../common/protocol/sketches-service';
 import type { StartupTasks } from './startup-task';
 
@@ -50,7 +61,7 @@ export interface ElectronArduino {
   showMessageBox(options: MessageBoxOptions): Promise<MessageBoxReturnValue>;
   showOpenDialog(options: OpenDialogOptions): Promise<OpenDialogReturnValue>;
   showSaveDialog(options: SaveDialogOptions): Promise<SaveDialogReturnValue>;
-  appVersion(): Promise<string>;
+  appInfo(): Promise<AppInfo>;
   quitApp(): void;
   isFirstWindow(): Promise<boolean>;
   requestReload(tasks: StartupTasks): void;
@@ -77,7 +88,7 @@ declare global {
 export const CHANNEL_SHOW_MESSAGE_BOX = 'Arduino:ShowMessageBox';
 export const CHANNEL_SHOW_OPEN_DIALOG = 'Arduino:ShowOpenDialog';
 export const CHANNEL_SHOW_SAVE_DIALOG = 'Arduino:ShowSaveDialog';
-export const CHANNEL_APP_VERSION = 'Arduino:AppVersion';
+export const CHANNEL_APP_INFO = 'Arduino:AppInfo';
 export const CHANNEL_QUIT_APP = 'Arduino:QuitApp';
 export const CHANNEL_IS_FIRST_WINDOW = 'Arduino:IsFirstWindow';
 export const CHANNEL_SCHEDULE_DELETION = 'Arduino:ScheduleDeletion';

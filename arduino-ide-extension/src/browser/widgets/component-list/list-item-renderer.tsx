@@ -23,7 +23,7 @@ import {
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { Unknown } from '../../../common/nls';
 import {
   CoreService,

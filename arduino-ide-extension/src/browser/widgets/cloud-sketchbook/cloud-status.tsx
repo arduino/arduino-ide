@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { CloudSketchbookTreeModel } from './cloud-sketchbook-tree-model';
 import { AuthenticationClientService } from '../../auth/authentication-client-service';

@@ -16,7 +16,8 @@
     const { arduino } = pkg;
     if (!arduino) return [undefined, undefined];
 
-    const { languageServer, clangd } = arduino;
+    const { clangd } = arduino;
+    const languageServer = arduino['arduino-language-server'];
     if (!languageServer) return [undefined, undefined];
     if (!clangd) return [undefined, undefined];
 
@@ -62,41 +63,50 @@
   const force = yargs['force-download'];
   const { platform, arch } = process;
   const platformArch = platform + '-' + arch;
-  const build = path.join(__dirname, '..', 'build');
+  const resourcesFolder = path.join(
+    __dirname,
+    '..',
+    'src',
+    'node',
+    'resources'
+  );
   const lsExecutablePath = path.join(
-    build,
+    resourcesFolder,
     `arduino-language-server${platform === 'win32' ? '.exe' : ''}`
   );
   let clangdExecutablePath, clangFormatExecutablePath, lsSuffix, clangdSuffix;
 
   switch (platformArch) {
     case 'darwin-x64':
-      clangdExecutablePath = path.join(build, 'clangd');
-      clangFormatExecutablePath = path.join(build, 'clang-format');
+      clangdExecutablePath = path.join(resourcesFolder, 'clangd');
+      clangFormatExecutablePath = path.join(resourcesFolder, 'clang-format');
       lsSuffix = 'macOS_64bit.tar.gz';
       clangdSuffix = 'macOS_64bit';
       break;
     case 'darwin-arm64':
-      clangdExecutablePath = path.join(build, 'clangd');
-      clangFormatExecutablePath = path.join(build, 'clang-format');
+      clangdExecutablePath = path.join(resourcesFolder, 'clangd');
+      clangFormatExecutablePath = path.join(resourcesFolder, 'clang-format');
       lsSuffix = 'macOS_ARM64.tar.gz';
       clangdSuffix = 'macOS_ARM64';
       break;
     case 'linux-x64':
-      clangdExecutablePath = path.join(build, 'clangd');
-      clangFormatExecutablePath = path.join(build, 'clang-format');
+      clangdExecutablePath = path.join(resourcesFolder, 'clangd');
+      clangFormatExecutablePath = path.join(resourcesFolder, 'clang-format');
       lsSuffix = 'Linux_64bit.tar.gz';
       clangdSuffix = 'Linux_64bit';
       break;
     case 'linux-arm64':
-      clangdExecutablePath = path.join(build, 'clangd');
-      clangFormatExecutablePath = path.join(build, 'clang-format');
+      clangdExecutablePath = path.join(resourcesFolder, 'clangd');
+      clangFormatExecutablePath = path.join(resourcesFolder, 'clang-format');
       lsSuffix = 'Linux_ARM64.tar.gz';
       clangdSuffix = 'Linux_ARM64';
       break;
     case 'win32-x64':
-      clangdExecutablePath = path.join(build, 'clangd.exe');
-      clangFormatExecutablePath = path.join(build, 'clang-format.exe');
+      clangdExecutablePath = path.join(resourcesFolder, 'clangd.exe');
+      clangFormatExecutablePath = path.join(
+        resourcesFolder,
+        'clang-format.exe'
+      );
       lsSuffix = 'Windows_64bit.zip';
       clangdSuffix = 'Windows_64bit';
       break;
@@ -116,20 +126,31 @@
         ? 'nightly/arduino-language-server'
         : 'arduino-language-server_' + lsVersion
     }_${lsSuffix}`;
-    downloader.downloadUnzipAll(lsUrl, build, lsExecutablePath, force);
+    downloader.downloadUnzipAll(
+      lsUrl,
+      resourcesFolder,
+      lsExecutablePath,
+      force
+    );
   } else {
     goBuildFromGit(lsVersion, lsExecutablePath, 'language-server');
   }
 
   const clangdUrl = `https://downloads.arduino.cc/tools/clangd_${clangdVersion}_${clangdSuffix}.tar.bz2`;
-  downloader.downloadUnzipAll(clangdUrl, build, clangdExecutablePath, force, {
-    strip: 1,
-  }); // `strip`: the new clangd (12.x) is zipped into a folder, so we have to strip the outmost folder.
+  downloader.downloadUnzipAll(
+    clangdUrl,
+    resourcesFolder,
+    clangdExecutablePath,
+    force,
+    {
+      strip: 1,
+    }
+  ); // `strip`: the new clangd (12.x) is zipped into a folder, so we have to strip the outmost folder.
 
   const clangdFormatUrl = `https://downloads.arduino.cc/tools/clang-format_${clangdVersion}_${clangdSuffix}.tar.bz2`;
   downloader.downloadUnzipAll(
     clangdFormatUrl,
-    build,
+    resourcesFolder,
     clangFormatExecutablePath,
     force,
     {

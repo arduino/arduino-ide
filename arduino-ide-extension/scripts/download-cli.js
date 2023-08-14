@@ -19,7 +19,7 @@
       return undefined;
     }
 
-    const { cli } = arduino;
+    const cli = arduino['arduino-cli'];
     if (!cli) {
       return undefined;
     }
@@ -34,9 +34,15 @@
   }
 
   const { platform, arch } = process;
-  const buildFolder = path.join(__dirname, '..', 'build');
+  const resourcesFolder = path.join(
+    __dirname,
+    '..',
+    'src',
+    'node',
+    'resources'
+  );
   const cliName = `arduino-cli${platform === 'win32' ? '.exe' : ''}`;
-  const destinationPath = path.join(buildFolder, cliName);
+  const destinationPath = path.join(resourcesFolder, cliName);
 
   if (typeof version === 'string') {
     const suffix = (() => {

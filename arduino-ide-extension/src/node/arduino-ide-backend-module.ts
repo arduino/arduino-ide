@@ -111,7 +111,7 @@ import {
   SurveyNotificationServicePath,
 } from '../common/protocol/survey-service';
 import { IsTempSketch } from './is-temp-sketch';
-import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-watcher/nsfw-bindings';
+import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-bindings';
 import { MessagingContribution } from './theia/core/messaging-contribution';
 import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
 import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';

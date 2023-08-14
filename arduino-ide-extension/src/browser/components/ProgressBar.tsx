@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 
 export type ProgressBarProps = {
   percent?: number;

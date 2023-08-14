@@ -4,20 +4,55 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "App (Electron) [Dev]",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
+      "name": "App",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd",
       },
       "cwd": "${workspaceFolder}/electron-app",
       "args": [
         ".",
         "--log-level=debug",
         "--hostname=localhost",
-        "--app-project-path=${workspaceRoot}/electron-app",
+        "--app-project-path=${workspaceFolder}/electron-app",
         "--remote-debugging-port=9222",
         "--no-app-auto-install",
-        "--plugins=local-dir:../plugins",
+        "--plugins=local-dir:./plugins",
+        "--hosted-plugin-inspect=9339",
+        "--no-ping-timeout",
+      ],
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/electron-app/lib/backend/electron-main.js",
+        "${workspaceFolder}/electron-app/lib/backend/main.js",
+        "${workspaceFolder}/electron-app/lib/**/*.js",
+        "${workspaceFolder}/arduino-ide-extension/lib/**/*.js",
+        "${workspaceFolder}/node_modules/@theia/**/*.js"
+      ],
+      "smartStep": true,
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "App [Dev]",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd",
+      },
+      "cwd": "${workspaceFolder}/electron-app",
+      "args": [
+        ".",
+        "--log-level=debug",
+        "--hostname=localhost",
+        "--app-project-path=${workspaceFolder}/electron-app",
+        "--remote-debugging-port=9222",
+        "--no-app-auto-install",
+        "--plugins=local-dir:./plugins",
         "--hosted-plugin-inspect=9339",
         "--content-trace",
         "--open-devtools",
@@ -28,46 +63,11 @@
       },
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceRoot}/electron-app/src-gen/backend/*.js",
-        "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
-        "${workspaceRoot}/electron-app/lib/**/*.js",
-        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js",
-        "${workspaceRoot}/node_modules/@theia/**/*.js"
-      ],
-      "smartStep": true,
-      "internalConsoleOptions": "openOnSessionStart",
-      "outputCapture": "std"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "App (Electron)",
-      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron",
-      "windows": {
-        "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/electron.cmd",
-      },
-      "cwd": "${workspaceFolder}/electron-app",
-      "args": [
-        ".",
-        "--log-level=debug",
-        "--hostname=localhost",
-        "--app-project-path=${workspaceRoot}/electron-app",
-        "--remote-debugging-port=9222",
-        "--no-app-auto-install",
-        "--plugins=local-dir:../plugins",
-        "--hosted-plugin-inspect=9339",
-        "--no-ping-timeout",
-      ],
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceRoot}/electron-app/src-gen/backend/*.js",
-        "${workspaceRoot}/electron-app/src-gen/frontend/*.js",
-        "${workspaceRoot}/electron-app/lib/**/*.js",
-        "${workspaceRoot}/arduino-ide-extension/lib/**/*.js",
-        "${workspaceRoot}/node_modules/@theia/**/*.js"
+        "${workspaceFolder}/electron-app/lib/backend/electron-main.js",
+        "${workspaceFolder}/electron-app/lib/backend/main.js",
+        "${workspaceFolder}/electron-app/lib/**/*.js",
+        "${workspaceFolder}/arduino-ide-extension/lib/**/*.js",
+        "${workspaceFolder}/node_modules/@theia/**/*.js"
       ],
       "smartStep": true,
       "internalConsoleOptions": "openOnSessionStart",
@@ -84,7 +84,7 @@
       "type": "node",
       "request": "launch",
       "name": "Run Test [current]",
-      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": [
         "--require",
         "reflect-metadata/Reflect",
@@ -95,7 +95,8 @@
         "**/${fileBasenameNoExtension}.js"
       ],
       "env": {
-        "TS_NODE_PROJECT": "${workspaceRoot}/tsconfig.json"
+        "TS_NODE_PROJECT": "${workspaceFolder}/tsconfig.json",
+        "IDE2_TEST": "true"
       },
       "sourceMaps": true,
       "smartStep": true,
@@ -108,19 +109,12 @@
       "name": "Attach by Process ID",
       "processId": "${command:PickProcess}"
     },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Electron Packager",
-      "program": "${workspaceRoot}/electron/packager/index.js",
-      "cwd": "${workspaceFolder}/electron/packager"
-    }
   ],
   "compounds": [
     {
       "name": "Launch Electron Backend & Frontend",
       "configurations": [
-        "App (Electron)",
+        "App",
         "Attach to Electron Frontend"
       ]
     }

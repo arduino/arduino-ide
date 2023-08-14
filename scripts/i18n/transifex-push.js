@@ -1,9 +1,8 @@
 // @ts-check
 
 const transifex = require('./transifex');
-const fetch = require('node-fetch');
+const { default: fetch } = require('node-fetch');
 const fs = require('fs');
-const shell = require('shelljs');
 const util = require('util');
 
 const uploadSourceFile = async (organization, project, resource, filePath) => {
@@ -31,8 +30,8 @@ const uploadSourceFile = async (organization, project, resource, filePath) => {
     headers['Content-Type'] = 'application/vnd.api+json';
     const json = await fetch(url, { method: 'POST', headers, body: JSON.stringify(data) })
         .catch(err => {
-            shell.echo(err);
-            shell.exit(1);
+            console.error(err)
+            process.exit(1);
         })
         .then(res => res.json());
 
@@ -48,8 +47,8 @@ const getSourceUploadStatus = async (uploadId) => {
     while (true) {
         const json = await fetch(url, { headers })
             .catch(err => {
-                shell.echo(err);
-                shell.exit(1);
+                console.error(err)
+                process.exit(1);
             })
             .then(res => res.json());
 
@@ -76,21 +75,21 @@ const getSourceUploadStatus = async (uploadId) => {
     const { organization, project, resource } = await transifex.credentials();
     const sourceFile = process.argv[2];
     if (!sourceFile) {
-        shell.echo('Translation source file not specified');
-        shell.exit(1);
+        console.error('Translation source file not specified')
+        process.exit(1);
     }
 
     const uploadId = await uploadSourceFile(organization, project, resource, sourceFile)
         .catch(err => {
-            shell.echo(err);
-            shell.exit(1);
+            console.error(err)
+            process.exit(1);
         });
 
     await getSourceUploadStatus(uploadId)
         .catch(err => {
-            shell.echo(err);
-            shell.exit(1);
+            console.error(err)
+            process.exit(1);
         });
 
-    shell.echo("Translation source file uploaded");
+    console.log("Translation source file uploaded");
 })()

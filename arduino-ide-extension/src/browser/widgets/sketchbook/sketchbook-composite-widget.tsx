@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { createRoot, Root } from '@theia/core/shared/react-dom/client';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { nls } from '@theia/core/lib/common/nls';

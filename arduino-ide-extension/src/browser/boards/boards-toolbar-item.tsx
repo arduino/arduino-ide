@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import * as ReactDOM from '@theia/core/shared/react-dom';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';

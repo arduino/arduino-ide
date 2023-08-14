@@ -14,7 +14,7 @@ export class PreferenceTreeGenerator extends TheiaPreferenceTreeGenerator {
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
 
-  protected override async init(): Promise<void> {
+  protected override init(): void {
     this.appStateService.onStateChanged((state) => {
       this.state = state;
       // manually trigger a model (and UI) refresh if it was requested during the startup phase.

@@ -10,11 +10,10 @@
     "node": ">=16.14.0 <17"
   },
   "devDependencies": {
-    "@theia/cli": "1.37.0",
-    "@types/sinon": "^2.3.5",
+    "@theia/cli": "1.39.0",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
     "@typescript-eslint/parser": "^5.59.0",
-    "cross-env": "^7.0.2",
+    "@xhmikosr/downloader": "^13.0.1",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -23,8 +22,9 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^6.0.0",
     "ignore-styles": "^5.0.1",
-    "lerna": "^6.1.0",
+    "lerna": "^7.1.4",
     "lint-staged": "^11.0.0",
+    "node-fetch": "^2.6.1",
     "node-gyp": "^9.3.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
@@ -35,15 +35,16 @@
     "xhr2": "^0.2.1"
   },
   "scripts": {
-    "prepare": "lerna run prepare && yarn download:plugins",
+    "prepare": "lerna run prepare",
     "cleanup": "rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
     "start": "yarn --cwd ./electron-app start",
     "watch": "lerna run watch --parallel",
+    "build": "lerna run build",
+    "build:dev": "lerna run build:dev",
     "test": "lerna run test",
     "test:slow": "lerna run test:slow",
-    "download:plugins": "theia download:plugins",
     "update:version": "node ./scripts/update-version.js",
     "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
     "i18n:check": "yarn i18n:generate && git add -N ./i18n && git diff --exit-code ./i18n",
@@ -66,31 +67,5 @@
   "workspaces": [
     "arduino-ide-extension",
     "electron-app"
-  ],
-  "theiaPluginsDir": "plugins",
-  "theiaPlugins": {
-    "vscode-builtin-cpp": "https://open-vsx.org/api/vscode/cpp/1.52.1/file/vscode.cpp-1.52.1.vsix",
-    "vscode-arduino-api": "https://github.com/dankeboy36/vscode-arduino-api/releases/download/0.1.2/vscode-arduino-api-0.1.2.vsix",
-    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.0.2-beta.8.vsix",
-    "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
-    "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
-    "cortex-debug": "https://downloads.arduino.cc/marus25.cortex-debug/marus25.cortex-debug-1.5.1.vsix",
-    "vscode-language-pack-bg": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-bg/1.48.3/file/MS-CEINTL.vscode-language-pack-bg-1.48.3.vsix",
-    "vscode-language-pack-cs": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-cs/1.70.0/file/MS-CEINTL.vscode-language-pack-cs-1.70.0.vsix",
-    "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.70.0/file/MS-CEINTL.vscode-language-pack-de-1.70.0.vsix",
-    "vscode-language-pack-es": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-es/1.70.0/file/MS-CEINTL.vscode-language-pack-es-1.70.0.vsix",
-    "vscode-language-pack-fr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-fr/1.70.0/file/MS-CEINTL.vscode-language-pack-fr-1.70.0.vsix",
-    "vscode-language-pack-hu": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-hu/1.48.3/file/MS-CEINTL.vscode-language-pack-hu-1.48.3.vsix",
-    "vscode-language-pack-it": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-it/1.70.0/file/MS-CEINTL.vscode-language-pack-it-1.70.0.vsix",
-    "vscode-language-pack-ja": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ja/1.70.0/file/MS-CEINTL.vscode-language-pack-ja-1.70.0.vsix",
-    "vscode-language-pack-ko": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ko/1.70.0/file/MS-CEINTL.vscode-language-pack-ko-1.70.0.vsix",
-    "vscode-language-pack-nl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-nl/1.48.3/file/MS-CEINTL.vscode-language-pack-nl-1.48.3.vsix",
-    "vscode-language-pack-pl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-pl/1.70.0/file/MS-CEINTL.vscode-language-pack-pl-1.70.0.vsix",
-    "vscode-language-pack-pt-BR": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-pt-BR/1.70.0/file/MS-CEINTL.vscode-language-pack-pt-BR-1.70.0.vsix",
-    "vscode-language-pack-ru": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ru/1.70.0/file/MS-CEINTL.vscode-language-pack-ru-1.70.0.vsix",
-    "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.70.0/file/MS-CEINTL.vscode-language-pack-tr-1.70.0.vsix",
-    "vscode-language-pack-uk": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-uk/1.48.3/file/MS-CEINTL.vscode-language-pack-uk-1.48.3.vsix",
-    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.70.0/file/MS-CEINTL.vscode-language-pack-zh-hans-1.70.0.vsix",
-    "vscode-language-pack-zh-hant": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hant/1.70.0/file/MS-CEINTL.vscode-language-pack-zh-hant-1.70.0.vsix"
-  }
+  ]
 }

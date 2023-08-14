@@ -15,9 +15,9 @@ import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
 import { CLI_CONFIG } from './cli-config';
-import { getExecPath } from './exec-util';
 import { SettingsReader } from './settings-reader';
 import { ProcessUtils } from '@theia/core/lib/node/process-utils';
+import { arduinoCliPath } from './resources';
 
 @injectable()
 export class ArduinoDaemonImpl
@@ -133,7 +133,7 @@ export class ArduinoDaemonImpl
   }
 
   getExecPath(): string {
-    return getExecPath('arduino-cli');
+    return arduinoCliPath;
   }
 
   protected async getSpawnArgs(): Promise<string[]> {

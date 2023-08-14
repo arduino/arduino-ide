@@ -355,10 +355,8 @@ import { StylingParticipant } from '@theia/core/lib/browser/styling-service';
 import { MonacoEditorMenuContribution } from './theia/monaco/monaco-menu';
 import { MonacoEditorMenuContribution as TheiaMonacoEditorMenuContribution } from '@theia/monaco/lib/browser/monaco-menu';
 import { UpdateArduinoState } from './contributions/update-arduino-state';
-import { TerminalWidgetImpl } from './theia/terminal/terminal-widget-impl';
-import { TerminalWidget } from '@theia/terminal/lib/browser/base/terminal-widget';
 import { TerminalFrontendContribution } from './theia/terminal/terminal-frontend-contribution';
-import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } from '@theia/terminal/lib/browser/terminal-frontend-contribution'
+import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -1032,7 +1030,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   );
 
   // Patch terminal issues.
-  rebind(TerminalWidget).to(TerminalWidgetImpl).inTransientScope();
   bind(TerminalFrontendContribution).toSelf().inSingletonScope();
-  rebind(TheiaTerminalFrontendContribution).toService(TerminalFrontendContribution);
+  rebind(TheiaTerminalFrontendContribution).toService(
+    TerminalFrontendContribution
+  );
 });

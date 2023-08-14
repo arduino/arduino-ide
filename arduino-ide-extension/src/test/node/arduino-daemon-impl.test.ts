@@ -1,6 +1,6 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import * as temp from 'temp';
+import fs from 'node:fs';
+import path from 'node:path';
+import temp from 'temp';
 import { expect } from 'chai';
 import { ChildProcess } from 'node:child_process';
 import { safeLoad, safeDump } from 'js-yaml';

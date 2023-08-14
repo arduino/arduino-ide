@@ -1,4 +1,4 @@
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { BoardUserField } from '../../../common/protocol';
 import { nls } from '@theia/core/lib/common';
 

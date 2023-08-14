@@ -4,7 +4,7 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { join } from 'node:path';
-import * as fs from 'node:fs';
+import fs from 'node:fs';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import {
   SketchRef,
@@ -15,6 +15,7 @@ import { LibraryLocation, LibraryPackage } from '../common/protocol';
 import { URI } from '@theia/core/lib/common/uri';
 import { Path } from '@theia/core/lib/common/path';
 import { LibraryServiceImpl } from './library-service-impl';
+import { examplesPath } from './resources';
 
 interface BuiltInSketchRef {
   readonly name: string;
@@ -64,7 +65,7 @@ export class BuiltInExamplesServiceImpl {
     if (this._builtIns) {
       return this._builtIns;
     }
-    const examplesRootPath = join(__dirname, '..', '..', 'Examples');
+    const examplesRootPath = examplesPath;
     const examplesRootUri = FileUri.create(examplesRootPath);
     const rawJson = await fs.promises.readFile(
       join(examplesRootPath, 'examples.json'),
