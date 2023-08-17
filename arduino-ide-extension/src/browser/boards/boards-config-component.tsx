@@ -2,7 +2,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Event } from '@theia/core/lib/common/event';
 import { FrontendApplicationState } from '@theia/core/lib/common/frontend-application-state';
 import { nls } from '@theia/core/lib/common/nls';
-import * as React from '@theia/core/shared/react';
+import React from '@theia/core/shared/react';
 import { EditBoardsConfigActionParams } from '../../common/protocol/board-list';
 import {
   Board,
