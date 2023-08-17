@@ -20,7 +20,7 @@ import {
   emptyBoardsConfig,
   PortIdentifier,
 } from '../../common/protocol/boards-service';
-import { Defined } from '../../common/types';
+import type { Defined } from '../../common/types';
 import { NotificationCenter } from '../notification-center';
 import { ReactDialog } from '../theia/dialogs/dialogs';
 import { BoardsConfigComponent } from './boards-config-component';

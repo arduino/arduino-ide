@@ -13,7 +13,7 @@ import {
   Port,
   PortIdentifier,
 } from '../../common/protocol/boards-service';
-import { Defined } from '../../common/types';
+import type { Defined } from '../../common/types';
 import { NotificationCenter } from '../notification-center';
 import { BoardsConfigDialogState } from './boards-config-dialog';
 
