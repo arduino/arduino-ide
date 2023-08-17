@@ -10,7 +10,6 @@ import {
   StorageService,
 } from '@theia/core/lib/browser/storage-service';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
-import { CommandContribution } from '@theia/core/lib/common/command';
 import {
   Disposable,
   DisposableCollection,
@@ -22,7 +21,6 @@ import { expect } from 'chai';
 import { BoardsDataStore } from '../../browser/boards/boards-data-store';
 import { BoardsServiceProvider } from '../../browser/boards/boards-service-provider';
 import { NotificationCenter } from '../../browser/notification-center';
-import { StorageWrapper } from '../../browser/storage-wrapper';
 import {
   BoardIdentifierChangeEvent,
   BoardsConfig,
@@ -415,7 +413,6 @@ describe('board-service-provider', () => {
         bind(LocalStorageService).toSelf().inSingletonScope();
         bind(WindowService).toConstantValue(<WindowService>{});
         bind(StorageService).toService(LocalStorageService);
-        bind(CommandContribution).toService(StorageWrapper);
         bind(BoardsServiceProvider).toSelf().inSingletonScope();
         // IDE2's test console logger does not support `Loggable` arg.
         // Rebind logger to suppress `[Function (anonymous)]` messages in tests when the storage service is initialized without `window.localStorage`.

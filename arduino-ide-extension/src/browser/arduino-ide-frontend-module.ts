@@ -210,7 +210,6 @@ import {
   MonacoEditorFactory,
   MonacoEditorProvider as TheiaMonacoEditorProvider,
 } from '@theia/monaco/lib/browser/monaco-editor-provider';
-import { StorageWrapper } from './storage-wrapper';
 import { NotificationManager } from './theia/messages/notifications-manager';
 import { NotificationManager as TheiaNotificationManager } from '@theia/messages/lib/browser/notifications-manager';
 import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/messages/lib/browser/notifications-renderer';
@@ -878,9 +877,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       'Preferences'
     ),
   });
-
-  bind(StorageWrapper).toSelf().inSingletonScope();
-  bind(CommandContribution).toService(StorageWrapper);
 
   bind(NotificationManager).toSelf().inSingletonScope();
   rebind(TheiaNotificationManager).toService(NotificationManager);
