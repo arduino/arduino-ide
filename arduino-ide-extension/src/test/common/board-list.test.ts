@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { Unknown } from '../../common/nls';
 import {
   BoardListLabels,
   createBoardList,
@@ -320,6 +321,11 @@ describe('board-list', () => {
       expect(inferredBoard).is.not.undefined;
       expect(inferredBoard?.inferredBoard).to.be.deep.equal(otherBoard);
       expect(inferredBoard?.board).to.be.deep.equal(uno);
+    });
+
+    it(`should use the '${Unknown}' as the board label when no boards were discovered on a detected port`, () => {
+      const { items } = createBoardList({ ...detectedPort(unoSerialPort) });
+      expect(items[0].labels.boardLabel).to.be.equal(Unknown);
     });
 
     describe('defaultAction', () => {

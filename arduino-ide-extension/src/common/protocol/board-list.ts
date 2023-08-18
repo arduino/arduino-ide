@@ -1,4 +1,5 @@
 import type { Mutable } from '@theia/core/lib/common/types';
+import { Unknown } from '../nls';
 import type { Defined } from '../types';
 import { naturalCompare } from '../utils';
 import {
@@ -18,7 +19,6 @@ import {
   portProtocolComparator,
   selectBoard,
   unconfirmedBoard,
-  unknownBoard,
   notConnected,
   boardIdentifierLabel,
 } from './boards-service';
@@ -326,7 +326,7 @@ function createBoardListItemLabels(item: BoardListItem): BoardListItemLabels {
       unconfirmedBoard;
     board = { name, fqbn: undefined };
   }
-  const boardLabel = board?.name ?? unknownBoard;
+  const boardLabel = board?.name ?? Unknown;
   let boardLabelWithFqbn = boardLabel;
   if (board?.fqbn) {
     boardLabelWithFqbn += ` (${board.fqbn})`;
