@@ -113,6 +113,8 @@ function buildFromGit(command, version, destinationPath, taskName) {
     shell.echo(`<<< Checked out ${commitish}.`);
   }
 
+  exec('git', ['-C', tempRepoPath, 'rev-parse', '--short', 'HEAD'], shell);
+
   shell.echo(`>>> Building the ${taskName}...`);
   exec(command, ['build'], shell, { cwd: tempRepoPath, encoding: 'utf8' });
   shell.echo(`<<< Done ${taskName} build.`);

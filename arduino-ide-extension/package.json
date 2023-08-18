@@ -123,14 +123,14 @@
     "mockdate": "^3.0.5",
     "moment": "^2.24.0",
     "ncp": "^2.0.0",
-    "protoc": "^1.0.4",
     "rimraf": "^2.6.1",
     "shelljs": "^0.8.3",
     "uuid": "^3.2.1",
     "yargs": "^11.1.0"
   },
   "optionalDependencies": {
-    "grpc-tools": "^1.9.0"
+    "grpc-tools": "^1.9.0",
+    "protoc": "^1.0.4"
   },
   "mocha": {
     "require": [
@@ -172,10 +172,14 @@
   ],
   "arduino": {
     "arduino-cli": {
-      "version": "0.33.1"
+      "version": {
+        "owner": "arduino",
+        "repo": "arduino-cli",
+        "commitish": "38479dc"
+      }
     },
     "arduino-fwuploader": {
-      "version": "2.2.2"
+      "version": "2.3.0"
     },
     "arduino-language-server": {
       "version": "0.7.4"

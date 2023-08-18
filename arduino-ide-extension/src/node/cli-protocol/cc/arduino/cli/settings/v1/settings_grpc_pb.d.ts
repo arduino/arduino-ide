@@ -5,7 +5,6 @@
 /* eslint-disable */
 
 import * as grpc from "@grpc/grpc-js";
-import {handleClientStreamingCall} from "@grpc/grpc-js/build/src/server-call";
 import * as cc_arduino_cli_settings_v1_settings_pb from "../../../../../cc/arduino/cli/settings/v1/settings_pb";
 
 interface ISettingsServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
@@ -14,6 +13,7 @@ interface ISettingsServiceService extends grpc.ServiceDefinition<grpc.UntypedSer
     getValue: ISettingsServiceService_IGetValue;
     setValue: ISettingsServiceService_ISetValue;
     write: ISettingsServiceService_IWrite;
+    delete: ISettingsServiceService_IDelete;
 }
 
 interface ISettingsServiceService_IGetAll extends grpc.MethodDefinition<cc_arduino_cli_settings_v1_settings_pb.GetAllRequest, cc_arduino_cli_settings_v1_settings_pb.GetAllResponse> {
@@ -61,15 +61,25 @@ interface ISettingsServiceService_IWrite extends grpc.MethodDefinition<cc_arduin
     responseSerialize: grpc.serialize<cc_arduino_cli_settings_v1_settings_pb.WriteResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_settings_v1_settings_pb.WriteResponse>;
 }
+interface ISettingsServiceService_IDelete extends grpc.MethodDefinition<cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, cc_arduino_cli_settings_v1_settings_pb.DeleteResponse> {
+    path: "/cc.arduino.cli.settings.v1.SettingsService/Delete";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_settings_v1_settings_pb.DeleteRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_settings_v1_settings_pb.DeleteRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_settings_v1_settings_pb.DeleteResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_settings_v1_settings_pb.DeleteResponse>;
+}
 
 export const SettingsServiceService: ISettingsServiceService;
 
-export interface ISettingsServiceServer {
+export interface ISettingsServiceServer extends grpc.UntypedServiceImplementation {
     getAll: grpc.handleUnaryCall<cc_arduino_cli_settings_v1_settings_pb.GetAllRequest, cc_arduino_cli_settings_v1_settings_pb.GetAllResponse>;
     merge: grpc.handleUnaryCall<cc_arduino_cli_settings_v1_settings_pb.MergeRequest, cc_arduino_cli_settings_v1_settings_pb.MergeResponse>;
     getValue: grpc.handleUnaryCall<cc_arduino_cli_settings_v1_settings_pb.GetValueRequest, cc_arduino_cli_settings_v1_settings_pb.GetValueResponse>;
     setValue: grpc.handleUnaryCall<cc_arduino_cli_settings_v1_settings_pb.SetValueRequest, cc_arduino_cli_settings_v1_settings_pb.SetValueResponse>;
     write: grpc.handleUnaryCall<cc_arduino_cli_settings_v1_settings_pb.WriteRequest, cc_arduino_cli_settings_v1_settings_pb.WriteResponse>;
+    delete: grpc.handleUnaryCall<cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, cc_arduino_cli_settings_v1_settings_pb.DeleteResponse>;
 }
 
 export interface ISettingsServiceClient {
@@ -88,6 +98,9 @@ export interface ISettingsServiceClient {
     write(request: cc_arduino_cli_settings_v1_settings_pb.WriteRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
     write(request: cc_arduino_cli_settings_v1_settings_pb.WriteRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
     write(request: cc_arduino_cli_settings_v1_settings_pb.WriteRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
+    delete(request: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse) => void): grpc.ClientUnaryCall;
+    delete(request: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse) => void): grpc.ClientUnaryCall;
+    delete(request: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class SettingsServiceClient extends grpc.Client implements ISettingsServiceClient {
@@ -107,4 +120,7 @@ export class SettingsServiceClient extends grpc.Client implements ISettingsServi
     public write(request: cc_arduino_cli_settings_v1_settings_pb.WriteRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
     public write(request: cc_arduino_cli_settings_v1_settings_pb.WriteRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
     public write(request: cc_arduino_cli_settings_v1_settings_pb.WriteRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.WriteResponse) => void): grpc.ClientUnaryCall;
+    public delete(request: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse) => void): grpc.ClientUnaryCall;
+    public delete(request: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse) => void): grpc.ClientUnaryCall;
+    public delete(request: cc_arduino_cli_settings_v1_settings_pb.DeleteRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_settings_v1_settings_pb.DeleteResponse) => void): grpc.ClientUnaryCall;
 }

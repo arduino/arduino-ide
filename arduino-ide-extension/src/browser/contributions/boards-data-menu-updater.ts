@@ -1,67 +1,66 @@
-import PQueue from 'p-queue';
-import { inject, injectable } from '@theia/core/shared/inversify';
-import { CommandRegistry } from '@theia/core/lib/common/command';
-import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { BoardsServiceProvider } from './boards-service-provider';
-import { Board, ConfigOption, Programmer } from '../../common/protocol';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser';
-import { BoardsDataStore } from './boards-data-store';
-import { MainMenuManager } from '../../common/main-menu-manager';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import PQueue from 'p-queue';
+import {
+  BoardIdentifier,
+  ConfigOption,
+  isBoardIdentifierChangeEvent,
+  Programmer,
+} from '../../common/protocol';
+import { BoardsDataStore } from '../boards/boards-data-store';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { ArduinoMenus, unregisterSubmenu } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/common';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import {
+  CommandRegistry,
+  Contribution,
+  MenuModelRegistry,
+} from './contribution';
 
 @injectable()
-export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
+export class BoardsDataMenuUpdater extends Contribution {
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
-
+  private readonly commandRegistry: CommandRegistry;
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
-
-  @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
-
+  private readonly menuRegistry: MenuModelRegistry;
   @inject(BoardsDataStore)
-  protected readonly boardsDataStore: BoardsDataStore;
-
+  private readonly boardsDataStore: BoardsDataStore;
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
 
-  @inject(FrontendApplicationStateService)
-  private readonly appStateService: FrontendApplicationStateService;
+  private readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
+  private readonly toDisposeOnBoardChange = new DisposableCollection();
 
-  protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
-  protected readonly toDisposeOnBoardChange = new DisposableCollection();
-
-  async onStart(): Promise<void> {
-    this.appStateService
-      .reachedState('ready')
-      .then(() =>
-        this.updateMenuActions(
-          this.boardsServiceClient.boardsConfig.selectedBoard
-        )
-      );
+  override onStart(): void {
     this.boardsDataStore.onChanged(() =>
       this.updateMenuActions(
-        this.boardsServiceClient.boardsConfig.selectedBoard
+        this.boardsServiceProvider.boardsConfig.selectedBoard
       )
     );
-    this.boardsServiceClient.onBoardsConfigChanged(({ selectedBoard }) =>
-      this.updateMenuActions(selectedBoard)
+    this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+      if (isBoardIdentifierChangeEvent(event)) {
+        this.updateMenuActions(event.selectedBoard);
+      }
+    });
+  }
+
+  override onReady(): void {
+    this.boardsServiceProvider.ready.then(() =>
+      this.updateMenuActions(
+        this.boardsServiceProvider.boardsConfig.selectedBoard
+      )
     );
   }
 
-  protected async updateMenuActions(
-    selectedBoard: Board | undefined
+  private async updateMenuActions(
+    selectedBoard: BoardIdentifier | undefined
   ): Promise<void> {
     return this.queue.add(async () => {
       this.toDisposeOnBoardChange.dispose();
-      this.mainMenuManager.update();
+      this.menuManager.update();
       if (selectedBoard) {
         const { fqbn } = selectedBoard;
         if (fqbn) {
@@ -172,7 +171,7 @@ export class BoardsDataMenuUpdater implements FrontendApplicationContribution {
               ]);
             }
           }
-          this.mainMenuManager.update();
+          this.menuManager.update();
         }
       }
     });

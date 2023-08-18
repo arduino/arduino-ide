@@ -37,7 +37,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly notificationCenter: NotificationCenter;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceClient: BoardsServiceProvider;
+  protected readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(LibraryService)
   protected readonly libraryService: LibraryService;
@@ -46,7 +46,7 @@ export class IncludeLibrary extends SketchContribution {
   protected readonly toDispose = new DisposableCollection();
 
   override onStart(): void {
-    this.boardsServiceClient.onBoardsConfigChanged(() =>
+    this.boardsServiceProvider.onBoardsConfigDidChange(() =>
       this.updateMenuActions()
     );
     this.notificationCenter.onLibraryDidInstall(() => this.updateMenuActions());
@@ -98,7 +98,7 @@ export class IncludeLibrary extends SketchContribution {
       this.toDispose.dispose();
       this.mainMenuManager.update();
       const libraries: LibraryPackage[] = [];
-      const fqbn = this.boardsServiceClient.boardsConfig.selectedBoard?.fqbn;
+      const fqbn = this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn;
       // Show all libraries, when no board is selected.
       // Otherwise, show libraries only for the selected board.
       libraries.push(...(await this.libraryService.list({ fqbn })));

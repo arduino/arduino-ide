@@ -709,6 +709,28 @@ function deserialize_cc_arduino_cli_commands_v1_PlatformUpgradeResponse(buffer_a
   return cc_arduino_cli_commands_v1_core_pb.PlatformUpgradeResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_v1_SetSketchDefaultsRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.SetSketchDefaultsRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_SetSketchDefaultsRequest(buffer_arg) {
+  return cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_SetSketchDefaultsResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.SetSketchDefaultsResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_SetSketchDefaultsResponse(buffer_arg) {
+  return cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_v1_SupportedUserFieldsRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_upload_pb.SupportedUserFieldsRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.SupportedUserFieldsRequest');
@@ -974,6 +996,20 @@ archiveSketch: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_ArchiveSketchRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_ArchiveSketchResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_ArchiveSketchResponse,
+  },
+  // Sets the sketch default FQBN and Port Address/Protocol in
+// the sketch project file (sketch.yaml). These metadata can be retrieved
+// using LoadSketch.
+setSketchDefaults: {
+    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/SetSketchDefaults',
+    requestStream: false,
+    responseStream: false,
+    requestType: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsRequest,
+    responseType: cc_arduino_cli_commands_v1_commands_pb.SetSketchDefaultsResponse,
+    requestSerialize: serialize_cc_arduino_cli_commands_v1_SetSketchDefaultsRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_SetSketchDefaultsRequest,
+    responseSerialize: serialize_cc_arduino_cli_commands_v1_SetSketchDefaultsResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_SetSketchDefaultsResponse,
   },
   // BOARD COMMANDS
 // --------------

@@ -14,13 +14,10 @@ export class BoardDetailsRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardDetailsRequest;
-
     getFqbn(): string;
     setFqbn(value: string): BoardDetailsRequest;
-
     getDoNotExpandBuildProperties(): boolean;
     setDoNotExpandBuildProperties(value: boolean): BoardDetailsRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsRequest.AsObject;
@@ -43,65 +40,50 @@ export namespace BoardDetailsRequest {
 export class BoardDetailsResponse extends jspb.Message { 
     getFqbn(): string;
     setFqbn(value: string): BoardDetailsResponse;
-
     getName(): string;
     setName(value: string): BoardDetailsResponse;
-
     getVersion(): string;
     setVersion(value: string): BoardDetailsResponse;
-
     getPropertiesId(): string;
     setPropertiesId(value: string): BoardDetailsResponse;
-
     getAlias(): string;
     setAlias(value: string): BoardDetailsResponse;
-
     getOfficial(): boolean;
     setOfficial(value: boolean): BoardDetailsResponse;
-
     getPinout(): string;
     setPinout(value: string): BoardDetailsResponse;
-
 
     hasPackage(): boolean;
     clearPackage(): void;
     getPackage(): Package | undefined;
     setPackage(value?: Package): BoardDetailsResponse;
 
-
     hasPlatform(): boolean;
     clearPlatform(): void;
     getPlatform(): BoardPlatform | undefined;
     setPlatform(value?: BoardPlatform): BoardDetailsResponse;
-
     clearToolsDependenciesList(): void;
     getToolsDependenciesList(): Array<ToolsDependencies>;
     setToolsDependenciesList(value: Array<ToolsDependencies>): BoardDetailsResponse;
     addToolsDependencies(value?: ToolsDependencies, index?: number): ToolsDependencies;
-
     clearConfigOptionsList(): void;
     getConfigOptionsList(): Array<ConfigOption>;
     setConfigOptionsList(value: Array<ConfigOption>): BoardDetailsResponse;
     addConfigOptions(value?: ConfigOption, index?: number): ConfigOption;
-
     clearProgrammersList(): void;
     getProgrammersList(): Array<cc_arduino_cli_commands_v1_common_pb.Programmer>;
     setProgrammersList(value: Array<cc_arduino_cli_commands_v1_common_pb.Programmer>): BoardDetailsResponse;
     addProgrammers(value?: cc_arduino_cli_commands_v1_common_pb.Programmer, index?: number): cc_arduino_cli_commands_v1_common_pb.Programmer;
-
     getDebuggingSupported(): boolean;
     setDebuggingSupported(value: boolean): BoardDetailsResponse;
-
     clearIdentificationPropertiesList(): void;
     getIdentificationPropertiesList(): Array<BoardIdentificationProperties>;
     setIdentificationPropertiesList(value: Array<BoardIdentificationProperties>): BoardDetailsResponse;
     addIdentificationProperties(value?: BoardIdentificationProperties, index?: number): BoardIdentificationProperties;
-
     clearBuildPropertiesList(): void;
     getBuildPropertiesList(): Array<string>;
     setBuildPropertiesList(value: Array<string>): BoardDetailsResponse;
     addBuildProperties(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsResponse.AsObject;
@@ -138,7 +120,6 @@ export class BoardIdentificationProperties extends jspb.Message {
     getPropertiesMap(): jspb.Map<string, string>;
     clearPropertiesMap(): void;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardIdentificationProperties.AsObject;
     static toObject(includeInstance: boolean, msg: BoardIdentificationProperties): BoardIdentificationProperties.AsObject;
@@ -159,25 +140,19 @@ export namespace BoardIdentificationProperties {
 export class Package extends jspb.Message { 
     getMaintainer(): string;
     setMaintainer(value: string): Package;
-
     getUrl(): string;
     setUrl(value: string): Package;
-
     getWebsiteUrl(): string;
     setWebsiteUrl(value: string): Package;
-
     getEmail(): string;
     setEmail(value: string): Package;
-
     getName(): string;
     setName(value: string): Package;
-
 
     hasHelp(): boolean;
     clearHelp(): void;
     getHelp(): Help | undefined;
     setHelp(value?: Help): Package;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Package.AsObject;
@@ -204,7 +179,6 @@ export class Help extends jspb.Message {
     getOnline(): string;
     setOnline(value: string): Help;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Help.AsObject;
     static toObject(includeInstance: boolean, msg: Help): Help.AsObject;
@@ -224,25 +198,18 @@ export namespace Help {
 export class BoardPlatform extends jspb.Message { 
     getArchitecture(): string;
     setArchitecture(value: string): BoardPlatform;
-
     getCategory(): string;
     setCategory(value: string): BoardPlatform;
-
     getUrl(): string;
     setUrl(value: string): BoardPlatform;
-
     getArchiveFilename(): string;
     setArchiveFilename(value: string): BoardPlatform;
-
     getChecksum(): string;
     setChecksum(value: string): BoardPlatform;
-
     getSize(): number;
     setSize(value: number): BoardPlatform;
-
     getName(): string;
     setName(value: string): BoardPlatform;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardPlatform.AsObject;
@@ -269,18 +236,14 @@ export namespace BoardPlatform {
 export class ToolsDependencies extends jspb.Message { 
     getPackager(): string;
     setPackager(value: string): ToolsDependencies;
-
     getName(): string;
     setName(value: string): ToolsDependencies;
-
     getVersion(): string;
     setVersion(value: string): ToolsDependencies;
-
     clearSystemsList(): void;
     getSystemsList(): Array<Systems>;
     setSystemsList(value: Array<Systems>): ToolsDependencies;
     addSystems(value?: Systems, index?: number): Systems;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ToolsDependencies.AsObject;
@@ -304,19 +267,14 @@ export namespace ToolsDependencies {
 export class Systems extends jspb.Message { 
     getChecksum(): string;
     setChecksum(value: string): Systems;
-
     getHost(): string;
     setHost(value: string): Systems;
-
     getArchiveFilename(): string;
     setArchiveFilename(value: string): Systems;
-
     getUrl(): string;
     setUrl(value: string): Systems;
-
     getSize(): number;
     setSize(value: number): Systems;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Systems.AsObject;
@@ -341,15 +299,12 @@ export namespace Systems {
 export class ConfigOption extends jspb.Message { 
     getOption(): string;
     setOption(value: string): ConfigOption;
-
     getOptionLabel(): string;
     setOptionLabel(value: string): ConfigOption;
-
     clearValuesList(): void;
     getValuesList(): Array<ConfigValue>;
     setValuesList(value: Array<ConfigValue>): ConfigOption;
     addValues(value?: ConfigValue, index?: number): ConfigValue;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ConfigOption.AsObject;
@@ -372,13 +327,10 @@ export namespace ConfigOption {
 export class ConfigValue extends jspb.Message { 
     getValue(): string;
     setValue(value: string): ConfigValue;
-
     getValueLabel(): string;
     setValueLabel(value: string): ConfigValue;
-
     getSelected(): boolean;
     setSelected(value: boolean): ConfigValue;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ConfigValue.AsObject;
@@ -404,13 +356,10 @@ export class BoardListRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardListRequest;
-
     getTimeout(): number;
     setTimeout(value: number): BoardListRequest;
-
     getFqbn(): string;
     setFqbn(value: string): BoardListRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListRequest.AsObject;
@@ -436,7 +385,6 @@ export class BoardListResponse extends jspb.Message {
     setPortsList(value: Array<DetectedPort>): BoardListResponse;
     addPorts(value?: DetectedPort, index?: number): DetectedPort;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListResponse.AsObject;
     static toObject(includeInstance: boolean, msg: BoardListResponse): BoardListResponse.AsObject;
@@ -459,12 +407,10 @@ export class DetectedPort extends jspb.Message {
     setMatchingBoardsList(value: Array<BoardListItem>): DetectedPort;
     addMatchingBoards(value?: BoardListItem, index?: number): BoardListItem;
 
-
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
     setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): DetectedPort;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DetectedPort.AsObject;
@@ -489,15 +435,12 @@ export class BoardListAllRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardListAllRequest;
-
     clearSearchArgsList(): void;
     getSearchArgsList(): Array<string>;
     setSearchArgsList(value: Array<string>): BoardListAllRequest;
     addSearchArgs(value: string, index?: number): string;
-
     getIncludeHiddenBoards(): boolean;
     setIncludeHiddenBoards(value: boolean): BoardListAllRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListAllRequest.AsObject;
@@ -523,7 +466,6 @@ export class BoardListAllResponse extends jspb.Message {
     setBoardsList(value: Array<BoardListItem>): BoardListAllResponse;
     addBoards(value?: BoardListItem, index?: number): BoardListItem;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListAllResponse.AsObject;
     static toObject(includeInstance: boolean, msg: BoardListAllResponse): BoardListAllResponse.AsObject;
@@ -546,10 +488,8 @@ export class BoardListWatchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardListWatchRequest;
-
     getInterrupt(): boolean;
     setInterrupt(value: boolean): BoardListWatchRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListWatchRequest.AsObject;
@@ -572,15 +512,12 @@ export class BoardListWatchResponse extends jspb.Message {
     getEventType(): string;
     setEventType(value: string): BoardListWatchResponse;
 
-
     hasPort(): boolean;
     clearPort(): void;
     getPort(): DetectedPort | undefined;
     setPort(value?: DetectedPort): BoardListWatchResponse;
-
     getError(): string;
     setError(value: string): BoardListWatchResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListWatchResponse.AsObject;
@@ -603,19 +540,15 @@ export namespace BoardListWatchResponse {
 export class BoardListItem extends jspb.Message { 
     getName(): string;
     setName(value: string): BoardListItem;
-
     getFqbn(): string;
     setFqbn(value: string): BoardListItem;
-
     getIsHidden(): boolean;
     setIsHidden(value: boolean): BoardListItem;
-
 
     hasPlatform(): boolean;
     clearPlatform(): void;
     getPlatform(): cc_arduino_cli_commands_v1_common_pb.Platform | undefined;
     setPlatform(value?: cc_arduino_cli_commands_v1_common_pb.Platform): BoardListItem;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListItem.AsObject;
@@ -642,13 +575,10 @@ export class BoardSearchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardSearchRequest;
-
     getSearchArgs(): string;
     setSearchArgs(value: string): BoardSearchRequest;
-
     getIncludeHiddenBoards(): boolean;
     setIncludeHiddenBoards(value: boolean): BoardSearchRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardSearchRequest.AsObject;
@@ -673,7 +603,6 @@ export class BoardSearchResponse extends jspb.Message {
     getBoardsList(): Array<BoardListItem>;
     setBoardsList(value: Array<BoardListItem>): BoardSearchResponse;
     addBoards(value?: BoardListItem, index?: number): BoardListItem;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardSearchResponse.AsObject;

@@ -6,7 +6,7 @@ import path from 'node:path';
 import glob from 'glob';
 import crypto from 'node:crypto';
 import PQueue from 'p-queue';
-import { Mutable } from '@theia/core/lib/common/types';
+import type { Mutable } from '@theia/core/lib/common/types';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -128,11 +128,11 @@ export class SketchesServiceImpl
     uri: string,
     detectInvalidSketchNameError = true
   ): Promise<SketchWithDetails> {
-    const { client, instance } = await this.coreClient;
+    const { client } = await this.coreClient;
     const req = new LoadSketchRequest();
     const requestSketchPath = FileUri.fsPath(uri);
     req.setSketchPath(requestSketchPath);
-    req.setInstance(instance);
+    // TODO: since the instance is not required on the request, can IDE2 do this faster or have a dedicated client for the sketch loading?
     const stat = new Deferred<Stats | Error>();
     lstat(requestSketchPath, (err, result) =>
       err ? stat.resolve(err) : stat.resolve(result)

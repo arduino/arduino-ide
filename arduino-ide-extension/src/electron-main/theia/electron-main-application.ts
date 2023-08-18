@@ -13,6 +13,7 @@ import { promises as fs, rm, rmSync } from 'node:fs';
 import type { MaybePromise, Mutable } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
+import { environment } from '@theia/application-package/lib/environment';
 import {
   ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainExecutionParams,
@@ -702,6 +703,12 @@ class InterruptWorkspaceRestoreError extends Error {
 async function updateFrontendApplicationConfigFromPackageJson(
   config: FrontendApplicationConfig
 ): Promise<FrontendApplicationConfig> {
+  if (environment.electron.isDevMode()) {
+    console.debug(
+      'Skipping frontend application configuration customizations. Running in dev mode.'
+    );
+    return config;
+  }
   try {
     const modulePath = __filename;
     // must go from `./lib/backend/electron-main.js` to `./package.json` when the app is webpacked.

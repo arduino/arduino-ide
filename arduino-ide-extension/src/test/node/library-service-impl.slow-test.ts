@@ -2,7 +2,7 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { LibrarySearch, LibraryService } from '../../common/protocol';
-import { createBaseContainer, startDaemon } from './test-bindings';
+import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 describe('library-service-impl', () => {
   let libraryService: LibraryService;

@@ -5,7 +5,6 @@
 /* eslint-disable */
 
 import * as grpc from "@grpc/grpc-js";
-import {handleClientStreamingCall} from "@grpc/grpc-js/build/src/server-call";
 import * as cc_arduino_cli_debug_v1_debug_pb from "../../../../../cc/arduino/cli/debug/v1/debug_pb";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_port_pb from "../../../../../cc/arduino/cli/commands/v1/port_pb";
@@ -36,7 +35,7 @@ interface IDebugServiceService_IGetDebugConfig extends grpc.MethodDefinition<cc_
 
 export const DebugServiceService: IDebugServiceService;
 
-export interface IDebugServiceServer {
+export interface IDebugServiceServer extends grpc.UntypedServiceImplementation {
     debug: grpc.handleBidiStreamingCall<cc_arduino_cli_debug_v1_debug_pb.DebugRequest, cc_arduino_cli_debug_v1_debug_pb.DebugResponse>;
     getDebugConfig: grpc.handleUnaryCall<cc_arduino_cli_debug_v1_debug_pb.DebugConfigRequest, cc_arduino_cli_debug_v1_debug_pb.GetDebugConfigResponse>;
 }

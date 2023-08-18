@@ -7,6 +7,8 @@ import {
   MonitorSettings,
   PluggableMonitorSettings,
   Port,
+  PortIdentifier,
+  portIdentifierEquals,
 } from '../common/protocol';
 import { CoreClientAware } from './core-client-provider';
 import { MonitorService } from './monitor-service';
@@ -180,13 +182,7 @@ export class MonitorManager extends CoreClientAware {
    * @param fqbn the FQBN of the board connected to port
    * @param port port to monitor
    */
-  async notifyUploadStarted(fqbn?: string, port?: Port): Promise<void> {
-    if (!fqbn || !port) {
-      // We have no way of knowing which monitor
-      // to retrieve if we don't have this information.
-      return;
-    }
-
+  async notifyUploadStarted(fqbn: string, port: PortIdentifier): Promise<void> {
     const monitorID = this.monitorID(fqbn, port);
     this.addToMonitorIDsByUploadState('uploadInProgress', monitorID);
 
@@ -204,40 +200,43 @@ export class MonitorManager extends CoreClientAware {
    * Notifies the monitor service of that board/port combination
    * that an upload process started on that exact board/port combination.
    * @param fqbn the FQBN of the board connected to port
-   * @param port port to monitor
+   * @param beforePort port to monitor
    * @returns a Status object to know if the process has been
    * started or if there have been errors.
    */
   async notifyUploadFinished(
-    fqbn?: string | undefined,
-    port?: Port
+    fqbn: string | undefined,
+    beforePort: PortIdentifier,
+    afterPort: PortIdentifier
   ): Promise<void> {
     let portDidChangeOnUpload = false;
+    const beforeMonitorID = this.monitorID(fqbn, beforePort);
+    this.removeFromMonitorIDsByUploadState('uploadInProgress', beforeMonitorID);
 
-    // We have no way of knowing which monitor
-    // to retrieve if we don't have this information.
-    if (fqbn && port) {
-      const monitorID = this.monitorID(fqbn, port);
-      this.removeFromMonitorIDsByUploadState('uploadInProgress', monitorID);
-
-      const monitor = this.monitorServices.get(monitorID);
-      if (monitor) {
+    const monitor = this.monitorServices.get(beforeMonitorID);
+    if (monitor) {
+      if (portIdentifierEquals(beforePort, afterPort)) {
         await monitor.start();
+      } else {
+        await monitor.stop();
       }
-
-      // this monitorID will only be present in "disposedForUpload"
-      // if the upload changed the board port
-      portDidChangeOnUpload = this.monitorIDIsInUploadState(
-        'disposedForUpload',
-        monitorID
-      );
-      if (portDidChangeOnUpload) {
-        this.removeFromMonitorIDsByUploadState('disposedForUpload', monitorID);
-      }
-
-      // in case a service was paused but not disposed
-      this.removeFromMonitorIDsByUploadState('pausedForUpload', monitorID);
     }
+
+    // this monitorID will only be present in "disposedForUpload"
+    // if the upload changed the board port
+    portDidChangeOnUpload = this.monitorIDIsInUploadState(
+      'disposedForUpload',
+      beforeMonitorID
+    );
+    if (portDidChangeOnUpload) {
+      this.removeFromMonitorIDsByUploadState(
+        'disposedForUpload',
+        beforeMonitorID
+      );
+    }
+
+    // in case a service was paused but not disposed
+    this.removeFromMonitorIDsByUploadState('pausedForUpload', beforeMonitorID);
 
     await this.startQueuedServices(portDidChangeOnUpload);
   }
@@ -256,7 +255,7 @@ export class MonitorManager extends CoreClientAware {
       serviceStartParams: [, port],
       connectToClient,
     } of queued) {
-      const boardsState = await this.boardsService.getState();
+      const boardsState = await this.boardsService.getDetectedPorts();
       const boardIsStillOnPort = Object.keys(boardsState)
         .map((connection: string) => {
           const portAddress = connection.split('|')[0];
@@ -355,7 +354,7 @@ export class MonitorManager extends CoreClientAware {
    * @param port
    * @returns a unique monitor ID
    */
-  private monitorID(fqbn: string | undefined, port: Port): MonitorID {
+  private monitorID(fqbn: string | undefined, port: PortIdentifier): MonitorID {
     const splitFqbn = fqbn?.split(':') || [];
     const shortenedFqbn = splitFqbn.slice(0, 3).join(':') || '';
     return `${shortenedFqbn}-${port.address}-${port.protocol}`;

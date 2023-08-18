@@ -12,13 +12,15 @@ import {
   Programmer,
   ResponseService,
   NotificationServiceServer,
-  AvailablePorts,
+  DetectedPorts,
   BoardWithPackage,
   BoardUserField,
   BoardSearch,
   sortComponents,
   SortGroup,
   platformInstallFailed,
+  createPlatformIdentifier,
+  platformIdentifierEquals,
 } from '../common/protocol';
 import {
   PlatformInstallRequest,
@@ -65,8 +67,8 @@ export class BoardsServiceImpl
   @inject(BoardDiscovery)
   protected readonly boardDiscovery: BoardDiscovery;
 
-  async getState(): Promise<AvailablePorts> {
-    return this.boardDiscovery.availablePorts;
+  async getDetectedPorts(): Promise<DetectedPorts> {
+    return this.boardDiscovery.detectedPorts;
   }
 
   async getBoardDetails(options: {
@@ -165,7 +167,7 @@ export class BoardsServiceImpl
       debuggingSupported,
       VID,
       PID,
-      buildProperties
+      buildProperties,
     };
   }
 
@@ -212,6 +214,28 @@ export class BoardsServiceImpl
     return this.handleListBoards(client.boardListAll.bind(client), req);
   }
 
+  async getInstalledPlatforms(): Promise<BoardsPackage[]> {
+    const { instance, client } = await this.coreClient;
+    return new Promise<BoardsPackage[]>((resolve, reject) => {
+      client.platformList(
+        new PlatformListRequest().setInstance(instance),
+        (err, response) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(
+            response
+              .getInstalledPlatformsList()
+              .map((platform, _, installedPlatforms) =>
+                toBoardsPackage(platform, installedPlatforms)
+              )
+          );
+        }
+      );
+    });
+  }
+
   private async handleListBoards(
     getBoards: (
       request: BoardListAllRequest | BoardSearchRequest,
@@ -232,10 +256,38 @@ export class BoardsServiceImpl
         for (const board of resp.getBoardsList()) {
           const platform = board.getPlatform();
           if (platform) {
+            const platformId = platform.getId();
+            const fqbn = board.getFqbn() || undefined; // prefer undefined over empty string
+            const parsedPlatformId = createPlatformIdentifier(platformId);
+            if (!parsedPlatformId) {
+              console.warn(
+                `Could not create platform identifier from platform ID input: ${platform.getId()}. Skipping`
+              );
+              continue;
+            }
+            if (fqbn) {
+              const checkPlatformId = createPlatformIdentifier(board.getFqbn());
+              if (!checkPlatformId) {
+                console.warn(
+                  `Could not create platform identifier from FQBN input: ${board.getFqbn()}. Skipping`
+                );
+                continue;
+              }
+              if (
+                !platformIdentifierEquals(parsedPlatformId, checkPlatformId)
+              ) {
+                console.warn(
+                  `Mismatching platform identifiers. Platform: ${JSON.stringify(
+                    parsedPlatformId
+                  )}, FQBN: ${JSON.stringify(checkPlatformId)}. Skipping`
+                );
+                continue;
+              }
+            }
             boards.push({
               name: board.getName(),
               fqbn: board.getFqbn(),
-              packageId: platform.getId(),
+              packageId: parsedPlatformId,
               packageName: platform.getName(),
               manuallyInstalled: platform.getManuallyInstalled(),
             });
@@ -316,38 +368,6 @@ export class BoardsServiceImpl
       }
     );
     const packages = new Map<string, BoardsPackage>();
-    const toPackage = (platform: Platform) => {
-      let installedVersion: string | undefined;
-      const matchingPlatform = installedPlatforms.find(
-        (ip) => ip.getId() === platform.getId()
-      );
-      if (!!matchingPlatform) {
-        installedVersion = matchingPlatform.getInstalled();
-      }
-      return {
-        id: platform.getId(),
-        name: platform.getName(),
-        author: platform.getMaintainer(),
-        availableVersions: [platform.getLatest()],
-        description: platform
-          .getBoardsList()
-          .map((b) => b.getName())
-          .join(', '),
-        installable: true,
-        types: platform.getTypeList(),
-        deprecated: platform.getDeprecated(),
-        summary: nls.localize(
-          'arduino/component/boardsIncluded',
-          'Boards included in this package:'
-        ),
-        installedVersion,
-        boards: platform
-          .getBoardsList()
-          .map((b) => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
-        moreInfoLink: platform.getWebsite(),
-      };
-    };
-
     // We must group the cores by ID, and sort platforms by, first the installed version, then version alphabetical order.
     // Otherwise we lose the FQBN information.
     const groupedById: Map<string, Platform[]> = new Map();
@@ -400,7 +420,7 @@ export class BoardsServiceImpl
           pkg.availableVersions.push(platform.getLatest());
           pkg.availableVersions.sort(Installable.Version.COMPARATOR).reverse();
         } else {
-          packages.set(id, toPackage(platform));
+          packages.set(id, toBoardsPackage(platform, installedPlatforms));
         }
       }
     }
@@ -571,4 +591,38 @@ function boardsPackageSortGroup(boardsPackage: BoardsPackage): SortGroup {
     types.push('Retired');
   }
   return types.join('-') as SortGroup;
+}
+
+function toBoardsPackage(
+  platform: Platform,
+  installedPlatforms: Platform[]
+): BoardsPackage {
+  let installedVersion: string | undefined;
+  const matchingPlatform = installedPlatforms.find(
+    (ip) => ip.getId() === platform.getId()
+  );
+  if (!!matchingPlatform) {
+    installedVersion = matchingPlatform.getInstalled();
+  }
+  return {
+    id: platform.getId(),
+    name: platform.getName(),
+    author: platform.getMaintainer(),
+    availableVersions: [platform.getLatest()],
+    description: platform
+      .getBoardsList()
+      .map((b) => b.getName())
+      .join(', '),
+    types: platform.getTypeList(),
+    deprecated: platform.getDeprecated(),
+    summary: nls.localize(
+      'arduino/component/boardsIncluded',
+      'Boards included in this package:'
+    ),
+    installedVersion,
+    boards: platform
+      .getBoardsList()
+      .map((b) => <Board>{ name: b.getName(), fqbn: b.getFqbn() }),
+    moreInfoLink: platform.getWebsite(),
+  };
 }

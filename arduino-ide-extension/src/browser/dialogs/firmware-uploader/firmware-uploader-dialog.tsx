@@ -1,24 +1,21 @@
-import React from '@theia/core/shared/react';
+import { DialogProps } from '@theia/core/lib/browser/dialogs';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import type { Message } from '@theia/core/shared/@phosphor/messaging';
 import {
   inject,
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { DialogProps } from '@theia/core/lib/browser/dialogs';
-import { ReactDialog } from '../../theia/dialogs/dialogs';
-import { Message } from '@theia/core/shared/@phosphor/messaging';
-import {
-  AvailableBoard,
-  BoardsServiceProvider,
-} from '../../boards/boards-service-provider';
+import React from '@theia/core/shared/react';
 import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../../../common/protocol/arduino-firmware-uploader';
-import { FirmwareUploaderComponent } from './firmware-uploader-component';
+import type { Port } from '../../../common/protocol/boards-service';
+import { BoardsServiceProvider } from '../../boards/boards-service-provider';
 import { UploadFirmware } from '../../contributions/upload-firmware';
-import { Port } from '../../../common/protocol';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import { ReactDialog } from '../../theia/dialogs/dialogs';
+import { FirmwareUploaderComponent } from './firmware-uploader-component';
 
 @injectable()
 export class UploadFirmwareDialogProps extends DialogProps {}
@@ -26,14 +23,13 @@ export class UploadFirmwareDialogProps extends DialogProps {}
 @injectable()
 export class UploadFirmwareDialog extends ReactDialog<void> {
   @inject(BoardsServiceProvider)
-  private readonly boardsServiceClient: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
   @inject(ArduinoFirmwareUploader)
   private readonly arduinoFirmwareUploader: ArduinoFirmwareUploader;
   @inject(FrontendApplicationStateService)
-  private readonly appStatusService: FrontendApplicationStateService;
+  private readonly appStateService: FrontendApplicationStateService;
 
   private updatableFqbns: string[] = [];
-  private availableBoards: AvailableBoard[] = [];
   private isOpen = new Object();
   private busy = false;
 
@@ -49,16 +45,12 @@ export class UploadFirmwareDialog extends ReactDialog<void> {
 
   @postConstruct()
   protected init(): void {
-    this.appStatusService.reachedState('ready').then(async () => {
+    this.appStateService.reachedState('ready').then(async () => {
       const fqbns = await this.arduinoFirmwareUploader.updatableBoards();
       this.updatableFqbns = fqbns;
       this.update();
     });
-
-    this.boardsServiceClient.onAvailableBoardsChanged((availableBoards) => {
-      this.availableBoards = availableBoards;
-      this.update();
-    });
+    this.boardsServiceProvider.onBoardListDidChange(() => this.update());
   }
 
   get value(): void {
@@ -70,7 +62,7 @@ export class UploadFirmwareDialog extends ReactDialog<void> {
       <div>
         <form>
           <FirmwareUploaderComponent
-            availableBoards={this.availableBoards}
+            boardList={this.boardsServiceProvider.boardList}
             firmwareUploader={this.arduinoFirmwareUploader}
             flashFirmware={this.flashFirmware.bind(this)}
             updatableFqbns={this.updatableFqbns}

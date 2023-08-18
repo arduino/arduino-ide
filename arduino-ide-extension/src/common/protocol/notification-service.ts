@@ -1,11 +1,11 @@
 import type { JsonRpcServer } from '@theia/core/lib/common/messaging/proxy-factory';
 import type {
-  AttachedBoardsChangeEvent,
   BoardsPackage,
   ConfigState,
+  DetectedPorts,
+  IndexType,
   ProgressMessage,
   Sketch,
-  IndexType,
 } from '../protocol';
 import type { LibraryPackage } from './library-service';
 
@@ -68,7 +68,9 @@ export interface NotificationServiceClient {
   notifyLibraryDidUninstall(event: { item: LibraryPackage }): void;
 
   // Boards discovery
-  notifyAttachedBoardsDidChange(event: AttachedBoardsChangeEvent): void;
+  notifyDetectedPortsDidChange(event: { detectedPorts: DetectedPorts }): void;
+
+  // Sketches
   notifyRecentSketchesDidChange(event: { sketches: Sketch[] }): void;
 }
 

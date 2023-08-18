@@ -10,7 +10,6 @@ export class GetAllResponse extends jspb.Message {
     getJsonData(): string;
     setJsonData(value: string): GetAllResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetAllResponse.AsObject;
     static toObject(includeInstance: boolean, msg: GetAllResponse): GetAllResponse.AsObject;
@@ -31,7 +30,6 @@ export class MergeRequest extends jspb.Message {
     getJsonData(): string;
     setJsonData(value: string): MergeRequest;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MergeRequest.AsObject;
     static toObject(includeInstance: boolean, msg: MergeRequest): MergeRequest.AsObject;
@@ -51,10 +49,8 @@ export namespace MergeRequest {
 export class GetValueResponse extends jspb.Message { 
     getKey(): string;
     setKey(value: string): GetValueResponse;
-
     getJsonData(): string;
     setJsonData(value: string): GetValueResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetValueResponse.AsObject;
@@ -76,10 +72,8 @@ export namespace GetValueResponse {
 export class SetValueRequest extends jspb.Message { 
     getKey(): string;
     setKey(value: string): SetValueRequest;
-
     getJsonData(): string;
     setJsonData(value: string): SetValueRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SetValueRequest.AsObject;
@@ -118,7 +112,6 @@ export namespace GetAllRequest {
 export class GetValueRequest extends jspb.Message { 
     getKey(): string;
     setKey(value: string): GetValueRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetValueRequest.AsObject;
@@ -174,7 +167,6 @@ export class WriteRequest extends jspb.Message {
     getFilePath(): string;
     setFilePath(value: string): WriteRequest;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): WriteRequest.AsObject;
     static toObject(includeInstance: boolean, msg: WriteRequest): WriteRequest.AsObject;
@@ -204,6 +196,43 @@ export class WriteResponse extends jspb.Message {
 }
 
 export namespace WriteResponse {
+    export type AsObject = {
+    }
+}
+
+export class DeleteRequest extends jspb.Message { 
+    getKey(): string;
+    setKey(value: string): DeleteRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DeleteRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: DeleteRequest): DeleteRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DeleteRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DeleteRequest;
+    static deserializeBinaryFromReader(message: DeleteRequest, reader: jspb.BinaryReader): DeleteRequest;
+}
+
+export namespace DeleteRequest {
+    export type AsObject = {
+        key: string,
+    }
+}
+
+export class DeleteResponse extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DeleteResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: DeleteResponse): DeleteResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DeleteResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DeleteResponse;
+    static deserializeBinaryFromReader(message: DeleteResponse, reader: jspb.BinaryReader): DeleteResponse;
+}
+
+export namespace DeleteResponse {
     export type AsObject = {
     }
 }

@@ -1,24 +1,32 @@
 import { nls } from '@theia/core/lib/common';
 import React from '@theia/core/shared/react';
-import { Port } from '../../../common/protocol';
+import {
+  boardIdentifierEquals,
+  Port,
+  portIdentifierEquals,
+} from '../../../common/protocol';
 import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../../../common/protocol/arduino-firmware-uploader';
-import { AvailableBoard } from '../../boards/boards-service-provider';
+import {
+  BoardList,
+  BoardListItemWithBoard,
+  isInferredBoardListItem,
+} from '../../../common/protocol/board-list';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 import { SelectBoardComponent } from '../certificate-uploader/select-board-components';
 
 type FirmwareOption = { value: string; label: string };
 
 export const FirmwareUploaderComponent = ({
-  availableBoards,
+  boardList,
   firmwareUploader,
   updatableFqbns,
   flashFirmware,
   isOpen,
 }: {
-  availableBoards: AvailableBoard[];
+  boardList: BoardList;
   firmwareUploader: ArduinoFirmwareUploader;
   updatableFqbns: string[];
   flashFirmware: (firmware: FirmwareInfo, port: Port) => Promise<any>;
@@ -31,8 +39,8 @@ export const FirmwareUploaderComponent = ({
     'ok' | 'fail' | 'installing' | null
   >(null);
 
-  const [selectedBoard, setSelectedBoard] =
-    React.useState<AvailableBoard | null>(null);
+  const [selectedItem, setSelectedItem] =
+    React.useState<BoardListItemWithBoard | null>(null);
 
   const [availableFirmwares, setAvailableFirmwares] = React.useState<
     FirmwareInfo[]
@@ -50,13 +58,16 @@ export const FirmwareUploaderComponent = ({
   const fetchFirmwares = React.useCallback(async () => {
     setInstallFeedback(null);
     setFirmwaresFetching(true);
-    if (!selectedBoard) {
+    if (!selectedItem) {
       return;
     }
 
     // fetch the firmwares for the selected board
+    const board = isInferredBoardListItem(selectedItem)
+      ? selectedItem.inferredBoard
+      : selectedItem.board;
     const firmwaresForFqbn = await firmwareUploader.availableFirmwares(
-      selectedBoard.fqbn || ''
+      board.fqbn || ''
     );
     setAvailableFirmwares(firmwaresForFqbn);
 
@@ -69,7 +80,7 @@ export const FirmwareUploaderComponent = ({
 
     if (firmwaresForFqbn.length > 0) setSelectedFirmware(firmwaresOpts[0]);
     setFirmwaresFetching(false);
-  }, [firmwareUploader, selectedBoard]);
+  }, [firmwareUploader, selectedItem]);
 
   const installFirmware = React.useCallback(async () => {
     setInstallFeedback('installing');
@@ -81,27 +92,39 @@ export const FirmwareUploaderComponent = ({
     try {
       const installStatus =
         !!firmwareToFlash &&
-        !!selectedBoard?.port &&
-        (await flashFirmware(firmwareToFlash, selectedBoard?.port));
+        !!selectedItem?.board &&
+        (await flashFirmware(firmwareToFlash, selectedItem?.port));
 
       setInstallFeedback((installStatus && 'ok') || 'fail');
     } catch {
       setInstallFeedback('fail');
     }
-  }, [firmwareUploader, selectedBoard, selectedFirmware, availableFirmwares]);
+  }, [selectedItem, selectedFirmware, availableFirmwares, flashFirmware]);
 
-  const onBoardSelect = React.useCallback(
-    (board: AvailableBoard) => {
-      const newFqbn = (board && board.fqbn) || null;
-      const prevFqbn = (selectedBoard && selectedBoard.fqbn) || null;
+  const onItemSelect = React.useCallback(
+    (item: BoardListItemWithBoard | null) => {
+      if (!item) {
+        return;
+      }
+      const board = isInferredBoardListItem(item)
+        ? item.inferredBoard
+        : item.board;
+      const selectedBoard = isInferredBoardListItem(selectedItem)
+        ? selectedItem.inferredBoard
+        : selectedItem?.board;
+      const port = item.port;
+      const selectedPort = selectedItem?.port;
 
-      if (newFqbn !== prevFqbn) {
+      if (
+        !boardIdentifierEquals(board, selectedBoard) ||
+        !portIdentifierEquals(port, selectedPort)
+      ) {
         setInstallFeedback(null);
         setAvailableFirmwares([]);
-        setSelectedBoard(board);
+        setSelectedItem(item);
       }
     },
-    [selectedBoard]
+    [selectedItem]
   );
 
   return (
@@ -115,10 +138,10 @@ export const FirmwareUploaderComponent = ({
         <div className="dialogRow">
           <div className="fl1">
             <SelectBoardComponent
-              availableBoards={availableBoards}
+              boardList={boardList}
               updatableFqbns={updatableFqbns}
-              onBoardSelect={onBoardSelect}
-              selectedBoard={selectedBoard}
+              onItemSelect={onItemSelect}
+              selectedItem={selectedItem}
               busy={installFeedback === 'installing'}
             />
           </div>
@@ -126,7 +149,7 @@ export const FirmwareUploaderComponent = ({
             type="button"
             className="theia-button secondary"
             disabled={
-              selectedBoard === null ||
+              selectedItem === null ||
               firmwaresFetching ||
               installFeedback === 'installing'
             }
@@ -150,7 +173,7 @@ export const FirmwareUploaderComponent = ({
                 id="firmware-select"
                 menuPosition="fixed"
                 isDisabled={
-                  !selectedBoard ||
+                  !selectedItem ||
                   firmwaresFetching ||
                   installFeedback === 'installing'
                 }

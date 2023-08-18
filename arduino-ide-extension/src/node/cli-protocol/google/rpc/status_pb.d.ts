@@ -10,15 +10,12 @@ import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb"
 export class Status extends jspb.Message { 
     getCode(): number;
     setCode(value: number): Status;
-
     getMessage(): string;
     setMessage(value: string): Status;
-
     clearDetailsList(): void;
     getDetailsList(): Array<google_protobuf_any_pb.Any>;
     setDetailsList(value: Array<google_protobuf_any_pb.Any>): Status;
     addDetails(value?: google_protobuf_any_pb.Any, index?: number): google_protobuf_any_pb.Any;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Status.AsObject;
