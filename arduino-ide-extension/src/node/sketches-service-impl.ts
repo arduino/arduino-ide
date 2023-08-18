@@ -677,6 +677,7 @@ async function isInvalidSketchNameError(
  *
  * The sketch folder name and sketch file name can be different. This method is not sketch folder name compliant.
  * The `path` must be an absolute, resolved path. This method does not handle EACCES (Permission denied) errors.
+ * This method handles `UNKNOWN` errors ([nodejs/node#19965](https://github.com/nodejs/node/issues/19965#issuecomment-380750573)).
  *
  * When `fallbackToInvalidFolderPath` is `true`, and the `path` is an accessible folder without any sketch files,
  * this method returns with the `path` argument instead of `undefined`.
@@ -689,7 +690,7 @@ export async function isAccessibleSketchPath(
   try {
     stats = await fs.stat(path);
   } catch (err) {
-    if (ErrnoException.isENOENT(err)) {
+    if (ErrnoException.isENOENT(err) || ErrnoException.isUNKNOWN(err)) {
       return undefined;
     }
     throw err;

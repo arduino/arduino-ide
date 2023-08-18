@@ -6,15 +6,115 @@ import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
+import { rejects } from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import { basename, join } from 'node:path';
 import { sync as rimrafSync } from 'rimraf';
+import temp from 'temp';
 import { Sketch, SketchesService } from '../../common/protocol';
-import { SketchesServiceImpl } from '../../node/sketches-service-impl';
+import {
+  isAccessibleSketchPath,
+  SketchesServiceImpl,
+} from '../../node/sketches-service-impl';
 import { ErrnoException } from '../../node/utils/errors';
 import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 const testTimeout = 10_000;
+
+describe('isAccessibleSketchPath', () => {
+  let tracked: typeof temp;
+  let testDirPath: string;
+
+  before(() => (tracked = temp.track()));
+  beforeEach(() => (testDirPath = tracked.mkdirSync()));
+  after(() => tracked.cleanupSync());
+
+  it('should be accessible by the main sketch file', async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const mainSketchFilePath = join(sketchFolderPath, 'my_sketch.ino');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    await fs.writeFile(mainSketchFilePath, '', { encoding: 'utf8' });
+    const actual = await isAccessibleSketchPath(mainSketchFilePath);
+    expect(actual).to.be.equal(mainSketchFilePath);
+  });
+
+  it('should be accessible by the sketch folder', async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const mainSketchFilePath = join(sketchFolderPath, 'my_sketch.ino');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    await fs.writeFile(mainSketchFilePath, '', { encoding: 'utf8' });
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.equal(mainSketchFilePath);
+  });
+
+  it('should be accessible when the sketch folder and main sketch file basenames are different', async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const mainSketchFilePath = join(sketchFolderPath, 'other_name_sketch.ino');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    await fs.writeFile(mainSketchFilePath, '', { encoding: 'utf8' });
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.equal(mainSketchFilePath);
+  });
+
+  it('should be deterministic (and sort by basename) when multiple sketch files exist', async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const aSketchFilePath = join(sketchFolderPath, 'a.ino');
+    const bSketchFilePath = join(sketchFolderPath, 'b.ino');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    await fs.writeFile(aSketchFilePath, '', { encoding: 'utf8' });
+    await fs.writeFile(bSketchFilePath, '', { encoding: 'utf8' });
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.equal(aSketchFilePath);
+  });
+
+  it('should ignore EACCESS (non-Windows)', async function () {
+    if (isWindows) {
+      // `stat` syscall does not result in an EACCESS on Windows after stripping the file permissions.
+      // an `open` syscall would, but IDE2 on purpose does not check the files.
+      // the sketch files are provided by the CLI after loading the sketch.
+      return this.skip();
+    }
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const mainSketchFilePath = join(sketchFolderPath, 'my_sketch.ino');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    await fs.writeFile(mainSketchFilePath, '', { encoding: 'utf8' });
+    await fs.chmod(mainSketchFilePath, 0o000); // remove all permissions
+    await rejects(fs.readFile(mainSketchFilePath), ErrnoException.isEACCES);
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.equal(mainSketchFilePath);
+  });
+
+  it("should not be accessible when there are no '.ino' files in the folder", async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.undefined;
+  });
+
+  it("should not be accessible when the main sketch file extension is not '.ino'", async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const mainSketchFilePath = join(sketchFolderPath, 'my_sketch.cpp');
+    await fs.mkdir(sketchFolderPath, { recursive: true });
+    await fs.writeFile(mainSketchFilePath, '', { encoding: 'utf8' });
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.undefined;
+  });
+
+  it('should handle ENOENT', async () => {
+    const sketchFolderPath = join(testDirPath, 'my_sketch');
+    const actual = await isAccessibleSketchPath(sketchFolderPath);
+    expect(actual).to.be.undefined;
+  });
+
+  it('should handle UNKNOWN (Windows)', async function () {
+    if (!isWindows) {
+      return this.skip();
+    }
+    this.timeout(60_000);
+    const actual = await isAccessibleSketchPath('\\\\10.0.0.200\\path');
+    expect(actual).to.be.undefined;
+  });
+});
 
 describe('sketches-service-impl', () => {
   let container: Container;
