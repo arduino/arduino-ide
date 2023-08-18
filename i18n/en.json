@@ -250,7 +250,7 @@
       "selectBoard": "Select Board",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Environment",
