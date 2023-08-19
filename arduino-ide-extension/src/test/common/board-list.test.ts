@@ -328,6 +328,130 @@ describe('board-list', () => {
       expect(items[0].labels.boardLabel).to.be.equal(Unknown);
     });
 
+    describe('boards', () => {
+      it('should include discovered boards on detected ports', () => {
+        const { boards } = createBoardList({
+          ...detectedPort(unoSerialPort, uno),
+          ...detectedPort(mkr1000SerialPort, mkr1000),
+          ...detectedPort(undiscoveredSerialPort),
+        });
+        expect(boards).to.deep.equal([
+          {
+            port: mkr1000SerialPort,
+            board: mkr1000,
+          },
+          {
+            port: unoSerialPort,
+            board: uno,
+          },
+        ]);
+      });
+
+      it('should include manually selected boards on detected ports', () => {
+        const { boards } = createBoardList({
+          ...detectedPort(unoSerialPort, uno),
+          ...detectedPort(undiscoveredSerialPort, uno),
+          ...detectedPort(undiscoveredUsbToUARTSerialPort),
+        });
+        expect(boards).to.deep.equal([
+          {
+            port: unoSerialPort,
+            board: uno,
+          },
+          {
+            port: undiscoveredSerialPort,
+            board: uno,
+          },
+        ]);
+      });
+
+      it('should include manually overridden boards on detected ports', () => {
+        const { boards } = createBoardList(
+          {
+            ...detectedPort(unoSerialPort, uno),
+            ...detectedPort(mkr1000SerialPort, mkr1000),
+          },
+          emptyBoardsConfig(),
+          {
+            ...history(unoSerialPort, mkr1000),
+          }
+        );
+        expect(boards).to.deep.equal([
+          {
+            port: mkr1000SerialPort,
+            board: mkr1000,
+          },
+          {
+            port: unoSerialPort,
+            board: mkr1000,
+          },
+        ]);
+      });
+
+      it('should include all boards discovered on a port', () => {
+        const { boards } = createBoardList({
+          ...detectedPort(
+            nanoEsp32SerialPort,
+            arduinoNanoEsp32,
+            esp32NanoEsp32
+          ),
+          ...detectedPort(
+            nanoEsp32DetectsMultipleEsp32BoardsSerialPort,
+            esp32S3DevModule,
+            esp32S3Box
+          ),
+        });
+        expect(boards).to.deep.equal([
+          {
+            port: nanoEsp32SerialPort,
+            board: arduinoNanoEsp32,
+          },
+          {
+            port: nanoEsp32SerialPort,
+            board: esp32NanoEsp32,
+          },
+          {
+            port: nanoEsp32DetectsMultipleEsp32BoardsSerialPort,
+            board: esp32S3Box,
+          },
+          {
+            port: nanoEsp32DetectsMultipleEsp32BoardsSerialPort,
+            board: esp32S3DevModule,
+          },
+        ]);
+      });
+
+      it('should include all boards discovered on a port (handle manual select)', () => {
+        const { boards } = createBoardList(
+          {
+            ...detectedPort(
+              nanoEsp32SerialPort,
+              arduinoNanoEsp32,
+              esp32NanoEsp32
+            ),
+          },
+          emptyBoardsConfig(),
+          {
+            ...history(nanoEsp32SerialPort, esp32S3DevModule),
+          }
+        );
+        expect(boards).to.deep.equal([
+          {
+            port: nanoEsp32SerialPort,
+            board: arduinoNanoEsp32,
+          },
+          {
+            port: nanoEsp32SerialPort,
+            board: esp32NanoEsp32,
+          },
+          {
+            port: nanoEsp32SerialPort,
+            board: esp32S3DevModule,
+          },
+        ]);
+      });
+    });
+
     describe('defaultAction', () => {
       it("'select' should be the default action for identifier boards", () => {
         const { items } = createBoardList({

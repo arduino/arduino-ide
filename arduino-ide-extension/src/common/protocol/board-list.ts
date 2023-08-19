@@ -362,9 +362,12 @@ export interface BoardList {
   readonly selectedIndex: number;
 
   /**
-   * Contains all boards recognized from the detected port, and an optional unrecognized one that is derived from the detected port and the `initParam#selectedBoard`.
+   * Contains all the following board+port pairs:
+   *  - one discovered board on a detected board (`1`),
+   *  - manually selected or overridden board for a detected port (`1`),
+   *  - multiple discovered boards on detected port (`1..*`)
    */
-  readonly boards: readonly (BoardListItemWithBoard | InferredBoardListItem)[];
+  readonly boards: readonly BoardListItemWithBoard[];
 
   /**
    * If `predicate` is not defined, no ports are filtered.
@@ -511,17 +514,27 @@ function collectPorts(
 
 function collectBoards(
   items: readonly BoardListItem[]
-): readonly (BoardListItemWithBoard | InferredBoardListItem)[] {
-  const boards: (BoardListItemWithBoard | InferredBoardListItem)[] = [];
+): readonly BoardListItemWithBoard[] {
+  const result: BoardListItemWithBoard[] = [];
   for (let i = 0; i < items.length; i++) {
+    const boards: BoardListItemWithBoard[] = [];
     const item = items[i];
-    if (isInferredBoardListItem(item)) {
-      boards.push(item);
-    } else if (item.board?.fqbn) {
-      boards.push(<Required<BoardListItem>>item);
+    const { port } = item;
+    const board = getInferredBoardOrBoard(item);
+    if (board) {
+      boards.push({ board, port });
     }
+    if (isMultiBoardsBoardListItem(item)) {
+      for (const otherBoard of item.boards) {
+        if (!boardIdentifierEquals(board, otherBoard)) {
+          boards.push({ board: otherBoard, port });
+        }
+      }
+    }
+    boards.sort(boardListItemComparator);
+    result.push(...boards);
   }
-  return boards;
+  return result;
 }
 
 function findSelectedIndex(
