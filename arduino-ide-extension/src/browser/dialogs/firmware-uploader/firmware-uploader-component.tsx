@@ -9,10 +9,9 @@ import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
 } from '../../../common/protocol/arduino-firmware-uploader';
-import {
+import type {
   BoardList,
   BoardListItemWithBoard,
-  isInferredBoardListItem,
 } from '../../../common/protocol/board-list';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 import { SelectBoardComponent } from '../certificate-uploader/select-board-components';
@@ -63,9 +62,7 @@ export const FirmwareUploaderComponent = ({
     }
 
     // fetch the firmwares for the selected board
-    const board = isInferredBoardListItem(selectedItem)
-      ? selectedItem.inferredBoard
-      : selectedItem.board;
+    const board = selectedItem.board;
     const firmwaresForFqbn = await firmwareUploader.availableFirmwares(
       board.fqbn || ''
     );
@@ -89,11 +86,14 @@ export const FirmwareUploaderComponent = ({
       (firmware) => firmware.firmware_version === selectedFirmware?.value
     );
 
+    const selectedBoard = selectedItem?.board;
+    const selectedPort = selectedItem?.port;
     try {
       const installStatus =
-        !!firmwareToFlash &&
-        !!selectedItem?.board &&
-        (await flashFirmware(firmwareToFlash, selectedItem?.port));
+        firmwareToFlash &&
+        selectedBoard &&
+        selectedPort &&
+        (await flashFirmware(firmwareToFlash, selectedPort));
 
       setInstallFeedback((installStatus && 'ok') || 'fail');
     } catch {
@@ -106,13 +106,9 @@ export const FirmwareUploaderComponent = ({
       if (!item) {
         return;
       }
-      const board = isInferredBoardListItem(item)
-        ? item.inferredBoard
-        : item.board;
-      const selectedBoard = isInferredBoardListItem(selectedItem)
-        ? selectedItem.inferredBoard
-        : selectedItem?.board;
+      const board = item.board;
       const port = item.port;
+      const selectedBoard = selectedItem?.board;
       const selectedPort = selectedItem?.port;
 
       if (

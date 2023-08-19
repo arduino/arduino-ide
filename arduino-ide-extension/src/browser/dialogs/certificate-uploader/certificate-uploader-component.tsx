@@ -1,10 +1,7 @@
 import { nls } from '@theia/core/lib/common/nls';
 import React from '@theia/core/shared/react';
 import Tippy from '@tippyjs/react';
-import {
-  BoardList,
-  isInferredBoardListItem,
-} from '../../../common/protocol/board-list';
+import type { BoardList } from '../../../common/protocol/board-list';
 import {
   boardIdentifierEquals,
   portIdentifierEquals,
@@ -50,9 +47,7 @@ export const CertificateUploaderComponent = ({
     if (!selectedItem) {
       return;
     }
-    const board = isInferredBoardListItem(selectedItem)
-      ? selectedItem.inferredBoard
-      : selectedItem.board;
+    const board = selectedItem.board;
     if (!board.fqbn) {
       return;
     }
@@ -76,13 +71,9 @@ export const CertificateUploaderComponent = ({
       if (!item) {
         return;
       }
-      const board = isInferredBoardListItem(item)
-        ? item.inferredBoard
-        : item.board;
-      const selectedBoard = isInferredBoardListItem(selectedItem)
-        ? selectedItem.inferredBoard
-        : selectedItem?.board;
+      const board = item.board;
       const port = item.port;
+      const selectedBoard = selectedItem?.board;
       const selectedPort = selectedItem?.port;
 
       if (

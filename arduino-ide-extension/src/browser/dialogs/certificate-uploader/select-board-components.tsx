@@ -1,14 +1,12 @@
 import { nls } from '@theia/core/lib/common';
 import React from '@theia/core/shared/react';
-import {
+import type {
   BoardList,
   BoardListItemWithBoard,
-  InferredBoardListItem,
-  isInferredBoardListItem,
 } from '../../../common/protocol/board-list';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 
-export type BoardOptionValue = BoardListItemWithBoard | InferredBoardListItem;
+export type BoardOptionValue = BoardListItemWithBoard;
 type BoardOption = { value: BoardOptionValue | undefined; label: string };
 
 export const SelectBoardComponent = ({
@@ -46,9 +44,7 @@ export const SelectBoardComponent = ({
       'Select a board...'
     );
     const updatableBoards = boardList.boards.filter((item) => {
-      const fqbn = (
-        isInferredBoardListItem(item) ? item.inferredBoard : item.board
-      ).fqbn;
+      const fqbn = item.board.fqbn;
       return fqbn && updatableFqbns.includes(fqbn);
     });
     let selBoard = -1;
@@ -57,15 +53,12 @@ export const SelectBoardComponent = ({
       if (selectedItem === item) {
         selBoard = i;
       }
-      const board = isInferredBoardListItem(item)
-        ? item.inferredBoard
-        : item.board;
       return {
         label: nls.localize(
           'arduino/certificate/boardAtPort',
           '{0} at {1}',
-          board.name,
-          item.port?.address ?? ''
+          item.board.name,
+          item.port.address ?? ''
         ),
         value: item,
       };
@@ -100,10 +93,7 @@ export const SelectBoardComponent = ({
           label: nls.localize(
             'arduino/certificate/boardAtPort',
             '{0} at {1}',
-            (isInferredBoardListItem(selectedItem)
-              ? selectedItem.inferredBoard
-              : selectedItem.board
-            ).name,
+            selectedItem.board.name,
             selectedItem.port.address ?? ''
           ),
         }) ||
