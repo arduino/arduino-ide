@@ -16,7 +16,10 @@ import {
   arduinoCert,
   certificateList,
 } from '../dialogs/certificate-uploader/utils';
-import { ArduinoFirmwareUploader } from '../../common/protocol/arduino-firmware-uploader';
+import {
+  ArduinoFirmwareUploader,
+  UploadCertificateParams,
+} from '../../common/protocol/arduino-firmware-uploader';
 import { nls } from '@theia/core/lib/common';
 
 @injectable()
@@ -74,12 +77,8 @@ export class UploadCertificate extends Contribution {
     });
 
     registry.registerCommand(UploadCertificate.Commands.UPLOAD_CERT, {
-      execute: async ({ fqbn, address, urls }) => {
-        return this.arduinoFirmwareUploader.uploadCertificates(
-          `-b ${fqbn} -a ${address} ${urls
-            .map((url: string) => `-u ${url}`)
-            .join(' ')}`
-        );
+      execute: async (params: UploadCertificateParams) => {
+        return this.arduinoFirmwareUploader.uploadCertificates(params);
       },
     });
 
