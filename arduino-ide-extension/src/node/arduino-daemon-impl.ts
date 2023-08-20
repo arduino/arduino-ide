@@ -10,7 +10,6 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { Event, Emitter } from '@theia/core/lib/common/event';
 import { deepClone } from '@theia/core/lib/common/objects';
-import { environment } from '@theia/application-package/lib/environment';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { ArduinoDaemon, NotificationServiceServer } from '../common/protocol';
@@ -71,22 +70,6 @@ export class ArduinoDaemonImpl
       const cliPath = this.getExecPath();
       this.onData(`Starting daemon from ${cliPath}...`);
       const { daemon, port } = await this.spawnDaemonProcess();
-      // Watchdog process for terminating the daemon process when the backend app terminates.
-      spawn(
-        process.execPath,
-        [
-          join(__dirname, 'daemon-watcher.js'),
-          String(process.pid),
-          String(daemon.pid),
-        ],
-        {
-          env: environment.electron.runAsNodeEnv(),
-          detached: true,
-          stdio: 'ignore',
-          windowsHide: true,
-        }
-      ).unref();
-
       this.toDispose.pushAll([
         Disposable.create(() => {
           if (daemon.pid) {
