@@ -17,8 +17,8 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
   @inject(MonitorManager)
   private readonly monitorManager: MonitorManager;
 
-  async uploadCertificates(command: string): Promise<string> {
-    return await this.runCommand(['certificates', 'flash', command]);
+  async uploadCertificates(params: { flags: string[] }): Promise<string> {
+    return await this.runCommand(['certificates', 'flash', ...params.flags]);
   }
 
   async list(fqbn?: string): Promise<FirmwareInfo[]> {
