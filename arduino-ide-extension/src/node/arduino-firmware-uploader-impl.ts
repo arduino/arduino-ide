@@ -4,6 +4,7 @@ import type { Port } from '../common/protocol';
 import {
   ArduinoFirmwareUploader,
   FirmwareInfo,
+  UploadCertificateParams,
 } from '../common/protocol/arduino-firmware-uploader';
 import { spawnCommand } from './exec-util';
 import { MonitorManager } from './monitor-manager';
@@ -17,8 +18,17 @@ export class ArduinoFirmwareUploaderImpl implements ArduinoFirmwareUploader {
   @inject(MonitorManager)
   private readonly monitorManager: MonitorManager;
 
-  async uploadCertificates(params: { flags: string[] }): Promise<string> {
-    return await this.runCommand(['certificates', 'flash', ...params.flags]);
+  async uploadCertificates(params: UploadCertificateParams): Promise<string> {
+    const { fqbn, address, urls } = params;
+    return await this.runCommand([
+      'certificates',
+      'flash',
+      '-b',
+      fqbn,
+      '-a',
+      address,
+      ...urls.flatMap((url) => ['-u', url]),
+    ]);
   }
 
   async list(fqbn?: string): Promise<FirmwareInfo[]> {
