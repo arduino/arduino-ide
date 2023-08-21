@@ -1,6 +1,7 @@
 import { JsonRpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
 import { ElectronMainWindowService } from '@theia/core/lib/electron-common/electron-main-window-service';
 import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
+import { TheiaMainApi } from '@theia/core/lib/electron-main/electron-api-main';
 import {
   ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainApplicationContribution,
@@ -17,6 +18,7 @@ import { ElectronArduino } from './electron-arduino';
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
 import { ElectronMainApplication } from './theia/electron-main-application';
 import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
+import { TheiaMainApiFixFalsyHandlerId } from './theia/theia-api-main';
 import { TheiaElectronWindow } from './theia/theia-electron-window';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
@@ -52,4 +54,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(ElectronArduino).toSelf().inSingletonScope();
   bind(ElectronMainApplicationContribution).toService(ElectronArduino);
+
+  // eclipse-theia/theia#12500
+  bind(TheiaMainApiFixFalsyHandlerId).toSelf().inSingletonScope();
+  rebind(TheiaMainApi).toService(TheiaMainApiFixFalsyHandlerId);
 });
