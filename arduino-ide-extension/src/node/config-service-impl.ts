@@ -95,7 +95,7 @@ export class ConfigServiceImpl
     };
     copyDefaultCliConfig.locale = locale || 'en';
     const proxy = Network.stringify(network);
-    copyDefaultCliConfig.network = { proxy };
+    copyDefaultCliConfig.network = proxy ? { proxy } : {}; // must be an empty object to unset the default prop with the `WriteRequest`.
 
     // always use the port of the daemon
     const port = await this.daemon.getPort();
