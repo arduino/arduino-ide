@@ -15,6 +15,7 @@ import {
 } from '../common/protocol/ide-updater';
 import { IsTempSketch } from '../node/is-temp-sketch';
 import { ElectronArduino } from './electron-arduino';
+import { FixAppImageIcon } from './fix-app-image-icon';
 import { IDEUpdaterImpl } from './ide-updater/ide-updater-impl';
 import { ElectronMainApplication } from './theia/electron-main-application';
 import { ElectronMainWindowServiceImpl } from './theia/electron-main-window-service';
@@ -58,4 +59,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // eclipse-theia/theia#12500
   bind(TheiaMainApiFixFalsyHandlerId).toSelf().inSingletonScope();
   rebind(TheiaMainApi).toService(TheiaMainApiFixFalsyHandlerId);
+
+  // https://github.com/arduino/arduino-ide/issues/131
+  bind(FixAppImageIcon).toSelf().inSingletonScope();
+  bind(ElectronMainApplicationContribution).toService(FixAppImageIcon);
 });
