@@ -1,31 +1,31 @@
 #firmware-uploader-dialog-container > .dialogBlock {
-  width: 600px;
+    width: 600px;
 }
 
 .firmware-uploader-dialog .theia-select {
-  border: none !important;
+    border: none !important;
 }
 .firmware-uploader-dialog .arduino-select__control {
-  height: 31px;
-  background: var(--theia-input-background) !important;
+    height: 31px;
+    background: var(--theia-input-background) !important;
 }
 
-.firmware-uploader-dialog .dialogRow > button{
-  margin-right: 3px;
+.firmware-uploader-dialog .dialogRow > button {
+    margin-right: 3px;
 }
 
 .firmware-uploader-dialog #firmware-select {
-  flex: unset;
+    flex: unset;
 }
 
-.firmware-uploader-dialog  .success {
-  color: #1DA086;
+.firmware-uploader-dialog .success {
+    color: #1da086;
 }
 
-.firmware-uploader-dialog  .warn {
-  color: #C11F09;
+.firmware-uploader-dialog .warn {
+    color: #c11f09;
 }
 
-.firmware-uploader-dialog  .status-icon {
-  margin-right: 10px;
+.firmware-uploader-dialog .status-icon {
+    margin-right: 10px;
 }

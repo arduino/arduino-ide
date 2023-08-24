@@ -67,7 +67,7 @@ export namespace LibrarySearch {
     'Contributed',
     'Retired',
   ] as const;
-  export type Type = typeof TypeLiterals[number];
+  export type Type = (typeof TypeLiterals)[number];
   export namespace Type {
     export function is(arg: unknown): arg is Type {
       return typeof arg === 'string' && TypeLiterals.includes(arg as Type);
@@ -96,7 +96,7 @@ export namespace LibrarySearch {
     'Timing',
     'Uncategorized',
   ] as const;
-  export type Topic = typeof TopicLiterals[number];
+  export type Topic = (typeof TopicLiterals)[number];
   export namespace Topic {
     export function is(arg: unknown): arg is Topic {
       return typeof arg === 'string' && TopicLiterals.includes(arg as Topic);

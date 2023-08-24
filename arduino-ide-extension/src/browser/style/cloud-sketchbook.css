@@ -23,8 +23,7 @@
     -webkit-mask-size: 100%;
 }
 
-.p-mod-current
-.cloud-sketchbook-tree-icon {
+.p-mod-current .cloud-sketchbook-tree-icon {
     background-color: var(--theia-foreground);
     -webkit-mask: url(../icons/arduino-cloud-filled.svg);
     -webkit-mask-position: center;
@@ -33,49 +32,49 @@
 }
 
 .sketchbook-trees-container
-.p-TabBar[data-orientation="horizontal"]
-> .p-TabBar-content {
+    .p-TabBar[data-orientation="horizontal"]
+    > .p-TabBar-content {
     justify-content: center;
     border-bottom: 1px solid var(--theia-tree-indentGuidesStroke);
 }
 
 .sketchbook-trees-container
-.p-Widget.p-TabBar.p-DockPanel-tabBar
-> ul
-> li.p-TabBar-tab
-> div.p-TabBar-tabLabel {
+    .p-Widget.p-TabBar.p-DockPanel-tabBar
+    > ul
+    > li.p-TabBar-tab
+    > div.p-TabBar-tabLabel {
     display: none;
     width: 0px;
     max-width: 0px;
 }
 
 .sketchbook-trees-container
-.p-Widget.p-TabBar.p-DockPanel-tabBar
-> ul
-> li.p-TabBar-tab
-> div.p-TabBar-tabCloseIcon {
+    .p-Widget.p-TabBar.p-DockPanel-tabBar
+    > ul
+    > li.p-TabBar-tab
+    > div.p-TabBar-tabCloseIcon {
     display: none;
     width: 0px;
     max-width: 0px;
 }
 
 .sketchbook-trees-container
-.p-TabBar[data-orientation="horizontal"]
-.p-TabBar-tab {
+    .p-TabBar[data-orientation="horizontal"]
+    .p-TabBar-tab {
     min-width: 55px;
 }
 
 .sketchbook-trees-container
-.p-Widget.p-TabBar.p-DockPanel-tabBar
-> ul
-> li.p-TabBar-tab {
+    .p-Widget.p-TabBar.p-DockPanel-tabBar
+    > ul
+    > li.p-TabBar-tab {
     padding-left: 20px;
 }
 
 .sketchbook-trees-container
-.p-Widget.p-TabBar.p-DockPanel-tabBar
-> ul
-> li.p-TabBar-tab.p-mod-current {
+    .p-Widget.p-TabBar.p-DockPanel-tabBar
+    > ul
+    > li.p-TabBar-tab.p-mod-current {
     border-bottom: 2px solid var(--theia-activityBar-activeBorder);
 }
 

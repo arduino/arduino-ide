@@ -58,7 +58,9 @@ type StrictPreferenceSchemaProperties<T extends object> = {
   [p in keyof T]: PreferenceSchemaProperty;
 };
 type ArduinoPreferenceSchemaProperties =
-  StrictPreferenceSchemaProperties<ArduinoConfiguration> & { 'arduino.window.zoomLevel': PreferenceSchemaProperty };
+  StrictPreferenceSchemaProperties<ArduinoConfiguration> & {
+    'arduino.window.zoomLevel': PreferenceSchemaProperty;
+  };
 
 const properties: ArduinoPreferenceSchemaProperties = {
   'arduino.language.log': {

@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import { CloudSketchbookCompositeWidget } from './cloud-sketchbook-composite-widget';
 import { SketchbookWidget } from '../sketchbook/sketchbook-widget';
 import { ArduinoPreferences } from '../../arduino-preferences';

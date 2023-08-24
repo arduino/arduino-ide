@@ -14,18 +14,11 @@
     "resolveJsonModule": true,
     "target": "ES2017",
     "outDir": "lib",
-    "lib": [
-      "ES2017",
-      "dom"
-    ],
+    "lib": ["ES2017", "dom"],
     "jsx": "react",
     "sourceMap": true,
     "skipLibCheck": true
   },
-  "include": [
-    "src"
-  ],
-  "files": [
-    "../node_modules/nsfw/index.d.ts"
-  ]
+  "include": ["src"],
+  "files": ["../node_modules/nsfw/index.d.ts"]
 }

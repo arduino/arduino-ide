@@ -37,10 +37,7 @@
     {
       "label": "Watch All",
       "type": "shell",
-      "dependsOn": [
-        "Watch Extension",
-        "Watch App"
-      ]
+      "dependsOn": ["Watch Extension", "Watch App"]
     }
   ]
 }

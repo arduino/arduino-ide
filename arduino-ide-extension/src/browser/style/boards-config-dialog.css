@@ -1,324 +1,324 @@
 #select-board-dialog-container > .dialogBlock {
-  width: 640px;
-  height: 500px;
+    width: 640px;
+    height: 500px;
 }
 
 div#select-board-dialog {
-  margin: 5px;
-  height: 100%;
+    margin: 5px;
+    height: 100%;
 }
 
 div#select-board-dialog .selectBoardContainer {
-  display: flex;
-  gap: 10px;
-  overflow: hidden;
-  max-height: 100%;
-  height: 100%;
+    display: flex;
+    gap: 10px;
+    overflow: hidden;
+    max-height: 100%;
+    height: 100%;
 }
 
 .select-board-dialog .head {
-  margin: 5px;
+    margin: 5px;
 }
 
 .dialogContent.select-board-dialog {
-  height: 100%;
+    height: 100%;
 }
 
 div.dialogContent.select-board-dialog > div.head .title {
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  font-size: 1.2em;
-  color: var(--theia-editorWidget-foreground);
-  margin-bottom: 10px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    font-size: 1.2em;
+    color: var(--theia-editorWidget-foreground);
+    margin-bottom: 10px;
 }
 
-
 div#select-board-dialog .selectBoardContainer .list .item.selected {
-  background: var(--theia-secondaryButton-hoverBackground);
+    background: var(--theia-secondaryButton-hoverBackground);
 }
 
 div#select-board-dialog .selectBoardContainer .list .item.selected i {
-  color: var(--theia-arduino-branding-primary);
+    color: var(--theia-arduino-branding-primary);
 }
 
 #select-board-dialog .selectBoardContainer .search,
 #select-board-dialog .selectBoardContainer .search input,
 #select-board-dialog .selectBoardContainer .list,
 #select-board-dialog .selectBoardContainer .list {
-  background: var(--theia-editor-background);
+    background: var(--theia-editor-background);
 }
 
 #select-board-dialog .selectBoardContainer .search input {
-  border: none;
-  width: 100%;
-  height: auto;
-  max-height: 37px;
-  padding: 10px 5px 10px 10px;
-  margin: 0;
-  vertical-align: top;
-  display: flex;
-  color: var(--theia-input-foreground);
+    border: none;
+    width: 100%;
+    height: auto;
+    max-height: 37px;
+    padding: 10px 5px 10px 10px;
+    margin: 0;
+    vertical-align: top;
+    display: flex;
+    color: var(--theia-input-foreground);
 }
 
 #select-board-dialog .selectBoardContainer .search input:focus {
-  box-shadow: none;
+    box-shadow: none;
 }
 
 #select-board-dialog .selectBoardContainer .container {
-  flex: 1;
-  overflow: hidden;
-  max-height: 100%;
+    flex: 1;
+    overflow: hidden;
+    max-height: 100%;
 }
 
 #select-board-dialog .selectBoardContainer .container .content {
-  display: flex;
-  flex-direction: column;
-  max-height: 100%;
-  height: 100%;
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    height: 100%;
 }
 
 #select-board-dialog .selectBoardContainer .left.container .content {
-  margin: 0 5px 0 0;
+    margin: 0 5px 0 0;
 }
 
 #select-board-dialog .selectBoardContainer .right.container .content {
-  margin: 0 0 0 5px;
+    margin: 0 0 0 5px;
 }
 
 #select-board-dialog .selectBoardContainer .container .content .title {
-  color: var(--theia-editorWidget-foreground);
-  padding: 0px 0px 10px 0px;
-  text-transform: uppercase;
+    color: var(--theia-editorWidget-foreground);
+    padding: 0px 0px 10px 0px;
+    text-transform: uppercase;
 }
 
 #select-board-dialog .selectBoardContainer .container .content .footer {
-  padding: 10px 5px 10px 0px;
+    padding: 10px 5px 10px 0px;
 }
 
 #select-board-dialog .selectBoardContainer .container .content .loading {
-  font-size: var(--theia-ui-font-size1);
-  color: var(--theia-editorWidget-foreground);
-  padding: 10px 5px 10px 10px;
-  text-transform: uppercase;
-  /* The max, min-height comes from `.list` 200px + 47px top padding - 2 * 10px top padding */
-  max-height: 227px;
-  min-height: 227px;
+    font-size: var(--theia-ui-font-size1);
+    color: var(--theia-editorWidget-foreground);
+    padding: 10px 5px 10px 10px;
+    text-transform: uppercase;
+    /* The max, min-height comes from `.list` 200px + 47px top padding - 2 * 10px top padding */
+    max-height: 227px;
+    min-height: 227px;
 }
 
 #select-board-dialog .selectBoardContainer .list .item {
-  padding: 10px 5px 10px 10px;
-  display: flex;
-  white-space: nowrap;
-  overflow-x: hidden;
-  flex: 1 0;
+    padding: 10px 5px 10px 10px;
+    display: flex;
+    white-space: nowrap;
+    overflow-x: hidden;
+    flex: 1 0;
 }
 
 #select-board-dialog .selectBoardContainer .list .item .selected-icon {
-  margin-left: auto;
+    margin-left: auto;
 }
 
 #select-board-dialog .selectBoardContainer .list .item .details {
-  font-size: var(--theia-ui-font-size1);
-  opacity: var(--theia-mod-disabled-opacity);
-  width: 155px; /* used heuristics for the calculation */
-  white-space: pre;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-size: var(--theia-ui-font-size1);
+    opacity: var(--theia-mod-disabled-opacity);
+    width: 155px; /* used heuristics for the calculation */
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #select-board-dialog .selectBoardContainer .list .item.missing {
-  opacity: var(--theia-mod-disabled-opacity);
+    opacity: var(--theia-mod-disabled-opacity);
 }
 
 #select-board-dialog .selectBoardContainer .list .item:hover {
-  background: var(--theia-secondaryButton-hoverBackground);
+    background: var(--theia-secondaryButton-hoverBackground);
 }
 
 #select-board-dialog .selectBoardContainer .list .label {
-  white-space: pre;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #select-board-dialog .selectBoardContainer .list {
-  max-height: 200px;
-  overflow-y: auto;
-  flex: 1;
+    max-height: 200px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 #select-board-dialog .selectBoardContainer .ports.list {
-  margin: 47px 0px 0px 0px; /* 47 is 37 as input height for the `Boards`, plus 10 margin bottom. */
+    margin: 47px 0px 0px 0px; /* 47 is 37 as input height for the `Boards`, plus 10 margin bottom. */
 }
 
 #select-board-dialog .selectBoardContainer .search {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  padding-right: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
 }
 
 .arduino-boards-toolbar-item-container {
-  align-items: center;
-  background: var(--theia-arduino-toolbar-dropdown-background);
-  border-radius: 1px;
-  color: var(--theia-arduino-toolbar-dropdown-label);
-  border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
-  display: flex;
-  gap: 10px;
-  height: var(--arduino-button-height);
-  margin: 0 4px;
-  overflow: hidden;
-  padding: 0 10px;
-  width: 210px;
+    align-items: center;
+    background: var(--theia-arduino-toolbar-dropdown-background);
+    border-radius: 1px;
+    color: var(--theia-arduino-toolbar-dropdown-label);
+    border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
+    display: flex;
+    gap: 10px;
+    height: var(--arduino-button-height);
+    margin: 0 4px;
+    overflow: hidden;
+    padding: 0 10px;
+    width: 210px;
 }
 
 .arduino-boards-toolbar-item--protocol,
 .arduino-boards-dropdown-item--protocol {
-  align-items: center;
-  display: flex;
-  font-size: 16px;
+    align-items: center;
+    display: flex;
+    font-size: 16px;
 }
 
 .arduino-boards-toolbar-item--protocol,
 .arduino-boards-dropdown-item--protocol {
-  color: var(--theia-arduino-toolbar-dropdown-label);
+    color: var(--theia-arduino-toolbar-dropdown-label);
 }
 
 .arduino-boards-toolbar-item-container .arduino-boards-toolbar-item {
-  display: flex;
-  align-items: baseline;
-  width: 100%;
+    display: flex;
+    align-items: baseline;
+    width: 100%;
 }
 
 .arduino-boards-toolbar-item--label {
-  width: 100%;
+    width: 100%;
 }
 
 .arduino-boards-toolbar-item--label-connected {
-  font-family: 'Open Sans Bold';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
+    font-family: "Open Sans Bold";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
 }
 
 .arduino-boards-toolbar-item-container .caret {
-  width: 10px;
-  margin-right: 5px;
+    width: 10px;
+    margin-right: 5px;
 }
 
 .arduino-boards-dropdown-list {
-  margin: -1px;
-  z-index: 1;
-  border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
+    margin: -1px;
+    z-index: 1;
+    border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
+    font-family: "Open Sans";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
 }
 
 .arduino-boards-dropdown-list:focus {
-  border: 1px solid var(--theia-arduino-toolbar-dropdown-borderActive);
+    border: 1px solid var(--theia-arduino-toolbar-dropdown-borderActive);
 }
 
 .arduino-boards-dropdown-list--items-container {
-  overflow: auto;
-  max-height: 404px;
-  background: var(--theia-arduino-toolbar-dropdown-background);
+    overflow: auto;
+    max-height: 404px;
+    background: var(--theia-arduino-toolbar-dropdown-background);
 }
 
 .arduino-boards-dropdown-list--items-container::-webkit-scrollbar {
-  background: var(--theia-arduino-toolbar-dropdown-background);
+    background: var(--theia-arduino-toolbar-dropdown-background);
 }
 
 .arduino-boards-dropdown-item {
-  background: var(--theia-arduino-toolbar-dropdown-background);
-  color: var(--theia-arduino-toolbar-dropdown-label);
-  cursor: default;
-  display: flex;
-  font-size: var(--theia-ui-font-size1);
-  justify-content: space-between;
-  padding: 10px;
+    background: var(--theia-arduino-toolbar-dropdown-background);
+    color: var(--theia-arduino-toolbar-dropdown-label);
+    cursor: default;
+    display: flex;
+    font-size: var(--theia-ui-font-size1);
+    justify-content: space-between;
+    padding: 10px;
 }
 
 .arduino-boards-dropdown-item--board-header {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .arduino-boards-dropdown-item--label {
-  overflow: hidden;
-  flex: 1;
+    overflow: hidden;
+    flex: 1;
 }
 
 /* Redefine default codicon size https://github.com/microsoft/vscode/commit/38cd0a377b7abef34fb07fe770fc633e68819ba6 */
-.arduino-boards-dropdown-item .codicon[class*='codicon-'] {
-  font-size: 14px;
+.arduino-boards-dropdown-item .codicon[class*="codicon-"] {
+    font-size: 14px;
 }
 
 .arduino-boards-dropdown-item .p-TabBar-toolbar {
-  padding: 0px;
-  margin: 0px;
-  flex-direction: column;
+    padding: 0px;
+    margin: 0px;
+    flex-direction: column;
 }
 
 .arduino-boards-dropdown-item .p-TabBar-toolbar .item {
-  margin: 0px;
+    margin: 0px;
 }
 
 .arduino-boards-dropdown-item .p-TabBar-toolbar .item .action-label {
-  padding: 0px;
+    padding: 0px;
 }
 
 .arduino-boards-dropdown-item--board-label {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .arduino-boards-dropdown-item .arduino-boards-dropdown-item--protocol {
-  margin-right: 10px;
+    margin-right: 10px;
 }
 
 .arduino-boards-dropdown-item--port-label {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 .arduino-boards-dropdown-item:hover {
-  background: var(--theia-arduino-toolbar-dropdown-option-backgroundHover);
+    background: var(--theia-arduino-toolbar-dropdown-option-backgroundHover);
 }
 
 .arduino-boards-dropdown-item--selected,
 .arduino-boards-dropdown-item--selected:hover {
-  background: var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
-  border: 1px solid var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
+    background: var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
+    border: 1px solid
+        var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
 }
 
 .arduino-boards-dropdown-item--selected
-.arduino-boards-dropdown-item--port-label {
-  color: var(--theia-arduino-toolbar-dropdown-label);
+    .arduino-boards-dropdown-item--port-label {
+    color: var(--theia-arduino-toolbar-dropdown-label);
 }
 
 .arduino-boards-dropdown-item--selected .fa {
-  color: var(--theia-arduino-toolbar-dropdown-iconSelected);
+    color: var(--theia-arduino-toolbar-dropdown-iconSelected);
 }
 
 .arduino-board-dropdown-footer {
-  color: var(--theia-secondaryButton-foreground);
-  border-top: 1px solid var(--theia-dropdown-border);
+    color: var(--theia-secondaryButton-foreground);
+    border-top: 1px solid var(--theia-dropdown-border);
 }
 
 @media only screen and (max-height: 400px) {
-  div.dialogContent.select-board-dialog > div.head {
-    display: none;
-  }
+    div.dialogContent.select-board-dialog > div.head {
+        display: none;
+    }
 
-  #select-board-dialog .selectBoardContainer .container .content .title {
-    display: none;
-  }
+    #select-board-dialog .selectBoardContainer .container .content .title {
+        display: none;
+    }
 }
 
 #select-board-dialog .no-result {
-  text-transform: uppercase;
-  height: 100%;
-  user-select: none;
-  padding: 10px 5px;
-  overflow-wrap: break-word;
+    text-transform: uppercase;
+    height: 100%;
+    user-select: none;
+    padding: 10px 5px;
+    overflow-wrap: break-word;
 }

@@ -9,7 +9,7 @@
        total = padding + margin = 96px
     */
     max-width: calc(100% - 96px) !important;
-    
+
     min-width: 424px;
     max-height: 560px;
     padding: 0 var(--arduino-button-height);
@@ -56,14 +56,23 @@
 }
 
 .p-Widget.dialogOverlay .dialogControl .spinner,
-.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow .spinner {
+.p-Widget.dialogOverlay
+    .dialogBlock
+    .dialogContent
+    .dialogSection
+    .dialogRow
+    .spinner {
     background: var(--theia-icon-loading) center center no-repeat;
     animation: theia-spin 1.25s linear infinite;
     width: 30px;
     height: 30px;
 }
 
-.p-Widget.dialogOverlay .dialogBlock .dialogContent .dialogSection .dialogRow:first-child {
+.p-Widget.dialogOverlay
+    .dialogBlock
+    .dialogContent
+    .dialogSection
+    .dialogRow:first-child {
     margin-top: 0px;
     height: 32px;
 }
@@ -78,7 +87,7 @@
 }
 
 .fa.disabled {
-    opacity: .4;
+    opacity: 0.4;
 }
 
 @media only screen and (max-height: 560px) {

@@ -8,7 +8,9 @@ import { OutputToolbarContribution as TheiaOutputToolbarContribution } from '@th
 
 @injectable()
 export class OutputToolbarContribution extends TheiaOutputToolbarContribution {
-  override async registerToolbarItems(registry: TabBarToolbarRegistry): Promise<void> {
+  override async registerToolbarItems(
+    registry: TabBarToolbarRegistry
+  ): Promise<void> {
     await super.registerToolbarItems(registry); // Why is it async?
     // It's a hack. Currently, it's not possible to unregister a toolbar contribution via API.
     (

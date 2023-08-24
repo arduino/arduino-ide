@@ -5,15 +5,15 @@ name: Sync Labels
 on:
   push:
     paths:
-      - ".github/workflows/sync-labels.ya?ml"
-      - ".github/label-configuration-files/*.ya?ml"
+      - '.github/workflows/sync-labels.ya?ml'
+      - '.github/label-configuration-files/*.ya?ml'
   pull_request:
     paths:
-      - ".github/workflows/sync-labels.ya?ml"
-      - ".github/label-configuration-files/*.ya?ml"
+      - '.github/workflows/sync-labels.ya?ml'
+      - '.github/label-configuration-files/*.ya?ml'
   schedule:
     # Run daily at 8 AM UTC to sync with changes to shared label configurations.
-    - cron: "0 8 * * *"
+    - cron: '0 8 * * *'
   workflow_dispatch:
   repository_dispatch:
 

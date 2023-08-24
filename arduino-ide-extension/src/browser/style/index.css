@@ -1,175 +1,177 @@
-@import './list-widget.css';
-@import './boards-config-dialog.css';
-@import './main.css';
-@import './dialogs.css';
-@import './monitor.css';
-@import './arduino-select.css';
-@import './status-bar.css';
-@import './terminal.css';
-@import './editor.css';
-@import './settings-dialog.css';
-@import './firmware-uploader-dialog.css';
-@import './ide-updater-dialog.css';
-@import './certificate-uploader-dialog.css';
-@import './user-fields-dialog.css';
-@import './debug.css';
-@import './sketchbook.css';
-@import './cloud-sketchbook.css';
-@import './fonts.css';
-@import './custom-codicon.css';
-@import './progress-bar.css';
-@import './settings-step-input.css';
+@import "./list-widget.css";
+@import "./boards-config-dialog.css";
+@import "./main.css";
+@import "./dialogs.css";
+@import "./monitor.css";
+@import "./arduino-select.css";
+@import "./status-bar.css";
+@import "./terminal.css";
+@import "./editor.css";
+@import "./settings-dialog.css";
+@import "./firmware-uploader-dialog.css";
+@import "./ide-updater-dialog.css";
+@import "./certificate-uploader-dialog.css";
+@import "./user-fields-dialog.css";
+@import "./debug.css";
+@import "./sketchbook.css";
+@import "./cloud-sketchbook.css";
+@import "./fonts.css";
+@import "./custom-codicon.css";
+@import "./progress-bar.css";
+@import "./settings-step-input.css";
 
 :root {
-  --arduino-button-height: 28px;
+    --arduino-button-height: 28px;
 }
 
 /* Revive of the `--theia-icon-loading`. The variable has been removed from Theia while IDE2 still uses is. */
 /* The SVG icons are still part of Theia (1.31.1) */
 /* https://github.com/arduino/arduino-ide/pull/1662#issuecomment-1324997134 */
 body {
-  --theia-icon-loading: url(../icons/loading-light.svg);
-  --theia-icon-loading-warning: url(../icons/loading-dark.svg);
+    --theia-icon-loading: url(../icons/loading-light.svg);
+    --theia-icon-loading-warning: url(../icons/loading-dark.svg);
 }
 body.theia-dark {
-  --theia-icon-loading: url(../icons/loading-dark.svg);
-  --theia-icon-loading-warning: url(../icons/loading-light.svg);
+    --theia-icon-loading: url(../icons/loading-dark.svg);
+    --theia-icon-loading-warning: url(../icons/loading-light.svg);
 }
 
 .theia-input.warning:focus {
-  outline-width: 1px;
-  outline-style: solid;
-  outline-offset: -1px;
-  opacity: 1 !important;
-  color: var(--theia-warningForeground);
-  background-color: var(--theia-warningBackground);
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+    opacity: 1 !important;
+    color: var(--theia-warningForeground);
+    background-color: var(--theia-warningBackground);
 }
 
 .theia-input.warning {
-  background-color: var(--theia-warningBackground);
+    background-color: var(--theia-warningBackground);
 }
 
 .theia-input.warning::placeholder {
-  color: var(--theia-warningForeground);
-  background-color: var(--theia-warningBackground);
+    color: var(--theia-warningForeground);
+    background-color: var(--theia-warningBackground);
 }
 
 .theia-input.error:focus {
-  outline-width: 1px;
-  outline-style: solid;
-  outline-offset: -1px;
-  opacity: 1 !important;
-  color: var(--theia-errorForeground);
-  background-color: var(--theia-errorBackground);
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: -1px;
+    opacity: 1 !important;
+    color: var(--theia-errorForeground);
+    background-color: var(--theia-errorBackground);
 }
 
 .theia-input.error {
-  background-color: var(--theia-errorBackground);
+    background-color: var(--theia-errorBackground);
 }
 
 .theia-input.error::placeholder {
-  color: var(--theia-errorForeground);
-  background-color: var(--theia-errorBackground);
+    color: var(--theia-errorForeground);
+    background-color: var(--theia-errorBackground);
 }
 
 /* Makes the sidepanel a bit wider when opening the widget */
 .p-DockPanel-widget {
-  min-width: 220px;
-  min-height: 20px;
-  height: 220px;
+    min-width: 220px;
+    min-height: 20px;
+    height: 220px;
 }
 
 /* Overrule the default Theia CSS button styles. */
 button.theia-button,
 .theia-button {
-  align-items: center;
-  display: flex;
-  font-family: 'Open Sans Bold',sans-serif;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  justify-content: center;
-  cursor: pointer;
-  letter-spacing: .01em;
-  line-height: 24px;
-  outline: none;
-  padding: 0 16px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  border-width: 2px;
-  border-radius: 32px;
-  text-transform: uppercase;
-  transition: none;
-  box-shadow: none;
+    align-items: center;
+    display: flex;
+    font-family: "Open Sans Bold", sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    justify-content: center;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    line-height: 24px;
+    outline: none;
+    padding: 0 16px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    border-width: 2px;
+    border-radius: 32px;
+    text-transform: uppercase;
+    transition: none;
+    box-shadow: none;
 }
 
 button.theia-button {
-  height: var(--arduino-button-height);
-  max-width: none;
+    height: var(--arduino-button-height);
+    max-width: none;
 }
 
 .theia-button:active,
 .theia-button:focus {
-  box-shadow: 0 0 0 2px var(--theia-focusBorder);
+    box-shadow: 0 0 0 2px var(--theia-focusBorder);
 }
 
 button.theia-button.secondary {
-  border: 2px solid var(--theia-secondaryButton-foreground);
+    border: 2px solid var(--theia-secondaryButton-foreground);
 }
 
-button.theia-button[disabled], .theia-button[disabled] {
-  opacity: 0.5;
-  color: var(--theia-button-foreground);
-  background-color: var(--theia-button-background);
+button.theia-button[disabled],
+.theia-button[disabled] {
+    opacity: 0.5;
+    color: var(--theia-button-foreground);
+    background-color: var(--theia-button-background);
 }
 
-button.secondary[disabled], .theia-button.secondary[disabled] {
-  color: var(--theia-secondaryButton-foreground);
-  background-color: var(--theia-secondaryButton-background);
+button.secondary[disabled],
+.theia-button.secondary[disabled] {
+    color: var(--theia-secondaryButton-foreground);
+    background-color: var(--theia-secondaryButton-background);
 }
 
 button.theia-button.message-box-dialog-button {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
 }
 
 /* To make the progress-bar slightly thicker, and use the color from the status bar */
 .theia-progress-bar-container {
-  width: 100%;
-  height: 4px;
+    width: 100%;
+    height: 4px;
 }
 
 .theia-progress-bar {
-  height: 4px;
-  width: 3%;
-  animation: progress-animation 1.3s 0s infinite
-    cubic-bezier(0.645, 0.045, 0.355, 1);
+    height: 4px;
+    width: 3%;
+    animation: progress-animation 1.3s 0s infinite
+        cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .theia-notification-item-progressbar {
-  height: 4px;
-  width: 66%;
+    height: 4px;
+    width: 66%;
 }
 
 .flex-line {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
 }
 
 .fa-reload {
-  font-size: 14px;
+    font-size: 14px;
 }
 
-.debug-toolbar .debug-action>div {
-  font-family: var(--theia-ui-font-family);
-  font-size: var(--theia-ui-font-size0);
-  display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  min-height: inherit;
+.debug-toolbar .debug-action > div {
+    font-family: var(--theia-ui-font-family);
+    font-size: var(--theia-ui-font-size0);
+    display: flex;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    min-height: inherit;
 }

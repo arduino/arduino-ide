@@ -45,10 +45,7 @@ export namespace UploadFirmware {
   export namespace Commands {
     export const OPEN: Command = {
       id: 'arduino-upload-firmware-open',
-      label: nls.localize(
-        'arduino/firmware/updater',
-        'Firmware Updater'
-      ),
+      label: nls.localize('arduino/firmware/updater', 'Firmware Updater'),
       category: 'Arduino',
     };
   }

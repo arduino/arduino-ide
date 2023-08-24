@@ -7,7 +7,7 @@
       "name": "App",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd",
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
       "cwd": "${workspaceFolder}/electron-app",
       "args": [
@@ -19,7 +19,7 @@
         "--no-app-auto-install",
         "--plugins=local-dir:./plugins",
         "--hosted-plugin-inspect=9339",
-        "--no-ping-timeout",
+        "--no-ping-timeout"
       ],
       "env": {
         "NODE_ENV": "development"
@@ -42,7 +42,7 @@
       "name": "App [Dev]",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
       "windows": {
-        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd",
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
       },
       "cwd": "${workspaceFolder}/electron-app",
       "args": [
@@ -56,7 +56,7 @@
         "--hosted-plugin-inspect=9339",
         "--content-trace",
         "--open-devtools",
-        "--no-ping-timeout",
+        "--no-ping-timeout"
       ],
       "env": {
         "NODE_ENV": "development"
@@ -115,15 +115,12 @@
       "request": "attach",
       "name": "Attach by Process ID",
       "processId": "${command:PickProcess}"
-    },
+    }
   ],
   "compounds": [
     {
       "name": "Launch Electron Backend & Frontend",
-      "configurations": [
-        "App",
-        "Attach to Electron Frontend"
-      ]
+      "configurations": ["App", "Attach to Electron Frontend"]
     }
   ]
 }

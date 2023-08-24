@@ -12,4 +12,4 @@ updates:
     schedule:
       interval: daily
     labels:
-      - "topic: infrastructure"
+      - 'topic: infrastructure'

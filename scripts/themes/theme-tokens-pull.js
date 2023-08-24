@@ -6,13 +6,13 @@ const JSONBIN_ID = process.env.JSONBIN_ID;
 
 const destFolder = './scripts/themes/tokens';
 
-if (!fs.existsSync(destFolder)){
+if (!fs.existsSync(destFolder)) {
   fs.mkdirSync(destFolder);
 }
 
 let req = new XMLHttpRequest();
 
-req.open('GET', 'https://api.jsonbin.io/v3/b/'+ JSONBIN_ID +'/latest', true);
+req.open('GET', 'https://api.jsonbin.io/v3/b/' + JSONBIN_ID + '/latest', true);
 req.setRequestHeader('X-Master-Key', JSONBIN_MASTER_KEY);
 req.send();
 
