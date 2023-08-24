@@ -23,6 +23,7 @@ import {
   EnumerateMonitorPortSettingsRequest,
   EnumerateMonitorPortSettingsResponse,
   MonitorPortConfiguration,
+  MonitorPortOpenRequest,
   MonitorPortSetting,
   MonitorRequest,
   MonitorResponse,
@@ -229,7 +230,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       const coreClient = await this.coreClient;
 
       const { instance } = coreClient;
-      const monitorRequest = new MonitorRequest();
+      const monitorRequest = new MonitorPortOpenRequest();
       monitorRequest.setInstance(instance);
       if (this.board?.fqbn) {
         monitorRequest.setFqbn(this.board.fqbn);
@@ -344,7 +345,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
   }
 
-  pollWriteToStream(request: MonitorRequest): Promise<void> {
+  pollWriteToStream(request: MonitorPortOpenRequest): Promise<void> {
     const createWriteToStreamExecutor =
       (duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>) =>
       (resolve: () => void, reject: (reason?: unknown) => void) => {
@@ -380,7 +381,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
         ];
 
         this.setDuplexHandlers(duplex, resolvingDuplexHandlers);
-        duplex.write(request);
+        duplex.write(new MonitorRequest().setOpenRequest(request));
       };
 
     return Promise.race([
@@ -425,13 +426,12 @@ export class MonitorService extends CoreClientAware implements Disposable {
         );
         return resolve();
       }
-      // It's enough to close the connection with the client
-      // to stop the monitor process
-      this.duplex.end();
-      this.logger.info(
-        `stopped monitor to ${this.port?.address} using ${this.port?.protocol}`
-      );
-
+      await new Promise<void>((closeResolve) => {
+        if (!this.duplex) {
+          return closeResolve();
+        }
+        this.duplex.write(new MonitorRequest().setClose(true), closeResolve);
+      });
       this.duplex.on('end', resolve);
     });
   }
@@ -454,11 +454,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     if (!this.duplex) {
       throw createNotConnectedError(this.port);
     }
-    const coreClient = await this.coreClient;
-    const { instance } = coreClient;
-
     const req = new MonitorRequest();
-    req.setInstance(instance);
     req.setTxData(new TextEncoder().encode(message));
     return new Promise<void>((resolve, reject) => {
       if (this.duplex) {
@@ -588,17 +584,13 @@ export class MonitorService extends CoreClientAware implements Disposable {
       return;
     }
 
-    const coreClient = await this.coreClient;
-    const { instance } = coreClient;
-
     this.logger.info(
       `Sending monitor request with new port configuration: ${JSON.stringify(
         MonitorPortConfiguration.toObject(false, diffConfig)
       )}`
     );
     const req = new MonitorRequest();
-    req.setInstance(instance);
-    req.setPortConfiguration(diffConfig);
+    req.setUpdatedConfiguration(diffConfig);
     this.duplex.write(req);
   }
 

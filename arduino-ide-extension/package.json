@@ -172,7 +172,11 @@
   ],
   "arduino": {
     "arduino-cli": {
-      "version": "0.34.0"
+      "version": {
+        "owner": "cmaglie",
+        "repo": "arduino-cli",
+        "commitish": "monitor_close_grpc"
+      }
     },
     "arduino-fwuploader": {
       "version": "2.4.0"
