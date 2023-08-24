@@ -1,0 +1,11 @@
+lib
+dist
+plugins
+src-gen
+i18n
+gen-webpack*
+.browser_modules
+arduino-ide-extension/src/node/resources
+cli-protocol
+*color-theme.json
+arduino-icons.json
