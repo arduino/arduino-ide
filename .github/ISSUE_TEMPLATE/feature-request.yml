@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest an enhancement to this project.
 labels:
-  - "type: enhancement"
+  - 'type: enhancement'
 body:
   - type: textarea
     id: description

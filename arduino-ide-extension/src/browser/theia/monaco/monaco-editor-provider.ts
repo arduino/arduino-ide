@@ -4,12 +4,14 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { EditorServiceOverrides, MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
+import {
+  EditorServiceOverrides,
+  MonacoEditor,
+} from '@theia/monaco/lib/browser/monaco-editor';
 import { MonacoEditorProvider as TheiaMonacoEditorProvider } from '@theia/monaco/lib/browser/monaco-editor-provider';
 import { SketchesServiceClientImpl } from '../../sketches-service-client-impl';
 import * as monaco from '@theia/monaco-editor-core';
 import type { ReferencesModel } from '@theia/monaco-editor-core/esm/vs/editor/contrib/gotoSymbol/browser/referencesModel';
-
 
 type CancelablePromise = Promise<ReferencesModel> & {
   cancel: () => void;
@@ -39,7 +41,9 @@ export class MonacoEditorProvider extends TheiaMonacoEditorProvider {
 
   private installCustomReferencesController(editor: MonacoEditor): Disposable {
     const control = editor.getControl();
-    const referencesController: any = control.getContribution('editor.contrib.referencesController');
+    const referencesController: any = control.getContribution(
+      'editor.contrib.referencesController'
+    );
     const originalToggleWidget = referencesController.toggleWidget;
     const toDispose = new DisposableCollection();
     const toDisposeBeforeToggleWidget = new DisposableCollection();

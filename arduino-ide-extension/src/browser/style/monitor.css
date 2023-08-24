@@ -1,6 +1,6 @@
 .monitor-tab-icon {
-    -webkit-mask: url('../icons/monitor-tab-icon.svg');
-    mask: url('../icons/monitor-tab-icon.svg');
+    -webkit-mask: url("../icons/monitor-tab-icon.svg");
+    mask: url("../icons/monitor-tab-icon.svg");
 }
 
 .serial-monitor {
@@ -10,8 +10,8 @@
 }
 
 .serial-monitor-messages {
-    white-space: 'pre';
-    font-family: monospace
+    white-space: "pre";
+    font-family: monospace;
 }
 
 .serial-monitor-messages pre {

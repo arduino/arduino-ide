@@ -1,7 +1,7 @@
 name: Bug report
 description: Report a problem with the code or documentation in this repository.
 labels:
-  - "type: imperfection"
+  - 'type: imperfection'
 body:
   - type: textarea
     id: description

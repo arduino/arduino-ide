@@ -1,4 +1,8 @@
-import { inject, injectable, postConstruct } from '@theia/core/shared/inversify';
+import {
+  inject,
+  injectable,
+  postConstruct,
+} from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { Title, Widget } from '@theia/core/shared/@phosphor/widgets';
 import { EditorWidget } from '@theia/editor/lib/browser';

@@ -1,37 +1,36 @@
 .sketchbook-tab-icon {
-  -webkit-mask: url('./sketchbook.svg');
-  mask: url('./sketchbook.svg');
+    -webkit-mask: url("./sketchbook.svg");
+    mask: url("./sketchbook.svg");
 }
 
 .p-TabBar-tabIcon.sketchbook-tree-icon {
-  background-color: var(--theia-foreground);
-  -webkit-mask: url(./sketchbook-tree-icon.svg);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  width: 19px !important;
-  height: var(--theia-icon-size);
-  -webkit-mask-size: 100%;
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./sketchbook-tree-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    width: 19px !important;
+    height: var(--theia-icon-size);
+    -webkit-mask-size: 100%;
 }
 
-.p-mod-current
-.sketchbook-tree-icon {
-  background-color: var(--theia-foreground);
-  -webkit-mask: url(./sketchbook-tree-icon-filled.svg);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: 100%;
+.p-mod-current .sketchbook-tree-icon {
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./sketchbook-tree-icon-filled.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100%;
 }
 
 .sketchbook-trees-container {
-  height: 100%;
+    height: 100%;
 }
 
 .sketchbook-trees-container .create-new {
-  min-height: 58px;
-  height: 58px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    min-height: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 /*
 By default, theia-button has a left-margin. IDE2 does not need the left margin
@@ -39,44 +38,43 @@ for the _New Remote? Sketch_. Otherwise, the button does not fit the default
 widget width.
 */
 .sketchbook-trees-container .create-new .theia-button {
-  margin-left: unset;
+    margin-left: unset;
 }
 
 .sketchbook-tree__opts {
-  background-color: var(--theia-foreground);
-  -webkit-mask: url(./sketchbook-opts-icon.svg);
-  -webkit-mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  width: var(--theia-icon-size);
-  height: var(--theia-icon-size);
+    background-color: var(--theia-foreground);
+    -webkit-mask: url(./sketchbook-opts-icon.svg);
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    width: var(--theia-icon-size);
+    height: var(--theia-icon-size);
 }
 
 .active-sketch {
-  font-weight: 500;
-  background-color: var(--theia-list-activeSelectionBackground) !important;
-  color: var(--theia-list-activeSelectionForeground) !important;
-
+    font-weight: 500;
+    background-color: var(--theia-list-activeSelectionBackground) !important;
+    color: var(--theia-list-activeSelectionForeground) !important;
 }
 
 #arduino-sketchbook-tree-widget .theia-TreeNode {
-  line-height: 30px;
+    line-height: 30px;
 }
 
 #arduino-sketchbook-tree-widget .theia-TreeNodeSegmentGrow {
-  flex: 1;
+    flex: 1;
 }
 
 .theia-TreeNode .sketchbook-commands-icons {
-  display: none;
+    display: none;
 }
 
 .theia-TreeNode:hover .sketchbook-commands-icons,
 .theia-TreeNode.theia-mod-selected .sketchbook-commands-icons {
-  display: block;
+    display: block;
 }
 
 .theia-Tree:focus .theia-TreeNode.theia-mod-selected,
 .theia-Tree .ReactVirtualized__List:focus .theia-TreeNode.theia-mod-selected {
-  background: var(--theia-list-inactiveSelectionBackground);
-  color: var(--theia-list-inactiveSelectionForeground) !important;
+    background: var(--theia-list-inactiveSelectionBackground);
+    color: var(--theia-list-inactiveSelectionForeground) !important;
 }

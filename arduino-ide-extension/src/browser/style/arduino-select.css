@@ -38,7 +38,9 @@
 .arduino-select__control.arduino-select__control--menu-is-open {
     border: 1px solid !important;
     border-color: var(--theia-focusBorder) !important;
-    border-bottom-color: var(--theia-sideBar-background) !important; /* if the bottom border color has the same color as the background of the control, we make the border "invisible" */
+    border-bottom-color: var(
+        --theia-sideBar-background
+    ) !important; /* if the bottom border color has the same color as the background of the control, we make the border "invisible" */
 }
 
 .arduino-select__value-container .arduino-select__single-value {

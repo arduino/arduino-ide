@@ -31,7 +31,7 @@ on:
 
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
-  GO_VERSION: "1.19"
+  GO_VERSION: '1.19'
   JOB_TRANSFER_ARTIFACT: build-artifacts
   CHANGELOG_ARTIFACTS: changelog
 

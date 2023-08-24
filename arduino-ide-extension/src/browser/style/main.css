@@ -1,11 +1,12 @@
-#theia-bottom-content-panel .p-TabBar[data-orientation='horizontal'].theia-app-bottom {
+#theia-bottom-content-panel
+    .p-TabBar[data-orientation="horizontal"].theia-app-bottom {
     background: var(--theia-editorGroupHeader-tabsBackground);
 }
 
 /* Avoid the Intellisense widget may be cover by the bottom panel partially.
    TODO: This issue may be resolved after monaco-editor upgrade */
 #theia-main-content-panel {
-    z-index: auto
+    z-index: auto;
 }
 
 #theia-main-content-panel div[id^="code-editor-opener"] {
@@ -22,7 +23,6 @@
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-new-sketch--toolbar {
     border-radius: 1px;
 }
-
 
 .p-TabBar-toolbar .item.arduino-tool-item > div {
     display: flex;
@@ -42,9 +42,15 @@
     background: var(--theia-arduino-toolbar-button-hoverBackground);
 }
 
-.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div.toggle-serial-monitor,
-.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div.toggle-serial-plotter {
-    background-color: var(--theia-arduino-toolbar-button-secondary-hoverBackground);
+.p-TabBar-toolbar
+    .item.arduino-tool-item.enabled:hover
+    > div.toggle-serial-monitor,
+.p-TabBar-toolbar
+    .item.arduino-tool-item.enabled:hover
+    > div.toggle-serial-plotter {
+    background-color: var(
+        --theia-arduino-toolbar-button-secondary-hoverBackground
+    );
     border-radius: 14px;
 }
 
@@ -55,14 +61,14 @@
 }
 
 .item.arduino-tool-item.toggled {
-  background-color: unset;
-  opacity: 1;
-  border: none;
+    background-color: unset;
+    opacity: 1;
+    border: none;
 }
 
 .item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar,
 .item.arduino-tool-item.toggled .arduino-upload-sketch--toolbar {
-  background-color: var(--theia-arduino-toolbar-toggleBackground) !important;
+    background-color: var(--theia-arduino-toolbar-toggleBackground) !important;
 }
 
 .arduino-tool-icon {
@@ -91,7 +97,7 @@
 }
 
 .arduino-start-debug-icon {
-    -webkit-mask: url('../icons/debug-dark.svg') 50% 60%;
+    -webkit-mask: url("../icons/debug-dark.svg") 50% 60%;
     -webkit-mask-size: 70%;
     -webkit-mask-repeat: no-repeat;
     display: flex;
@@ -175,7 +181,12 @@
     background-color: var(--theia-terminal-background);
 }
 
-.theia-output .monaco-editor .lines-content.monaco-editor-background .view-lines .view-line .mtk1:not(.theia-output-error):not(.theia-output-warning) {
+.theia-output
+    .monaco-editor
+    .lines-content.monaco-editor-background
+    .view-lines
+    .view-line
+    .mtk1:not(.theia-output-error):not(.theia-output-warning) {
     color: var(--theia-terminal-foreground);
 }
 

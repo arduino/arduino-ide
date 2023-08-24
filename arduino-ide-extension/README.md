@@ -55,12 +55,14 @@ The Config Service knows about your system, like for example the default sketch 
   - checking whether a file is in a data or sketch directory
 
 ### `"arduino"` configuration in the `package.json`:
- - `"cli"`:
-   - `"version"` type `string` | `{ owner: string, repo: string, commitish?: string }`: if the type is a `string` and is a valid semver, it will get the corresponding [released](https://github.com/arduino/arduino-cli/releases) CLI. If the type is `string` and is a [date in `YYYYMMDD`](https://arduino.github.io/arduino-cli/latest/installation/#nightly-builds) format, it will get a nightly CLI. If the type is an object, a CLI, build from the sources in the `owner/repo` will be used. If `commitish` is not defined, the HEAD of the default branch will be used. In any other cases an error is thrown.
+
+- `"cli"`:
+  - `"version"` type `string` | `{ owner: string, repo: string, commitish?: string }`: if the type is a `string` and is a valid semver, it will get the corresponding [released](https://github.com/arduino/arduino-cli/releases) CLI. If the type is `string` and is a [date in `YYYYMMDD`](https://arduino.github.io/arduino-cli/latest/installation/#nightly-builds) format, it will get a nightly CLI. If the type is an object, a CLI, build from the sources in the `owner/repo` will be used. If `commitish` is not defined, the HEAD of the default branch will be used. In any other cases an error is thrown.
 
 #### Rebuild gRPC protocol interfaces
-  - Some CLI updates can bring changes to the gRPC interfaces, as the API might change. gRPC interfaces can be updated running the command
-    `yarn --cwd arduino-ide-extension generate-protocol`
+
+- Some CLI updates can bring changes to the gRPC interfaces, as the API might change. gRPC interfaces can be updated running the command
+  `yarn --cwd arduino-ide-extension generate-protocol`
 
 ### Update **clangd** and **ClangFormat**
 
@@ -72,11 +74,13 @@ The [**clangd** C++ language server](https://clangd.llvm.org/) and the [**ClangF
 1. Submit a pull request in [the `arduino/tooling-project-assets` repository](https://github.com/arduino/tooling-project-assets) to update the version in the `vars.DEFAULT_CLANG_FORMAT_VERSION` field of [`Taskfile.yml`](https://github.com/arduino/tooling-project-assets/blob/main/Taskfile.yml).
 
 ### Customize Icons
+
 ArduinoIde uses a customized version of FontAwesome.
 In order to update/replace icons follow the following steps:
-  - import the file `arduino-icons.json` in [Icomoon](https://icomoon.io/app/#/projects)
-  - load it
-  - edit the icons as needed
-  - !! download the **new** `arduino-icons.json` file and put it in this repo
-  - Click on "Generate Font" in Icomoon, then download
-  - place the updated fonts in the `src/style/fonts` directory
+
+- import the file `arduino-icons.json` in [Icomoon](https://icomoon.io/app/#/projects)
+- load it
+- edit the icons as needed
+- !! download the **new** `arduino-icons.json` file and put it in this repo
+- Click on "Generate Font" in Icomoon, then download
+- place the updated fonts in the `src/style/fonts` directory

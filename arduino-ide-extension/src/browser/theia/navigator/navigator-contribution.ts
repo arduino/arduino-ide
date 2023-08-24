@@ -14,7 +14,8 @@ export class FileNavigatorContribution extends TheiaFileNavigatorContribution {
   constructor(
     @inject(FileNavigatorPreferences)
     protected override readonly fileNavigatorPreferences: FileNavigatorPreferences,
-    @inject(OpenerService) protected override readonly openerService: OpenerService,
+    @inject(OpenerService)
+    protected override readonly openerService: OpenerService,
     @inject(FileNavigatorFilter)
     protected override readonly fileNavigatorFilter: FileNavigatorFilter,
     @inject(WorkspaceService)

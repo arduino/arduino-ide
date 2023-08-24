@@ -1,6 +1,6 @@
 .library-tab-icon {
-    -webkit-mask: url('../icons/library-tab-icon.svg');
-    mask: url('../icons/library-tab-icon.svg');
+    -webkit-mask: url("../icons/library-tab-icon.svg");
+    mask: url("../icons/library-tab-icon.svg");
 }
 
 .arduino-list-widget {
@@ -82,7 +82,7 @@
 }
 
 .component-list-item .header .title .name {
-    font-family: 'Open Sans Bold';
+    font-family: "Open Sans Bold";
     font-style: normal;
     font-weight: 700;
     font-size: 14px;
@@ -112,7 +112,9 @@
     display: inline-block;
     justify-self: end;
     text-align: center;
-    background-color: var(--theia-arduino-toolbar-dropdown-option-backgroundHover);
+    background-color: var(
+        --theia-arduino-toolbar-dropdown-option-backgroundHover
+    );
     padding: 2px 4px 2px 4px;
     font-size: 12px;
     max-height: calc(1em + 4px);
@@ -131,7 +133,7 @@
     display: flex;
     flex-direction: column;
     padding-top: 4px;
-    font-family: 'Open Sans';
+    font-family: "Open Sans";
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
@@ -175,8 +177,20 @@
     max-width: 8px;
 }
 
-div.filterable-list-container > div > div > div > div:nth-child(1) > div.separator :first-child,
-div.filterable-list-container > div > div > div > div:nth-child(1) > div.separator :last-child {
+div.filterable-list-container
+    > div
+    > div
+    > div
+    > div:nth-child(1)
+    > div.separator
+    :first-child,
+div.filterable-list-container
+    > div
+    > div
+    > div
+    > div:nth-child(1)
+    > div.separator
+    :last-child {
     display: none;
 }
 
@@ -202,11 +216,11 @@ div.filterable-list-container > div > div > div > div:nth-child(1) > div.separat
 }
 
 .component-list-item .theia-button.secondary.no-border {
-    border: 2px solid var(--theia-button-foreground)
+    border: 2px solid var(--theia-button-foreground);
 }
 
 .component-list-item .theia-button.secondary.no-border:hover {
-    border: 2px solid var(--theia-secondaryButton-foreground)
+    border: 2px solid var(--theia-secondaryButton-foreground);
 }
 
 .component-list-item .theia-button {
