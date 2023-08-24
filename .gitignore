@@ -1,7 +1,7 @@
 node_modules/
 lib/
 downloads/
-resources/
+arduino-ide-extension/src/node/resources
 arduino-ide-extension/Examples/
 src-gen/
 gen-webpack.config.js
