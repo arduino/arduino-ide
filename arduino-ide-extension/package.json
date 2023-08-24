@@ -118,7 +118,7 @@
     "decompress-tarbz2": "^4.1.1",
     "decompress-targz": "^4.1.1",
     "decompress-unzip": "^4.0.1",
-    "grpc_tools_node_protoc_ts": "^4.1.0",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
     "mocha": "^7.0.0",
     "mockdate": "^3.0.5",
     "moment": "^2.24.0",
