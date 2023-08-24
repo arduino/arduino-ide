@@ -85,10 +85,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Node.js 16.14
+      - name: Install Node.js 18.17
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14'
+          node-version: '18.17'
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
 
@@ -129,10 +129,6 @@ jobs:
             echo "${{ secrets[matrix.config.certificate-secret] }}" | base64 --decode > "$CSC_LINK"
             export CSC_KEY_PASSWORD="${{ secrets[matrix.config.certificate-password-secret] }}"
             export CSC_FOR_PULL_REQUEST=true
-          fi
-
-          if [ "${{ runner.OS }}" = "Windows" ]; then
-            npm config set msvs_version 2017 --global
           fi
 
           npx node-gyp install
