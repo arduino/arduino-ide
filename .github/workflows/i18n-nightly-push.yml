@@ -16,10 +16,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Node.js 16.14
+      - name: Install Node.js 18.17
         uses: actions/setup-node@v3
         with:
-          node-version: '16.14'
+          node-version: '18.17'
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
 
