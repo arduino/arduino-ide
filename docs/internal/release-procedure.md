@@ -227,12 +227,12 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
     - You need access to the shared Mac Mini at Toolbox. Use TeamViewer.
     - You have access to the `FT Web Tooling` 1Password vault.
  - Setup:
-    - Download the `Pro-IDE-Certificates.p12` file from `Arduino Pro IDE Apple Developer ID Certificate .p12 format` and put it somewhere on the Mac Mini. This example assumes you put the `.p12` file in the `arduino-ide` repository root, and your `cwd` is also in the `arduino-ide` repository root.
+    - Download the `Pro-IDE-Certificates.p12` file from the `Arduino Pro IDE Apple Developer ID Certificate .p12 format` 1Password vault item and put it somewhere on the Mac Mini. This example assumes you put the `.p12` file in the `arduino-ide` repository root, and your `cwd` is also in the `arduino-ide` repository root.
     - The following environment variables must be available from the shell:
-        - `AC_PASSWORD`: Check `Arduino Apple developer ID App Specific Password`
-        - `AC_USERNAME`: Check `Arduino Apple developer ID App Specific Password`
+        - `AC_PASSWORD`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
+        - `AC_USERNAME`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
         - `AC_TEAM_ID`: "KT7ZWMCJT"
-        - `CSC_KEY_PASSWORD`: Check `Arduino Pro IDE Apple Developer ID certificate keychain password`
+        - `CSC_KEY_PASSWORD`: from the `Arduino Pro IDE Apple Developer ID certificate keychain password` 1Password vault item
         - `CSC_LINK`: `Pro-IDE-Certificates.p12` file on the Mac Mini
         - `IS_RELEASE`: "true"
         - `CAN_SIGN`: "true"
