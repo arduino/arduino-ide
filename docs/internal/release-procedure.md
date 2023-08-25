@@ -182,7 +182,7 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
 ### Ubuntu 18.04
  - Prerequisites:
     - Ask the DevOps team for an EC2 instance with at least 8 GB of RAM.
-    - Your account must have access to the staging environment.
+    - Your account must have access to the staging AWS environment.
     - You have VPN connection to staging.
  - Setup:
     - To install all required dependencies, run the following script:
