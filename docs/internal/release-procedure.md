@@ -277,9 +277,9 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
 
   ```sh
   VERSION="<TODO: release version>"
-  hdiutil attach ./electron-app/dist/arduino-ide_$VERSION_macOS_ARM64.dmg \
-  && cp -R /Volumes/Arduino\ IDE\ $VERSION-arm64/Arduino\ IDE.app ~/Desktop \
-  && hdiutil unmount /Volumes/Arduino\ IDE\ $VERSION-arm64 \
+  hdiutil attach ./electron-app/dist/arduino-ide_${VERSION}_macOS_arm64.dmg \
+  && cp -R /Volumes/Arduino\ IDE\ ${VERSION}-arm64/Arduino\ IDE.app ~/Desktop \
+  && hdiutil unmount /Volumes/Arduino\ IDE\ ${VERSION}-arm64 \
   && codesign -dv --verbose=4 ~/Desktop/Arduino\ IDE.app \
   && ~/Desktop/Arduino\ IDE.app/Contents/MacOS/Arduino\ IDE
   ```
