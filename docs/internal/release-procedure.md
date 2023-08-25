@@ -299,8 +299,9 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
     - Download the `stable-mac.yaml` produced by GitHub Actions from the latest release, rename it to `stable-mac-X64.yml`, and put it in the same folder where you put the file from the Mac Mini.
     - Run the channel file merger:
       ```sh
-      node ./scripts/merge-channel-files.js ./path/to/folder/with/channel/files
+      node ./scripts/merge-channel-files.js ./path/to/folder/with/channel/files --no-cleanup
       ```
+      > Although, the `--no-cleanup` flag is not mandatory to merge the channel files, it instructs the merger to keep the original channel files.
     - You have the merged channel file that you need to upload to S3.
 
 ### FAQ
