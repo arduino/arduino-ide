@@ -180,122 +180,140 @@ replacing `<YOUR_VERSION>` with the version you want. Then create a PR and merge
 Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github.com/arduino/arduino-ide/issues/2018)) and macOS M1 ([arduino/arduino-ide#408](https://github.com/arduino/arduino-ide/issues/408)) is a manual procedure.
 
 ### Ubuntu 18.04
- - Prerequisites:
-    - Ask the DevOps team for an EC2 instance with at least 8 GB of RAM.
-    - Your account must have access to the staging AWS environment.
-    - You have VPN connection to staging.
- - Setup:
-    - To install all required dependencies, run the following script:
-       ```sh
-       sudo apt update \
-       && sudo apt install --no-install-recommends --yes \
-         git \
-         gcc \
-         curl \
-         make \
-         python \
-         pkg-config \
-         libx11-dev \
-         libxkbfile-dev \
-         build-essential \
-         libsecret-1-dev \
-       && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
-       && source ~/.bashrc \
-       && nvm install 16 \
-       && nvm use 16 \
-       && nvm alias default 16 \
-       && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
-       && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
-       && sudo apt update && sudo apt install --no-install-recommends yarn
-       ```
-    - Set the environment variables to mimic a CI build:
-       ```sh
-       export IS_RELEASE=true && export CI=true
-       ```
- - Build:
+
+- Prerequisites:
+  - Ask the DevOps team for an EC2 instance with at least 8 GB of RAM.
+  - Your account must have access to the staging AWS environment.
+  - You have VPN connection to staging.
+- Setup:
+  - To install all required dependencies, run the following script:
     ```sh
-    yarn --cwd ./electron/packager && yarn --cwd ./electron/packager package
+    sudo apt update \
+    && sudo apt install --no-install-recommends --yes \
+      git \
+      gcc \
+      curl \
+      make \
+      python \
+      pkg-config \
+      libx11-dev \
+      libxkbfile-dev \
+      build-essential \
+      libsecret-1-dev \
+    && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
+    && source ~/.bashrc \
+    && nvm install 16 \
+    && nvm use 16 \
+    && nvm alias default 16 \
+    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
+    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
+    && sudo apt update && sudo apt install --no-install-recommends yarn
     ```
- - Artifacts:
-    - You have to upload the following artifacts from `./arduino-ide/electron/build/dist` to S3:
-        - `arduino-ide_${VERSION}_Linux_64bit.AppImage`,
-        - `arduino-ide_${VERSION}_Linux_64bit.zip`, and
-        - `stable-linux.yml`
+  - Set the environment variables to mimic a CI build:
+    ```sh
+    export IS_RELEASE=true && export CI=true
+    ```
+- Build:
+  ```sh
+  yarn --cwd ./electron/packager && yarn --cwd ./electron/packager package
+  ```
+- Artifacts:
+  - You have to upload the following artifacts from `./arduino-ide/electron/build/dist` to S3:
+    - `arduino-ide_${VERSION}_Linux_64bit.AppImage`,
+    - `arduino-ide_${VERSION}_Linux_64bit.zip`, and
+    - `stable-linux.yml`
 
 ### macOS M1
- - Prerequisites:
-    - You need access to the shared Mac Mini at Toolbox. Use TeamViewer.
-    - You have access to the `FT Web Tooling` 1Password vault.
- - Setup:
-    - Download the `Pro-IDE-Certificates.p12` file from the `Arduino Pro IDE Apple Developer ID Certificate .p12 format` 1Password vault item and put it somewhere on the Mac Mini. This example assumes you put the `.p12` file in the `arduino-ide` repository root, and your `cwd` is also in the `arduino-ide` repository root.
-    - The following environment variables must be available from the shell:
-        - `AC_PASSWORD`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
-        - `AC_USERNAME`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
-        - `AC_TEAM_ID`: "KT7ZWMCJT"
-        - `CSC_KEY_PASSWORD`: from the `Arduino Pro IDE Apple Developer ID certificate keychain password` 1Password vault item
-        - `CSC_LINK`: Path to the `Pro-IDE-Certificates.p12` file on the Mac Mini
-        - `IS_RELEASE`: "true"
-        - `CAN_SIGN`: "true"
-        - `MACOS_FORCE_NOTARIZE`: "true"
 
-        ```sh
-        export AC_PASSWORD="***"
-        export AC_USERNAME="***"
-        export AC_TEAM_ID="7KT7ZWMCJT"
-        export CSC_KEY_PASSWORD="***"
-        export CSC_LINK="`pwd`/Pro-IDE-Certificates.p12"
-        export IS_RELEASE="true"
-        export CAN_SIGN="true"
-        export MACOS_FORCE_NOTARIZE="true"
-        export CI="true"
-        ```
+- Prerequisites:
 
- - Build:
-    ```sh
-    yarn --cwd ./electron/packager && yarn --cwd ./electron/packager package
-    ```
+  - You need access to the shared Mac Mini at Toolbox. Use TeamViewer.
+  - You have access to the `FT Web Tooling` 1Password vault.
 
- - Verify:
+- Clone:
 
-    Since you cannot drag and drop via TeamViewer, you will install the app from a command line. This example puts the IDE2 into the Desktop. Do **NOT** try to bypass the installation with a double click and open from the UI. The `node_modules` folder of the source code is implicitly in the `$PATH`, and you want to verify if the app is fully functional without the `node_modules` folder.
+  ```sh
+  BRANCH="<TODO: release branch name>"
+  git clone --single-branch --branch $BRANCH https://github.com/arduino/arduino-ide.git
+  ```
+
+- Setup:
+
+  - Download the `Pro-IDE-Certificates.p12` file from the `Arduino Pro IDE Apple Developer ID Certificate .p12 format` 1Password vault item and put it somewhere on the Mac Mini. This example assumes you put the `.p12` file in the `arduino-ide` repository root, and your `cwd` is also in the `arduino-ide` repository root.
+  - The following environment variables must be available from the shell:
+
+    - `AC_PASSWORD`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
+    - `AC_USERNAME`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
+    - `AC_TEAM_ID`: "KT7ZWMCJT"
+    - `CSC_KEY_PASSWORD`: from the `Arduino Pro IDE Apple Developer ID certificate keychain password` 1Password vault item
+    - `CSC_LINK`: Path to the `Pro-IDE-Certificates.p12` file on the Mac Mini
+    - `IS_RELEASE`: "true"
+    - `CAN_SIGN`: "true"
+    - `MACOS_FORCE_NOTARIZE`: "true"
 
     ```sh
-    VERSION="<TODO: release version>"
-    && hdiutil attach ./electron/build/dist/arduino-ide_${VERSION}_macOS_ARM64.dmg \
-    && cp -R /Volumes/Arduino\ IDE\ ${VERSION}-arm64/Arduino\ IDE.app ~/Desktop \
-    && hdiutil unmount /Volumes/Arduino\ IDE\ ${VERSION}-arm64 \
-    && codesign -dv --verbose=4 ~/Desktop/Arduino\ IDE.app \
-    && ~/Desktop/Arduino\ IDE.app/Contents/MacOS/Arduino\ IDE
+    export AC_PASSWORD="***"
+    export AC_USERNAME="***"
+    export AC_TEAM_ID="7KT7ZWMCJT"
+    export CSC_KEY_PASSWORD="***"
+    export CSC_LINK="`pwd`/Pro-IDE-Certificates.p12"
+    export IS_RELEASE="true"
+    export CAN_SIGN="true"
+    export MACOS_FORCE_NOTARIZE="true"
+    export CI="true"
     ```
 
- - Cleanup:
-    - You **MUST** close the shell after the build.
-    - You **MUST** delete the `.p12` file and empty the trash afterward.
+- Build:
 
- - Artifacts:
-    - You have to upload the following artifacts from `./arduino-ide/electron/build/dist` to S3, but first, you must create the final channel file from the `latest-mac.yaml`:
-        - `arduino-ide_${VERSION}_macOS_arm64.dmg`,
-        - `arduino-ide_${VERSION}_macOS_arm64.zip`, and
-        - `stable-mac.yml`
-    - To create the final channel file, do the followings:
-        - Copy the `stable-mac.yml` file from the Mac Mini to a folder and rename it to `stable-mac-ARM64.yml`.
-        - Download the `stable-mac.yaml` produced by GitHub Actions from the latest release, rename it to `stable-mac-X64.yml`, and put it in the same folder where you put the file from the Mac Mini.
-        - Run the channel file merger:
-            ```sh
-            node ./scripts/merge-channel-files.js ./path/to/folder/with/channel/files
-            ```
-        - You have the merged channel file that you need to upload to S3.
+  ```sh
+  ./scripts/package.sh
+  ```
+
+  > Make sure to change directory, and execute the script from the root of the `arduino-ide` repository.
+
+- Verify:
+
+  Since you cannot drag and drop via TeamViewer, you will install the app from a command line. This example puts the IDE2 into the Desktop. Do **NOT** try to bypass the installation with a double click and open from the UI. The `node_modules` folder of the source code is implicitly in the `$PATH`, and you want to verify if the app is fully functional without the `node_modules` folder.
+
+  ```sh
+  VERSION="<TODO: release version>"
+  hdiutil attach ./electron/build/dist/arduino-ide_$VERSION_macOS_ARM64.dmg \
+  && cp -R /Volumes/Arduino\ IDE\ $VERSION-arm64/Arduino\ IDE.app ~/Desktop \
+  && hdiutil unmount /Volumes/Arduino\ IDE\ $VERSION-arm64 \
+  && codesign -dv --verbose=4 ~/Desktop/Arduino\ IDE.app \
+  && ~/Desktop/Arduino\ IDE.app/Contents/MacOS/Arduino\ IDE
+  ```
+
+- Cleanup:
+
+  - You **MUST** close the shell after the build.
+  - You **MUST** delete the `.p12` file and empty the trash afterward.
+
+- Artifacts:
+  - You have to upload the following artifacts from `./arduino-ide/electron/build/dist` to S3, but first, you must create the final channel file from the `latest-mac.yaml`:
+    - `arduino-ide_${VERSION}_macOS_arm64.dmg`,
+    - `arduino-ide_${VERSION}_macOS_arm64.zip`, and
+    - `stable-mac.yml`
+  - To create the final channel file, do the followings:
+    - Copy the `stable-mac.yml` file from the Mac Mini to a folder and rename it to `stable-mac-ARM64.yml`.
+    - Download the `stable-mac.yaml` produced by GitHub Actions from the latest release, rename it to `stable-mac-X64.yml`, and put it in the same folder where you put the file from the Mac Mini.
+    - Run the channel file merger:
+      ```sh
+      node ./scripts/merge-channel-files.js ./path/to/folder/with/channel/files
+      ```
+    - You have the merged channel file that you need to upload to S3.
 
 ### FAQ
- - Q: I see no `stable` channel files, only `latest`.
- - A: You forgot to set the `CI=true` environment variable.
 
-----
+- Q: I see no `stable` channel files, only `latest`.
+- A: You forgot to set the `CI=true` environment variable.
 
- - Q: How to connect to the EC2 instance?
- - A: DevOps will give you a temporary link to the private key. Create a file `username_ip.pem` in your cwd, copy the private key into the file, open a shell, and execute `ssh -i "username_ip.pem" username@ip`. DevOps will tell you the `username` and the `ip`. Do not forget the VPN.
+---
 
-----
+- Q: How to connect to the EC2 instance?
+- A: DevOps will give you a temporary link to the private key. Create a file `username_ip.pem` in your cwd, copy the private key into the file, open a shell, and execute `ssh -i "username_ip.pem" username@ip`. DevOps will tell you the `username` and the `ip`. Do not forget the VPN.
 
- - Q: How to download the files from the EC2 instance?
- - A: `scp -i username_ip.pem username@ip:/path/to/build/artifact /local/dir`.
+---
+
+- Q: How to download the files from the EC2 instance?
+- A: `scp -i username_ip.pem username@ip:/path/to/build/artifact /local/dir`.
