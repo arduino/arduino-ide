@@ -218,7 +218,7 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
   yarn --cwd ./electron/packager && yarn --cwd ./electron/packager package
   ```
 - Artifacts:
-  - You have to upload the following artifacts from `./arduino-ide/electron/build/dist` to S3:
+  - You have to upload the following artifacts from `./arduino-ide/electron-app/dist` to S3:
     - `arduino-ide_${VERSION}_Linux_64bit.AppImage`,
     - `arduino-ide_${VERSION}_Linux_64bit.zip`, and
     - `stable-linux.yml`
@@ -277,7 +277,7 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
 
   ```sh
   VERSION="<TODO: release version>"
-  hdiutil attach ./electron/build/dist/arduino-ide_$VERSION_macOS_ARM64.dmg \
+  hdiutil attach ./electron-app/dist/arduino-ide_$VERSION_macOS_ARM64.dmg \
   && cp -R /Volumes/Arduino\ IDE\ $VERSION-arm64/Arduino\ IDE.app ~/Desktop \
   && hdiutil unmount /Volumes/Arduino\ IDE\ $VERSION-arm64 \
   && codesign -dv --verbose=4 ~/Desktop/Arduino\ IDE.app \
@@ -290,7 +290,7 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
   - You **MUST** delete the `.p12` file and empty the trash afterward.
 
 - Artifacts:
-  - You have to upload the following artifacts from `./arduino-ide/electron/build/dist` to S3, but first, you must create the final channel file from the `latest-mac.yaml`:
+  - You have to upload the following artifacts from `./arduino-ide/electron-app/dist` to S3, but first, you must create the final channel file from the `latest-mac.yaml`:
     - `arduino-ide_${VERSION}_macOS_arm64.dmg`,
     - `arduino-ide_${VERSION}_macOS_arm64.zip`, and
     - `stable-mac.yml`
