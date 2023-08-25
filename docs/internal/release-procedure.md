@@ -260,7 +260,8 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
     Since you cannot drag and drop via TeamViewer, you will install the app from a command line. This example puts the IDE2 into the Desktop. Do **NOT** try to bypass the installation with a double click and open from the UI. The `node_modules` folder of the source code is implicitly in the `$PATH`, and you want to verify if the app is fully functional without the `node_modules` folder.
 
     ```sh
-    hdiutil attach ./electron/build/dist/arduino-ide_${VERSION}_macOS_ARM64.dmg \
+    VERSION="<TODO: release version>"
+    && hdiutil attach ./electron/build/dist/arduino-ide_${VERSION}_macOS_ARM64.dmg \
     && cp -R /Volumes/Arduino\ IDE\ ${VERSION}-arm64/Arduino\ IDE.app ~/Desktop \
     && hdiutil unmount /Volumes/Arduino\ IDE\ ${VERSION}-arm64 \
     && codesign -dv --verbose=4 ~/Desktop/Arduino\ IDE.app \
