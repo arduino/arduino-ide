@@ -233,7 +233,7 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
         - `AC_USERNAME`: From the `Arduino Apple developer ID App Specific Password` 1Password vault item
         - `AC_TEAM_ID`: "KT7ZWMCJT"
         - `CSC_KEY_PASSWORD`: from the `Arduino Pro IDE Apple Developer ID certificate keychain password` 1Password vault item
-        - `CSC_LINK`: `Pro-IDE-Certificates.p12` file on the Mac Mini
+        - `CSC_LINK`: Path to the `Pro-IDE-Certificates.p12` file on the Mac Mini
         - `IS_RELEASE`: "true"
         - `CAN_SIGN`: "true"
         - `MACOS_FORCE_NOTARIZE`: "true"
