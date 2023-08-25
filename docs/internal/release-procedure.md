@@ -186,6 +186,7 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
   - Your account must have access to the staging AWS environment.
   - You have VPN connection to staging.
 - Setup:
+
   - To install all required dependencies, run the following script:
     ```sh
     sudo apt update \
@@ -209,14 +210,22 @@ Creating the release for Ubuntu 18.04 ([arduino/arduino-ide#2018](https://github
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
     && sudo apt update && sudo apt install --no-install-recommends yarn
     ```
-  - Set the environment variables to mimic a CI build:
-    ```sh
-    export IS_RELEASE=true && export CI=true
-    ```
-- Build:
+
+- Clone:
+
   ```sh
-  yarn --cwd ./electron/packager && yarn --cwd ./electron/packager package
+  BRANCH="<TODO: release branch name>"
+  git clone --single-branch --branch $BRANCH https://github.com/arduino/arduino-ide.git
   ```
+
+- Build:
+
+  ```sh
+  export IS_RELEASE=true \
+  && export CI=true \
+  && ./scripts/package.sh
+  ```
+
 - Artifacts:
   - You have to upload the following artifacts from `./arduino-ide/electron-app/dist` to S3:
     - `arduino-ide_${VERSION}_Linux_64bit.AppImage`,
