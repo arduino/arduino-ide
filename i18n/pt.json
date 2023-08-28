@@ -18,24 +18,21 @@
       "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
       "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de enviar o seu esboço.",
       "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione manualmente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
-      "disconnected": "Desconectado",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Obter Informações da Placa",
       "inSketchbook": "(no Sketchbook)",
       "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
       "noBoardsFound": "Nenhuma placa encontrada para \"{0}\"",
-      "noFQBN": "O FQBN não está disponível para a placa selecionada \"{0}\". Você tem o núcleo correspondente instalado?",
       "noNativeSerialPort": "Porta serial nativa, não é possível obter informações.",
       "noPortsDiscovered": "Nenhuma porta detectada",
-      "noPortsSelected": "Nenhuma porta selecionada para placa: '{0}'.",
       "nonSerialPort": "Porta não-serial, não é possível obter informações.",
-      "noneSelected": "Nenhuma placa selecionada.",
       "openBoardsConfig": "Selecione outra placa e porta...",
       "pleasePickBoard": "Escolha uma placa conectada à porta que você selecionou.",
       "port": "Porta{0}",
-      "portLabel": "Porta{0}",
       "ports": "portas",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Procurar placa",
       "selectBoard": "Selecionar Placa",
       "selectPortForInfo": "Selecione uma porta para obter informações sobre a placa.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Plataforma instalada com sucesso {0}: {1}",
       "succesfullyUninstalledPlatform": "Plataforma desinstalada com sucesso {0}: {1}",
       "typeOfPorts": "{0} portas",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Placa desconhecida"
     },
     "boardsManager": "Gerenciador de Placas",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Otimizar para Depuração",
       "sketchIsNotCompiled": "O Esboço '{0}' deve ser verificado antes de iniciar uma sessão de depuramento. Por favor, verifique o esboço e comece a depurar novamente. Você quer verificar o esboço agora?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Não perguntar novamente"
     },
@@ -229,10 +232,6 @@
       "nextError": "Próximo Erro",
       "previousError": "Erro Anterior",
       "revealError": "Mostrar Erro"
-    },
-    "electron": {
-      "couldNotSave": "Não foi possível salvar o sketch. Por favor, copie seu trabalho não salvo para o seu editor de texto favorito e reinicie a IDE.",
-      "unsavedChanges": "Quaisquer alterações não salvas não serão salvas."
     },
     "examples": {
       "builtInExamples": "Exemplos Integrados",
@@ -251,7 +250,7 @@
       "selectBoard": "Selecionar Placa",
       "selectVersion": "Selecione a versão do firmware",
       "successfullyInstalled": "Firmware instalado com sucesso. ",
-      "updater": "Atualizador de Firmware WiFi101 / WiFiNINA"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Ambiente",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Pular Versão",
       "updateAvailable": "Atualização Disponível",
       "versionDownloaded": "O Arduino IDE {0} foi baixado. "
+    },
+    "installable": {
+      "libraryInstallFailed": "A instalação da biblioteca '{0}{1}' falhou. ",
+      "platformInstallFailed": "A instalação da plataforma '{0}{1}' falhou."
     },
     "library": {
       "addZip": "Adicionar biblioteca .ZIP...",
@@ -328,13 +331,13 @@
       "tools": "Ferramentas"
     },
     "monitor": {
-      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "alreadyConnectedError": "Não foi possível se conectar à porta {0} {1}. Já conectado.",
       "baudRate": "{0} baud",
-      "connectionFailedError": "Could not connect to {0} {1} port.",
-      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
-      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
-      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
-      "notConnectedError": "Not connected to {0} {1} port.",
+      "connectionFailedError": "Não foi possível se conectar à porta {0} {1}.",
+      "connectionFailedErrorWithDetails": "{0} Não foi possível se conectar à porta {1} {2}.",
+      "connectionTimeout": "Tempo esgotado. A IDE não recebeu a mensagem de 'sucesso' do monitor após estabelecer uma conexão com sucesso",
+      "missingConfigurationError": "Não foi possível se conectar à porta {0} {1}. As configurações do monitor estão faltando. ",
+      "notConnectedError": "Não conectado à porta {0} {1}.",
       "unableToCloseWebSocket": "Impossível fechar websocket",
       "unableToConnectToWebSocket": "Impossível conectar ao websocket"
     },
@@ -381,6 +384,9 @@
       "language.log": "Verdadeiro se o Arduino Language Server deverá gerar arquivos de log na pasta do esboço. Caso contrário, falso. O padrão é falso.",
       "language.realTimeDiagnostics": "Se marcado, diagnósticos em tempo-real serão exibidos enquanto digita no editor. Fica desmarcado por padrão.",
       "manualProxy": "Configurações manuais de proxy",
+      "monitor": {
+        "dockPanel": "A área do shell da aplicação onde a ferramenta _{0}_ irá residir. Pode ser \"bottom\", a parte inferior, ou \"right\", a direita. Por padrão é \"{1}\"."
+      },
       "network": "Rede",
       "newSketchbookLocation": "Escolher nova localização para o Caderno de Esboços",
       "noCliConfig": "Não foi possível carregar a configuração CLI",
@@ -415,7 +421,7 @@
     "serial": {
       "autoscroll": "Avanço automático de linha",
       "carriageReturn": "Retorno de linha",
-      "connecting": "Connecting to '{0}' on '{1}'...",
+      "connecting": "Conectando a '{0}' em '{1}'...",
       "message": "Mensagem ({0} + Enter para enviar mensagem para '{1}' em '{2}'",
       "newLine": "Nova linha",
       "newLineCarriageReturn": "Nova linha e retorno de linha",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Arquivar Esboço",
       "cantOpen": "Um diretório chamado de \"{0}\" já existe. Não é possível abrir o esboço.",
-      "close": "Você tem certeza de que você quer fechar esse esboço?",
       "compile": "Compilando esboço...",
       "configureAndUpload": "Configurar e fazer Envio",
       "createdArchive": "Arquivo criado '{0}'.",
@@ -475,12 +480,13 @@
       "surveyMessage": "Por favor, ajude-nos a melhorar respondendo essa pequena pesquisa. Nós valorizamos nossa comunidade  e gostaríamos de conhecer nossos colaboradores um pouco melhor."
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
-      "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
-      "light": "Light",
-      "user": "{0} (user)"
+      "currentThemeNotFound": "Não foi possível encontrar o tema selecionado atualmente: {0}. A IDE Arduino escolheu um tema embutido compatível com o que está faltando. ",
+      "dark": "Escuro",
+      "deprecated": "{0} (descontinuado)",
+      "hc": "Escuro Alto Contraste",
+      "hcLight": "Claro Alto Contraste",
+      "light": "Claro",
+      "user": "{0} (usuário)"
     },
     "title": {
       "cloud": "Nuvem"

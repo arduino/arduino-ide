@@ -18,24 +18,21 @@
       "configDialog1": "Seleziona una scheda ed una porta se vuoi caricare uno sketch.",
       "configDialog2": "Se selezioni solo una scheda, potrai compilare, ma non potrai caricare il tuo sketch.",
       "couldNotFindPreviouslySelected": "Impossibile trovare la scheda selezionata '{0}' nella piattaforma installata '{1}'. Scegli nuovamente la scheda che vuoi utilizzare. Vuoi sceglierla ora?",
-      "disconnected": "Disconnesso",
+      "editBoardsConfig": "Modifica scheda e porta...",
       "getBoardInfo": "Acquisisci informazioni sulla scheda",
       "inSketchbook": "(nella raccolta degli sketch)",
       "installNow": "Il \"{0} {1}\" core non è installato per la scheda \"{2}\". Vuoi installarlo ora?",
       "noBoardsFound": "Nessuna scheda trovata per \"{0}\"",
-      "noFQBN": "La FQBN non è disponibile per la scheda selezionata\"{0}\". Sei sicuro che il core specifico sia stato installato?",
       "noNativeSerialPort": "Porta seriale nativa, non è possibile ottenere informazioni.",
       "noPortsDiscovered": "Nessuna porta rilevata",
-      "noPortsSelected": "Nessuna porta selezionata per la scheda: '{0}'.",
       "nonSerialPort": "Porta non seriale, non è possibile ottenere informazioni.",
-      "noneSelected": "Nessuna scheda selezionata.",
       "openBoardsConfig": "Scegli un'altra scheda e un altra porta...",
       "pleasePickBoard": "Scegli la scheda collegata alla porta che hai selezionato.",
       "port": "Porta{0}",
-      "portLabel": "Porta: {0}",
       "ports": "porte",
       "programmer": "Programmatore",
       "reselectLater": "Riselezionare più tardi",
+      "revertBoardsConfig": "Usa '{0}' rilevato su '{1}'",
       "searchBoard": "Cerca la scheda",
       "selectBoard": "Seleziona la scheda",
       "selectPortForInfo": "Selezionare la porta per ottenere info sulla scheda.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Piattaforma installata correttamente {0}:{1}",
       "succesfullyUninstalledPlatform": "Piattaforma disinstallata correttamente {0}:{1}",
       "typeOfPorts": "{0} porte",
+      "unconfirmedBoard": "Scheda non confermata",
       "unknownBoard": "Scheda sconosciuta"
     },
     "boardsManager": "Gestore schede",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Ottimizzato per il Debug.",
       "sketchIsNotCompiled": "Lo sketch '{0}' deve essere verificato prima di avviare una sessione di debug. Verificare lo sketch e avviare nuovamente il debug. Si desidera verificare lo sketch adesso?"
     },
+    "developer": {
+      "clearBoardList": "Cancella la cronologia dell'elenco delle schede",
+      "clearBoardsConfig": "Cancella la selezione della scheda e della porta",
+      "dumpBoardList": "Scarica l'elenco delle schede"
+    },
     "dialog": {
       "dontAskAgain": "Non chiedere più"
     },
@@ -229,10 +232,6 @@
       "nextError": "Errore Successivo",
       "previousError": "Errore Precedente",
       "revealError": "Rileva l'errore"
-    },
-    "electron": {
-      "couldNotSave": "Non è stato possibile salvare lo sketch. Si consiglia di copiarlo è salvarlo su un file di testo e solo successivamente riavviare l'Arduino IDE. ",
-      "unsavedChanges": "Eventuali modifiche non salvate verranno perse."
     },
     "examples": {
       "builtInExamples": "Esempi integrati",
@@ -251,7 +250,7 @@
       "selectBoard": "Seleziona la scheda",
       "selectVersion": "Selezione la versione del firmware",
       "successfullyInstalled": "Firmware correttamente installato.",
-      "updater": "WiFi101 / WiFiNINA Aggiornamento Firmware"
+      "updater": "Aggiornamento del firmware"
     },
     "help": {
       "environment": "Ambiente di sviluppo",
@@ -282,6 +281,10 @@
       "updateAvailable": "Aggiornamento disponibile",
       "versionDownloaded": "Arduino IDE {0} è stato scaricato correttamente."
     },
+    "installable": {
+      "libraryInstallFailed": "Impossibile installare la libreria: '{0}{1}'.",
+      "platformInstallFailed": "Impossibile installare la piattaforma: '{0}{1}'."
+    },
     "library": {
       "addZip": "Aggiungi libreria da file .ZIP...",
       "arduinoLibraries": "Librerie Arduino",
@@ -294,7 +297,7 @@
       "installWithoutDependencies": "Installa senza le dipendenze",
       "installedSuccessfully": "Libreria installata correttamente {0}:{1}",
       "libraryAlreadyExists": "Libreria già presente. Vuoi sovrascriverla?",
-      "manageLibraries": "Gestisci Librerie...",
+      "manageLibraries": "Gestisci librerie...",
       "namedLibraryAlreadyExists": "La cartella con nome {0} esiste già. Vuoi sovrascriverla?",
       "needsMultipleDependencies": "La libreria <b>{0}:{1}</b> necessita altre dipendenze che attualmente non sono installate:",
       "needsOneDependency": "La libreria <b>{0}:{1}</b> necessita di dipendenze che attualmente non sono installate:",
@@ -381,6 +384,9 @@
       "language.log": "Imposta su True se vuoi che l'Arduino Language Server generi il file di log all'interno della cartella dello sketch. Diversamente, imposta su false. L'impostazione predefinita è false.",
       "language.realTimeDiagnostics": "Se vero, il server linguistico fornisce una diagnostica in tempo reale durante la digitazione nell'editor. Per impostazione predefinita è falso.",
       "manualProxy": "Configurazione manuale del proxy",
+      "monitor": {
+        "dockPanel": "L'area della shell dell'applicazione in cui risiederà il widget  _{0}_ . Può essere \"in basso\" o \"a destra\". Il valore predefinito è \"{1}\"."
+      },
       "network": "Rete",
       "newSketchbookLocation": "Seleziona un percorso per il nuovo sketchbook",
       "noCliConfig": "Impossibile caricare il file di configurazione della CLI",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archivia sketch",
       "cantOpen": "Una cartella di nome \"{0}\" esiste già. Impossibile aprire lo sketch.",
-      "close": "Sei sicuro di voler chiudere lo sketch?",
       "compile": "Compilazione dello sketch in corso...",
       "configureAndUpload": "Configura e Carica",
       "createdArchive": "Creato l'archivio '{0}'.",
@@ -478,8 +483,9 @@
       "currentThemeNotFound": "Impossibile trovare il tema attualmente selezionato: {0}. Arduino IDE ha selezionato un tema integrato compatibile con quello mancante.",
       "dark": "Scuro",
       "deprecated": "{0} (deprecato)",
-      "hc": "Alto contrasto",
-      "light": "Luce",
+      "hc": "Scuro ad alto contrasto",
+      "hcLight": "Chiaro ad alto contrasto",
+      "light": "Chiaro",
       "user": "{0} (utente)"
     },
     "title": {

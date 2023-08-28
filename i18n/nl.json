@@ -18,24 +18,21 @@
       "configDialog1": "Selecteer een Bord en een Poort als U een schets wilt uploaden.",
       "configDialog2": "Als je alleen een Board kiest, kun je wel compileren, maar niet je schets uploaden.",
       "couldNotFindPreviouslySelected": "Kon het voordien geselecteerde bord '{0}' in het geïnstalleerde platform '{1}' niet vinden. Gelieve manueel het bord te kiezen dat U wilt gebruiken. Wilt U het bord nu selecteren?",
-      "disconnected": "Losgekoppeld",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Verkrijg Bord Informatie",
       "inSketchbook": "(in Schetsboek)",
       "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn om het huidige geselecteerde \"{2}\" bord. Wilt U dit nu installeren?",
       "noBoardsFound": "Geen borden gevonden voor \"{0}\"",
-      "noFQBN": "De FQBN is niet beschikbaar voor het geselecteerde bord \"{0}\". Heeft U de bijhorende kern geïnstalleerd?",
       "noNativeSerialPort": "Oorpronkelijke seriële poort, ik kan geen info verkrijgen",
       "noPortsDiscovered": "Geen poorten gevonden",
-      "noPortsSelected": "Geen poorten geselecteerd voor bord: '{0}'.",
       "nonSerialPort": "Dit is geen seriële poort, ik kan geen info verkrijgen",
-      "noneSelected": "Geen borden geselecteerd.",
       "openBoardsConfig": "Selecteer een ander bord en poort...",
       "pleasePickBoard": "Gelieve een bord te selecteren dat verbonden is met de door U gekozen poort.",
       "port": "Poort{0}",
-      "portLabel": "Poort: {0}",
       "ports": "poorten",
       "programmer": "Programmeerapparaat",
       "reselectLater": "Later opnieuw selecteren",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Bord zoeken",
       "selectBoard": "Selecteer Bord",
       "selectPortForInfo": "Selecteer een poort om bord informatie te bekomen.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Platform {0}:{1} succesvol geïnstalleerd",
       "succesfullyUninstalledPlatform": "Platform {0}:{1} is succesvol verwijderd",
       "typeOfPorts": "\"{0}\" poorten",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Onbekend bord"
     },
     "boardsManager": "Borden Beheerder",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimaliseren voor foutopsporing",
       "sketchIsNotCompiled": "Schets  '{0}' moet geverifieerd worden voordag de foutopsporing kan beginnen. Verifieer aub de schets opnieuw en start foutopsporing opnieuw. Wil je de schets opnieuw verifiëren?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Niet meer vragen"
     },
@@ -229,10 +232,6 @@
       "nextError": "Volgende Fout",
       "previousError": "Vorige Fout",
       "revealError": "Onthul fout"
-    },
-    "electron": {
-      "couldNotSave": "Kan de schets niet opslaan. Kopieer uw niet-opgeslagen werk naar uw favoriete teksteditor en start de IDE opnieuw. ",
-      "unsavedChanges": "Niet opgeslagen wijzigingen worden niet opgeslagen."
     },
     "examples": {
       "builtInExamples": "Ingebouwde voorbeelden",
@@ -251,7 +250,7 @@
       "selectBoard": "Selecteer Bord",
       "selectVersion": "Selecteer firmware versie",
       "successfullyInstalled": "Firmware succesvol geïnstalleerd.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Omgeving",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Versie overslaan",
       "updateAvailable": "Update beschikbaar",
       "versionDownloaded": "Arduino IDE {0} is gedownload."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": ".ZIP-bibliotheek toevoegen...",
@@ -381,6 +384,9 @@
       "language.log": "Waar als de Arduino Taal Server log bestanden moet genereren in de schets map. Anders onwaar. Standaard ingesteld op onwaar.",
       "language.realTimeDiagnostics": "Indien waar, geeft de taalserver real-time diagnostiek tijdens het typen in de editor. Standaard is dit onwaar.",
       "manualProxy": "Manuele proxy configuratie",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Netwerk",
       "newSketchbookLocation": "Selecteer een nieuwe schetsboeklocatie.",
       "noCliConfig": "De Cloud kon de CLI configuratie niet laden",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archiveer Schets",
       "cantOpen": "Er bestaat al een map met de naam \"{0}\". Kan schets niet openen.",
-      "close": "Weet je zeker dat je de schets wilt sluiten?",
       "compile": "Sketch compileren...",
       "configureAndUpload": "Configureer en upload",
       "createdArchive": "Archief '{0}' gemaakt.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

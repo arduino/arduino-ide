@@ -8,7 +8,7 @@
       "goToCloudEditor": "转到云编辑器",
       "goToIoTCloud": "转到物联网云",
       "goToProfile": "转到个人资料",
-      "menuTitle": "Arduino 云"
+      "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "开发板 {0}",
@@ -18,24 +18,21 @@
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
       "couldNotFindPreviouslySelected": "在安装的平台 ‘{1}’ 中找不到以前选择的开发板 ‘{0}’。请手动选择要使用的开发板。你想现在重新选择它吗？",
-      "disconnected": "已断开",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "获得开发板信息",
       "inSketchbook": "（在项目文件夹中）",
       "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
       "noBoardsFound": "没有找到 “{0}” 相关开发板",
-      "noFQBN": "FQBN 不可用于所选开发板 “{0}”。你是否安装了相应的内核？",
       "noNativeSerialPort": "本地串行端口，无法获取信息。",
       "noPortsDiscovered": "未发现端口",
-      "noPortsSelected": "没有为开发板选择端口：‘{0}’。",
       "nonSerialPort": "非串行端口，无法获取信息。",
-      "noneSelected": "未选择任何开发板。",
       "openBoardsConfig": "选择其他开发板和接口......",
       "pleasePickBoard": "请选择要连接的开发板。",
       "port": "端口 {0}",
-      "portLabel": "端口：{0}",
       "ports": "端口",
       "programmer": "编程器",
       "reselectLater": "稍后重新选择",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "搜索开发坂",
       "selectBoard": "选择开发板",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "已成功安装平台 {0}：{1}",
       "succesfullyUninstalledPlatform": "已成功卸载平台 {0}：{1}",
       "typeOfPorts": "{0} 端口",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "未知开发板"
     },
     "boardsManager": "开发板管理器",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "调试优化",
       "sketchIsNotCompiled": "项目 '{0}' 在开始调试会话之前必须经过验证。请验证草图并重新开始调试。你现在要验证草图吗？"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "不要再请求"
     },
@@ -229,10 +232,6 @@
       "nextError": "下一个错误",
       "previousError": "上一个错误",
       "revealError": "显示错误"
-    },
-    "electron": {
-      "couldNotSave": "无法保存项目。请将未保存的工作复制到你喜爱的文本编辑器中，然后重新启动 IDE。",
-      "unsavedChanges": "将不会保存任何未保存的更改。"
     },
     "examples": {
       "builtInExamples": "内置示例",
@@ -251,7 +250,7 @@
       "selectBoard": "选择开发板",
       "selectVersion": "选择固件版本",
       "successfullyInstalled": "固件成功安装",
-      "updater": "WiFi101 / WiFiNINA 固件更新程序"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "环境",
@@ -281,6 +280,10 @@
       "skipVersionButton": "跳过这次版本更新",
       "updateAvailable": "IDE 可更新。",
       "versionDownloaded": "Arduino IDE {0} 已经下载。"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "添加 .ZIP 库...",
@@ -381,6 +384,9 @@
       "language.log": "True 则 Arduino Language Server 将日志文件生成到项目文件夹中。默认为 False。",
       "language.realTimeDiagnostics": " True 则 language server 在编辑器中输入时提供实时诊断。默认为 False。",
       "manualProxy": "手动配置代理",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "网络",
       "newSketchbookLocation": "选择新的项目文件夹地址",
       "noCliConfig": "无法加载 CLI 配置",
@@ -415,7 +421,7 @@
     "serial": {
       "autoscroll": "自动滚屏",
       "carriageReturn": "回车",
-      "connecting": "Connecting to '{0}' on '{1}'...",
+      "connecting": "在 '{1}' 上连接至 '{0}' 中……",
       "message": "消息（按回车将消息发送到“{1}”上的“{0}”）",
       "newLine": "换行",
       "newLineCarriageReturn": "换行 和 回车 两者都是",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "项目存档",
       "cantOpen": "“{0}” 文件夹已存在。无法打开项目。",
-      "close": "是否确实要关闭项目？",
       "compile": "正在编译项目…",
       "configureAndUpload": "配置并上传",
       "createdArchive": "已创建存档 ‘{0}’。",
@@ -475,12 +480,13 @@
       "surveyMessage": "请回答这份很短的调查来帮助我们改进。我们重视我们的社区，也希望能够更好地了解我们的支持者。"
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
-      "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
-      "light": "Light",
-      "user": "{0} (user)"
+      "currentThemeNotFound": "找不到当前选中的主题：{0}。Arduino IDE 已选择一个与缺失者兼容的内置主题。",
+      "dark": "暗黑",
+      "deprecated": "{0} （已弃用）",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
+      "light": "明亮",
+      "user": "{0}（用户）"
     },
     "title": {
       "cloud": "云"

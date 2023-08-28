@@ -18,24 +18,21 @@
       "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Δεν έγινε εντοπισμός της προηγουμένως επιλεγμένης πλακέτας '{0}' στην εγκατεστημένη πλατφόρμα '{1}'. Παρακαλώ επίλεξε πάλι χειροκίνητα την πλακέτα που θέλεις να χρησιμοποιήσεις. Θέλεις να την επιλέξεις τώρα;",
-      "disconnected": "Disconnected",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Εμφάνιση Πληροφοριών Πλακέτας",
       "inSketchbook": "(στα Σχέδια)",
       "installNow": "Ο πυρήνας \"{0} {1}\" πρέπει να εγκατασταθεί για την επιλεγμένη πλακέτα {2}. Θέλεις να την εγκαταστήσεις τώρα;",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "Δεν επιλέχθηκε θύρα για την πλακέτα: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Δεν επιλέχθηκε πλακέτα",
       "openBoardsConfig": "Επιλογή διαφορετικής πλακέτας και θύρας...",
       "pleasePickBoard": "Πσρακαλώ επίλεξε μια πλακέτα που συνδέθηκε στην θύρα που έχεις επιλέξει.",
       "port": "Θύρα{0}",
-      "portLabel": "Port: {0}",
       "ports": "ports",
       "programmer": "Προγραμματιστής",
       "reselectLater": "Επιλογή αργότερα",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Επιλογή Πλακέτας",
       "selectPortForInfo": "Παρακαλώ επίλεξε μια θύρα για εμφάνιση πληροφοριών πλακέτας.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Επιτυχής εγκατάσταση πλατφόρμας {0}:{1}",
       "succesfullyUninstalledPlatform": "Επιτυχής απεγκατάσταση πλατφόρμας {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Διαχειριστής Πλακετών",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Βελτιστοποίηση για Αποσφαλμάτωση",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Don't ask again"
     },
@@ -229,10 +232,6 @@
       "nextError": "Next Error",
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Δεν έγινε αποθήκευση του προγράμματος. Παρακαλώ αντιγράψτε ό,τι δεν έχει αποθηκευθεί στον αγαπημένο σας επεξεργαστή κειμένου, και επανεκινήστε το Ολοκληρωμένο Περιβάλλον Ανάπτυξης IDE.",
-      "unsavedChanges": "Οι μη αποθηκευμένες αλλαγές θα χαθούν."
     },
     "examples": {
       "builtInExamples": "Built-in examples",
@@ -251,7 +250,7 @@
       "selectBoard": "Επιλογή Πλακέτας",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Περιβάλλον",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Προσθέστε μια βιβλιοθήκη μορφής .ZIP",
@@ -381,6 +384,9 @@
       "language.log": "Αληθές αν ο Arduino Language Server πρέπει να παράξει αρχεία κατάστασης στον φάκελο σχεδίου. Διαφορετικά, ψευδές. Είναι ψευδές απο προεπιλογή.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Δίκτυο",
       "newSketchbookLocation": "Επιλογή νέας τοποθεσίας σχεδίων",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

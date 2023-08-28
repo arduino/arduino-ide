@@ -18,24 +18,21 @@
       "configDialog1": "ကုတ်ဖိုင်တစ်ခုကို upload တင်လိုပါက ဘုတ်နှင့်အပေါက် နှစ်ခုလုံးကို ရွေးပေးပါ။",
       "configDialog2": "သင် ဘုတ်တစ်ခုထဲကိုသာ ရွေးချယ်ထားပါက compile ပြုလုပ်နိုင်သော်လည်း ကုဒ်ဖိုင်ကိုတော့ upload မတင်နိုင်ပါ။",
       "couldNotFindPreviouslySelected": "တပ်ဆင်ထားသည့် ပလက်ဖောင်း '{1}' ထဲမှာ ယခင်ရွေးချယ်ထားသည့်ဘုတ် '{0}' ကို ရှာမတွေ့ပါ။ ကျေးဇူးပြု၍ မိမိအသုံးပြုလိုသည့် ဘုတ်ကို မိမိကိုယ်တိုင် ပြန်လည်ရွေးချယ်ပေးပါ။ သင်အခု ပြန်လည်ရွေးချယ် လိုပါသလား?",
-      "disconnected": "မချိတ်ဆက်ထားပါ",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်ရယူမည်",
       "inSketchbook": " (Sketchbook ဖိုင်တွဲထဲ)",
       "installNow": "လက်ရှိရွေးချယ်ထားသည့် \"{2}\" ဘုတ်အတွက် \"{0} {1}\" core အား တပ်ဆင်ဖို့လိုပါသည်။ သင်ယခု တပ်ဆင်လိုပါသလား?",
       "noBoardsFound": "\"{0}\"အတွက် ဘုတ်ရှာမတွေ့ပါ",
-      "noFQBN": "ရွေးချယ်ထားသည့် ဘုတ် \"{0}\" အတွက် FQBN မရနိုင်သေးပါ။ သင့်မှာ သက်ဆိုင်ရာတပ်ဆင်ထားသည့် core ရှိပါသလား?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "မည်သည့်အပေါက်မှမတွေ့ပါ",
-      "noPortsSelected": "'{0}' ဘုတ် အတွက် မည်သည့်အပေါက်မှ မရွေးချယ်ထားပါ။",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "ဘုတ်မရွေးချယ်ထားပါ။",
       "openBoardsConfig": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ရန်...",
       "pleasePickBoard": "သင်ရွေးချယ်ထားသော အပေါက်နှင့် ချိတ်ဆက်ထားသည့် ဘုတ်ကို ကျေးဇူးပြု၍ ရွေးပေးပါ။",
       "port": "အပေါက်{0}",
-      "portLabel": "အပေါက် - {0}",
       "ports": "အပေါက်များ",
       "programmer": "ပရိုဂရမ်မာ",
       "reselectLater": "နောက်မှ ပြန်ရွေးချယ်မည်",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "ဘုတ်ရှာမည်",
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
       "selectPortForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် အပေါက်ကို ရွေးချယ်ပါ။",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ တပ်ဆင်ပြီးသည် :{1}",
       "succesfullyUninstalledPlatform": "{0} ပလက်ဖောင်းကို အောင်မြင်စွာ ဖြုတ်ချပြီးသည် :{1}",
       "typeOfPorts": "{0} အပေါက်များ",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "ဘုတ်မန်နေဂျာ",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "ကုတ်ပြစ်ချက်ရှာဖွေရန်အတွက်ဦးစားပေးမည်",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "နောက်ထပ်မမေးပါနှင့်"
     },
@@ -229,10 +232,6 @@
       "nextError": "နောက်ကအမှား",
       "previousError": "ရှေ့ကအမှား",
       "revealError": "အမှားဖော်ပြ"
-    },
-    "electron": {
-      "couldNotSave": "ကုတ်ပုံကြမ်းကို မသိမ်းဆည်းနိုင်ခဲ့ပါ။ ကျေးဇူးပြု၍ သင်၏ မသိမ်းဆည်းရသေးသော ကုတ်များကို သင်နှစ်သက်ရာ စာသားတည်းဖြတ်မှုဆော့ဖ်ဝဲထဲသို့ ကူးယူပြီး IDE ကို ပြန်စတင်ပါ။",
-      "unsavedChanges": "မသိမ်းရသေးသောပြောင်းလဲမှုများကိုသိမ်းမည်မဟုတ်ပါ။"
     },
     "examples": {
       "builtInExamples": "နဂိုပါဝင်သောဥပမာများ",
@@ -251,7 +250,7 @@
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
       "selectVersion": "ဖမ်းဝဲလ်ဗားရှင်း ရွေးပါ",
       "successfullyInstalled": "ဖမ်းဝဲလ်ကို အောင်မြင်စွာ သွင်းပြီးပါပြီ။",
-      "updater": "WiFi101 / WiFiNINA ဖမ်းဝဲလ်မြှင့်ပေးသူ"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "ဆော့ဖ်ဝဲလ်အကြောင်း",
@@ -281,6 +280,10 @@
       "skipVersionButton": "ဗားရှင်းကျော်မည်",
       "updateAvailable": "အပ်ဒိတ်ရပါပြီ",
       "versionDownloaded": "Arduino IDE {0} ကိုဒေါင်းလုတ်ဆွဲပြီးပါပြီ။"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "ကုတ်ကြည့်တိုက် .ZIPထည့်မည်…",
@@ -381,6 +384,9 @@
       "language.log": "အမှန်ဖြစ်နေပါက Arduinoဘာသာစကားစစ်ဆေးမှုဆာဗာသည် မှတ်တမ်းဖိုင်လ်များကို ကုတ်ဖိုင်လ်ဖိုလ်ဒါတွင် ထုတ်ပေးမည်။ မူရင်းတန်းဖိုးသည် အမှားဖြစ်သည်။",
       "language.realTimeDiagnostics": "အမှန်ခြစ်ထားပါက အယ်ဒီတာတွင် စာရေးသောအခါ ဘာသာစကားစစ်ဆေးမှုဆာဗာသည် အချိန်နှင့်တပြေးညီ စစ်ဆေးပေးမည်။ မူလတန်ဖိုးသည် အမှားဖြစ်သည်။",
       "manualProxy": "ကိုယ်တိုင် ကြားခံကွန်ရက်ပြင်ဆင်ခြင်း",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "ကွန်ရက်",
       "newSketchbookLocation": "ကုတ်ဖိုင်လ်စာအုပ်တည်နေရာအသစ်ရွေးမည်",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "ကုတ်ဖိုင်လ်သိမ်းမည်",
       "cantOpen": "\"{0}\" အမည်ဖြင့်ဖိုလ်ဒါရှိနှင့်ပြီးဖြစ်သည်။ ကုတ်ဖိုင်လ်ကို မဖွင့်နိုင်ပါ။",
-      "close": "ကုတ်ဖိုင်လ်ပိတ်မှာသေချာပါသလား။",
       "compile": "ကုတ်ဖိုင်လ်ကို ကုတ်ပေါင်းနေသည်…",
       "configureAndUpload": "ပြင်ဆင်၍အပ်လုတ်တင်မည်",
       "createdArchive": "ဖန်းတီးပြီးသော သိမ်းဆည်းဖိုင်လ် '{0}'။",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

@@ -18,24 +18,21 @@
       "configDialog1": "اگر می‌خواهید طرحی را آپلود کنید، هم یک تابلو و هم یک پورت انتخاب کنید.",
       "configDialog2": "اگر فقط تابلو را انتخاب کنید، می توانید کامپایل کنید، اما نمی توانید طرح خود را آپلود کنید.",
       "couldNotFindPreviouslySelected": "نمی توان برد انتخاب شده قبلی '{0}' در پلتفرم نصب شده '{1}' را پیدا کرد. لطفاً تابلویی را که می‌خواهید استفاده کنید، مجدداً به‌صورت دستی انتخاب کنید. آیا اکنون می خواهید آن را مجدداً انتخاب کنید؟",
-      "disconnected": "اتصال قطع شد",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "دریافت راهنمای برد",
       "inSketchbook": "(در منبع طرح ها)",
       "installNow": "هسته \"{0}{1}\" باید برای برد \"{2}\" انتخاب شده فعلی نصب شود. آیا الان می خواهید نصبش کنید؟",
       "noBoardsFound": "هیچ بردی پیدا نشد برای{0}",
-      "noFQBN": "FQBN برای برد انتخاب شده \"{0}\" موجود نیست. آیا هسته مربوطه را نصب کرده اید؟",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "هیچ پورتی پیدا نشد",
-      "noPortsSelected": "هیچ پورتی برای برد انتخاب نشده است.{0}",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "هیچ بردی انتخاب نشده است.",
       "openBoardsConfig": "انتخاب سایر برد ها و پورت ها",
       "pleasePickBoard": "لطفاً یک برد متصل به پورتی که انتخاب کرده اید را انتخاب کنید.",
       "port": "پورت {0}",
-      "portLabel": "پورت: {0}",
       "ports": "پورت ها",
       "programmer": "برنامه ریز",
       "reselectLater": "بعدا انتخاب کنید",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "جستجوی بورد",
       "selectBoard": "انتخاب برد",
       "selectPortForInfo": "لطفاً یک پورت را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "نصب پلتفرم موفقیت آمیز بود {0}:{1}",
       "succesfullyUninstalledPlatform": "لغو نصب پلتفرم موفقیت آمیز بود. {0}:{1}",
       "typeOfPorts": "پورت ها{0}",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "مدیریت برد ها",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "بهینه کردن برای رفع خطا",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "نمی تواند بپرسد."
     },
@@ -229,10 +232,6 @@
       "nextError": "خطای بعدی",
       "previousError": "خطای قبلی",
       "revealError": "فاش کردن خطا"
-    },
-    "electron": {
-      "couldNotSave": "ابر طرح را ذخیره نکرد. لطفا کار ذخیره نشده خود را به ویرایشگر متن مورد علاقه خود کپی کنید، و آردوینو را دوباره راه اندازی کنید.",
-      "unsavedChanges": "هر تغییری که انجام می دهید ذخیره نمی شود."
     },
     "examples": {
       "builtInExamples": "نمونه های داخلی",
@@ -251,7 +250,7 @@
       "selectBoard": "انتخاب برد",
       "selectVersion": "انتخاب نسخه درایور",
       "successfullyInstalled": "نصب درایور موفقیت آمیز بود.",
-      "updater": "بروزرسان درایور WiFi101 / WiFiNINA"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "محیط",
@@ -281,6 +280,10 @@
       "skipVersionButton": "نسخه بعدی",
       "updateAvailable": "به روز رسانی موجود است",
       "versionDownloaded": "آردوینو {0} دانلود شده بوده است."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "اضافه کتابخانه ی .zip شده",
@@ -381,6 +384,9 @@
       "language.log": "اگر سرور زبان آردوینو باید فایل های گزارش را در پوشه طرح ایجاد کند درست می باشد. در غیر این صورت، نادرست است. به طور پیش فرض نادرست است.",
       "language.realTimeDiagnostics": "اگر درست باشد، سرور زبان هنگام تایپ در ویرایشگر، عیب‌یابی بی‌درنگ ارائه می‌کند. به طور پیش فرض نادرست است.",
       "manualProxy": "پیکربندی دستی پروکسی",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "نتورک",
       "newSketchbookLocation": "مکان جدید منبع طرح ها را مشخص کنید",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "آرشیو طرح",
       "cantOpen": "پوشه ای با نام \"{0}\" از قبل وجود دارد. طرح را نمی توان باز کرد",
-      "close": "آیا شما می خواهید این طرح را ببندید؟",
       "compile": "تدوین طرح...",
       "configureAndUpload": "پیکری بندی و بارگذاری",
       "createdArchive": "آرشیو {0} ایجاد شد.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },
