@@ -1,13 +1,13 @@
 {
   "arduino": {
     "about": {
-      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "detail": "เวอร์ชัน: {0}\nวันที่: {1}{2}\nเวอร์ชัน CLI: {3}\n\n{4}",
       "label": "เกี่ยวกับ{0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
-      "goToIoTCloud": "Go to IoT Cloud",
-      "goToProfile": "Go to Profile",
+      "goToCloudEditor": "ไปยัง Cloud Editor",
+      "goToIoTCloud": "ไปยัง IoT Cloud",
+      "goToProfile": "ไปยัง Profile",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
@@ -16,47 +16,45 @@
       "boardInfo": "ข้อมูลบอร์ด",
       "boards": "บอร์ด",
       "configDialog1": "เลือกบอร์ดและพอร์ตที่คุณต้องการอัปโหลดโปรแกรมของคุณ",
-      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
-      "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Disconnected",
-      "getBoardInfo": "Get Board Info",
-      "inSketchbook": " (in Sketchbook)",
-      "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
-      "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
+      "configDialog2": "หากคุณแค่เลือกบอร์ดคุณจะสามารถคอมไพล์ได้ แต่สเก็ตช์ของคุณจะไม่ถูกอัปโหลด",
+      "couldNotFindPreviouslySelected": "ไม่สามาถหาบอร์ด {0} ที่ถูกเลือกไว้ก่อนหน้านี้พบในแพลตฟอร์มที่ถูกติดตั้ง {1} กรุณาเลือกบอร์ดที่คุณต้องการใช้งานด้วยตัวเอง คุณต้องการเลือกใหม่ในตอนนี้หรือไม่?",
+      "editBoardsConfig": "Edit Board and Port...",
+      "getBoardInfo": "เรียกดูข้อมูลของบอร์ด",
+      "inSketchbook": "(ใน Sketchbook)",
+      "installNow": "คอร์ \"{0}{1}\" ต้องถูกติดตั้งสำหรับบอร์ด \"{2}\" ที่ถูกเลือก คุณต้องการติดตั้งในตอนนี้หรือไม่?",
+      "noBoardsFound": "ไม่พบบอร์ด \"{0}\"",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
-      "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "No ports selected for board: '{0}'.",
+      "noPortsDiscovered": "ไม่พบพอร์ต",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "No boards selected.",
-      "openBoardsConfig": "Select other board and port…",
-      "pleasePickBoard": "Please pick a board connected to the port you have selected.",
-      "port": "Port{0}",
-      "portLabel": "Port: {0}",
-      "ports": "ports",
-      "programmer": "Programmer",
-      "reselectLater": "Reselect later",
-      "searchBoard": "Search board",
-      "selectBoard": "Select Board",
-      "selectPortForInfo": "Please select a port to obtain board info.",
-      "showAllAvailablePorts": "Shows all available ports when enabled",
-      "showAllPorts": "Show all ports",
-      "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
-      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
-      "typeOfPorts": "{0} ports",
-      "unknownBoard": "Unknown board"
+      "openBoardsConfig": "เลือกบอร์ดอื่นและพอร์ต...",
+      "pleasePickBoard": "กรุณาเลือกบอร์ดที่เชื่อมต่อกับพอร์ตที่คุณได้เลือกไว้",
+      "port": "พอร์ต {0}",
+      "ports": "พอร์ต",
+      "programmer": "เครื่องโปรแกรม",
+      "reselectLater": "เลือกใหม่ในภายหลัง",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "ค้นหาบอร์ด",
+      "selectBoard": "เลือกบอร์ด",
+      "selectPortForInfo": "กรุณาเลือกพอร์ตเพื่อดึงข้อมูลของบอร์ด",
+      "showAllAvailablePorts": "แสดงพอร์ตทั้งหมดที่มีอยู่เมื่อเลือก",
+      "showAllPorts": "แสดงพอร์ตทั้งหมด",
+      "succesfullyInstalledPlatform": "ติดตั้งแพลตฟอร์ม {0}:{1} สำเร็จ",
+      "succesfullyUninstalledPlatform": "ถอนการติดตั้งแพลตฟอร์ม {0}:{1} สำเร็จ",
+      "typeOfPorts": "{0} พอร์ต",
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "บอร์ดที่ไม่รู้จัก"
     },
-    "boardsManager": "Boards Manager",
+    "boardsManager": "ตัวจัดการบอร์ด",
     "boardsType": {
       "arduinoCertified": "Arduino Certified"
     },
     "bootloader": {
-      "burnBootloader": "Burn Bootloader",
-      "burningBootloader": "Burning bootloader...",
-      "doneBurningBootloader": "Done burning bootloader."
+      "burnBootloader": "เขียนบูทโหลดเดอร์",
+      "burningBootloader": "กำลังเขียนบูทโหลดเดอร์...",
+      "doneBurningBootloader": "เขียนบูทโหลดเดอร์สำเร็จ"
     },
     "burnBootloader": {
-      "error": "Error while burning the bootloader: {0}"
+      "error": "เกิดความผิดพลาดในขณะเขียนบูทโหลดเดอร์: {0}"
     },
     "certificate": {
       "addNew": "Add New",
@@ -70,7 +68,7 @@
       "selectBoard": "Select a board...",
       "selectCertificateToUpload": "1. Select certificate to upload",
       "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
-      "upload": "Upload",
+      "upload": "อัปโหลด",
       "uploadFailed": "Upload failed. Please try again.",
       "uploadRootCertificates": "Upload SSL Root Certificates",
       "uploadingCertificates": "Uploading certificates."
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Don't ask again"
     },
@@ -230,10 +233,6 @@
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
     },
-    "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Any unsaved changes will not be saved."
-    },
     "examples": {
       "builtInExamples": "Built-in examples",
       "couldNotInitializeExamples": "Could not initialize built-in examples.",
@@ -248,10 +247,10 @@
       "install": "Install",
       "installingFirmware": "Installing firmware.",
       "overwriteSketch": "Installation will overwrite the Sketch on the board.",
-      "selectBoard": "Select Board",
+      "selectBoard": "เลือกบอร์ด",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Environment",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Add .ZIP Library...",
@@ -381,6 +384,9 @@
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
@@ -458,7 +463,7 @@
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Local Sketchbook",
       "titleSketchbook": "Sketchbook",
-      "upload": "Upload",
+      "upload": "อัปโหลด",
       "uploadUsingProgrammer": "Upload Using Programmer",
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
@@ -470,16 +475,17 @@
       "newSketch": "New Sketch"
     },
     "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+      "answerSurvey": "ตอบแบบสอบถาม",
+      "dismissSurvey": "ไม่แสดงสิ่งนี้อีก",
+      "surveyMessage": "กรุณาช่วยพวกเราปรับปรุงพัฒนาโดยตอบแบบสอบถามสั้นมากเหล่านี้ พวกเราเล็งเห็นถึงคุณค่าของคอมมูนิตี้และอยากที่จะทำความเข้าใจผู้สนับสนุนของเราให้ได้ดีขึ้นมากกว่าเดิมแม้เพียงสักเล็กน้อย"
     },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
+      "dark": "มืด",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
-      "light": "Light",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
+      "light": "สว่าง",
       "user": "{0} (user)"
     },
     "title": {
@@ -494,9 +500,9 @@
       "error": "{0} error: {1}"
     },
     "userFields": {
-      "cancel": "Cancel",
+      "cancel": "ยกเลิก",
       "enterField": "Enter {0}",
-      "upload": "Upload"
+      "upload": "อัปโหลด"
     },
     "validateSketch": {
       "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
@@ -514,25 +520,25 @@
     "core": {
       "cannotConnectBackend": "Cannot connect to the backend.",
       "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
+      "couldNotSave": "ไม่สามารถบันทึกสเก็ตช์ได้ กรุณาคัดลอกงานที่ยังไม่ถูกบันทึกไปยังโปรแกรม Text Editor อื่นที่คุณใช้งาน และรีสตาร์ท IDE",
       "daemonOffline": "CLI Daemon Offline",
       "offline": "Offline",
       "offlineText": "Offline",
-      "quitTitle": "Are you sure you want to quit?"
+      "quitTitle": "คุณแน่ใจว่าต้องการออกใช่หรือไม่"
     },
     "editor": {
       "unsavedTitle": "Unsaved – {0}"
     },
     "messages": {
-      "collapse": "Collapse",
-      "expand": "Expand"
+      "collapse": "พับ",
+      "expand": "ขยาย"
     },
     "workspace": {
       "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
       "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
-      "fileNewName": "Name for new file",
+      "fileNewName": "ชื่อสำหรับไฟล์ใหม่",
       "invalidExtension": ".{0} is not a valid extension",
-      "newFileName": "New name for file"
+      "newFileName": "ชื่อใหม่สำหรับไฟล์"
     }
   }
 }

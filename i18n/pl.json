@@ -18,24 +18,21 @@
       "configDialog1": "Wybierz płytkę oraz port, aby wgrać szkic.",
       "configDialog2": "Jeżeli wybierzesz płytkę, ale nie wybierzesz portu to nie będziesz mógł wgrywać szkicy, ale nadal możesz je kompilować.",
       "couldNotFindPreviouslySelected": "Nie można znaleźć poprzednio wybranej płytki '{0}' na zainstalowanej platformie '{1}'. Wybierz ręcznie ponownie płytkęę, której chcesz użyć. Czy chcesz ją teraz ponownie wybrać?",
-      "disconnected": "Rozłączony",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Pobierz informacje o płytce",
       "inSketchbook": "(w Szkicowniku)",
       "installNow": "Jądro \"{0} {1}\" musi zostać zainstalowane dla wybranej płytki \"{2}\". Czy chcesz zainstalować je teraz?",
       "noBoardsFound": "Brak Znalezionych Płytek \"{0}\"",
-      "noFQBN": "FQBN jest niedostępny dla wybranej płytki \"{0}\". Sprawdź czy zainstalowane jądro jest prawidłowe.",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Nie wykryto portów",
-      "noPortsSelected": "Nie wybrano portu dla płytki: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Nie wybrano płytki.",
       "openBoardsConfig": "Wybierz inną płytkę i port...",
       "pleasePickBoard": "Wybierz płytkę podłączoną do wybranego portu.",
       "port": "Port{0}",
-      "portLabel": "Port: {0}",
       "ports": "Porty",
       "programmer": "Programator",
       "reselectLater": "Wybierz ponownie później",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Szukaj płytki",
       "selectBoard": "Wybierz płytkę",
       "selectPortForInfo": "Wybierz port, aby uzyskać informacje o płytce.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Pomyślnie zainstalowano platformę {0}:{1}",
       "succesfullyUninstalledPlatform": "Pomyślnie odinstalowano platformę {0}:{1}",
       "typeOfPorts": "{0} Porty",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Menedżer Płytek",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optymalizuj pod kątem debugowania",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Nie pytaj ponownie"
     },
@@ -229,10 +232,6 @@
       "nextError": "Następny Błąd",
       "previousError": "Poprzedni Błąd",
       "revealError": "Pokaż Error"
-    },
-    "electron": {
-      "couldNotSave": "Wszystkie niezapisane zmiany zostaną utracone.",
-      "unsavedChanges": "Wszystkie niezapisane zmiany zostaną utracone."
     },
     "examples": {
       "builtInExamples": "Wbudowane przykłady",
@@ -251,7 +250,7 @@
       "selectBoard": "Wybierz płytkę",
       "selectVersion": "Wybierz wersję firmware'u",
       "successfullyInstalled": "Firmware zainstalowany prawidłowo.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Środowisko",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Pomiń tą wersję.",
       "updateAvailable": "Dostępna aktualizacja.",
       "versionDownloaded": "Pobrano Arduino IDE {0}"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Dodaj bibliotekę .ZIP...",
@@ -381,6 +384,9 @@
       "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
       "language.realTimeDiagnostics": "Jeśli prawdziwy, serwer języka zapewnia diagnostykę w czasie rzeczywistym podczas pisania w edytorze. Domyślnie jest nieprawdziwy.",
       "manualProxy": "Konfiguracja ręczna proxy",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Sieć",
       "newSketchbookLocation": "Wybierz nową lokalizację szkicownika",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archiwizuj szkic",
       "cantOpen": "Folder \"{0}\" już istnieje. Nie można otworzyć szkicu.",
-      "close": "Jesteś pewien, że chcesz zamknąć szkic?",
       "compile": "Kompilowanie szkicu...",
       "configureAndUpload": "Skompiluj i wgraj",
       "createdArchive": "Stwórz archiwum '{0}'.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

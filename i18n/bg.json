@@ -18,24 +18,21 @@
       "configDialog1": "Изберете както платка, така и порт, ако искате да качите скица.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Не можа да се намери по-рано избрана платка „{0}“ в инсталираната платформа „{1}“. Моля, изберете отново ръчно платката, която искате да използвате. Искате ли да я изберете отново сега?",
-      "disconnected": "Disconnected",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Вземи информация за платката",
       "inSketchbook": "(в Скицника)",
       "installNow": "Ядрото „{0} {1}“ трябва да бъде инсталирано за текущо избраната платка „{2}“. Искате ли да го инсталирате сега?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "FQBN не е наличен за избраната платка „{0}“. Имате ли инсталирано съответното ядро?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "Няма избрани портове за платка: „{0}“.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Няма избрани платка.",
       "openBoardsConfig": "Изберете друга платка и порт...",
       "pleasePickBoard": "Моля, изберете платка, свързана към порта, който сте избрали.",
       "port": "Порт{0}",
-      "portLabel": "Port: {0}",
       "ports": "ports",
       "programmer": "Програматор",
       "reselectLater": "Изберете отново по-късно",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Изберете платка",
       "selectPortForInfo": "Моля, изберете порт, за да получите информация за платката.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Успешно инсталирана платформа {0}:{1}",
       "succesfullyUninstalledPlatform": "Успешно деинсталирана платформа {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Мениджър на платки",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Оптимизиране за отстраняване на грешки",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Не питай отново"
     },
@@ -229,10 +232,6 @@
       "nextError": "Next Error",
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Скицата не можа да бъде запазена. Моля, копирайте незапазената си работа в любимия си текстов редактор и рестартирайте IDE-то.",
-      "unsavedChanges": "Всички незапазени промени няма да бъдат запазени."
     },
     "examples": {
       "builtInExamples": "Вградени примери",
@@ -251,7 +250,7 @@
       "selectBoard": "Изберете платка",
       "selectVersion": "Изберете версия на фърмуера",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Околна среда",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Добавяне на .ZIP библиотека...",
@@ -381,6 +384,9 @@
       "language.log": "True, ако езиковият сървър на Arduino трябва да генерира лог файлове в папката за скици. В противен случай false. По подразбиране е false.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ръчна конфигурация на прокси",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Мрежа",
       "newSketchbookLocation": "Изберете местоположение за новата скицниката",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Архивирай скица",
       "cantOpen": "Папка с име „{0}“ вече съществува. Не може да се отвори скица.",
-      "close": "Наистина ли искате да затворите скицата?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Създаден е архив „{0}“.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

@@ -18,24 +18,21 @@
       "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Nem található a korábban kiválasztott  '{0}' alaplap a/az '{1}' telepített platformon. Válaszd ki  újra a használni kívánt alaplapot. Szeretnéd most újra megadni?",
-      "disconnected": "Leválasztott",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Alaplap információk beszerzése",
       "inSketchbook": "(a vázlatfüzetben/sketchbook-ban) ",
       "installNow": "A \"{0} {1}\" támogatást telepíteni kell az aktuálisan kiválasztott \"{2}\" alaplaphoz. Most szeretnéd telepíteni? ",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "Az FQBN nem érhető el a kiválasztott „{0}” alaplapon. A megfelelő mag/core telepítve van? ",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Nincs észlelt port",
-      "noPortsSelected": "Nincsen port kiválasztva a alaplaphoz: '{0}'. ",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Nincs alaplap kiválasztva",
       "openBoardsConfig": "Válassz másik alaplapot és portot… ",
       "pleasePickBoard": "Válassz alaplapot, amely a kiválasztott porthoz csatlakozik. ",
       "port": "Port {0}",
-      "portLabel": "Port: {0}",
       "ports": "ports",
       "programmer": "Programozó",
       "reselectLater": "Később újra válaszd ki",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Alaplap választás",
       "selectPortForInfo": "Válassz egy portot az alaplap információinak megtekintéséhez. ",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Sikeresen telepített platform {0}:{1}",
       "succesfullyUninstalledPlatform": "A platform sikeresen eltávolítva: {0}:{1} ",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Alaplap-kezelő",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimalizálás hibakereséséhez",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Ne kérdezd meg még egyszer"
     },
@@ -229,10 +232,6 @@
       "nextError": "Next Error",
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Nem sikerült menteni a vázlatot/sketch-et. Másold át a nem mentett munkát kedvenc szövegszerkesztődbe és indítsd újra az IDE-t. ",
-      "unsavedChanges": "A nem mentett módosítások nem kerülnek mentésre. "
     },
     "examples": {
       "builtInExamples": "Beépített példák",
@@ -251,7 +250,7 @@
       "selectBoard": "Alaplap választás",
       "selectVersion": "Firmware verzió kiválasztása",
       "successfullyInstalled": "Firmware telepítése sikeres.",
-      "updater": "WiFi101 / WiFiNINA Firmware feltöltés"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Környezet",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "ZIP könyvtár hozzáadása...",
@@ -381,6 +384,9 @@
       "language.log": "Igaz/kipipálva/, ha az Arduino Language Server naplófájlokat generál a vázlat mappába. Ellenkező esetben hamis/nincs kipipálva. Alapértelmezés szerint: hamis. ",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Kézi proxy konfiguráció",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Hálózat",
       "newSketchbookLocation": "Új Vázlatfüzet/Sketchbook elérési út",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Vázlat/sketch archiválása",
       "cantOpen": "Már létezik a/az {0} nevű mappa. A vázlat/sketch nem nyitható meg. ",
-      "close": "Biztosan bezárod a vázlatot/sketch-et? ",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Archívum létrehozva: {0}. ",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

@@ -18,24 +18,21 @@
       "configDialog1": "Bir eskiz yüklemek istiyorsanız Kart ve Port seçmelisiniz.",
       "configDialog2": "Sadece Kart seçerseniz eskizinizi derleyebilir, ancak yükleyemezsiniz.",
       "couldNotFindPreviouslySelected": "Kurulu '{1}' platformunda daha önce seçili kart '{0}' bulunamadı. Lütfen kullanmak istediğiniz kartı elle yeniden seçin. Şimdi tekrar seçmek istiyor musunuz?",
-      "disconnected": "Bağlantı Kesildi",
+      "editBoardsConfig": "Kart ve Portu Düzenle...",
       "getBoardInfo": "Kart Bilgisini Al",
       "inSketchbook": "(Eskiz Defteri'nde)",
       "installNow": "Mevcut seçili \"{2}\" kartı için \"{0} {1}\" çekirdeğinin kurulması gerekiyor. Bunu şimdi kurmak istiyor musunuz?",
       "noBoardsFound": "\"{0}\" için kart bulunamadı",
-      "noFQBN": "FQBN seçili kart \"{0}\" için mevcut değil. İlgili çekirdeği kurdunuz mu?",
       "noNativeSerialPort": "Yerel seri port, veri alınamıyor.",
       "noPortsDiscovered": "Port bulunamadı",
-      "noPortsSelected": "'{0}' kartı için port seçilmedi",
       "nonSerialPort": "Seri port değil, veri alınamıyor.",
-      "noneSelected": "Kart seçilmedi.",
       "openBoardsConfig": "Başka Kart ve Port Seç",
       "pleasePickBoard": "Lütfen seçtiğiniz porta bağlı kartı seçin.",
       "port": "Port{0}",
-      "portLabel": "Port{0}",
       "ports": "portlar",
       "programmer": "Programlayıcı",
       "reselectLater": "Daha sonra tekrar seç",
+      "revertBoardsConfig": " '{1}''da bulunan '{0}''i kullan",
       "searchBoard": "Kart ara",
       "selectBoard": "Kart Seç",
       "selectPortForInfo": "Kart bilgisi almak için lütfen bir port seçin.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Platform başarıyla kuruldu {0}:{1}",
       "succesfullyUninstalledPlatform": "Platform başarıyla kaldırıldı {0}:{1}",
       "typeOfPorts": "{0} portlar",
+      "unconfirmedBoard": "Doğrulanmamış kart",
       "unknownBoard": "Bilinmeyen kart"
     },
     "boardsManager": "Kart Yöneticisi",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Debug için Optimize et",
       "sketchIsNotCompiled": "Hata ayıklama -debug- oturumuna başlamadan önce '{0}' eskizi doğrulanmalıdır. Lütfen eskizi doğrulayın ve hata ayıklamayı yeniden başlatın. Eskizi şimdi doğrulamak ister misiniz?"
     },
+    "developer": {
+      "clearBoardList": "Kart Listesi Geçmişini Temizle",
+      "clearBoardsConfig": "Kart ve Port Seçimini Temizle",
+      "dumpBoardList": "Kart Listesini Boşalt"
+    },
     "dialog": {
       "dontAskAgain": "Tekrar sorma"
     },
@@ -229,10 +232,6 @@
       "nextError": "Sonraki Hata",
       "previousError": "Önceki Hata",
       "revealError": "Gösterim Hatası"
-    },
-    "electron": {
-      "couldNotSave": "Eskiz kaydedilemedi. Lütfen kaydedilmeyen işinizi favori metin düzenleyicinize kopyalayın ve IDE'yi yeniden başlatın.",
-      "unsavedChanges": "Kaydedilmemiş değişiklikler kaybedilecek."
     },
     "examples": {
       "builtInExamples": "Dahili örnekler",
@@ -251,7 +250,7 @@
       "selectBoard": "Kart Seç",
       "selectVersion": "Firmware versiyonunu seç",
       "successfullyInstalled": "Firmware başarıyla kuruldu.",
-      "updater": "WiFi101 / WiFiNINA Firmware Güncelleyici"
+      "updater": "Firmware Güncelleyici"
     },
     "help": {
       "environment": "Ortam",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Sürümü Atla",
       "updateAvailable": "Güncelleme Mevcut",
       "versionDownloaded": "Arduino IDE {0} indirildi."
+    },
+    "installable": {
+      "libraryInstallFailed": "Kütüphane kurulamadı: '{0}{1}'.",
+      "platformInstallFailed": "Platform kurulamadı: '{0}{1}'."
     },
     "library": {
       "addZip": ".ZIP Kütüphanesi Ekle...",
@@ -381,6 +384,9 @@
       "language.log": "Arduino Language Server eskiz klasörüne log dosyaları oluşturacaksa True. Aksi takdirde false. Varsayılan: false.",
       "language.realTimeDiagnostics": "Açılırsa, dil sunucusu editöre yazarken gerçek zamanlı kontroller sağlar. Varsayılan olarak kapalıdır.",
       "manualProxy": "Elle vekil ayarlama",
+      "monitor": {
+        "dockPanel": "Uygulama kabuğunda  _{0}_ aracının konumlanacağı alan. Altta veya sağda yer alabilir. Varsayılan konum: \"{1}\""
+      },
       "network": "Ağ",
       "newSketchbookLocation": "Yeni eskiz defteri konumu seç",
       "noCliConfig": "CLI yapılandırması yüklenemedi",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Eskizi Arşivle",
       "cantOpen": "\"{0}\" klasörü zaten mevcut. Eskiz açılamadı.",
-      "close": "Eskizi kapatmak istediğinizden emin misiniz?",
       "compile": "Eskiz derleniyor...",
       "configureAndUpload": "Ayarla ve Yükle",
       "createdArchive": "'{0}' arşivi oluşturuldu.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Mevcut seçili tema bulunamadı: {0}. Arduino IDE kayıp olanın yerine uyumlu dahili bir tane seçti.",
       "dark": "Koyu",
       "deprecated": "{0} (kaldırıldı)",
-      "hc": "Yüksek Karşıtlık",
+      "hc": "Koyu Yüksek Karşıtlık",
+      "hcLight": "Açık Yüksek Karşıtlık",
       "light": "Açık",
       "user": "{0} (kullanıcı)"
     },

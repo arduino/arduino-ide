@@ -18,35 +18,33 @@
       "configDialog1": "Оберіть плату та порт якщо бажаєте завантажити скетч",
       "configDialog2": "Якщо вибрати лише плату, ви зможете скомпілювати, але не завантажити свій ескіз.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Від’єднано",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Отримати інформацію про плату",
       "inSketchbook": " (in Sketchbook)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noBoardsFound": "Для \"{0}\" не знайдено плат",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Порти не знайдено",
-      "noPortsSelected": "Немає вибраних портів для плати: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Не обрана плата",
       "openBoardsConfig": "Оберіть іншу плату або порт",
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
-      "port": "Port{0}",
-      "portLabel": "Port: {0}",
-      "ports": "ports",
-      "programmer": "Programmer",
+      "port": "Порт{0}",
+      "ports": "порти",
+      "programmer": "Програматор",
       "reselectLater": "Reselect later",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Шукати плату",
       "selectBoard": "Оберіть плату",
       "selectPortForInfo": "Please select a port to obtain board info.",
       "showAllAvailablePorts": "Shows all available ports when enabled",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "Показати всі порти",
       "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
       "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
-      "typeOfPorts": "{0} ports",
-      "unknownBoard": "Unknown board"
+      "typeOfPorts": "{0}порти",
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "Невідома плата"
     },
-    "boardsManager": "Boards Manager",
+    "boardsManager": "Менеджер плат",
     "boardsType": {
       "arduinoCertified": "Arduino Certified"
     },
@@ -81,8 +79,8 @@
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "updatingBoards": "Оновлення плат...",
+      "updatingLibraries": "Оновлення бібліотек..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
@@ -91,7 +89,7 @@
     "cloud": {
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
       "cloudSketchbook": "Cloud Sketchbook",
-      "connected": "Connected",
+      "connected": "Під'єднано",
       "continue": "Продовжити",
       "donePulling": "Done pulling '{0}'.",
       "donePushing": "Done pushing '{0}'.",
@@ -136,7 +134,7 @@
       "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
-      "all": "Все",
+      "all": "Всі",
       "contributed": "Contributed",
       "installManually": "Install Manually",
       "later": "Пізніше",
@@ -167,12 +165,12 @@
       "installVersion": "Install {0}",
       "installed": "{0} installed",
       "moreInfo": "Більше інформації ",
-      "otherVersions": "Other Versions",
+      "otherVersions": "Інші Версії",
       "remove": "Видалити ",
       "title": "{0} by {1}",
       "uninstall": "Видалити",
       "uninstallMsg": "Do you want to uninstall {0}?",
-      "update": "Update"
+      "update": "Оновити"
     },
     "configuration": {
       "cli": {
@@ -193,8 +191,8 @@
     "core": {
       "compilerWarnings": {
         "all": "Все",
-        "default": "Default",
-        "more": "More",
+        "default": "По замовчуванню",
+        "more": "Більше",
         "none": "None"
       }
     },
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Не питати знову"
     },
@@ -229,10 +232,6 @@
       "nextError": "Наступна помилка",
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Any unsaved changes will not be saved."
     },
     "examples": {
       "builtInExamples": "Built-in examples",
@@ -251,7 +250,7 @@
       "selectBoard": "Оберіть плату",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Environment",
@@ -278,9 +277,13 @@
       "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
       "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
       "notNowButton": "Не зараз",
-      "skipVersionButton": "Skip Version",
+      "skipVersionButton": "Пропустити Версію",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Add .ZIP Library...",
@@ -300,7 +303,7 @@
       "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
       "overwriteExistingLibrary": "Do you want to overwrite the existing library?",
       "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
-      "title": "Library Manager",
+      "title": "Менеджер бібліотек",
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
       "zipLibrary": "Бібліотеки "
     },
@@ -325,7 +328,7 @@
     "menu": {
       "advanced": "Advanced",
       "sketch": "Sketch",
-      "tools": "Tools"
+      "tools": "Інструменти"
     },
     "monitor": {
       "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
@@ -381,14 +384,17 @@
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Мережа",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "Нема проксі",
       "proxySettings": {
         "hostname": "Host name",
-        "password": "Password",
-        "port": "Port number",
+        "password": "Пароль",
+        "port": "Номер порту",
         "username": "Username"
       },
       "showVerbose": "Show verbose output during",
@@ -417,7 +423,7 @@
       "carriageReturn": "Carriage Return",
       "connecting": "Connecting to '{0}' on '{1}'...",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
-      "newLine": "Нова лінія",
+      "newLine": "Новий рядок",
       "newLineCarriageReturn": "Both NL & CR",
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
@@ -428,12 +434,11 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
       "doneCompiling": "Done compiling.",
-      "doneUploading": "Done uploading.",
+      "doneUploading": "Завантаження завершено.",
       "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
       "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
       "exportBinary": "Export Compiled Binary",
@@ -447,7 +452,7 @@
       "new": "New Sketch",
       "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Відкрити папку",
-      "openRecent": "Open Recent",
+      "openRecent": "Відкрити останній",
       "openSketchInNewWindow": "Open Sketch in New Window",
       "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Save sketch folder as...",
@@ -460,7 +465,7 @@
       "titleSketchbook": "Sketchbook",
       "upload": "Завантажити",
       "uploadUsingProgrammer": "Upload Using Programmer",
-      "uploading": "Uploading...",
+      "uploading": "Завантаження..",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Перевірити ",
       "verifyOrCompile": "Verify/Compile"
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },
@@ -495,7 +501,7 @@
     },
     "userFields": {
       "cancel": "Відміна ",
-      "enterField": "Enter {0}",
+      "enterField": "Ввід{0}",
       "upload": "Завантажити"
     },
     "validateSketch": {

@@ -18,24 +18,21 @@
       "configDialog1": "Hautatu plaka bat eta ataka bat programa bat kargatu nahi baduzu.",
       "configDialog2": "Plaka bakarrik hautatzen baduzu, programa konpilatu ahal izango duzu, baina ez kargatu.",
       "couldNotFindPreviouslySelected": "Ezin izan da aurkitu aurrez hautatutako '{0}' plaka instalatutako '{1}' plataforman. Hautatu berriz eskuz erabili nahi duzun plaka. Orain berriz hautatu nahi duzu?",
-      "disconnected": "Disconnected",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Eskuratu plakaren informazioa",
       "inSketchbook": "(programa bilduman)",
       "installNow": "\"{0} {1}\" nukleoa instalatu behar da unean hautatutako \"{2}\" plakarentzat. Orain instalatu nahi duzu?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "FQBN ez dago erabilgarri hautatutako \"{0}\" plakarentzat. Dagokion nukleoa instalatuta daukazu?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "Ez da atakarik hautatu plakarentzat: '{0}'",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Plakarik ez da hautatu",
       "openBoardsConfig": "Hautatu beste plaka eta ataka bat...",
       "pleasePickBoard": "Aukeratu hautatu duzun atakara konektatutako plaka bat.",
       "port": "{0} ataka",
-      "portLabel": "Port: {0}",
       "ports": "ports",
       "programmer": "Programatzailea",
       "reselectLater": "Hautatu berriz geroago",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Hautatu plaka",
       "selectPortForInfo": "Hautatu ataka bat plakaren informazioa eskuratzeko.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "{0}:{1} plataforma behar bezala instalatu da",
       "succesfullyUninstalledPlatform": "{0}:{1} plataforma behar bezala desinstalatu da",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Plaka kudeatzailea",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimizatu arazketarako",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Ez galdetu berriro"
     },
@@ -229,10 +232,6 @@
       "nextError": "Next Error",
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Ezin izan da programa gorde. Kopiatu gorde gabeko zure lana zure testu-editore gogokoenera eta berrabiarazi IDEa.",
-      "unsavedChanges": "Gorde gabeko aldaketak galduko dira."
     },
     "examples": {
       "builtInExamples": "Integratutako adibideak",
@@ -251,7 +250,7 @@
       "selectBoard": "Hautatu plaka",
       "selectVersion": "Hautatu firmware bertsioa",
       "successfullyInstalled": "Firmwarea behar bezala instalatu da.",
-      "updater": "WiFi101 / WiFiNINA firmware eguneratzailea"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Ingurunea",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Saltatu bertsioa",
       "updateAvailable": "Eguneratzea eskuragarri",
       "versionDownloaded": "Arduino IDE {0} deskargatu da."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Gehitu .ZIP liburutegia...",
@@ -381,6 +384,9 @@
       "language.log": "Egia Arduino Language Server-ek egunkari-fitxategiak sortu behar baditu programaren karpetan. Bestela, gezurra. Lehenetsia gezurra da.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Proxyaren eskuzko konfigurazioa",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Sarea",
       "newSketchbookLocation": "Hautatu programa bilduma berriaren kokalekua",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Artxibatu programa",
       "cantOpen": "\"{0}\" izeneko karpeta badago dagoeneko. Ezin da programa ireki.",
-      "close": "Ziur zaude programa itxi nahi duzula?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "'{0}' artxiboa sortu da.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

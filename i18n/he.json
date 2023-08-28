@@ -18,24 +18,21 @@
       "configDialog1": "נא לבחור סוג לוח ופורט כדי להעלות את הסקיצה.",
       "configDialog2": "אם נבחר לוח ניתן יהיה לקמפל, אבל לא להעלות את הסקיצה.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "מנותק",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "פרטי הלוח",
       "inSketchbook": "(בסקיצה)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "הFQBN אינו זמין ללוח \"{0}\". האם הותקן הליבה המתאימה?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "לא נמצאו פורטים",
-      "noPortsSelected": "לא נבחרו פורטים ללוחות '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "לא נבחרו לוחות.",
       "openBoardsConfig": "בחר לוח ופורט אחר...",
       "pleasePickBoard": "יש לבחור את הלוח המחובר לפורט הנבחר.",
       "port": "פורט{0}",
-      "portLabel": "פורט: {0}",
       "ports": "ports",
       "programmer": "תכנת",
       "reselectLater": "בחר מחדש מאוחר יותר",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "חפש לוח",
       "selectBoard": "בחר לוח",
       "selectPortForInfo": "אנא בחר פורט לקבלת מידע אודותיו.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "פלטפורמה הותקנה בהצלחה {0}:{1}",
       "succesfullyUninstalledPlatform": "פלטפורמה הוסרה בהצלחה {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "מנהל לוחות",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "אופטימיזציה לדיבאג",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "אל תשאל שוב"
     },
@@ -229,10 +232,6 @@
       "nextError": "שגיאה הבאה.",
       "previousError": "שגיאה קודמת.",
       "revealError": "הראה שגיאה"
-    },
-    "electron": {
-      "couldNotSave": "לא ניתן לשמור את הסקיצה. נא להעתיק את העבודה הלא שמורה לתוך עורך טקסט חיצוני, ולהפעיל מחדש את הIDE.",
-      "unsavedChanges": "כל השינויים שלא נשמרו לא ישמרו."
     },
     "examples": {
       "builtInExamples": "דוגמאות מובנות",
@@ -251,7 +250,7 @@
       "selectBoard": "בחר לוח",
       "selectVersion": "בחירות גרסת קושחה",
       "successfullyInstalled": "הקושחה הותקנה בהצלחה.",
-      "updater": "לעדכון הקושחה WiFi101 / WiFiNINA "
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "סביבה",
@@ -281,6 +280,10 @@
       "skipVersionButton": "דלג גרסה",
       "updateAvailable": "נמצא עדכון",
       "versionDownloaded": "Arduino IDE {0} ירד בהצלחה"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "הוספת ספריית .zip",
@@ -381,6 +384,9 @@
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "הגדרת פרוקסי ידנית",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "רשת",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "בטוח.ה שתרצה.י לסגור את הסקיצה?",
       "compile": "מקמפל סקיצה...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "ארכיון ׳{0}׳ נוצר.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

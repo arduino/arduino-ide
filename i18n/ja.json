@@ -18,24 +18,21 @@
       "configDialog1": "スケッチを書き込みたい場合には、ボードとポートの両方を選択してください。",
       "configDialog2": "ボードのみを選択した場合、コンパイルはできますが、スケッチの書き込みはできません。",
       "couldNotFindPreviouslySelected": "インストールされているプラットフォーム'{1}'で、以前に選択したボード'{0}'が見つかりませんでした。使用したいボードを手動で選択し直してください。今すぐ選択し直しますか？",
-      "disconnected": "切断中",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "ボード情報を取得",
       "inSketchbook": "（スケッチブック内）",
       "installNow": "現在選択されているボード\"{2}\"用にコア\"{0} {1}\"をインストールする必要があります。今すぐインストールしますか？",
       "noBoardsFound": "\"{0}\"のボードが見つかりませんでした",
-      "noFQBN": "選択されたボード\"{0}\"にはFQBNがありません。対応するコアをインストール済みですか？",
       "noNativeSerialPort": "ネイティブのシリアルポートで、情報を取得できません。",
       "noPortsDiscovered": "ポートが見つかりませんでした",
-      "noPortsSelected": "ボード用に選択されたポートがありません: '{0}'.",
       "nonSerialPort": "シリアルポートではないため、情報を取得できません。",
-      "noneSelected": "ボード未選択です。",
       "openBoardsConfig": "他のボードとポートを選択…",
       "pleasePickBoard": "選択したポートに接続されているボードを選んでください。",
       "port": "ポート{0}",
-      "portLabel": "ポート: {0}",
       "ports": "ポート",
       "programmer": "書き込み装置",
       "reselectLater": "後で選択しなおす",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "ボードを検索",
       "selectBoard": "ボードを選択",
       "selectPortForInfo": "ボード情報を得るには、ポートを選択してください。",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "プラットフォーム{0}:{1}のインストールに成功しました",
       "succesfullyUninstalledPlatform": "プラットフォーム{0}:{1}のアンインストールに成功しました",
       "typeOfPorts": "{0}ポート",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "未知のボード"
     },
     "boardsManager": "ボードマネージャ",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "デバッグに最適化",
       "sketchIsNotCompiled": "デバッグセッションを開始する前に、スケッチ'{0}'を検証する必要があります。スケッチを検証してから、もう一度デバッグを開始してください。今すぐスケッチを検証しますか？"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "次回から表示しない"
     },
@@ -229,10 +232,6 @@
       "nextError": "次のエラー",
       "previousError": "前のエラー",
       "revealError": "エラーを表示"
-    },
-    "electron": {
-      "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディターにコピーして、IDEを再起動してください。",
-      "unsavedChanges": "未保存の変更は保存されません。"
     },
     "examples": {
       "builtInExamples": "付属のスケッチ例",
@@ -251,7 +250,7 @@
       "selectBoard": "ボードを選択",
       "selectVersion": "ファームウェアのバージョンを選択",
       "successfullyInstalled": "ファームウェアのインストールに成功しました。",
-      "updater": "WiFi101 /  WiFiNINAファームウェア・アップデータ"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "環境",
@@ -281,6 +280,10 @@
       "skipVersionButton": "バージョンをスキップ",
       "updateAvailable": "アップデートがあります",
       "versionDownloaded": "Arduino IDE {0}がダウンロードされました。"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": ".ZIP形式のライブラリをインストール...",
@@ -381,6 +384,9 @@
       "language.log": "Arduino Language Serverがスケッチフォルダにログファイルを生成した方がよい場合はtrue。それ以外はfalse。デフォルトではfalse。",
       "language.realTimeDiagnostics": "trueの場合、言語サーバーはエディターでの入力時にリアルタイムの診断を提供します。デフォルトはfalseです。",
       "manualProxy": "手動プロキシ設定",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "ネットワーク",
       "newSketchbookLocation": "新しいスケッチブックの場所を選択",
       "noCliConfig": "CLIの設定を読み込めませんでした",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "スケッチをアーカイブする",
       "cantOpen": "「{0}」というフォルダはすでに存在します。スケッチを開けません。",
-      "close": "本当にスケッチを閉じますか？",
       "compile": "スケッチをコンパイル中…",
       "configureAndUpload": "構成と書き込み",
       "createdArchive": "アーカイブ'{0}'を作成しました。",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

@@ -5,8 +5,8 @@
       "label": "Über {0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
-      "goToIoTCloud": "Go to IoT Cloud",
+      "goToCloudEditor": "Zum Cloud-Editor gehen",
+      "goToIoTCloud": "Zur IoT-Cloud gehen",
       "goToProfile": "Profil aufrufen",
       "menuTitle": "Arduino-Cloud"
     },
@@ -18,24 +18,21 @@
       "configDialog1": "Wählen Sie ein Board und einen Port, wenn Sie den Sketch hochladen möchten.",
       "configDialog2": "Wenn Sie nur ein Board auswählen, werden Sie den Sketch nur kompilieren können, jedoch nicht hochladen.",
       "couldNotFindPreviouslySelected": "Zuvor gewähltes Board '{0}' wurde nicht in der installierten Plattform '{1}' gefunden. Bitte Board erneut auswählen. Jetzt auswählen?",
-      "disconnected": " Verbindung getrennt",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Board-Informationen abrufen",
       "inSketchbook": "(im Sketchbook)",
       "installNow": "Der \"{0} {1}\" Core muss für das ausgewählte \"{2}\" Board installiert werden. Jetzt installieren?",
       "noBoardsFound": "Für \"{0}\" wurden keine Boards gefunden.",
-      "noFQBN": "Der FQBN ist für das gewählte Board \"{0}\" nicht verfügbar. Wurde der zugehörige Core installiert?",
       "noNativeSerialPort": "Nativer serieller Port, keine Informationen verfügbar.",
       "noPortsDiscovered": "Keine Ports gefunden",
-      "noPortsSelected": "Kein Port für das Board : '{0}' ausgewählt.",
       "nonSerialPort": "Nicht-serieller Port, keine Informationen verfügbar.",
-      "noneSelected": "Kein Board ausgewählt.",
       "openBoardsConfig": "Wähle einen anderes Board und einen anderen Port...",
       "pleasePickBoard": "Bitte wählen Sie das Board, welches am ausgewählten Port angeschlossen ist.",
       "port": "Port{0}",
-      "portLabel": "Port{0}",
       "ports": "Ports",
       "programmer": "Programmer",
       "reselectLater": "Später auswählen",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Board suchen",
       "selectBoard": "Board wählen",
       "selectPortForInfo": "Wähle ein Port, um Informationen über das Board zu erhalten.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Plattform erfolgreich installiert {0}:{1}",
       "succesfullyUninstalledPlatform": "Plattform erfolgreich deinstalliert {0}:{1}",
       "typeOfPorts": "{0} Ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unbekanntes Board"
     },
     "boardsManager": "Board-Verwaltung",
@@ -117,7 +115,7 @@
       "remote": "Remote",
       "share": "Teilen....",
       "shareSketch": "Sketch teilen",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "Zeige/Verstecke Cloud Sketchbook",
       "signIn": "Anmelden",
       "signInToCloud": "Anmelden zur Arduino Cloud",
       "signOut": "Abmelden",
@@ -130,10 +128,10 @@
       "creating": "Cloud-Sketch '{0}' wird erstellt...",
       "new": "Neuer Cloud-Sketch",
       "notFound": "Cloud-Sketch '{0}' konnte nicht heruntergeladen werden. Er existiert nicht.",
-      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
-      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "pulling": "Synchronisiere Sketchbook, lade '{0}' runter...",
+      "pushing": "Synchronisiere Sketchbook, lade '{0}' hoch...",
       "renaming": "Cloud-Sketch wird von '{0}' nach '{1}' umbenannt ...",
-      "synchronizingSketchbook": "Synchronizing sketchbook..."
+      "synchronizingSketchbook": "Synchronisiere Sketchbook..."
     },
     "common": {
       "all": "Alle",
@@ -160,10 +158,10 @@
     "component": {
       "boardsIncluded": "In diesem Paket enthaltene Boards:",
       "by": "von",
-      "clickToOpen": "Click to open in browser: {0}",
+      "clickToOpen": "Klicken, um im Browser zu öffnen: {0}",
       "filterSearch": "Filtern Sie Ihre Suche ...",
       "install": "Installieren",
-      "installLatest": "Install Latest",
+      "installLatest": "Neueste installieren",
       "installVersion": "Installiere {0}",
       "installed": "{0} installiert",
       "moreInfo": "Mehr Information",
@@ -176,11 +174,11 @@
     },
     "configuration": {
       "cli": {
-        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+        "inaccessibleDirectory": "Kein Zugriff möglich auf Sketchbook-Ort bei '{0}': {1}"
       }
     },
     "connectionStatus": {
-      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+      "connectionLost": "Verbindung verloren. Cloud-Sketch Aktionen und Updates werden nicht verfügbar sein."
     },
     "contributions": {
       "addFile": "Datei hinzufügen...",
@@ -213,7 +211,12 @@
       "debuggingNotSupported": "'{0}' unterstützt kein Debuggen",
       "noPlatformInstalledFor": "Die Platform für '{0}' ist nicht instaliert.",
       "optimizeForDebugging": "Für Debugging optimieren",
-      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+      "sketchIsNotCompiled": "Der Sketch '{0}' muss vor dem Starten einer Debugging-Sitzung überprüft werden. Bitte überprüfe den Sketch und starte das Debugging erneut. Möchtest du den Sketch jetzt überprüfen?"
+    },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
     },
     "dialog": {
       "dontAskAgain": "Nicht noch einmal fragen"
@@ -229,10 +232,6 @@
       "nextError": "Nächster Fehler",
       "previousError": "Vorheriger Fehler",
       "revealError": "Fehler zeigen"
-    },
-    "electron": {
-      "couldNotSave": "Der Sketch konnte nicht gespeichert werden. Bitte kopieren Sie Ihre ungespeicherte Arbeit in Ihren bevorzugten Texteditor und starten Sie die IDE neu.",
-      "unsavedChanges": "Alle ungesicherten Änderung werden nicht gespeichert."
     },
     "examples": {
       "builtInExamples": "Mitgelieferte Beispiele",
@@ -251,7 +250,7 @@
       "selectBoard": "Board auswählen",
       "selectVersion": "Firmware Version wählen",
       "successfullyInstalled": "Firmware wurde erfolgreich installiert.",
-      "updater": "WiFi101 / WiFiNINA Firmware Aktualisierer"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Umgebung",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Version Überspringen",
       "updateAvailable": "Update Verfügbar",
       "versionDownloaded": "Arduino IDE {0} wurde heruntergeladen"
+    },
+    "installable": {
+      "libraryInstallFailed": "Bibliothek '{0}{1}' konnte nicht installiert werden.",
+      "platformInstallFailed": "Plattform '{0}{1}' konnte nicht installiert werden."
     },
     "library": {
       "addZip": ".ZIP-Bibliothek hinzufügen...",
@@ -328,13 +331,13 @@
       "tools": "Werkzeuge"
     },
     "monitor": {
-      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
-      "baudRate": "{0} baud",
-      "connectionFailedError": "Could not connect to {0} {1} port.",
-      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
-      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
-      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
-      "notConnectedError": "Not connected to {0} {1} port.",
+      "alreadyConnectedError": "Konnte nicht mit {0} {1} Port verbinden. Verbindung besteht bereits.",
+      "baudRate": "{0} Baud",
+      "connectionFailedError": "Konnte nicht mit {0} {1} Port verbinden.",
+      "connectionFailedErrorWithDetails": "{0} Konnte nicht mit  {1} {2} Port verbinden.",
+      "connectionTimeout": "Zeitüberschreitung. Die IDE hat die 'success'-Nachricht nach erfolgreicher Verbindung nicht vom Monitor erhalten.",
+      "missingConfigurationError": "Konnte nicht mit {0} {1} Port verbinden. Monitor-Konfiguration fehlt.",
+      "notConnectedError": "Nicht mit {0} {1} Port verbunden.",
       "unableToCloseWebSocket": "Websocket wurde nicht geschlossen",
       "unableToConnectToWebSocket": "Websocket wurde nicht verbunden"
     },
@@ -381,6 +384,9 @@
       "language.log": "Wenn aktivert, werden Arduino-Sprach-Server-Logdateien in den Sketch-Ordner geschrieben. Standardgemäß deaktivert.",
       "language.realTimeDiagnostics": "Wenn aktiviert, bietet der Sprachserver bei der Eingabe im Editor eine Echtzeitdiagnose. Ist standardmäßig deaktiviert.",
       "manualProxy": "Manuelle Proxy Einstellung",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Netzwerk",
       "newSketchbookLocation": "Wähle einen neuen Ort für das Sketchbook ",
       "noCliConfig": "CLI-Konfiguration konnte nicht geladen werden",
@@ -415,7 +421,7 @@
     "serial": {
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Zeilenumbruch",
-      "connecting": "Connecting to '{0}' on '{1}'...",
+      "connecting": "Verbindung zu '{0}' auf '{1}'...",
       "message": "Nachicht (Enter um Nachricht für '{0}' auf '{1}' zu senden)",
       "newLine": "Neue Zeile",
       "newLineCarriageReturn": "Sowohl NL als auch CR",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Sketch archivieren",
       "cantOpen": "Ein Ordner mit dem Namen \"{0}\" ist bereits vorhanden. Der Sketch kann nicht geöffnet werden.",
-      "close": "Sind Sie sicher, dass Sie diesen Sketch schließen möchten?",
       "compile": "Kompiliere Sketch ...",
       "configureAndUpload": "Konfigurieren und Hochladen",
       "createdArchive": "Archiv '{0}' erstellt.",
@@ -438,8 +443,8 @@
       "editInvalidSketchFolderQuestion": "Wollen Sie versuchen, den Sketch mit einem anderen Namen abzuspeichern?",
       "exportBinary": "Kompilierte Binärdatei exportieren",
       "invalidCloudSketchName": "Der Name muss mit einem Buchstaben, einer Ziffer oder einem Unterstrich beginnen und darf Buchstaben, Ziffern, Bindestriche, Punkte und Unterstriche enthalten. Die maximale Länge ist 36 Zeichen.",
-      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
-      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderLocationDetails": "Ein Sketch kann nicht innerhalb einem seiner Ordner gespeichert werden.",
+      "invalidSketchFolderLocationMessage": "Ungültiger Ort für Sketch-Ordner: '{0}'",
       "invalidSketchFolderNameMessage": "Ungültiger Name für einen Sketch-Ordner: '{0}'",
       "invalidSketchName": "Der Name muss mit einem Buchstaben, einer Ziffer oder einem Unterstrich beginnen und darf Buchstaben, Ziffern, Bindestriche, Punkte und Unterstriche enthalten. Die maximale Länge ist 63 Zeichen.",
       "moving": "Übertragen...",
@@ -475,12 +480,13 @@
       "surveyMessage": "Helfen Sie uns, uns zu verbessern, indem Sie diese kurze Umfrage ausfüllen. Wir wissen unsere Community wertzuschätzen und möchten unsere Unterstützer gerne ein wenig besser kennenlernen."
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
-      "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
-      "light": "Light",
-      "user": "{0} (user)"
+      "currentThemeNotFound": "Das aktuell ausgewählte Theme konnte nicht gefunden werden: {0}. Die Arduino IDE hat ein eingebautes Theme ausgewählt, welches kompatibel mit dem fehlenden Theme ist.",
+      "dark": "Dunkel",
+      "deprecated": "{0} (veraltet)",
+      "hc": "Dunkel Hoher Kontrast",
+      "hcLight": "Hell Hoher Kontrast",
+      "light": "Hell",
+      "user": "{0} (Benutzer)"
     },
     "title": {
       "cloud": "Cloud"

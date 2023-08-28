@@ -18,24 +18,21 @@
       "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
       "configDialog2": "Si vous sélectionnez seulement une carte, vous pourrez compiler votre croquis, mais pas le téléverser.",
       "couldNotFindPreviouslySelected": "Impossible de trouver la carte précédente sélectionnée \"{0}\" dans les plateformes installées \"{1}\". Merci de re-sélectionner manuellement la carte que vous souhaitez utiliser. Souhaitez vous la re-sélectionner maintenant ?",
-      "disconnected": "Déconnecté",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Obtenir les informations sur la carte",
       "inSketchbook": "(dans le Croquis)",
       "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "Le FQBN n'est pas disponible pour la carte sélectionnée \"{0}\". Avez installé le cœur correspondant ?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "Aucun porte sélectionné pour la carte : '{0}'",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Aucune carte sélectionnée.",
       "openBoardsConfig": "Sélectionner une autre carte et un autre port ...",
       "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
       "port": "Port{0}",
-      "portLabel": "Port : {0}",
       "ports": "ports",
       "programmer": "Programmeur",
       "reselectLater": "Re-sélectionner plus tard",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Selectionner une carte",
       "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Plateforme installé avec succès {0}:{1}",
       "succesfullyUninstalledPlatform": "Plateforme désinstallée avec succès {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Gestionnaire de carte",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimisé pour le déboggage.",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Ne plus demander."
     },
@@ -229,10 +232,6 @@
       "nextError": "Prochaine erreur",
       "previousError": "Erreur précédente",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Impossible d'enregistrer le croquis. Veuillez copier votre travail non enregistré dans votre éditeur de texte favori et redémarrer l'IDE.",
-      "unsavedChanges": "Les modifications non enregistrées seront perdues."
     },
     "examples": {
       "builtInExamples": "Exemples inclus",
@@ -251,7 +250,7 @@
       "selectBoard": "Selectionner une carte",
       "selectVersion": "Choisir la version du firmware",
       "successfullyInstalled": "Firmware installé correctement.",
-      "updater": "Mise à jour du Firmware WiFi101 / WiFiNINA"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Environnement",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Ignorer la version",
       "updateAvailable": "Mise à jour disponible",
       "versionDownloaded": "L'IDE Arduino {0} a été téléchargé."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Ajouter la bibliothèque .ZIP...",
@@ -381,6 +384,9 @@
       "language.log": "Vrai si le serveur de langage Arduino devrait générer des fichiers logs dans le dossier du croquis. Si non faux. La valeur par défaut est faux.",
       "language.realTimeDiagnostics": "Si c'est vrai, le serveur de langue fournit des diagnostics en temps réel lors de la saisie dans l'éditeur. C'est faux par défaut.",
       "manualProxy": "Configuration manuelle du proxy",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Réseau",
       "newSketchbookLocation": "Sélectionner la localisation du nouveau croquis.",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archiver le croquis",
       "cantOpen": "Un dossier nommé « {0} » existe déjà. Impossible d''ouvrir le croquis.",
-      "close": "Êtes-vous sûr de vouloir fermer ce croquis ?",
       "compile": "Compilation du programme...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Archive créer '{0}'",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

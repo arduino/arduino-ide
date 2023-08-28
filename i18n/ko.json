@@ -18,25 +18,22 @@
       "configDialog1": "스케치를 업로드할 보드 및 포트를 선택",
       "configDialog2": "보드를 선택하면 컴파일은 가능하지만, 스케치를 업로드 할 수 없습니다.",
       "couldNotFindPreviouslySelected": "선택된 보드를 찾을 수 없습니다. '{0}' 설치된 플랫폼에서'{1}'. 수동으로 사용 할 보드를 선택해주세요.\n지금 보드를 다시 선택하시겠습니까?",
-      "disconnected": "연결해제됨",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "보드정보 얻기",
       "inSketchbook": "(스케치북에서)",
       "installNow": "\"{0} {1}\"버전은 최근에 선택된 \"{2}\"보드를 설치해야 합니다. 지금 설치하시겠습니까?",
       "noBoardsFound": "\"{0}\"에 대한 보드를 찾을 수 없습니다.",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "포트를 찾을 수 없습니다.",
-      "noPortsSelected": "보드에 맞는 포트가 없습니다: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "보드가 선택되지 않았습니다.",
       "openBoardsConfig": "보드 및 포트를 선택하세요.",
       "pleasePickBoard": "선택한 포트에 연결할 보드를 선택하십시오",
       "port": "포트{0}",
-      "portLabel": "포트: {0}",
       "ports": "ports",
       "programmer": "프로그래머",
       "reselectLater": "나중에 선택",
-      "searchBoard": "보드찾기",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "보드 검색",
       "selectBoard": "보드 선택",
       "selectPortForInfo": "보드 정보를 얻으려면 포트를 선택하십시오.",
       "showAllAvailablePorts": "활성화된 사용 가능한 모든 포트를 표시합니다.",
@@ -44,7 +41,8 @@
       "succesfullyInstalledPlatform": "성공적으로 설치된 플랫폼{0}:{1}",
       "succesfullyUninstalledPlatform": "성공적으로 설치된 플랫폼 {0}:{1}",
       "typeOfPorts": "{0} ports",
-      "unknownBoard": "Unknown board"
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "알 수 없는 보드"
     },
     "boardsManager": "보드매니저",
     "boardsType": {
@@ -98,7 +96,7 @@
       "embed": "Embed:",
       "emptySketchbook": "스케치북이 비어 있습니다.",
       "goToCloud": "Go to Cloud",
-      "learnMore": "더 배우기",
+      "learnMore": "더 알아보기",
       "link": "링크:",
       "notYetPulled": "클라우드에 push 할수 없습니다. 아직 pull 되지 않았습니다.",
       "offline": "오프라인",
@@ -138,7 +136,7 @@
     "common": {
       "all": "전체",
       "contributed": "공헌된",
-      "installManually": "수동설치",
+      "installManually": "수동으로 설치",
       "later": "나중에",
       "noBoardSelected": "선택된 보드 없음",
       "notConnected": "[연결되지 않음]",
@@ -152,7 +150,7 @@
       "serialMonitor": "시리얼 모니터",
       "type": "Type",
       "unknown": "알 수 없음",
-      "updateable": "업데이트가능함"
+      "updateable": "업데이트 가능함"
     },
     "compile": {
       "error": "컴파일 오류: {0}"
@@ -164,8 +162,8 @@
       "filterSearch": "필터 검색...",
       "install": "설치",
       "installLatest": "Install Latest",
-      "installVersion": "Install {0}",
-      "installed": "{0} installed",
+      "installVersion": "{0} 설치",
+      "installed": "{0} 설치됨",
       "moreInfo": "더 많은 정보",
       "otherVersions": "Other Versions",
       "remove": "제거",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "디버깅 최적화",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "다시 묻지 않음"
     },
@@ -229,10 +232,6 @@
       "nextError": "다음 에러",
       "previousError": "이전 에러",
       "revealError": "에러 표시"
-    },
-    "electron": {
-      "couldNotSave": "스케치를 저장할 수 없습니다. 저장하지 않은 작업을 즐겨 사용하는 텍스트 편집기에 복사하고 IDE를 다시 시작하세요.",
-      "unsavedChanges": "저장되지 않은 변경 사항은 저장되지 않습니다."
     },
     "examples": {
       "builtInExamples": "포함된 예제들",
@@ -251,7 +250,7 @@
       "selectBoard": "보드 선택",
       "selectVersion": "펌웨어 버전 선택",
       "successfullyInstalled": "펌웨어가 성공적으로 설치되었습니다.",
-      "updater": "WiFi101 / WiFiNINA 펌웨어 업데이터"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "환경",
@@ -281,6 +280,10 @@
       "skipVersionButton": "이 버전 건너뛰기",
       "updateAvailable": "업데이트 사용 가능",
       "versionDownloaded": "Arduino IDE {0} 버전이 다운로드 되었습니다. "
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": ".ZIP 라이브러리 추가...",
@@ -381,6 +384,9 @@
       "language.log": "Arduino 언어 서버가 스케치 폴더에 로그 파일을 생성해야 하는 경우 true이고, 그렇지 않으면 false입니다. 기본은 false입니다.",
       "language.realTimeDiagnostics": "true인 경우 언어 서버는 편집기에 입력할 때 실시간 진단을 제공하며 기본적으로 false입니다.",
       "manualProxy": "수동 프록시 구성",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "네트워크",
       "newSketchbookLocation": "새 스케치북 위치 선택",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "스케치 압축저장",
       "cantOpen": "이름이 \"{0}\" 인 폴더가 이미 존재합니다. 스케치를 열 수 없습니다.",
-      "close": "스케치를 닫으시겠습니까?",
       "compile": "스케치 컴파일중...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },
@@ -504,7 +510,7 @@
       "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
-      "renameSketchFolderTitle": "Invalid sketch name"
+      "renameSketchFolderTitle": "유효하지 않은 스케치 이름"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

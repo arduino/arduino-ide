@@ -1,83 +1,81 @@
 {
   "arduino": {
     "about": {
-      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
-      "label": "About {0}"
+      "detail": "Versi:{0}\nTanggal:{1}{2}\nVersi CLI{3}\n\n{4}",
+      "label": "Tentang {0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
-      "goToIoTCloud": "Go to IoT Cloud",
-      "goToProfile": "Go to Profile",
+      "goToCloudEditor": "Buka Cloud Editor",
+      "goToIoTCloud": "Buka IoT Cloud",
+      "goToProfile": "Buka Profil",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
-      "board": "Board{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
-      "boardInfo": "Board Info",
-      "boards": "boards",
-      "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
-      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "board": "Papan{0}",
+      "boardConfigDialogTitle": "Pilih Papan dan Port Lain",
+      "boardInfo": "Informasi Papan",
+      "boards": "papan",
+      "configDialog1": "Pilih antara Papan dan Port jika kamu ingin mengunggah sebuah sketsa.",
+      "configDialog2": "Jika kamu hanya memilih Papanmu yang dapat untuk mengkompilasi, tetapi tidak untuk mengunggah sketsamu.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Disconnected",
-      "getBoardInfo": "Get Board Info",
-      "inSketchbook": " (in Sketchbook)",
+      "editBoardsConfig": "Edit Board and Port...",
+      "getBoardInfo": "Dapatkan Informasi Papan",
+      "inSketchbook": "(di buku sketsa)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
-      "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
-      "noNativeSerialPort": "Native serial port, can't obtain info.",
-      "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "No ports selected for board: '{0}'.",
-      "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "No boards selected.",
-      "openBoardsConfig": "Select other board and port…",
+      "noBoardsFound": "Tidak ditemukan papan untuk \"{0}\"",
+      "noNativeSerialPort": "Port serial asli, tidak dapat memperoleh informasi.",
+      "noPortsDiscovered": "Tidak ada port yang ditemukan",
+      "nonSerialPort": "Port non-serial, tidak dapat memperoleh informasi.",
+      "openBoardsConfig": "Pilih papan dan port yang lain... ",
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
-      "portLabel": "Port: {0}",
-      "ports": "ports",
-      "programmer": "Programmer",
-      "reselectLater": "Reselect later",
-      "searchBoard": "Search board",
-      "selectBoard": "Select Board",
-      "selectPortForInfo": "Please select a port to obtain board info.",
-      "showAllAvailablePorts": "Shows all available ports when enabled",
-      "showAllPorts": "Show all ports",
-      "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
-      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
-      "typeOfPorts": "{0} ports",
-      "unknownBoard": "Unknown board"
+      "ports": "port",
+      "programmer": "Pemrogram",
+      "reselectLater": "Pilih ulang nanti",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "Cari papan",
+      "selectBoard": "Pilih Papan",
+      "selectPortForInfo": "Mohon pilih port untuk memperoleh informasi papan.",
+      "showAllAvailablePorts": "Tampilkan semua port yang tersedia saat dinyalakan",
+      "showAllPorts": "Tampilkan semua port",
+      "succesfullyInstalledPlatform": "Berhasil memasang platform {0}:{1}",
+      "succesfullyUninstalledPlatform": "Berhasil menghapus platform {0}:{1}",
+      "typeOfPorts": "{0}port",
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "Papan tidak diketahui"
     },
-    "boardsManager": "Boards Manager",
+    "boardsManager": "Pengelola Papan",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Tersertifikasi Arduino"
     },
     "bootloader": {
-      "burnBootloader": "Burn Bootloader",
-      "burningBootloader": "Burning bootloader...",
-      "doneBurningBootloader": "Done burning bootloader."
+      "burnBootloader": "Bakar Bootloader",
+      "burningBootloader": "Membakar bootloader...",
+      "doneBurningBootloader": "Pembakaran Bootloader Selesai."
     },
     "burnBootloader": {
-      "error": "Error while burning the bootloader: {0}"
+      "error": "Eror saat membakar bootloader: {0}"
     },
     "certificate": {
-      "addNew": "Add New",
-      "addURL": "Add URL to fetch SSL certificate",
-      "boardAtPort": "{0} at {1}",
-      "certificatesUploaded": "Certificates uploaded.",
-      "enterURL": "Enter URL",
-      "noSupportedBoardConnected": "No supported board connected",
-      "openContext": "Open context",
-      "remove": "Remove",
-      "selectBoard": "Select a board...",
-      "selectCertificateToUpload": "1. Select certificate to upload",
-      "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
-      "upload": "Upload",
-      "uploadFailed": "Upload failed. Please try again.",
-      "uploadRootCertificates": "Upload SSL Root Certificates",
-      "uploadingCertificates": "Uploading certificates."
+      "addNew": "Tambah Baru",
+      "addURL": "Tambah URL untuk mengambil Sertifikat SSL",
+      "boardAtPort": "{0} pada {1}",
+      "certificatesUploaded": "Sertifikat terunggah.",
+      "enterURL": "Masukan URL",
+      "noSupportedBoardConnected": "Tidak ada papan yang didukung tersambung",
+      "openContext": "Buka konteks",
+      "remove": "Hapus",
+      "selectBoard": "Pilih sebuah papan...",
+      "selectCertificateToUpload": "1. Pilih sertifikat untuk diunggah",
+      "selectDestinationBoardToUpload": "2. Pilih papan tujuan dan unggah sertifikat",
+      "upload": "Unggah",
+      "uploadFailed": "Gagal mengunggah. Mohon dicoba kembali.",
+      "uploadRootCertificates": "Unggah Sertifikat Akar SSL",
+      "uploadingCertificates": "Mengunggah sertifikat."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
+      "checkForUpdates": "Periksa Pembaruan Arduino",
+      "installAll": "Pasang Semua",
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
@@ -96,7 +94,7 @@
       "donePulling": "Done pulling '{0}'.",
       "donePushing": "Done pushing '{0}'.",
       "embed": "Embed:",
-      "emptySketchbook": "Your Sketchbook is empty",
+      "emptySketchbook": "Buku Sketsa anda kosong",
       "goToCloud": "Go to Cloud",
       "learnMore": "Learn more",
       "link": "Link:",
@@ -115,20 +113,20 @@
       "pushSketch": "Push Sketch",
       "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
       "remote": "Remote",
-      "share": "Share...",
-      "shareSketch": "Share Sketch",
+      "share": "Membagikan...",
+      "shareSketch": "Bagikan Sketsa",
       "showHideSketchbook": "Show/Hide Cloud Sketchbook",
-      "signIn": "SIGN IN",
-      "signInToCloud": "Sign in to Arduino Cloud",
+      "signIn": "MASUK",
+      "signInToCloud": "Masuk ke Arduino Cloud",
       "signOut": "Sign Out",
-      "sync": "Sync",
-      "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
-      "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
+      "sync": "Sinkron",
+      "syncEditSketches": "Sinkron dan edit Sketsa Arduino Cloud anda",
+      "visitArduinoCloud": "Kunjungi Arduino Cloud untuk membuat Sketsa Cloud"
     },
     "cloudSketch": {
-      "alreadyExists": "Cloud sketch '{0}' already exists.",
-      "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
+      "alreadyExists": "Sketsa Cloud '{0}' sudah ada",
+      "creating": "Membuat Sketsa Cloud '{0}'...",
+      "new": "Sketsa Cloud Baru",
       "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
       "pulling": "Synchronizing sketchbook, pulling '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
@@ -168,7 +166,7 @@
       "installed": "{0} installed",
       "moreInfo": "More info",
       "otherVersions": "Other Versions",
-      "remove": "Remove",
+      "remove": "Hapus",
       "title": "{0} by {1}",
       "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Don't ask again"
     },
@@ -230,10 +233,6 @@
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
     },
-    "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Any unsaved changes will not be saved."
-    },
     "examples": {
       "builtInExamples": "Built-in examples",
       "couldNotInitializeExamples": "Could not initialize built-in examples.",
@@ -248,10 +247,10 @@
       "install": "Install",
       "installingFirmware": "Installing firmware.",
       "overwriteSketch": "Installation will overwrite the Sketch on the board.",
-      "selectBoard": "Select Board",
+      "selectBoard": "Pilih Papan",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Environment",
@@ -282,12 +281,16 @@
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
     },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+    },
     "library": {
       "addZip": "Add .ZIP Library...",
       "arduinoLibraries": "Arduino libraries",
       "contributedLibraries": "Contributed libraries",
       "include": "Include Library",
-      "installAll": "Install All",
+      "installAll": "Pasang Semua",
       "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
@@ -381,6 +384,9 @@
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
@@ -458,7 +463,7 @@
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Local Sketchbook",
       "titleSketchbook": "Sketchbook",
-      "upload": "Upload",
+      "upload": "Unggah",
       "uploadUsingProgrammer": "Upload Using Programmer",
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
@@ -466,7 +471,7 @@
       "verifyOrCompile": "Verify/Compile"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
+      "newCloudSketch": "Sketsa Cloud Baru",
       "newSketch": "New Sketch"
     },
     "survey": {
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },
@@ -496,7 +502,7 @@
     "userFields": {
       "cancel": "Cancel",
       "enterField": "Enter {0}",
-      "upload": "Upload"
+      "upload": "Unggah"
     },
     "validateSketch": {
       "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",

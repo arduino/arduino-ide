@@ -18,24 +18,21 @@
       "configDialog1": "Pokud chcete nahrát sketch, musíte zvolit jak desku tak i port.",
       "configDialog2": "Pokud zvolíte jen desku, budete schopni kompilovat sketch, ale nebudete ji moci nahrát do desky.",
       "couldNotFindPreviouslySelected": "Dříve zvolená deska '{0}' v instalované platformě '{1}' nebyla nalezena. Zvolte prosím manuálně desku kterou chcete použít. Chcete tuto desku zvolit nyní? ",
-      "disconnected": "Odpojeno",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Získat info o desce.",
       "inSketchbook": "(v projektech)",
       "installNow": "\"{0}{1}\" jádro musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
       "noBoardsFound": "Nenalezeny žádné desky pro \"{0}\"",
-      "noFQBN": "FQBN není dostupné pro zvolenou desku \"{0}\". Máte nainstalované příslušné jádro? ",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "Nenalezeny žádné porty",
-      "noPortsSelected": "Nebyl zvolen port pro desku '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Nebyla zvolena deska.",
       "openBoardsConfig": "Zvolte jinou desku a port...",
       "pleasePickBoard": "Vyberte prosím desku která je připojená k zvolenému portu. ",
       "port": "Port {0}",
-      "portLabel": "Port:{0}",
       "ports": "porty",
       "programmer": "Programátor",
       "reselectLater": "Zvolit později",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Vyhledat desku",
       "selectBoard": "Zvolit desku",
       "selectPortForInfo": "Prosím zvolte port pro získání informací o desce.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Platforma {0}:{1} byla úspěšně nainstalována.",
       "succesfullyUninstalledPlatform": "Platforma {0}:{1} byla úspěšně odinstalována.",
       "typeOfPorts": "{0}porty",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Neznámá deska"
     },
     "boardsManager": "Manažér desek",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "optimalizovat pro Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Znovu se neptat"
     },
@@ -229,10 +232,6 @@
       "nextError": "Další chyba",
       "previousError": "Předchozí chyba",
       "revealError": "Zobrazit Chybu"
-    },
-    "electron": {
-      "couldNotSave": "Nebylo možné uložit sketch. Zkopírujte prosím neuloženou práci do Vašeho oblíbeného textového editoru a restartujte IDE. ",
-      "unsavedChanges": "Jakékoli změny nebudou uloženy. "
     },
     "examples": {
       "builtInExamples": "Vestavěné příklady.",
@@ -251,7 +250,7 @@
       "selectBoard": "Zvolit desku",
       "selectVersion": "Zvolit verzi firmwaru",
       "successfullyInstalled": "Firmware byl úspěšně nainstalován. ",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Prostředí",
@@ -281,6 +280,10 @@
       "skipVersionButton": "přeskočit verzi",
       "updateAvailable": "Je dostupná aktualizace",
       "versionDownloaded": "Arduino IDE {0}bylo staženo."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Přidat .ZIP knihovnu...",
@@ -381,6 +384,9 @@
       "language.log": "Ano pokud by jazykový server pro Arduino měl generovat logovací soubory do složky se sketchi, jinak ne. Ne je výchozí hodnota.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ruční nastavení proxy",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Síť",
       "newSketchbookLocation": "Zvolit nové umístění projektů",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archivovat sketch",
       "cantOpen": "Složka s názvem \"{0}\" již existuje, proto nemohu otevřít sketch. ",
-      "close": "Opravdu chcete zavřít tuto sketch? ",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Vytvořen archív '{0}'.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },
