@@ -18,24 +18,21 @@
       "configDialog1": "Selecciona tanto una placa como un puerto si quieres cargar un sketch.",
       "configDialog2": "Si seleccionas solo una placa podrás compilar, pero no cargar tu sketch.",
       "couldNotFindPreviouslySelected": "No se ha podido encontrar la placa previamente seleccionada '{0}' en la plataforma instalada '{1}'. Por favor, vuelve a seleccionar manualmente la placa que quieres utilizar. ¿Quieres volver a seleccionarla ahora?",
-      "disconnected": "Desconectado",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Obtener información de la placa",
       "inSketchbook": " (en el Sketchbook)",
       "installNow": "Hay que instalar el núcleo \"{0} {1} \" para la placa \"{2}\" actualmente seleccionada. ¿Quieres instalarlo ahora?",
       "noBoardsFound": "No se han encotrado placas para \"{0}\"",
-      "noFQBN": "El FQBN no está disponible para la placa seleccionada \"{0}\". ¿Tienes instalado el núcleo correspondiente?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No se ha descubierto ningún puerto",
-      "noPortsSelected": "No se han seleccionado puertos para la placa: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Ninguna placa seleccionada.",
       "openBoardsConfig": "Seleccione otra placa y puerto...",
       "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
       "port": "Puerto {0}",
-      "portLabel": "Puerto: {0}",
       "ports": "puertos",
       "programmer": "Programador",
       "reselectLater": "Vuelve a seleccionar más tarde",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Buscar placa",
       "selectBoard": "Seleccionar Placa",
       "selectPortForInfo": "Por favor, seleccione un puerto para obtener información sobre la placa.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Plataforma {0}:{1} instalada correctamente",
       "succesfullyUninstalledPlatform": "Plataforma {0}:{1} desinstalada correctamente",
       "typeOfPorts": "{0} puertos",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Placa desconocida"
     },
     "boardsManager": "Gestor de placas",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimizar para depuración",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "No volver a preguntar"
     },
@@ -229,10 +232,6 @@
       "nextError": "Siguiente Error",
       "previousError": "Error Anterior",
       "revealError": "Revelar Error"
-    },
-    "electron": {
-      "couldNotSave": "No se ha podido guardar el sketch. Por favor, copia tu trabajo no guardado en tu editor de texto favorito y reinicia el IDE.",
-      "unsavedChanges": "Los cambios no guardados no serán guardados."
     },
     "examples": {
       "builtInExamples": "Ejemplos Construidos",
@@ -251,7 +250,7 @@
       "selectBoard": "Seleccionar Placa",
       "selectVersion": "Seleccionar la versión del firmware",
       "successfullyInstalled": "Firmware instalado correctamente.",
-      "updater": "Actualizador de Firmware de WiFi101 / WiFiNINA"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Entorno de desarrollo (IDE)",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Omitir versión",
       "updateAvailable": "Actualización disponible",
       "versionDownloaded": "Arduino IDE {0} se ha descargado."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Añadir biblioteca .ZIP...",
@@ -381,6 +384,9 @@
       "language.log": "Verdadero si el Servidor de Lenguaje Arduino debe generar archivos de registro en la carpeta del sketch. En caso contrario, falso. Por defecto es falso.",
       "language.realTimeDiagnostics": "Si está habilitado, el lenguaje proveerá diagnoticos en tiepo real meintras se teclea en el editor. Deshabilitado por defecto.",
       "manualProxy": "Configuración manual del proxy",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Red",
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archivo de programa",
       "cantOpen": "Ya existe una carpeta con el nombre \"{0}\". No se puede abrir.",
-      "close": "¿Estás seguro de que quieres cerrar el sketch?",
       "compile": "Compilando proyecto...",
       "configureAndUpload": "Configura y Subir",
       "createdArchive": "Archivo '{0}' creado.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

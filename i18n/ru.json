@@ -18,24 +18,21 @@
       "configDialog1": "Выберите плату и порт, если Вы хотите загрузить скетч в плату.",
       "configDialog2": "Если вы выбираете только плату, вы сможете компилировать, но не загружать свой скетч.",
       "couldNotFindPreviouslySelected": "Не удалось найти ранее выбранную плату '{0}' в установленной платформе '{1}'.Пожалуйста,  выберите плату которую хотите использовать вручную повторно. Вы хотите повторно выбрать её сейчас?",
-      "disconnected": "Плата Arduino не подключена",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Получить информацию о подключенной плате",
       "inSketchbook": " (в альбоме).",
       "installNow": "Необходимо установить ядро «{0} {1}»  для выбранной в данный момент «{2}» платы. Вы хотите установить его сейчас?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "FQBN недоступен для выбранной платы \"{0}\". Проверьте наличие необходимого ядра.",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "Не выбраны порты для платы: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "Плата не выбрана.",
       "openBoardsConfig": "Выберите другую плату и порт...",
       "pleasePickBoard": "Пожалуйста, выберите плату, подключенную к выбранному вами порту.",
       "port": "Порт{0}",
-      "portLabel": "Порт:{0}",
       "ports": "ports",
       "programmer": "Программатор",
       "reselectLater": "Перевыбрать позже",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Выбор платы",
       "selectPortForInfo": "Пожалуйста, выберите порт в меню инструментов для получения информации с платы.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Платформа установлена успешно {0}:{1}",
       "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Менеджер плат",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Оптимизировать для отладки",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Больше не спрашивать"
     },
@@ -229,10 +232,6 @@
       "nextError": "Следущая ошибка",
       "previousError": "Предыдущая ошибка",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Скетч не сохранён. Пожалуйста, скопируйте вашу не сохраненную работу в ваш внешний текстовый редактор и перезапустите IDE.",
-      "unsavedChanges": "Любые не сохраненные изменения не будут сохранены."
     },
     "examples": {
       "builtInExamples": "Встроенные Примеры",
@@ -251,7 +250,7 @@
       "selectBoard": "Выбор платы",
       "selectVersion": "Выберите версию прошивки",
       "successfullyInstalled": "Прошивка успешно установлена.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Окружение",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Пропустить версию",
       "updateAvailable": "Доступны обновления",
       "versionDownloaded": "Arduino IDE {0} был загружен."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Добавить .ZIP библиотеку...",
@@ -381,6 +384,9 @@
       "language.log": "True - сервер Arduino Language будет создавать файлы журнала в папке скетча. В противном случае - false. По умолчанию - false.",
       "language.realTimeDiagnostics": "Если включено, то языковой сервер проводит диагностику набранного текста в реальном времени. По умолчанию отключено.",
       "manualProxy": "Ручная настройка параметров прокси-сервера",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Сеть",
       "newSketchbookLocation": "Выбрать новое расположение для альбома со скетчами",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Архивировать скетч",
       "cantOpen": "Папка \"{0}\" уже существует. Невозможно открыть скетч.",
-      "close": "Вы действительно хотите закрыть скетч?",
       "compile": "Компиляция скетча...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Создать архив '{0}'.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

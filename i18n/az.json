@@ -18,24 +18,21 @@
       "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
       "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
       "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "disconnected": "Disconnected",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Get Board Info",
       "inSketchbook": " (in Sketchbook)",
       "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
       "noBoardsFound": "No boards found for \"{0}\"",
-      "noFQBN": "The FQBN is not available for the selected board \"{0}\". Do you have the corresponding core installed?",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
-      "noPortsSelected": "No ports selected for board: '{0}'.",
       "nonSerialPort": "Non-serial port, can't obtain info.",
-      "noneSelected": "No boards selected.",
       "openBoardsConfig": "Select other board and port…",
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
-      "portLabel": "Port: {0}",
       "ports": "ports",
       "programmer": "Proqramlayıcı",
       "reselectLater": "Daha Sonra Yenidən Seç",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Select Board",
       "selectPortForInfo": "Please select a port to obtain board info.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
       "succesfullyUninstalledPlatform": "Uğurla Silindi Platforma {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
     },
     "boardsManager": "Boards Manager",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "Yenidən Soruşma"
     },
@@ -229,10 +232,6 @@
       "nextError": "Next Error",
       "previousError": "Previous Error",
       "revealError": "Reveal Error"
-    },
-    "electron": {
-      "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
-      "unsavedChanges": "Yadda Saxlanılmamış Dəyişikliklər   Yadda Saxlanılmayacaq"
     },
     "examples": {
       "builtInExamples": "Əvvəlcəcədən Yüklənmmiş Nümunələr",
@@ -251,7 +250,7 @@
       "selectBoard": "Select Board",
       "selectVersion": "Select firmware version",
       "successfullyInstalled": "Firmware successfully installed.",
-      "updater": "WiFi101 / WiFiNINA Firmware Updater"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Environment",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Versiyanı Keç",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": ".ZİP Kitabxana Daxil Edin",
@@ -381,6 +384,9 @@
       "language.log": "True if the Arduino Language Server should generate log files into the sketch folder. Otherwise, false. It's false by default.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Manual proxy configuration",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Network",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Archive Sketch",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
-      "close": "Are you sure you want to close the sketch?",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
       "createdArchive": "Created archive '{0}'.",
@@ -478,7 +483,8 @@
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
       "light": "Light",
       "user": "{0} (user)"
     },

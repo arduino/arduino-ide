@@ -18,24 +18,21 @@
       "configDialog1": "Selecciona una placa i un port si vols carregar un programa.",
       "configDialog2": "Si només selecciones una placa, podràs compilar, però no carregar un programa.",
       "couldNotFindPreviouslySelected": "No s'ha trobat la placa \"{0}\" seleccionada anteriorment en la plataforma instal·lada \"{1}\". Torna a seleccionar manualment la placa que vols utilitzar. Vols tornar-la a seleccionar ara?",
-      "disconnected": "Desconnectada",
+      "editBoardsConfig": "Edit Board and Port...",
       "getBoardInfo": "Obtín informació de la placa",
       "inSketchbook": "(al quadern de programes)",
       "installNow": "El nucli de \"{0} {1}\" s'ha d'instal·lar en la placa \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
       "noBoardsFound": "No s'han trobat plaques per a \"{0}\"",
-      "noFQBN": "El FQBN no està disponible per la placa seleccionada \"{0}\". Tens instal·lat el nucli corresponent?",
       "noNativeSerialPort": "No s'ha pogut obtenir informació del port série natiu.",
       "noPortsDiscovered": "No s'ha trobat cap port",
-      "noPortsSelected": "No hi ha cap port seleccionat per a la placa: \"{0}\".",
       "nonSerialPort": "No s'ha pogut obtenir informació del port no série.",
-      "noneSelected": "No s'ha seleccionat cap placa.",
       "openBoardsConfig": "Selecciona una altra placa i port...",
       "pleasePickBoard": "Per favor, tria una placa connectada al port seleccionat.",
       "port": "Port {0}",
-      "portLabel": "Port {0}",
       "ports": "ports",
       "programmer": "Programador",
       "reselectLater": "Torna a triar més tard",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Busca una placa",
       "selectBoard": "Tria una placa",
       "selectPortForInfo": "Tria un port per obtenir informació de la placa.",
@@ -44,6 +41,7 @@
       "succesfullyInstalledPlatform": "Plataforma instal·lada correctament {0}:{1}",
       "succesfullyUninstalledPlatform": "Plataforma desinstal·lada correctament {0}:{1}",
       "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Placa desconeguda"
     },
     "boardsManager": "Gestor de plaques",
@@ -215,6 +213,11 @@
       "optimizeForDebugging": "Optimitzar per a la depuració",
       "sketchIsNotCompiled": "El programa \"{0}\" s'ha de comprovar abans de començar la depuració. Per favor, verifica el programa i comença a depurar de nou. Vols verificar el programa ara?"
     },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
     "dialog": {
       "dontAskAgain": "No ho tornis a preguntar"
     },
@@ -229,10 +232,6 @@
       "nextError": "Següent error",
       "previousError": "Error anterior",
       "revealError": "Mostra l'error"
-    },
-    "electron": {
-      "couldNotSave": "No s'ha pogut desar el programa. Copieu el vostre treball no desat al vostre editor de text preferit i reinicieu l'IDE.",
-      "unsavedChanges": "Els canvis no desats es perdran."
     },
     "examples": {
       "builtInExamples": "Exemples incorporats",
@@ -251,7 +250,7 @@
       "selectBoard": "Selecciona una placa",
       "selectVersion": "Selecciona la versió de l'entorn",
       "successfullyInstalled": "L'entorn s'ha instal·lat correctament.",
-      "updater": "Actualitzador de l'entorn WiFi101 / WiFiNINA"
+      "updater": "Firmware Updater"
     },
     "help": {
       "environment": "Entorn",
@@ -281,6 +280,10 @@
       "skipVersionButton": "Omet la versió",
       "updateAvailable": "Actualització disponible",
       "versionDownloaded": "L'IDE d'Arduino {0} s'ha descarregat"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
       "addZip": "Afegeix llibreria .ZIP...",
@@ -328,13 +331,13 @@
       "tools": "Eines"
     },
     "monitor": {
-      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
-      "baudRate": "{0} baud",
-      "connectionFailedError": "Could not connect to {0} {1} port.",
-      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
-      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
-      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
-      "notConnectedError": "Not connected to {0} {1} port.",
+      "alreadyConnectedError": "No s'ha pogut connectar al port {0} {1}. Ja està connectat.",
+      "baudRate": "{0}bàudis",
+      "connectionFailedError": "No s'ha pogut connectar al port {0} {1}.",
+      "connectionFailedErrorWithDetails": "{0}No s'ha pogut connectar al port {1} {2}.",
+      "connectionTimeout": "Temps esgotat. L'IDE no ha rebut el missatge \"correcte\" del monitor després de connectar-se a ell",
+      "missingConfigurationError": "No s'ha pogut connectar al port {0} {1}. Falta la configuració del monitor.",
+      "notConnectedError": "No connectat al port {0} {1}. ",
       "unableToCloseWebSocket": "No s'ha pogut tancar la ranura web",
       "unableToConnectToWebSocket": "No s'ha pogut connectar a la ranura web"
     },
@@ -381,6 +384,9 @@
       "language.log": "És cert si el servidor d'idiomes Arduino hauria de generar fitxers de registre a la carpeta de programes. En cas contrari, fals. És fals per defecte.",
       "language.realTimeDiagnostics": "Si està activat, el servidor d'idiomes ofereix diagnòstics en temps real mentre s'escriu. Per defecte està desactivat.",
       "manualProxy": "Configuració manual del proxy",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
       "network": "Xarxa",
       "newSketchbookLocation": "Seleccioneu una ubicació nova del quadern de programes",
       "noCliConfig": "No s'ha pogut carregar la configuració del CLI",
@@ -415,7 +421,7 @@
     "serial": {
       "autoscroll": "Desplaçament automàtic",
       "carriageReturn": "Retorn de carro",
-      "connecting": "Connecting to '{0}' on '{1}'...",
+      "connecting": "Connectant a \"{0}\" en \"{1}\"...",
       "message": "Missatge (escriu per enviar un missatge a \"{0}\" en \"{1}\")",
       "newLine": "Línia nova",
       "newLineCarriageReturn": "Ambdós NL & CR",
@@ -428,7 +434,6 @@
     "sketch": {
       "archiveSketch": "Arxiva el programa",
       "cantOpen": "Ja existeix una carpeta anomenada \"{0}\". No es pot obrir el programa.",
-      "close": "Esteu segur que voleu tancar el programa?",
       "compile": "Compilant el programa...",
       "configureAndUpload": "Configura i puja",
       "createdArchive": "S'ha creat l'arxiu \"{0}\".",
@@ -475,12 +480,13 @@
       "surveyMessage": "Ajuda'ns a millorar contestant aquesta enquesta súper curta. Valorem la nostra comunitat i volem conéixer els nostres usuaris un poc millor."
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
-      "deprecated": "{0} (deprecated)",
-      "hc": "High Contrast",
-      "light": "Light",
-      "user": "{0} (user)"
+      "currentThemeNotFound": "No s'ha trobat el nom seleccionat: {0}. L'IDE d'Arduino ha agafat un tema compatible amb el que falta.",
+      "dark": "Fosc",
+      "deprecated": "{0} (obsolet)",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
+      "light": "Clar",
+      "user": "{0} (usuari)"
     },
     "title": {
       "cloud": "Núvol"
