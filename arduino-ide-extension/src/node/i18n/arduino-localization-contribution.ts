@@ -17,7 +17,7 @@ import plJson from '../resources/i18n/pl.json';
 import ptJson from '../resources/i18n/pt.json';
 import ruJson from '../resources/i18n/ru.json';
 import trJson from '../resources/i18n/tr.json';
-import uk_UAJson from '../resources/i18n/uk_UA.json';
+import ukJson from '../resources/i18n/uk.json';
 import zhJson from '../resources/i18n/zh.json';
 import zh_HantJson from '../resources/i18n/zh-Hant.json';
 
@@ -45,7 +45,7 @@ export class ArduinoLocalizationContribution
     'pt-br': ptJson,
     ru: [ruJson],
     tr: [trJson],
-    uk: uk_UAJson,
+    uk: ukJson,
     'zh-cn': zhJson,
     'zh-tw': zh_HantJson,
   };
