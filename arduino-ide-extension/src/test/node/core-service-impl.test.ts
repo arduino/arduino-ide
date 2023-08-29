@@ -4,7 +4,7 @@ import {
   portIdentifierEquals,
   Port,
 } from '../../common/protocol/boards-service';
-import { Port as RpcPort } from '../../node/cli-protocol/cc/arduino/cli/commands/v1/port_pb';
+import type { Port as RpcPort } from '../../node/cli-api';
 import { CoreServiceImpl } from '../../node/core-service-impl';
 
 describe('core-service-impl', () => {
@@ -38,18 +38,15 @@ describe('core-service-impl', () => {
         resolve
       );
       expect(actual).to.be.not.undefined;
-      const expected = new RpcPort()
-        .setAddress(port.address)
-        .setHardwareId(port.hardwareId)
-        .setLabel(port.addressLabel)
-        .setProtocol(port.protocol)
-        .setProtocolLabel(port.protocolLabel);
-      Object.entries(properties).forEach(([key, value]) =>
-        expected.getPropertiesMap().set(key, value)
-      );
-      expect((<RpcPort>actual).toObject(false)).to.be.deep.equal(
-        expected.toObject(false)
-      );
+      const expected: RpcPort = {
+        address: port.address,
+        label: port.addressLabel,
+        hardwareId: port.hardwareId,
+        protocol: port.protocol,
+        protocolLabel: port.protocolLabel,
+        properties,
+      };
+      expect(actual).to.be.deep.equal(expected);
     });
   });
 });

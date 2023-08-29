@@ -1,35 +1,32 @@
+import { Disposable } from '@theia/core/lib/common/disposable';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { Emitter, Event } from '@theia/core/lib/common/event';
+import { ILogger } from '@theia/core/lib/common/logger';
+import { nls } from '@theia/core/lib/common/nls';
+import { deepClone } from '@theia/core/lib/common/objects';
+import { Deferred } from '@theia/core/lib/common/promise-util';
+import URI from '@theia/core/lib/common/uri';
+import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
+import yaml from 'js-yaml';
+import { Client as GrpcClient, createChannel, createClient } from 'nice-grpc';
 import { promises as fs } from 'node:fs';
 import { dirname } from 'node:path';
-import yaml from 'js-yaml';
-import * as grpc from '@grpc/grpc-js';
-import { injectable, inject, named } from '@theia/core/shared/inversify';
-import URI from '@theia/core/lib/common/uri';
-import { ILogger } from '@theia/core/lib/common/logger';
-import { FileUri } from '@theia/core/lib/node/file-uri';
-import { Event, Emitter } from '@theia/core/lib/common/event';
-import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import {
-  ConfigService,
   Config,
-  NotificationServiceServer,
-  Network,
+  ConfigService,
   ConfigState,
+  Network,
+  NotificationServiceServer,
 } from '../common/protocol';
-import { spawnCommand } from './exec-util';
-import {
-  MergeRequest,
-  WriteRequest,
-} from './cli-protocol/cc/arduino/cli/settings/v1/settings_pb';
-import { SettingsServiceClient } from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
-import * as serviceGrpcPb from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
-import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
-import { Deferred } from '@theia/core/lib/common/promise-util';
-import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { deepClone, nls } from '@theia/core';
+import { SettingsServiceDefinition } from './cli-api';
+import { CLI_CONFIG, DefaultCliConfig } from './cli-config';
+import { spawnCommand } from './exec-util';
 import { ErrnoException } from './utils/errors';
 
-const deepmerge = require('deepmerge');
+const deepmerge = require('deepmerge'); // TODO: check if can ES import?
 
 @injectable()
 export class ConfigServiceImpl
@@ -63,9 +60,15 @@ export class ConfigServiceImpl
     this.initConfig();
   }
 
+  private _cliConfigFileUri: string | undefined;
   private async getCliConfigFileUri(): Promise<string> {
-    const configDirUri = await this.envVariablesServer.getConfigDirUri();
-    return new URI(configDirUri).resolve(CLI_CONFIG).toString();
+    if (!this._cliConfigFileUri) {
+      const configDirUri = await this.envVariablesServer.getConfigDirUri();
+      this._cliConfigFileUri = new URI(configDirUri)
+        .resolve(CLI_CONFIG)
+        .toString();
+    }
+    return this._cliConfigFileUri;
   }
 
   async getConfiguration(): Promise<ConfigState> {
@@ -101,8 +104,14 @@ export class ConfigServiceImpl
 
     // always use the port of the daemon
     const port = await this.daemon.getPort();
-    await this.updateDaemon(port, copyDefaultCliConfig);
-    await this.writeDaemonState(port);
+    const settingsClient = this.createClient(port);
+    try {
+      const { client } = settingsClient;
+      await this.updateDaemon(client, copyDefaultCliConfig);
+      await this.writeDaemonState(client);
+    } finally {
+      settingsClient.dispose();
+    }
 
     this.config.config = deepClone(config);
     this.cliConfig = copyDefaultCliConfig;
@@ -293,64 +302,32 @@ export class ConfigServiceImpl
   }
 
   private async updateDaemon(
-    port: string | number,
+    client: SettingsClient['client'],
     config: DefaultCliConfig
   ): Promise<void> {
-    const client = this.createClient(port);
-    const req = new MergeRequest();
-    const json = JSON.stringify(config, null, 2);
-    req.setJsonData(json);
+    const json = JSON.stringify(config);
     this.logger.info(`Updating daemon with 'data': ${json}`);
-    return new Promise<void>((resolve, reject) => {
-      client.merge(req, (error) => {
-        try {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve();
-        } finally {
-          client.close();
-        }
-      });
-    });
+    await client.merge({ jsonData: json });
   }
 
-  private async writeDaemonState(port: string | number): Promise<void> {
-    const client = this.createClient(port);
-    const req = new WriteRequest();
+  private async writeDaemonState(
+    client: SettingsClient['client']
+  ): Promise<void> {
     const cliConfigUri = await this.getCliConfigFileUri();
     const cliConfigPath = FileUri.fsPath(cliConfigUri);
-    req.setFilePath(cliConfigPath);
-    return new Promise<void>((resolve, reject) => {
-      client.write(req, (error) => {
-        try {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve();
-        } finally {
-          client.close();
-        }
-      });
-    });
+    await client.write({ filePath: cliConfigPath });
   }
 
-  private createClient(port: string | number): SettingsServiceClient {
-    // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
-    const SettingsServiceClient = grpc.makeClientConstructor(
-      // @ts-expect-error: ignore
-      serviceGrpcPb['cc.arduino.cli.settings.v1.SettingsService'],
-      'SettingsServiceService'
-    ) as any;
-    return new SettingsServiceClient(
-      `localhost:${port}`,
-      grpc.credentials.createInsecure()
-    ) as SettingsServiceClient;
+  private createClient(
+    /* TODO: change to address */ port: string | number
+  ): SettingsClient {
+    const address = `localhost:${port}`;
+    const channel = createChannel(address);
+    const client = createClient(SettingsServiceDefinition, channel);
+    return { client, dispose: () => channel.close() };
   }
 
-  // #1445
+  // https://github.com/arduino/arduino-ide/issues/1445
   private async ensureUserDirExists(
     cliConfig: DefaultCliConfig
   ): Promise<void> {
@@ -366,4 +343,8 @@ class InvalidConfigError extends Error {
     }
     Object.setPrototypeOf(this, InvalidConfigError.prototype);
   }
+}
+
+interface SettingsClient extends Disposable {
+  readonly client: GrpcClient<SettingsServiceDefinition>;
 }

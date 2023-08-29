@@ -1,47 +1,43 @@
-import { join } from 'node:path';
-import * as grpc from '@grpc/grpc-js';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { Emitter } from '@theia/core/lib/common/event';
+import { Deferred } from '@theia/core/lib/common/promise-util';
 import {
   inject,
   injectable,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import { Emitter } from '@theia/core/lib/common/event';
-import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
+import { createChannel, createClient } from 'nice-grpc';
+import { join } from 'node:path';
 import {
-  CreateRequest,
-  InitRequest,
-  InitResponse,
-  UpdateIndexRequest,
-  UpdateIndexResponse,
-  UpdateLibrariesIndexRequest,
-  UpdateLibrariesIndexResponse,
-} from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
-import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import {
+  AdditionalUrls,
   IndexType,
   IndexUpdateDidCompleteParams,
-  IndexUpdateSummary,
   IndexUpdateDidFailParams,
+  IndexUpdateSummary,
   IndexUpdateWillStartParams,
   NotificationServiceServer,
-  AdditionalUrls,
 } from '../common/protocol';
-import { Deferred } from '@theia/core/lib/common/promise-util';
-import {
-  Status as RpcStatus,
-  Status,
-} from './cli-protocol/google/rpc/status_pb';
-import { ConfigServiceImpl } from './config-service-impl';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { Disposable } from '@theia/core/shared/vscode-languageserver-protocol';
+import type {
+  Instance,
+  Status,
+  UpdateIndexResponse,
+  UpdateLibrariesIndexResponse,
+} from './cli-api';
 import {
-  IndexesUpdateProgressHandler,
-  ExecuteWithProgress,
-  DownloadResult,
-} from './grpc-progressible';
+  ArduinoCoreServiceClient,
+  ArduinoCoreServiceDefinition,
+} from './cli-api/cc/arduino/cli/commands/v1/commands';
 import type { DefaultCliConfig } from './cli-config';
+import { ConfigServiceImpl } from './config-service-impl';
+import {
+  DownloadResult,
+  ExecuteWithProgress,
+  IndexesUpdateProgressHandler,
+} from './grpc-progressible';
 import { ServiceError } from './service-error';
 
 @injectable()
@@ -133,7 +129,7 @@ export class CoreClientProvider {
     const address = this.address(port);
     const client = await this.createClient(address);
     this.toDisposeOnCloseClient.pushAll([
-      Disposable.create(() => client.client.close()),
+      Disposable.create(() => client.client.dispose()),
     ]);
     await this.initInstanceWithFallback(client);
     return this.useClient(client);
@@ -198,75 +194,52 @@ export class CoreClientProvider {
   private async createClient(
     address: string
   ): Promise<CoreClientProvider.Client> {
-    // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
-    const ArduinoCoreServiceClient = grpc.makeClientConstructor(
-      // @ts-expect-error: ignore
-      commandsGrpcPb['cc.arduino.cli.commands.v1.ArduinoCoreService'],
-      'ArduinoCoreServiceService'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ) as any;
-    const client = new ArduinoCoreServiceClient(
-      address,
-      grpc.credentials.createInsecure(),
+    const channel = createChannel(address);
+    const client = createClient(
+      ArduinoCoreServiceDefinition,
+      channel,
       this.channelOptions
-    ) as ArduinoCoreServiceClient;
-
-    const instance = await new Promise<Instance>((resolve, reject) => {
-      client.create(new CreateRequest(), (err, resp) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        const instance = resp.getInstance();
-        if (!instance) {
-          reject(
-            new Error(
-              '`CreateResponse` was OK, but the retrieved `instance` was `undefined`.'
-            )
-          );
-          return;
-        }
-        resolve(instance);
-      });
-    });
-
-    return { instance, client };
+    );
+    const { instance } = await client.create({});
+    if (!instance) {
+      throw new Error(
+        '`CreateResponse` was OK, but the retrieved `instance` was `undefined`.'
+      );
+    }
+    return {
+      instance,
+      client: Object.assign(client, {
+        dispose: () => {
+          channel.close();
+        },
+      }),
+    };
   }
 
   private async initInstance({
     client,
     instance,
   }: CoreClientProvider.Client): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      const errors: RpcStatus[] = [];
-      client
-        .init(new InitRequest().setInstance(instance))
-        .on('data', (resp: InitResponse) => {
-          // XXX: The CLI never sends `initProgress`, it's always `error` or nothing. Is this a CLI bug?
-          // According to the gRPC API, the CLI should send either a `TaskProgress` or a `DownloadProgress`, but it does not.
-          const error = resp.getError();
-          if (error) {
-            const { code, message } = Status.toObject(false, error);
-            console.error(
-              `Detected an error response during the gRPC core client initialization: code: ${code}, message: ${message}`
-            );
-            errors.push(error);
-          }
-        })
-        .on('error', reject)
-        .on('end', async () => {
-          const error = await this.evaluateErrorStatus(errors);
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve();
-        });
-    });
+    const errors: Status[] = [];
+    for await (const { message } of client.init({ instance })) {
+      switch (message?.$case) {
+        case 'error': {
+          const { error } = message;
+          console.error(
+            `Detected an error response during the gRPC core client initialization: code: ${error.code}, message: ${error.message}`
+          );
+          errors.push(error);
+        }
+      }
+    }
+    const error = await this.evaluateErrorStatus(errors);
+    if (error) {
+      throw error;
+    }
   }
 
   private async evaluateErrorStatus(
-    status: RpcStatus[]
+    status: Status[]
   ): Promise<Error | undefined> {
     await this.configService.getConfiguration(); // to ensure the CLI config service has been initialized.
     const { cliConfiguration } = this.configService;
@@ -331,28 +304,25 @@ export class CoreClientProvider {
   }
 
   private async updatePlatformIndex(
-    client: CoreClientProvider.Client,
+    coreClient: CoreClientProvider.Client,
     progressHandler?: IndexesUpdateProgressHandler
   ): Promise<void> {
+    const { client, instance } = coreClient;
     return this.doUpdateIndex(
-      () =>
-        client.client.updateIndex(
-          new UpdateIndexRequest().setInstance(client.instance) // Always updates both the primary and the 3rd party package indexes.
-        ),
+      // Always updates both the primary and the 3rd party package indexes.
+      () => client.updateIndex({ instance }),
       progressHandler,
       'platform-index'
     );
   }
 
   private async updateLibraryIndex(
-    client: CoreClientProvider.Client,
+    coreClient: CoreClientProvider.Client,
     progressHandler?: IndexesUpdateProgressHandler
   ): Promise<void> {
+    const { client, instance } = coreClient;
     return this.doUpdateIndex(
-      () =>
-        client.client.updateLibrariesIndex(
-          new UpdateLibrariesIndexRequest().setInstance(client.instance)
-        ),
+      () => client.updateLibrariesIndex({ instance }),
       progressHandler,
       'library-index'
     );
@@ -361,32 +331,27 @@ export class CoreClientProvider {
   private async doUpdateIndex<
     R extends UpdateIndexResponse | UpdateLibrariesIndexResponse
   >(
-    responseProvider: () => grpc.ClientReadableStream<R>,
+    responseProvider: () => AsyncIterable<R>,
     progressHandler?: IndexesUpdateProgressHandler,
     task?: string
   ): Promise<void> {
     const progressId = progressHandler?.progressId;
-    return new Promise<void>((resolve, reject) => {
-      responseProvider()
-        .on(
-          'data',
-          ExecuteWithProgress.createDataCallback({
-            responseService: {
-              appendToOutput: ({ chunk: message }) => {
-                console.log(
-                  `core-client-provider${task ? ` [${task}]` : ''}`,
-                  message
-                );
-                progressHandler?.reportProgress(message);
-              },
-            },
-            reportResult: (result) => progressHandler?.reportResult(result),
-            progressId,
-          })
-        )
-        .on('error', reject)
-        .on('end', resolve);
+    const dataCallback = ExecuteWithProgress.createDataCallback({
+      responseService: {
+        appendToOutput: ({ chunk: message }) => {
+          console.log(
+            `core-client-provider${task ? ` [${task}]` : ''}`,
+            message
+          );
+          progressHandler?.reportProgress(message);
+        },
+      },
+      reportResult: (result) => progressHandler?.reportResult(result),
+      progressId,
     });
+    for await (const response of responseProvider()) {
+      dataCallback(response);
+    }
   }
 
   private createProgressHandler(
@@ -436,7 +401,7 @@ export class CoreClientProvider {
 }
 export namespace CoreClientProvider {
   export interface Client {
-    readonly client: ArduinoCoreServiceClient;
+    readonly client: ArduinoCoreServiceClient & Disposable;
     readonly instance: Instance;
   }
 }
@@ -476,7 +441,7 @@ export abstract class CoreClientAware {
 
 class MustUpdateIndexesBeforeInitError extends Error {
   readonly indexTypesToUpdate: Set<IndexType>;
-  constructor(causes: [RpcStatus.AsObject, IndexType][]) {
+  constructor(causes: [Status, IndexType][]) {
     super(`The index of the cores and libraries must be updated before initializing the core gRPC client.
 The following problems were detected during the gRPC client initialization:
 ${causes
@@ -495,25 +460,25 @@ ${causes
 }
 
 function isIndexUpdateRequiredBeforeInit(
-  status: RpcStatus[],
+  status: Status[],
   cliConfig: DefaultCliConfig
 ): MustUpdateIndexesBeforeInitError | undefined {
   const causes = status.reduce((acc, curr) => {
     for (const [predicate, type] of IndexUpdateRequiredPredicates) {
       if (predicate(curr, cliConfig)) {
-        acc.push([curr.toObject(false), type]);
+        acc.push([curr, type]);
         return acc;
       }
     }
     return acc;
-  }, [] as [RpcStatus.AsObject, IndexType][]);
+  }, [] as [Status, IndexType][]);
   return causes.length
     ? new MustUpdateIndexesBeforeInitError(causes)
     : undefined;
 }
 interface Predicate {
   (
-    status: RpcStatus,
+    status: Status,
     {
       directories: { data },
     }: DefaultCliConfig
@@ -526,17 +491,17 @@ const IndexUpdateRequiredPredicates: [Predicate, IndexType][] = [
 ];
 // Loading index file: loading json index file /path/to/package_index.json: open /path/to/package_index.json: no such file or directory
 function isPrimaryPackageIndexMissingStatus(
-  status: RpcStatus,
+  status: Status,
   { directories: { data } }: DefaultCliConfig
 ): boolean {
-  const predicate = ({ message }: RpcStatus.AsObject) =>
+  const predicate = ({ message }: Status) =>
     message.includes(join(data, 'package_index.json'));
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
   return evaluate(status, predicate);
 }
 // Error loading hardware platform: discovery $TOOL_NAME not found
-function isDiscoveryNotFoundStatus(status: RpcStatus): boolean {
-  const predicate = ({ message }: RpcStatus.AsObject) =>
+function isDiscoveryNotFoundStatus(status: Status): boolean {
+  const predicate = ({ message }: Status) =>
     message.includes('discovery') &&
     (message.includes('not found') ||
       message.includes('loading hardware platform'));
@@ -546,18 +511,17 @@ function isDiscoveryNotFoundStatus(status: RpcStatus): boolean {
 }
 // Loading index file: reading library_index.json: open /path/to/library_index.json: no such file or directory
 function isLibraryIndexMissingStatus(
-  status: RpcStatus,
+  status: Status,
   { directories: { data } }: DefaultCliConfig
 ): boolean {
-  const predicate = ({ message }: RpcStatus.AsObject) =>
+  const predicate = ({ message }: Status) =>
     message.includes(join(data, 'library_index.json'));
   // https://github.com/arduino/arduino-cli/blob/f0245bc2da6a56fccea7b2c9ea09e85fdcc52cb8/arduino/cores/packagemanager/package_manager.go#L247
   return evaluate(status, predicate);
 }
 function evaluate(
-  subject: RpcStatus,
-  predicate: (error: RpcStatus.AsObject) => boolean
+  subject: Status,
+  predicate: (error: Status) => boolean
 ): boolean {
-  const status = RpcStatus.toObject(false, subject);
-  return predicate(status);
+  return predicate(subject);
 }

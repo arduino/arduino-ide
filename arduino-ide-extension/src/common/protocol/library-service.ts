@@ -37,17 +37,17 @@ export interface LibraryService
     overwrite?: boolean;
   }): Promise<void>;
   /**
-   * Set `filterSelf` to `true` if you want to avoid having `item` in the result set.
+   * Set `excludeSelf` to `true` if you want to avoid having `item` in the result set.
    * Note: as of today (22.02.2021), the CLI works like this: `./arduino-cli lib deps Adaino@0.1.0 ✕ Adaino 0.1.0 must be installed.`.
    */
   listDependencies({
     item,
     version,
-    filterSelf,
+    excludeSelf,
   }: {
     item: LibraryPackage;
     version: Installable.Version;
-    filterSelf?: boolean;
+    excludeSelf?: boolean;
   }): Promise<LibraryDependency[]>;
 }
 

@@ -161,22 +161,22 @@ export interface Port {
   readonly protocol: string;
   readonly protocolLabel: string;
   readonly properties?: Record<string, string>;
+  /**
+   * @deprecated
+   * https://github.com/arduino/arduino-cli/issues/2269
+   */
   readonly hardwareId?: string;
 }
 export namespace Port {
   export type Properties = Record<string, string>;
   export namespace Properties {
     export function create(
-      properties: [string, string][] | undefined
+      properties: { [key: string]: string } | undefined
     ): Properties | undefined {
-      if (!properties || !properties.length) {
+      if (!properties || !Object.keys(properties).length) {
         return undefined;
       }
-      return properties.reduce((acc, curr) => {
-        const [key, value] = curr;
-        acc[key] = value;
-        return acc;
-      }, {} as Record<string, string>);
+      return properties as Record<string, string>;
     }
   }
   export function is(arg: unknown): arg is Port {

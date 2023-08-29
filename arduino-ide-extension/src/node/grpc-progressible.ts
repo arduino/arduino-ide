@@ -1,3 +1,4 @@
+import { isObject } from '@theia/core/lib/common/types';
 import { v4 } from 'uuid';
 import {
   IndexType,
@@ -10,129 +11,123 @@ import {
   ProgressMessage,
   ResponseService,
 } from '../common/protocol/response-service';
-import {
-  UpdateIndexResponse,
-  UpdateLibrariesIndexResponse,
-} from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
-import {
+import type {
+  BurnBootloaderResponse,
+  CompileResponse,
   DownloadProgress,
-  TaskProgress,
+  DownloadProgressEnd,
   DownloadProgressStart,
   DownloadProgressUpdate,
-  DownloadProgressEnd,
-} from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
-import { CompileResponse } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
-import {
-  PlatformInstallResponse,
-  PlatformUninstallResponse,
-} from './cli-protocol/cc/arduino/cli/commands/v1/core_pb';
-import {
   LibraryInstallResponse,
   LibraryUninstallResponse,
-  ZipLibraryInstallResponse,
-} from './cli-protocol/cc/arduino/cli/commands/v1/lib_pb';
-import {
-  BurnBootloaderResponse,
+  PlatformInstallResponse,
+  PlatformUninstallResponse,
+  Port,
+  TaskProgress,
+  UpdateIndexResponse,
+  UpdateLibrariesIndexResponse,
   UploadResponse,
+  UploadResult,
   UploadUsingProgrammerResponse,
-} from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
+  ZipLibraryInstallResponse,
+} from './cli-api/';
 
 type LibraryProgressResponse =
   | LibraryInstallResponse
   | LibraryUninstallResponse
   | ZipLibraryInstallResponse;
-namespace LibraryProgressResponse {
-  export function is(response: unknown): response is LibraryProgressResponse {
-    return (
-      response instanceof LibraryInstallResponse ||
-      response instanceof LibraryUninstallResponse ||
-      response instanceof ZipLibraryInstallResponse
-    );
-  }
-  export function workUnit(response: LibraryProgressResponse): UnitOfWork {
-    return {
-      task: response.getTaskProgress(),
-      ...(response instanceof LibraryInstallResponse && {
-        download: response.getProgress(),
-      }),
-    };
-  }
-}
+// namespace LibraryProgressResponse {
+//   export function is(response: unknown): response is LibraryProgressResponse {
+//     return (
+//       response instanceof LibraryInstallResponse ||
+//       response instanceof LibraryUninstallResponse ||
+//       response instanceof ZipLibraryInstallResponse
+//     );
+//   }
+//   export function workUnit(response: LibraryProgressResponse): UnitOfWork {
+//     return {
+//       task: response.getTaskProgress(),
+//       ...(response instanceof LibraryInstallResponse && {
+//         download: response.getProgress(),
+//       }),
+//     };
+//   }
+// }
 type PlatformProgressResponse =
   | PlatformInstallResponse
   | PlatformUninstallResponse;
-namespace PlatformProgressResponse {
-  export function is(response: unknown): response is PlatformProgressResponse {
-    return (
-      response instanceof PlatformInstallResponse ||
-      response instanceof PlatformUninstallResponse
-    );
-  }
-  export function workUnit(response: PlatformProgressResponse): UnitOfWork {
-    return {
-      task: response.getTaskProgress(),
-      ...(response instanceof PlatformInstallResponse && {
-        download: response.getProgress(),
-      }),
-    };
-  }
-}
+// namespace PlatformProgressResponse {
+//   export function is(response: unknown): response is PlatformProgressResponse {
+//     return (
+//       response instanceof PlatformInstallResponse ||
+//       response instanceof PlatformUninstallResponse
+//     );
+//   }
+//   export function workUnit(response: PlatformProgressResponse): UnitOfWork {
+//     return {
+//       task: response.getTaskProgress(),
+//       ...(response instanceof PlatformInstallResponse && {
+//         download: response.getProgress(),
+//       }),
+//     };
+//   }
+// }
 type IndexProgressResponse = UpdateIndexResponse | UpdateLibrariesIndexResponse;
-namespace IndexProgressResponse {
-  export function is(response: unknown): response is IndexProgressResponse {
-    return (
-      response instanceof UpdateIndexResponse ||
-      response instanceof UpdateLibrariesIndexResponse
-    );
-  }
-  export function workUnit(response: IndexProgressResponse): UnitOfWork {
-    return {
-      download: response.getDownloadProgress(),
-    };
-  }
-}
-/**
- * These responses have neither `task` nor `progress` property but for the sake of completeness
- * on typings (from the gRPC API) and UX, these responses represent an indefinite progress.
- */
+// namespace IndexProgressResponse {
+//   export function is(response: unknown): response is IndexProgressResponse {
+//     return (
+//       response instanceof UpdateIndexResponse ||
+//       response instanceof UpdateLibrariesIndexResponse
+//     );
+//   }
+//   export function workUnit(response: IndexProgressResponse): UnitOfWork {
+//     return {
+//       download: response.getDownloadProgress(),
+//     };
+//   }
+// }
+// /**
+//  * These responses have neither `task` nor `progress` property but for the sake of completeness
+//  * on typings (from the gRPC API) and UX, these responses represent an indefinite progress.
+//  */
 type IndefiniteProgressResponse =
   | UploadResponse
   | UploadUsingProgrammerResponse
   | BurnBootloaderResponse;
-namespace IndefiniteProgressResponse {
-  export function is(
-    response: unknown
-  ): response is IndefiniteProgressResponse {
-    return (
-      response instanceof UploadResponse ||
-      response instanceof UploadUsingProgrammerResponse ||
-      response instanceof BurnBootloaderResponse
-    );
-  }
-}
+// namespace IndefiniteProgressResponse {
+//   export function is(
+//     response: unknown
+//   ): response is IndefiniteProgressResponse {
+//     return (
+//       response instanceof UploadResponse ||
+//       response instanceof UploadUsingProgrammerResponse ||
+//       response instanceof BurnBootloaderResponse
+//     );
+//   }
+// }
 type DefiniteProgressResponse = CompileResponse;
-namespace DefiniteProgressResponse {
-  export function is(response: unknown): response is DefiniteProgressResponse {
-    return response instanceof CompileResponse;
-  }
-}
+// namespace DefiniteProgressResponse {
+//   export function is(response: unknown): response is DefiniteProgressResponse {
+//     return response instanceof CompileResponse;
+//   }
+// }
 type CoreProgressResponse =
   | DefiniteProgressResponse
   | IndefiniteProgressResponse;
-namespace CoreProgressResponse {
-  export function is(response: unknown): response is CoreProgressResponse {
-    return (
-      DefiniteProgressResponse.is(response) ||
-      IndefiniteProgressResponse.is(response)
-    );
-  }
-  export function workUnit(response: CoreProgressResponse): UnitOfWork {
-    if (DefiniteProgressResponse.is(response)) {
-      return { task: response.getProgress() };
-    }
-    return UnitOfWork.Unknown;
-  }
-}
+// namespace CoreProgressResponse {
+//   export function is(response: unknown): response is CoreProgressResponse {
+//     return (
+//       DefiniteProgressResponse.is(response) ||
+//       IndefiniteProgressResponse.is(response)
+//     );
+//   }
+//   export function workUnit(response: CoreProgressResponse): UnitOfWork {
+//     if (DefiniteProgressResponse.is(response)) {
+//       return { task: response.getProgress() };
+//     }
+//     return UnitOfWork.Unknown;
+//   }
+// }
 
 export type ProgressResponse =
   | LibraryProgressResponse
@@ -148,12 +143,16 @@ namespace UnitOfWork {
   export const Unknown: UnitOfWork = {};
 }
 
+export type CalculateWork<R extends ProgressResponse> = (resp: R) => UnitOfWork;
+
+// export const calculateLibraryProgressWork: CalculateWork<LibraryProgressResponse> = (resp: LibraryProgressResponse) => ({})
+
 /**
  * It's solely a dev thing. Flip it to `true` if you want to debug the progress from the CLI responses.
  */
 const DEBUG = false;
 export namespace ExecuteWithProgress {
-  export interface Options {
+  export interface Options<R extends ProgressResponse> {
     /**
      * _unknown_ progress if falsy.
      */
@@ -163,13 +162,21 @@ export namespace ExecuteWithProgress {
      * It's only relevant for index updates to build a summary of possible client (4xx) and server (5xx) errors when downloading the files during the index update. It's missing for lib/platform installations.
      */
     readonly reportResult?: (result: DownloadResult) => void;
+    /**
+     * It's the client's responsibility to extract the `task` and `download` from the responses.
+     * The CLI's gRPC API is neither symmetric, nor behaves the same way when the structural types match.
+     * For example, some server streaming commands do not provide progress, some provide indefinite,
+     * but there are definite (`compile`) ones.
+     */
+    readonly calculateWork?: CalculateWork<R>;
   }
 
   export function createDataCallback<R extends ProgressResponse>({
     responseService,
     progressId,
     reportResult,
-  }: ExecuteWithProgress.Options): (response: R) => void {
+    calculateWork,
+  }: ExecuteWithProgress.Options<R>): (response: R) => void {
     const uuid = v4();
     let message = '';
     let url = '';
@@ -180,7 +187,7 @@ export namespace ExecuteWithProgress {
           console.debug(`[gRPC progress] Progress response [${uuid}]: ${json}`);
         }
       }
-      const unitOfWork = resolve(response);
+      const unitOfWork = calculateWork?.(response) ?? UnitOfWork.Unknown;
       const { task, download } = unitOfWork;
       if (!download && !task) {
         // Report a fake unknown progress if progress ID is available.
@@ -212,8 +219,8 @@ export namespace ExecuteWithProgress {
         );
       }
       if (task) {
-        const message = task.getName() || task.getMessage();
-        const percent = task.getPercent();
+        const message = task.name || task.message;
+        const percent = task.percent;
         if (message) {
           if (progressId) {
             responseService.reportProgress?.({
@@ -233,28 +240,28 @@ export namespace ExecuteWithProgress {
           }
         }
       } else if (download) {
-        const phase = phaseOf(download);
-        if (phase instanceof DownloadProgressStart) {
-          message = phase.getLabel();
-          url = phase.getUrl();
+        const { type, phase } = phaseOf(download);
+        if (type === 'start') {
+          message = phase.label;
+          url = phase.url;
           responseService.appendToOutput?.({ chunk: `${message}\n` });
-        } else if (phase instanceof DownloadProgressUpdate) {
+        } else if (type === 'update') {
           if (progressId && message) {
             responseService.reportProgress?.({
               progressId,
               message,
               work: {
-                total: phase.getTotalSize(),
-                done: phase.getDownloaded(),
+                total: phase.totalSize,
+                done: phase.downloaded,
               },
             });
           }
-        } else if (phase instanceof DownloadProgressEnd) {
+        } else if (type === 'end') {
           if (url && reportResult) {
             reportResult({
               url,
-              message: phase.getMessage(),
-              success: phase.getSuccess(),
+              message: phase.message,
+              success: phase.success,
             });
           }
           message = '';
@@ -263,51 +270,43 @@ export namespace ExecuteWithProgress {
       }
     };
   }
-  function resolve(response: unknown): Readonly<Partial<UnitOfWork>> {
-    if (LibraryProgressResponse.is(response)) {
-      return LibraryProgressResponse.workUnit(response);
-    } else if (PlatformProgressResponse.is(response)) {
-      return PlatformProgressResponse.workUnit(response);
-    } else if (IndexProgressResponse.is(response)) {
-      return IndexProgressResponse.workUnit(response);
-    } else if (CoreProgressResponse.is(response)) {
-      return CoreProgressResponse.workUnit(response);
-    }
-    console.warn('Unhandled gRPC response', response);
-    return {};
-  }
   function toJson(response: ProgressResponse): string | undefined {
-    return JSON.stringify(response.toObject(false));
+    return JSON.stringify(response);
   }
   function phaseOf(
     download: DownloadProgress
-  ): DownloadProgressStart | DownloadProgressUpdate | DownloadProgressEnd {
+  ):
+    | { type: 'start'; phase: DownloadProgressStart }
+    | { type: 'update'; phase: DownloadProgressUpdate }
+    | { type: 'end'; phase: DownloadProgressEnd } {
     let start: undefined | DownloadProgressStart = undefined;
     let update: undefined | DownloadProgressUpdate = undefined;
     let end: undefined | DownloadProgressEnd = undefined;
-    if (download.hasStart()) {
-      start = download.getStart();
-    } else if (download.hasUpdate()) {
-      update = download.getUpdate();
-    } else if (download.hasEnd()) {
-      end = download.getEnd();
-    } else {
-      throw new Error(
-        `Download progress does not have a 'start', 'update', and 'end'. ${JSON.stringify(
-          download.toObject(false)
-        )}`
-      );
+
+    switch (download.message?.$case) {
+      case 'start': {
+        start = download.message.start;
+        break;
+      }
+      case 'end': {
+        end = download.message.end;
+        break;
+      }
+      case 'update': {
+        update = download.message.update;
+        break;
+      }
     }
     if (start) {
-      return start;
+      return { type: 'start', phase: start };
     } else if (update) {
-      return update;
+      return { type: 'update', phase: update };
     } else if (end) {
-      return end;
+      return { type: 'end', phase: end };
     } else {
       throw new Error(
         `Download progress does not have a 'start', 'update', and 'end'. ${JSON.stringify(
-          download.toObject(false)
+          download
         )}`
       );
     }
@@ -398,4 +397,50 @@ export namespace DownloadResult {
   ): arg is DownloadResult & { message: string } {
     return !!arg.message && !arg.success;
   }
+}
+
+export function isUploadResponse(
+  arg: unknown
+): arg is Exclude<UploadResponse, undefined> {
+  return (
+    isObject(arg) &&
+    (<UploadResponse>arg).message !== undefined &&
+    (isMessageCase(arg, 'outStream', (value) => Array.isArray(value)) ||
+      isMessageCase(arg, 'errStream', (value) => Array.isArray(value)) ||
+      isMessageCase(arg, 'result', (value) => isUploadResult(value)))
+  );
+}
+
+function isUploadResult(arg: unknown): arg is UploadResult {
+  return (
+    isObject<UploadResult>(arg) &&
+    (<UploadResult>arg).updatedUploadPort !== undefined &&
+    isPort((<UploadResult>arg).updatedUploadPort)
+  );
+}
+
+function isPort(arg: unknown): arg is Port {
+  return (
+    ((isObject<Port>(arg) &&
+      (<Port>arg).address !== undefined &&
+      typeof (<Port>arg).address === 'string' &&
+      (<Port>arg).label !== undefined &&
+      typeof (<Port>arg).label === 'string' &&
+      (<Port>arg).protocol !== undefined &&
+      typeof (<Port>arg).protocol === 'string' &&
+      (<Port>arg).protocolLabel !== undefined &&
+      typeof (<Port>arg).protocolLabel === 'string' &&
+      (<Port>arg).hardwareId === undefined) ||
+      ((<Port>arg).hardwareId !== undefined &&
+        typeof (<Port>arg).hardwareId === 'string')) &&
+    isObject((<Port>arg).properties)
+  );
+}
+
+function isMessageCase(
+  arg: unknown,
+  assertName: string,
+  assertValue: (value: unknown) => boolean
+): arg is { $case: typeof assertName; assertName: unknown } {
+  return isObject(arg) && assertName in arg && assertValue(arg[assertName]);
 }

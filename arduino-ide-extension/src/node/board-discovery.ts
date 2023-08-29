@@ -1,7 +1,7 @@
-import type { ClientDuplexStream } from '@grpc/grpc-js';
 import {
   Disposable,
   DisposableCollection,
+  disposableTimeout,
 } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -10,30 +10,112 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import type { Mutable } from '@theia/core/lib/common/types';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
+import { isAbortError } from 'abort-controller-x';
 import { isDeepStrictEqual } from 'util';
-import { v4 } from 'uuid';
 import { Unknown } from '../common/nls';
 import {
-  Board,
   DetectedPort,
   DetectedPorts,
   NotificationServiceServer,
   Port,
 } from '../common/protocol';
-import {
+import type {
   BoardListWatchRequest,
   BoardListWatchResponse,
   DetectedPort as RpcDetectedPort,
-} from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
-import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import type { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import { CoreClientAware } from './core-client-provider';
-import { ServiceError } from './service-error';
+  Port as RpcPort,
+} from './cli-api/';
+import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 
-type Duplex = ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse>;
-interface StreamWrapper extends Disposable {
-  readonly stream: Duplex;
-  readonly uuid: string; // For logging only
+class BoardWatcher implements Disposable {
+  private readonly toDispose: DisposableCollection;
+  private readonly onDidUpdateEmitter: Emitter<BoardListWatchResponse>;
+  private readonly onDidStartEmitter: Emitter<void>;
+  private readonly onDidStopEmitter: Emitter<void>;
+  private _watcher: Disposable | undefined;
+
+  constructor(private readonly coreClient: CoreClientProvider.Client) {
+    this.onDidUpdateEmitter = new Emitter<BoardListWatchResponse>();
+    this.onDidStartEmitter = new Emitter<void>();
+    this.onDidStopEmitter = new Emitter<void>();
+    this.toDispose = new DisposableCollection(
+      Disposable.create(() => this.stop()),
+      this.onDidUpdateEmitter,
+      this.onDidStartEmitter,
+      this.onDidStopEmitter
+    );
+  }
+
+  get onDidUpdate(): Event<BoardListWatchResponse> {
+    return this.onDidUpdateEmitter.event;
+  }
+
+  get onDidStart(): Event<void> {
+    return this.onDidStartEmitter.event;
+  }
+
+  get onDidStop(): Event<void> {
+    return this.onDidStopEmitter.event;
+  }
+
+  start(): Disposable {
+    if (!this._watcher) {
+      this._watcher = this.watch();
+    }
+    return this._watcher;
+  }
+
+  stop(): void {
+    this._watcher?.dispose();
+    this._watcher = undefined;
+  }
+
+  dispose(): void {
+    this.toDispose.dispose();
+  }
+
+  private watch(): Disposable {
+    const { client, instance } = this.coreClient;
+    const interrupt = new Deferred<void>();
+    const req: AsyncIterable<BoardListWatchRequest> = {
+      [Symbol.asyncIterator]: async function* (): AsyncGenerator<
+        BoardListWatchRequest,
+        void,
+        unknown
+      > {
+        yield <BoardListWatchRequest>{ instance, interrupt: !instance };
+        await interrupt.promise;
+        console.log('board list watch interrupt');
+        yield <BoardListWatchRequest>{ instance, interrupt: true };
+      },
+    };
+    const watch = async (): Promise<void> => {
+      console.log('watching board list');
+      try {
+        let didFireStart = false;
+        for await (const resp of client.boardListWatch(req)) {
+          if (!didFireStart) {
+            didFireStart = true;
+            this.onDidStartEmitter.fire();
+          }
+          this.onDidUpdateEmitter.fire(resp);
+        }
+      } catch (err) {
+        if (!isAbortError(err)) {
+          throw err;
+        }
+      } finally {
+        this.onDidStopEmitter.fire();
+      }
+    };
+    watch();
+    return {
+      dispose: (): void => {
+        console.log('board list watch dispose');
+        interrupt.resolve();
+      },
+    };
+  }
 }
 
 /**
@@ -54,11 +136,8 @@ export class BoardDiscovery
   @inject(NotificationServiceServer)
   private readonly notificationService: NotificationServiceServer;
 
-  private watching: Deferred<void> | undefined;
   private stopping: Deferred<void> | undefined;
-  private wrapper: StreamWrapper | undefined;
-  private readonly onStreamDidEndEmitter = new Emitter<void>(); // sent from the CLI when the discovery process is killed for example after the indexes update and the core client re-initialization.
-  private readonly onStreamDidCancelEmitter = new Emitter<void>(); // when the watcher is canceled by the IDE2
+  private watcher: Deferred<BoardWatcher> | undefined;
   private readonly toDisposeOnStopWatch = new DisposableCollection();
 
   private _detectedPorts: DetectedPorts = {};
@@ -80,13 +159,14 @@ export class BoardDiscovery
       this.logger.info('stop already stopping');
       return this.stopping.promise;
     }
-    if (!this.watching) {
+    if (!this.watcher) {
       return;
     }
+    const watcher = await this.watcher.promise;
     this.stopping = new Deferred();
     this.logger.info('>>> Stopping boards watcher...');
     return new Promise<void>((resolve, reject) => {
-      const timeout = this.createTimeout(10_000, reject);
+      const timeout = disposableTimeout(reject, 10_000);
       const toDispose = new DisposableCollection();
       const waitForEvent = (event: Event<unknown>) =>
         event(() => {
@@ -100,92 +180,29 @@ export class BoardDiscovery
             this.start();
           }
         });
-      toDispose.pushAll([
-        timeout,
-        waitForEvent(this.onStreamDidEndEmitter.event),
-        waitForEvent(this.onStreamDidCancelEmitter.event),
-      ]);
+      toDispose.pushAll([timeout, waitForEvent(watcher.onDidStop)]);
       this.logger.info('Canceling boards watcher...');
       this.toDisposeOnStopWatch.dispose();
     });
   }
 
-  private createTimeout(
-    after: number,
-    onTimeout: (error: Error) => void
-  ): Disposable {
-    const timer = setTimeout(
-      () => onTimeout(new Error(`Timed out after ${after} ms.`)),
-      after
-    );
-    return Disposable.create(() => clearTimeout(timer));
-  }
-
-  private async requestStartWatch(
-    req: BoardListWatchRequest,
-    duplex: Duplex
-  ): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (
-        !duplex.write(req, (err: Error | undefined) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-        })
-      ) {
-        duplex.once('drain', resolve);
-      } else {
-        process.nextTick(resolve);
-      }
-    });
-  }
-
-  private async createWrapper(
-    client: ArduinoCoreServiceClient
-  ): Promise<StreamWrapper> {
-    if (this.wrapper) {
-      throw new Error(`Duplex was already set.`);
+  private createWatcher(
+    coreClient: CoreClientProvider.Client
+  ): Deferred<BoardWatcher> {
+    if (this.watcher) {
+      throw new Error(`Already instantiated the board watcher.`);
     }
-    const stream = client
-      .boardListWatch()
-      .on('end', () => {
-        this.logger.info('received end');
-        this.onStreamDidEndEmitter.fire();
-      })
-      .on('error', (error) => {
-        this.logger.info('error received');
-        if (ServiceError.isCancel(error)) {
-          this.logger.info('cancel error received!');
-          this.onStreamDidCancelEmitter.fire();
-        } else {
-          this.logger.error(
-            'Unexpected error occurred during the boards discovery.',
-            error
-          );
-          // TODO: terminate? restart? reject?
-        }
-      });
-    const wrapper = {
-      stream,
-      uuid: v4(),
-      dispose: () => {
-        this.logger.info('disposing requesting cancel');
-        // Cancelling the stream will kill the discovery `builtin:mdns-discovery process`.
-        // The client (this class) will receive a `{"eventType":"quit","error":""}` response from the CLI.
-        stream.cancel();
-        this.logger.info('disposing canceled');
-        this.wrapper = undefined;
-      },
-    };
+    const deferred = new Deferred<BoardWatcher>();
+    const watcher = new BoardWatcher(coreClient);
     this.toDisposeOnStopWatch.pushAll([
-      wrapper,
+      watcher,
+      watcher.onDidStart(() => this.watcher?.resolve(watcher)),
       Disposable.create(() => {
-        this.watching?.reject(new Error(`Stopping watcher.`));
-        this.watching = undefined;
+        this.watcher?.reject(new Error(`Stopping watcher.`));
+        this.watcher = undefined;
       }),
     ]);
-    return wrapper;
+    return deferred;
   }
 
   async start(): Promise<void> {
@@ -195,28 +212,22 @@ export class BoardDiscovery
       await this.stopping.promise;
       this.logger.info('start stopped');
     }
-    if (this.watching) {
+    if (this.watcher) {
       this.logger.info('start already watching');
-      return this.watching.promise;
+      return this.watcher.promise as Promise<unknown> as Promise<void>;
     }
-    this.watching = new Deferred();
-    this.logger.info('start new deferred');
     const { client, instance } = await this.coreClient;
-    const wrapper = await this.createWrapper(client);
-    wrapper.stream.on('data', (resp) => this.onBoardListWatchResponse(resp));
+    this.logger.info('start new deferred');
+    this.watcher = this.createWatcher({ client, instance });
     this.logger.info('start request start watch');
-    await this.requestStartWatch(
-      new BoardListWatchRequest().setInstance(instance),
-      wrapper.stream
-    );
     this.logger.info('start requested start watch');
-    this.watching.resolve();
+    await this.watcher.promise;
     this.logger.info('start resolved watching');
   }
 
   protected onBoardListWatchResponse(resp: BoardListWatchResponse): void {
-    this.logger.info(JSON.stringify(resp.toObject(false)));
-    const eventType = EventType.parse(resp.getEventType());
+    this.logger.info(JSON.stringify(resp));
+    const eventType = EventType.parse(resp.eventType);
 
     if (eventType === EventType.Quit) {
       this.logger.info('quit received');
@@ -224,37 +235,40 @@ export class BoardDiscovery
       return;
     }
 
-    const rpcDetectedPort = resp.getPort();
+    const rpcDetectedPort = resp.port;
     if (rpcDetectedPort) {
       const detectedPort = this.fromRpc(rpcDetectedPort);
       if (detectedPort) {
         this.fireSoon({ detectedPort, eventType });
       } else {
         this.logger.warn(
-          `Could not extract the detected port from ${rpcDetectedPort.toObject(
-            false
+          `Could not extract the detected port from ${JSON.stringify(
+            rpcDetectedPort
           )}`
         );
       }
-    } else if (resp.getError()) {
+    } else if (resp.error) {
       this.logger.error(
-        `Could not extract any detected 'port' from the board list watch response. An 'error' has occurred: ${resp.getError()}`
+        `Could not extract any detected 'port' from the board list watch response. An 'error' has occurred: ${resp.error}`
       );
     }
   }
 
   private fromRpc(detectedPort: RpcDetectedPort): DetectedPort | undefined {
-    const rpcPort = detectedPort.getPort();
+    const rpcPort = detectedPort.port;
     if (!rpcPort) {
       return undefined;
     }
     const port = createApiPort(rpcPort);
-    const boards = detectedPort.getMatchingBoardsList().map(
-      (board) =>
-        ({
-          fqbn: board.getFqbn() || undefined, // prefer undefined fqbn over empty string
-          name: board.getName() || Unknown,
-        } as Board)
+    const boards = detectedPort.matchingBoards.map(
+      ({
+        // prefer undefined fqbn over empty string
+        fqbn = undefined,
+        name = Unknown,
+      }) => ({
+        fqbn,
+        name,
+      })
     );
     return {
       boards,
@@ -344,11 +358,11 @@ interface DetectedPortChangeEvent {
 
 export function createApiPort(rpcPort: RpcPort): Port {
   return {
-    address: rpcPort.getAddress(),
-    addressLabel: rpcPort.getLabel(),
-    protocol: rpcPort.getProtocol(),
-    protocolLabel: rpcPort.getProtocolLabel(),
-    properties: Port.Properties.create(rpcPort.getPropertiesMap().toObject()),
-    hardwareId: rpcPort.getHardwareId() || undefined, // prefer undefined over empty string
+    address: rpcPort.address,
+    addressLabel: rpcPort.label,
+    protocol: rpcPort.protocol,
+    protocolLabel: rpcPort.protocolLabel,
+    properties: Port.Properties.create(rpcPort.properties),
+    hardwareId: rpcPort.hardwareId || undefined, // prefer undefined over empty string
   };
 }

@@ -1,24 +1,19 @@
-import { ILogger, notEmpty } from '@theia/core';
+import { ILogger } from '@theia/core/lib/common/logger';
 import { FileUri } from '@theia/core/lib/node';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { duration } from '../common/decorators';
 import {
+  Installable,
+  LibraryDependency,
+  libraryInstallFailed,
+  LibraryLocation,
+  LibraryPackage,
+  LibrarySearch,
+  LibraryService,
   NotificationServiceServer,
   ResponseService,
   sortComponents,
   SortGroup,
 } from '../common/protocol';
-import {
-  Installable,
-  libraryInstallFailed,
-} from '../common/protocol/installable';
-import {
-  LibraryDependency,
-  LibraryLocation,
-  LibraryPackage,
-  LibrarySearch,
-  LibraryService,
-} from '../common/protocol/library-service';
 import { BoardDiscovery } from './board-discovery';
 import {
   InstalledLibrary,
@@ -26,15 +21,12 @@ import {
   LibraryInstallLocation,
   LibraryInstallRequest,
   LibraryListRequest,
-  LibraryListResponse,
   LibraryLocation as GrpcLibraryLocation,
   LibraryRelease,
-  LibraryResolveDependenciesRequest,
-  LibrarySearchRequest,
-  LibrarySearchResponse,
   LibraryUninstallRequest,
+  SearchedLibrary,
   ZipLibraryInstallRequest,
-} from './cli-protocol/cc/arduino/cli/commands/v1/lib_pb';
+} from './cli-api';
 import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress } from './grpc-progressible';
 import { ServiceError } from './service-error';
@@ -45,72 +37,50 @@ export class LibraryServiceImpl
   implements LibraryService
 {
   @inject(ILogger)
-  protected logger: ILogger;
-
+  private readonly logger: ILogger;
   @inject(ResponseService)
-  protected readonly responseService: ResponseService;
-
+  private readonly responseService: ResponseService;
   @inject(BoardDiscovery)
-  protected readonly boardDiscovery: BoardDiscovery;
-
+  private readonly boardDiscovery: BoardDiscovery;
   @inject(NotificationServiceServer)
-  protected readonly notificationServer: NotificationServiceServer;
+  private readonly notificationServer: NotificationServiceServer;
 
-  @duration()
   async search(options: LibrarySearch): Promise<LibraryPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
+    const [listResp, searchResp] = await Promise.all([
+      client.libraryList({ instance }),
+      client.librarySearch({
+        instance,
+        omitReleasesDetails: true,
+        searchArgs: options.query || '',
+      }),
+    ]);
 
-    const listReq = new LibraryListRequest();
-    listReq.setInstance(instance);
-    const installedLibsResp = await new Promise<LibraryListResponse>(
-      (resolve, reject) =>
-        client.libraryList(listReq, (err, resp) =>
-          !!err ? reject(err) : resolve(resp)
-        )
+    const installedLibs = new Map(
+      listResp.installedLibraries
+        .filter(hasLibrary)
+        .map((library) => [library.library.name, library])
     );
-    const installedLibs = installedLibsResp.getInstalledLibrariesList();
-    const installedLibsIdx = new Map<string, InstalledLibrary>();
-    for (const installedLib of installedLibs) {
-      if (installedLib.hasLibrary()) {
-        const lib = installedLib.getLibrary();
-        if (lib) {
-          installedLibsIdx.set(lib.getName(), installedLib);
-        }
+
+    const items = searchResp.libraries.filter(hasLatest).map((item) => {
+      const availableVersions = item.availableVersions
+        .sort(Installable.Version.COMPARATOR)
+        .reverse();
+      let installedVersion: string | undefined;
+      const installed = installedLibs.get(item.name);
+      if (installed) {
+        installedVersion = installed.library.version;
       }
-    }
-
-    const req = new LibrarySearchRequest();
-    req.setQuery(options.query || '');
-    req.setInstance(instance);
-    req.setOmitReleasesDetails(true);
-    const resp = await new Promise<LibrarySearchResponse>((resolve, reject) =>
-      client.librarySearch(req, (err, resp) =>
-        !!err ? reject(err) : resolve(resp)
-      )
-    );
-    const items = resp
-      .getLibrariesList()
-      .filter((item) => !!item.getLatest())
-      .map((item) => {
-        const availableVersions = item
-          .getAvailableVersionsList()
-          .sort(Installable.Version.COMPARATOR)
-          .reverse();
-        let installedVersion: string | undefined;
-        const installed = installedLibsIdx.get(item.getName());
-        if (installed) {
-          installedVersion = installed.getLibrary()!.getVersion();
-        }
-        return toLibrary(
-          {
-            name: item.getName(),
-            installedVersion,
-          },
-          item.getLatest()!,
-          availableVersions
-        );
-      });
+      return toLibrary(
+        {
+          name: item.name,
+          installedVersion,
+        },
+        item.latest,
+        availableVersions
+      );
+    });
 
     const typePredicate = this.typePredicate(options);
     const topicPredicate = this.topicPredicate(options);
@@ -162,84 +132,66 @@ export class LibraryServiceImpl
   }): Promise<LibraryPackage[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    const req = new LibraryListRequest();
-    req.setInstance(instance);
+    const req: Partial<LibraryListRequest> = {
+      instance,
+    };
     if (fqbn) {
       // Only get libraries from the cores when the FQBN is defined. Otherwise, we retrieve user installed libraries only.
-      req.setAll(true); // https://github.com/arduino/arduino-ide/pull/303#issuecomment-815556447
-      req.setFqbn(fqbn);
+      req.fqbn = fqbn;
+      req.all = true; // https://github.com/arduino/arduino-ide/pull/303#issuecomment-815556447
     }
     if (libraryName) {
-      req.setName(libraryName);
+      req.name = libraryName;
     }
 
-    const resp = await new Promise<LibraryListResponse | undefined>(
-      (resolve, reject) => {
-        client.libraryList(req, (error, r) => {
-          if (error) {
-            const { message } = error;
-            // Required core dependency is missing.
-            // https://github.com/arduino/arduino-cli/issues/954
-            if (
-              message.indexOf('missing platform release') !== -1 &&
-              message.indexOf('referenced by board') !== -1
-            ) {
-              resolve(undefined);
-              return;
-            }
-            // The core for the board is not installed, `lib list` cannot be filtered based on FQBN.
-            // https://github.com/arduino/arduino-cli/issues/955
-            if (
-              message.indexOf('platform') !== -1 &&
-              message.indexOf('is not installed') !== -1
-            ) {
-              resolve(undefined);
-              return;
-            }
-
-            // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
-            if (message.indexOf('unknown package') !== -1) {
-              resolve(undefined);
-              return;
-            }
-
-            reject(error);
-            return;
-          }
-          resolve(r);
-        });
-      }
-    );
-    if (!resp) {
-      return [];
-    }
-    return resp
-      .getInstalledLibrariesList()
-      .map((item) => {
-        const library = item.getLibrary();
-        if (!library) {
-          return undefined;
-        }
-        const installedVersion = library.getVersion();
+    try {
+      const { installedLibraries } = await client.libraryList(req);
+      return installedLibraries.filter(hasLibrary).map(({ library }) => {
+        const installedVersion = library.version;
         return toLibrary(
           {
-            name: library.getName(),
+            name: library.name,
             installedVersion,
-            description: library.getParagraph(),
-            summary: library.getSentence(),
-            moreInfoLink: library.getWebsite(),
-            includes: library.getProvidesIncludesList(),
-            location: this.mapLocation(library.getLocation()),
-            installDirUri: FileUri.create(library.getInstallDir()).toString(),
-            exampleUris: library
-              .getExamplesList()
-              .map((fsPath) => FileUri.create(fsPath).toString()),
+            description: library.paragraph,
+            summary: library.sentence,
+            moreInfoLink: library.website,
+            includes: library.providesIncludes,
+            location: this.mapLocation(library.location),
+            installDirUri: FileUri.create(library.installDir).toString(),
+            exampleUris: library.examples.map((fsPath) =>
+              FileUri.create(fsPath).toString()
+            ),
           },
           library,
-          [library.getVersion()]
+          [library.version]
         );
-      })
-      .filter(notEmpty);
+      });
+    } catch (err) {
+      if (ServiceError.is(err)) {
+        const { message } = err;
+        // Required core dependency is missing.
+        // https://github.com/arduino/arduino-cli/issues/954
+        if (
+          message.indexOf('missing platform release') !== -1 &&
+          message.indexOf('referenced by board') !== -1
+        ) {
+          return [];
+        }
+        // The core for the board is not installed, `lib list` cannot be filtered based on FQBN.
+        // https://github.com/arduino/arduino-cli/issues/955
+        if (
+          message.indexOf('platform') !== -1 &&
+          message.indexOf('is not installed') !== -1
+        ) {
+          return [];
+        }
+        // It's a hack to handle https://github.com/arduino/arduino-cli/issues/1262 gracefully.
+        if (message.indexOf('unknown package') !== -1) {
+          return [];
+        }
+      }
+      throw err;
+    }
   }
 
   private mapLocation(location: GrpcLibraryLocation): LibraryLocation {
@@ -260,46 +212,36 @@ export class LibraryServiceImpl
   async listDependencies({
     item,
     version,
-    filterSelf,
+    excludeSelf,
   }: {
     item: LibraryPackage;
     version: Installable.Version;
-    filterSelf?: boolean;
+    excludeSelf?: boolean;
   }): Promise<LibraryDependency[]> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    const req = new LibraryResolveDependenciesRequest();
-    req.setInstance(instance);
-    req.setName(item.name);
-    req.setVersion(version);
-    const dependencies = await new Promise<LibraryDependency[]>(
-      (resolve, reject) => {
-        client.libraryResolveDependencies(req, (error, resp) => {
-          if (error) {
-            console.error('Failed to list library dependencies', error);
-            // If a gRPC service error, it removes the code and the number to provider more readable error message to the user.
-            const unwrappedError = ServiceError.is(error)
-              ? new Error(error.details)
-              : error;
-            reject(unwrappedError);
-            return;
-          }
-          resolve(
-            resp.getDependenciesList().map(
-              (dep) =>
-                <LibraryDependency>{
-                  name: dep.getName(),
-                  installedVersion: dep.getVersionInstalled(),
-                  requiredVersion: dep.getVersionRequired(),
-                }
-            )
-          );
-        });
-      }
-    );
-    return filterSelf
-      ? dependencies.filter(({ name }) => name !== item.name)
-      : dependencies;
+    try {
+      const { dependencies } = await client.libraryResolveDependencies({
+        instance,
+        name: item.name,
+        version,
+      });
+      const result = dependencies.map((dependency) => ({
+        name: dependency.name,
+        installedVersion: dependency.versionInstalled,
+        requiredVersion: dependency.versionRequired,
+      }));
+      return excludeSelf
+        ? result.filter(({ name }) => name !== item.name)
+        : result;
+    } catch (err) {
+      console.error('Failed to list library dependencies', err);
+      // If a gRPC service error, it removes the code and the number to provider more readable error message to the user.
+      const unwrappedError = ServiceError.is(err)
+        ? new Error(err.details)
+        : err;
+      throw unwrappedError;
+    }
   }
 
   async install(options: {
@@ -317,50 +259,42 @@ export class LibraryServiceImpl
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
 
-    const req = new LibraryInstallRequest();
-    req.setInstance(instance);
-    req.setName(item.name);
-    req.setVersion(version);
-    req.setNoDeps(!options.installDependencies);
-    req.setNoOverwrite(Boolean(options.noOverwrite));
-    if (options.installLocation === LibraryLocation.BUILTIN) {
-      req.setInstallLocation(
-        LibraryInstallLocation.LIBRARY_INSTALL_LOCATION_BUILTIN
-      );
-    } else if (options.installLocation === LibraryLocation.USER) {
-      req.setInstallLocation(
-        LibraryInstallLocation.LIBRARY_INSTALL_LOCATION_USER
-      );
-    }
+    const req: LibraryInstallRequest = {
+      instance,
+      name: item.name,
+      version,
+      noDeps: !options.installDependencies,
+      noOverwrite: Boolean(options.noOverwrite),
+      installLocation:
+        options.installLocation === LibraryLocation.USER
+          ? LibraryInstallLocation.LIBRARY_INSTALL_LOCATION_USER
+          : LibraryInstallLocation.LIBRARY_INSTALL_LOCATION_BUILTIN,
+    };
 
     console.info('>>> Starting library package installation...', item);
+
+    const dataCallback = ExecuteWithProgress.createDataCallback({
+      progressId: options.progressId,
+      responseService: this.responseService,
+    });
 
     // stop the board discovery
     await this.boardDiscovery.stop();
 
-    const resp = client.libraryInstall(req);
-    resp.on(
-      'data',
-      ExecuteWithProgress.createDataCallback({
-        progressId: options.progressId,
-        responseService: this.responseService,
-      })
-    );
-    await new Promise<void>((resolve, reject) => {
-      resp.on('end', () => {
-        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
-        resolve();
+    try {
+      for await (const resp of client.libraryInstall(req)) {
+        dataCallback(resp);
+      }
+    } catch (err) {
+      this.responseService.appendToOutput({
+        chunk: `${libraryInstallFailed(
+          item.name,
+          version
+        )}\n${err.toString()}\n`,
       });
-      resp.on('error', (error) => {
-        this.responseService.appendToOutput({
-          chunk: `${libraryInstallFailed(item.name, version)}\n`,
-        });
-        this.responseService.appendToOutput({
-          chunk: `${error.toString()}\n`,
-        });
-        reject(error);
-      });
-    });
+    } finally {
+      this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
+    }
 
     const items = await this.search({});
     const updated =
@@ -380,35 +314,30 @@ export class LibraryServiceImpl
   }): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
-    const req = new ZipLibraryInstallRequest();
-    req.setPath(FileUri.fsPath(zipUri));
-    req.setInstance(instance);
-    if (typeof overwrite === 'boolean') {
-      req.setOverwrite(overwrite);
-    }
+    const req: ZipLibraryInstallRequest = {
+      instance,
+      path: FileUri.fsPath(zipUri),
+      overwrite: Boolean(overwrite),
+    };
+
+    const dataCallback = ExecuteWithProgress.createDataCallback({
+      progressId,
+      responseService: this.responseService,
+    });
 
     // stop the board discovery
     await this.boardDiscovery.stop();
     try {
-      const resp = client.zipLibraryInstall(req);
-      resp.on(
-        'data',
-        ExecuteWithProgress.createDataCallback({
-          progressId,
-          responseService: this.responseService,
-        })
-      );
-      await new Promise<void>((resolve, reject) => {
-        resp.on('end', resolve);
-        resp.on('error', reject);
-      });
-      await this.refresh(); // let the CLI re-scan the libraries
-      this.notificationServer.notifyLibraryDidInstall({
-        item: 'zip-install',
-      });
+      for await (const resp of client.zipLibraryInstall(req)) {
+        dataCallback(resp);
+      }
     } finally {
       this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
     }
+    await this.refresh(); // let the CLI re-scan the libraries
+    this.notificationServer.notifyLibraryDidInstall({
+      item: 'zip-install',
+    });
   }
 
   async uninstall(options: {
@@ -416,35 +345,37 @@ export class LibraryServiceImpl
     progressId?: string;
   }): Promise<void> {
     const { item, progressId } = options;
+    if (!item.installedVersion) {
+      throw new Error(
+        `Library '${
+          item.name
+        }' does not have an installed version. ${JSON.stringify(item)}`
+      );
+    }
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
+    const req: LibraryUninstallRequest = {
+      instance,
+      name: item.name,
+      version: item.installedVersion,
+    };
 
-    const req = new LibraryUninstallRequest();
-    req.setInstance(instance);
-    req.setName(item.name);
-    req.setVersion(item.installedVersion!);
+    const dataCallback = ExecuteWithProgress.createDataCallback({
+      progressId,
+      responseService: this.responseService,
+    });
 
     console.info('>>> Starting library package uninstallation...', item);
 
     // stop the board discovery
     await this.boardDiscovery.stop();
-
-    const resp = client.libraryUninstall(req);
-    resp.on(
-      'data',
-      ExecuteWithProgress.createDataCallback({
-        progressId,
-        responseService: this.responseService,
-      })
-    );
-    await new Promise<void>((resolve, reject) => {
-      resp.on('end', () => {
-        this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
-        resolve();
-      });
-      resp.on('error', reject);
-    });
-
+    try {
+      for await (const resp of client.libraryUninstall(req)) {
+        dataCallback(resp);
+      }
+    } finally {
+      this.boardDiscovery.start(); // TODO: remove discovery dependency from boards service. See https://github.com/arduino/arduino-ide/pull/1107 why this is here.
+    }
     this.notificationServer.notifyLibraryDidUninstall({ item });
     console.info('<<< Library package uninstallation done.', item);
   }
@@ -466,14 +397,14 @@ function toLibrary(
     location: LibraryLocation.BUILTIN,
     ...pkg,
 
-    author: lib.getAuthor(),
+    author: lib.author,
     availableVersions,
-    includes: lib.getProvidesIncludesList(),
-    description: lib.getParagraph(),
-    moreInfoLink: lib.getWebsite(),
-    summary: lib.getSentence(),
-    category: lib.getCategory(),
-    types: lib.getTypesList(),
+    includes: lib.providesIncludes,
+    description: lib.paragraph,
+    moreInfoLink: lib.website,
+    summary: lib.sentence,
+    category: lib.category,
+    types: lib.types,
   };
 }
 
@@ -486,4 +417,16 @@ function librarySortGroup(library: LibraryPackage): SortGroup {
     }
   }
   return types.join('-') as SortGroup;
+}
+
+function hasLibrary(
+  arg: InstalledLibrary
+): arg is InstalledLibrary & { library: Library } {
+  return Boolean(arg.library);
+}
+
+function hasLatest(
+  arg: SearchedLibrary
+): arg is SearchedLibrary & { latest: string } {
+  return Boolean(arg.latest);
 }

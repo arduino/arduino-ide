@@ -1,5 +1,5 @@
 import { injectable, inject, named } from '@theia/core/shared/inversify';
-import { promises as fs, realpath, lstat, Stats, constants } from 'node:fs';
+import { promises as fs, realpath, Stats, constants } from 'node:fs';
 import os from 'node:os';
 import temp from 'temp';
 import path from 'node:path';
@@ -21,10 +21,7 @@ import {
 import { NotificationServiceServer } from '../common/protocol';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { CoreClientAware } from './core-client-provider';
-import {
-  ArchiveSketchRequest,
-  LoadSketchRequest,
-} from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { ArchiveSketchRequest, LoadSketchRequest } from './cli-api';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { escapeRegExpCharacters } from '@theia/core/lib/common/strings';
 import { ServiceError } from './service-error';
@@ -43,6 +40,7 @@ import {
   startsWithUpperCase,
 } from '../common/utils';
 import { SettingsReader } from './settings-reader';
+import { ApplicationError } from '@theia/core';
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -128,71 +126,75 @@ export class SketchesServiceImpl
     uri: string,
     detectInvalidSketchNameError = true
   ): Promise<SketchWithDetails> {
+    // TODO: since the instance is not required on the request, the client initialization is not required either to load a sketch
+    // can IDE2 do this faster or have a dedicated client for the sketch loading?
     const { client } = await this.coreClient;
-    const req = new LoadSketchRequest();
     const requestSketchPath = FileUri.fsPath(uri);
-    req.setSketchPath(requestSketchPath);
-    // TODO: since the instance is not required on the request, can IDE2 do this faster or have a dedicated client for the sketch loading?
-    const stat = new Deferred<Stats | Error>();
-    lstat(requestSketchPath, (err, result) =>
-      err ? stat.resolve(err) : stat.resolve(result)
-    );
-    const sketch = await new Promise<SketchWithDetails>((resolve, reject) => {
-      client.loadSketch(req, async (err, resp) => {
-        if (err) {
-          let rejectWith: unknown = err;
-          if (isNotFoundError(err)) {
-            rejectWith = SketchesError.NotFound(err.details, uri);
-            // detecting the invalid sketch name error is not for free as it requires multiple filesystem access.
-            if (detectInvalidSketchNameError) {
-              const invalidMainSketchFilePath = await isInvalidSketchNameError(
-                err,
-                requestSketchPath
-              );
-              if (invalidMainSketchFilePath) {
-                rejectWith = SketchesError.InvalidName(
-                  err.details,
-                  FileUri.create(invalidMainSketchFilePath).toString()
-                );
-              }
-            }
+    const req: LoadSketchRequest = {
+      sketchPath: requestSketchPath,
+    };
+
+    const [loadResult, lstatResult] = await Promise.allSettled([
+      client.loadSketch(req),
+      fs.lstat(requestSketchPath),
+    ]);
+
+    if (loadResult.status === 'rejected') {
+      let reason: unknown = loadResult.reason;
+      if (isNotFoundError(reason)) {
+        let applicationError: ApplicationError<number, unknown> =
+          SketchesError.NotFound(reason.details, uri);
+        // detecting the invalid sketch name error is not for free as it requires multiple filesystem access.
+        if (detectInvalidSketchNameError) {
+          const invalidMainSketchFilePath = await isInvalidSketchNameError(
+            applicationError,
+            requestSketchPath
+          );
+          if (invalidMainSketchFilePath) {
+            applicationError = SketchesError.InvalidName(
+              reason.details,
+              FileUri.create(invalidMainSketchFilePath).toString()
+            );
           }
-          reject(rejectWith);
-          return;
         }
-        const responseSketchPath = maybeNormalizeDrive(resp.getLocationPath());
-        if (requestSketchPath !== responseSketchPath) {
-          this.logger.warn(
-            `Warning! The request sketch path was different than the response sketch path from the CLI. This could be a potential bug. Request: <${requestSketchPath}>, response: <${responseSketchPath}>.`
-          );
-        }
-        const resolvedStat = await stat.promise;
-        if (resolvedStat instanceof Error) {
-          this.logger.error(
-            `The CLI could load the sketch from ${requestSketchPath}, but stating the folder has failed.`
-          );
-          reject(resolvedStat);
-          return;
-        }
-        const { mtimeMs } = resolvedStat;
-        resolve({
-          name: path.basename(responseSketchPath),
-          uri: FileUri.create(responseSketchPath).toString(),
-          mainFileUri: FileUri.create(resp.getMainFile()).toString(),
-          otherSketchFileUris: resp
-            .getOtherSketchFilesList()
-            .map((p) => FileUri.create(p).toString()),
-          additionalFileUris: resp
-            .getAdditionalFilesList()
-            .map((p) => FileUri.create(p).toString()),
-          rootFolderFileUris: resp
-            .getRootFolderFilesList()
-            .map((p) => FileUri.create(p).toString()),
-          mtimeMs,
-        });
-      });
-    });
-    return sketch;
+        reason = applicationError;
+      }
+      throw reason;
+    }
+
+    if (lstatResult.status === 'rejected') {
+      this.logger.error(
+        `The CLI could load the sketch from ${requestSketchPath}, but stating the folder has failed.`,
+        lstatResult.status
+      );
+      throw lstatResult.status;
+    }
+
+    const loadResp = loadResult.value;
+    const stat = lstatResult.value;
+
+    const responseSketchPath = maybeNormalizeDrive(loadResp.locationPath);
+    if (requestSketchPath !== responseSketchPath) {
+      this.logger.warn(
+        `Warning! The request sketch path was different than the response sketch path from the CLI. This could be a potential bug. Request: <${requestSketchPath}>, response: <${responseSketchPath}>.`
+      );
+    }
+    const { mtimeMs } = stat;
+    return {
+      name: path.basename(responseSketchPath),
+      uri: FileUri.create(responseSketchPath).toString(),
+      mainFileUri: FileUri.create(loadResp.mainFile).toString(),
+      otherSketchFileUris: loadResp.otherSketchFiles.map((p) =>
+        FileUri.create(p).toString()
+      ),
+      additionalFileUris: loadResp.additionalFiles.map((p) =>
+        FileUri.create(p).toString()
+      ),
+      rootFolderFileUris: loadResp.rootFolderFiles.map((p) =>
+        FileUri.create(p).toString()
+      ),
+      mtimeMs,
+    };
   }
 
   async maybeLoadSketch(uri: string): Promise<Sketch | undefined> {
@@ -540,18 +542,13 @@ export class SketchesServiceImpl
     if (await exists(archivePath)) {
       await fs.unlink(archivePath);
     }
-    const req = new ArchiveSketchRequest();
-    req.setSketchPath(FileUri.fsPath(sketch.uri));
-    req.setArchivePath(archivePath);
-    await new Promise<string>((resolve, reject) => {
-      client.archiveSketch(req, (err) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        resolve(destinationUri);
-      });
-    });
+    const req: ArchiveSketchRequest = {
+      sketchPath: FileUri.fsPath(sketch.uri),
+      archivePath,
+      overwrite: true,
+      includeBuildDir: false,
+    };
+    await client.archiveSketch(req);
     return destinationUri;
   }
 

@@ -14,7 +14,7 @@ import {
 } from '../../common/protocol';
 import { ArduinoDaemonImpl } from '../../node/arduino-daemon-impl';
 import { CLI_CONFIG, DefaultCliConfig } from '../../node/cli-config';
-import { BoardListRequest } from '../../node/cli-protocol/cc/arduino/cli/commands/v1/board_pb';
+// import { BoardListRequest } from '../../node/cli-protocol/cc/arduino/cli/commands/v1/board_pb';
 import { CoreClientProvider } from '../../node/core-client-provider';
 import { spawnCommand } from '../../node/exec-util';
 import { ConfigDirUriProvider } from '../../node/theia/env-variables/env-variables-server';
@@ -255,14 +255,8 @@ async function assertFunctionalCli(
 
   // IDE2 runs `board list -w` equivalent, but running a single `board list`
   // is sufficient for the tests to check if the serial discover tool is OK.
-  await new Promise<void>((resolve, reject) =>
-    client.boardList(new BoardListRequest().setInstance(instance), (err) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(); // The response does not matter. Tests must be relaxed. Maybe there are environments without a serial port?
-    })
-  );
+  // The response does not matter. Tests must be relaxed. Maybe there are environments without a serial port?
+  await client.boardList({ instance });
 
   return otherAsserts?.({
     coreClientProvider,

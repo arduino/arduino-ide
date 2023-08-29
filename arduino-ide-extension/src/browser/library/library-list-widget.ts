@@ -76,7 +76,7 @@ export class LibraryListWidget extends ListWidget<
     const dependencies = await this.service.listDependencies({
       item,
       version,
-      filterSelf: true,
+      excludeSelf: true,
     });
     let installDependencies: boolean | undefined = undefined;
     if (dependencies.length) {
