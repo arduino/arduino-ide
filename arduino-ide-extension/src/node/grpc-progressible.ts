@@ -11,6 +11,7 @@ import {
   ProgressMessage,
   ResponseService,
 } from '../common/protocol/response-service';
+import type { UnknownObject } from '../common/types';
 import type {
   BurnBootloaderResponse,
   CompileResponse,
@@ -399,7 +400,7 @@ export namespace DownloadResult {
   }
 }
 
-export function isUploadResponse(
+export function isGrpcUploadResponse(
   arg: unknown
 ): arg is Exclude<UploadResponse, undefined> {
   return (
@@ -442,5 +443,24 @@ function isMessageCase(
   assertName: string,
   assertValue: (value: unknown) => boolean
 ): arg is { $case: typeof assertName; assertName: unknown } {
+  if (hasSingleMessageProperty(arg)) {
+    const { message } = arg;
+    const $case = message['$case'];
+    return (
+      typeof $case === 'string' &&
+      $case in message &&
+      Object.keys(message).length === 2
+    );
+  }
   return isObject(arg) && assertName in arg && assertValue(arg[assertName]);
+}
+
+function hasSingleMessageProperty(
+  arg: unknown
+): arg is { message: UnknownObject } {
+  return (
+    isObject<{ message: UnknownObject }>(arg) &&
+    Object.keys(arg).length === 1 &&
+    isObject(arg.message)
+  );
 }

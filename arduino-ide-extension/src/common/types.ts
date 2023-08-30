@@ -5,3 +5,8 @@ export type RecursiveRequired<T> = {
 export type Defined<T> = {
   [P in keyof T]: NonNullable<T[P]>;
 };
+
+export type UnknownObject<T = object> = Record<
+  string | number | symbol,
+  unknown
+> & { [K in keyof T]: unknown };

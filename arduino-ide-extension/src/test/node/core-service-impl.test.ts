@@ -1,13 +1,25 @@
 import { expect } from 'chai';
 import {
+  Port,
   PortIdentifier,
   portIdentifierEquals,
-  Port,
 } from '../../common/protocol/boards-service';
-import type { Port as RpcPort } from '../../node/cli-api';
+import { Port as RpcPort, UploadResponse } from '../../node/cli-api';
 import { CoreServiceImpl } from '../../node/core-service-impl';
+import { isGrpcUploadResponse } from '../../node/grpc-progressible';
 
 describe('core-service-impl', () => {
+  describe('isGrpcUploadResponse', () => {
+    it('should detect an upload response (stderr)', () => {
+      const response = UploadResponse.fromPartial({
+        message: {
+          $case: 'errStream',
+          errStream: Uint8Array.from([36]),
+        },
+      });
+      expect(isGrpcUploadResponse(response)).to.be.true;
+    });
+  });
   describe('createPort', () => {
     it("should map the 'undefined' port object to an 'undefined' gRPC port value", () => {
       const actual = new CoreServiceImpl()['createPort'](undefined);

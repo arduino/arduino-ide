@@ -40,7 +40,7 @@ import { tryParseError } from './cli-error-parser';
 import { CoreClientAware, CoreClientProvider } from './core-client-provider';
 import {
   ExecuteWithProgress,
-  isUploadResponse as isGrpcUploadResponse,
+  isGrpcUploadResponse,
   ProgressResponse,
 } from './grpc-progressible';
 import { MonitorManager } from './monitor-manager';
@@ -187,9 +187,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     options: CoreService.Options.Upload
   ): Promise<ApiUploadResponse> {
     const { usingProgrammer } = options;
-    const taskProvider: TaskProvider = (
-      coreClient: CoreClientProvider.Client
-    ) => {
+    const taskProvider = (coreClient: CoreClientProvider.Client) => {
       const { client, instance } = coreClient;
       const req = this.uploadRequest({ ...options, instance });
       if (usingProgrammer) {
@@ -197,7 +195,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       }
       return () => client.upload(req);
     };
-    const errorCtor = usingProgrammer
+    const errorConstructor = usingProgrammer
       ? CoreError.UploadUsingProgrammerFailed
       : CoreError.UploadFailed;
 
@@ -232,8 +230,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       await this.doUpload(
         options,
         taskProvider,
-        errorCtor,
-        `upload${usingProgrammer ? ' using programmer' : ''}`
+        errorConstructor,
+        `upload${usingProgrammer ? ' using programmer' : ''}`,
+        ...dataHandlers
       );
     } finally {
       await this.notifyUploadDidFinish({
@@ -251,10 +250,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return uploadResponseFragment;
   }
 
-  protected async doUpload(
+  private async doUpload(
     options: CoreService.Options.Upload,
     taskProvider: TaskProvider,
-    errorCtor: ApplicationError.Constructor<number, CoreError.ErrorLocation[]>,
+    errorConstructor: ApplicationError.Constructor<
+      number,
+      CoreError.ErrorLocation[]
+    >,
     taskName: string,
     ...dataHandlers: ((resp: StreamingResponse) => void)[]
   ): Promise<void> {
@@ -280,7 +282,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         error.details
       );
       this.sendResponse(error.details, OutputMessage.Severity.Error);
-      throw errorCtor(
+      throw errorConstructor(
         message,
         tryParseError({
           content: handler.content,
