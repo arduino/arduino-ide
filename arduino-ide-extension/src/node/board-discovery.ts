@@ -196,12 +196,14 @@ export class BoardDiscovery
     const watcher = new BoardWatcher(coreClient);
     this.toDisposeOnStopWatch.pushAll([
       watcher,
-      watcher.onDidStart(() => this.watcher?.resolve(watcher)),
+      watcher.onDidStart(() => deferred.resolve(watcher)),
+      watcher.onDidUpdate((resp) => this.onBoardListWatchResponse(resp)),
       Disposable.create(() => {
-        this.watcher?.reject(new Error(`Stopping watcher.`));
+        this.watcher?.reject(new Error(`Stopping board watcher.`));
         this.watcher = undefined;
       }),
     ]);
+    watcher.start();
     return deferred;
   }
 
@@ -220,7 +222,6 @@ export class BoardDiscovery
     this.logger.info('start new deferred');
     this.watcher = this.createWatcher({ client, instance });
     this.logger.info('start request start watch');
-    this.logger.info('start requested start watch');
     await this.watcher.promise;
     this.logger.info('start resolved watching');
   }
