@@ -1145,7 +1145,7 @@
   dependencies:
     "@floating-ui/core" "^1.3.1"
 
-"@grpc/grpc-js@^1.8.18", "@grpc/grpc-js@^1.9.1":
+"@grpc/grpc-js@^1.8.18":
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/@grpc/grpc-js/-/grpc-js-1.9.1.tgz#d6df7943cd2875a4feaf725f85ff605c08ac245d"
   integrity sha512-AvDEPQT4teS+J8++cTE5tku4rYCwpPwPguESJUummLs/Ug/O5Bouofnc1mxaDORmwA9QkrJ+PfRQ1Qs7adQgJg==

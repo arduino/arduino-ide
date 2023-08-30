@@ -22,7 +22,6 @@
     "test:slow": "cross-env IDE2_TEST=true mocha \"./lib/test/**/*.slow-test.js\" --slow 5000"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.9.1",
     "@theia/application-package": "1.39.0",
     "@theia/core": "1.39.0",
     "@theia/debug": "1.39.0",
