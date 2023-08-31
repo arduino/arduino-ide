@@ -42,7 +42,6 @@ export class ArduinoLocalizationContribution
     nl: nlJson,
     pl: plJson,
     'pt-br': ptJson,
-    ru: ruJson,
     tr: trJson,
     uk: ukJson,
     'zh-cn': zhJson,
