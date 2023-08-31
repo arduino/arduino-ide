@@ -15,7 +15,6 @@ import koJson from '../resources/i18n/ko.json';
 import nlJson from '../resources/i18n/nl.json';
 import plJson from '../resources/i18n/pl.json';
 import ptJson from '../resources/i18n/pt.json';
-import ruJson from '../resources/i18n/ru.json';
 import trJson from '../resources/i18n/tr.json';
 import ukJson from '../resources/i18n/uk.json';
 import zhJson from '../resources/i18n/zh.json';
