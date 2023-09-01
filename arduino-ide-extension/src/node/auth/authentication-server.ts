@@ -29,7 +29,7 @@ export function createServer(
 }
 
 export async function startServer(server: http.Server): Promise<string> {
-  let portTimer: NodeJS.Timer;
+  let portTimer: NodeJS.Timeout;
 
   function cancelPortTimer() {
     clearTimeout(portTimer);

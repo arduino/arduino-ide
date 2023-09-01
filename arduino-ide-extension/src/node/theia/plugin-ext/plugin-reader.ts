@@ -7,13 +7,14 @@ import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext
 
 @injectable()
 export class HostedPluginReader extends TheiaHostedPluginReader {
-  override readContribution(
+  override async readContribution(
     plugin: PluginPackage
-  ): PluginContribution | undefined {
+  ): Promise<PluginContribution | undefined> {
     const scanner = this.scanner.getScanner(plugin);
-    const contributions = scanner.getContribution(plugin);
+    const contributions = await scanner.getContribution(plugin);
     return this.filterContribution(plugin.name, contributions);
   }
+
   private filterContribution(
     pluginName: string,
     contributions: PluginContribution | undefined

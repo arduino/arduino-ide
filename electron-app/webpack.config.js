@@ -21,20 +21,11 @@ mainWindowConfig.plugins?.push(
 );
 const preloadConfig = frontend[2];
 
-// Taken from https://github.com/eclipse-theia/theia-blueprint/blob/022878d5488c47650fb17b5fdf49a28be88465fe/applications/electron/webpack.config.js#L18-L21
-if (process.platform !== 'win32') {
-  // For some reason, blueprint wants to bundle the `.node` files directly without going through `@vscode/windows-ca-certs`
-  backend.ignoredResources.add(
-    '@vscode/windows-ca-certs/build/Release/crypt32.node'
-  );
-}
-
 // Copy all the IDE2 binaries and the plotter web app.
 // XXX: For whatever reason it is important to use `unshift` instead of `push`, and execute the additional webpack plugins before the Theia contributed ones kick in. Otherwise ours do not work.
 backend.config.plugins.unshift(
   ...createCopyArduinoResourcesPlugins(
-    path.resolve(__dirname, 'lib', 'backend', 'resources'),
-    true
+    path.resolve(__dirname, 'lib', 'backend', 'resources')
   )
 );
 
