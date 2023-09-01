@@ -4,6 +4,7 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { Deferred } from '@theia/core/lib/common/promise-util';
+import { AbortController } from 'abort-controller';
 import { isAbortError } from 'abort-controller-x';
 import type { PortIdentifier } from '../common/protocol';
 import type {
@@ -54,14 +55,14 @@ export function createMonitor(
   const fqbn = req.fqbn;
   const port = { protocol: req.port.protocol, address: req.port.address };
   const instance = req.instance;
-  const monitorController = new MonitorPtyController(fqbn, port);
+  const monitorController = new MonitorController(fqbn, port);
   const onDidReceiveErrorEmitter = new Emitter<unknown>();
   const onDidChangeSettingsEmitter = new Emitter<MonitorPortSetting[]>();
   const toDispose = new DisposableCollection(
     Disposable.create(() => abortController.abort()),
+    monitorController,
     onDidStartEmitter,
     onDidCompleteEmitter,
-    monitorController,
     onDidReceiveErrorEmitter,
     onDidChangeSettingsEmitter
   );
@@ -202,7 +203,7 @@ class BufferedEmitter extends Emitter<string> {
   }
 }
 
-class MonitorPtyController extends BufferedEmitter {
+class MonitorController extends BufferedEmitter {
   private readonly onDidSendMessageEmitter: Emitter<string>;
   private readonly onDidRequestTerminateEmitter: Emitter<void>;
   // private readonly recentMessages: RecentItems<string>;

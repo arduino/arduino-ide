@@ -1,5 +1,8 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
-import { Disposable } from '@theia/core/lib/common/disposable';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { nls } from '@theia/core/lib/common/nls';
@@ -56,7 +59,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
 
   // Bidirectional gRPC stream used to receive and send data from the running
   // pluggable monitor managed by the Arduino CLI.
-  private monitor: Monitor | null;
+  private monitor: Monitor | undefined;
 
   // Settings used by the currently running pluggable monitor.
   // They can be freely modified while running.
@@ -233,6 +236,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
       }
       monitorRequest.portConfiguration = config;
       this.monitor = await this.tryStartMonitor(client, monitorRequest);
+      const toDisposeOnMonitorDidComplete = new DisposableCollection();
+      toDisposeOnMonitorDidComplete.pushAll([
+        this.monitor.onDidReceiveMessage((message) =>
+          this.messages.push(message)
+        ),
+        this.monitor.onDidComplete(() =>
+          toDisposeOnMonitorDidComplete.dispose()
+        ),
+      ]);
+
       // Only store the config, if the monitor has successfully started.
       this.currentPortConfigSnapshot = deepClone(config);
       this.logger.info(
@@ -307,111 +320,6 @@ export class MonitorService extends CoreClientAware implements Disposable {
     ]);
   }
 
-  // setDuplexHandlers(
-  //   duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>,
-  //   additionalHandlers: DuplexHandler[]
-  // ): void {
-  //   // default handlers
-  //   duplex
-  //     .on('close', () => {
-  //       if (duplex === this.duplex) {
-  //         this.duplex = null;
-  //         this.updateClientsSettings({
-  //           monitorUISettings: {
-  //             connected: false, // TODO: should be removed when plotter app understand the `connectionStatus` message
-  //             connectionStatus: 'not-connected',
-  //           },
-  //         });
-  //       }
-  //       this.logger.info(
-  //         `monitor to ${this.port?.address} using ${this.port?.protocol} closed by client`
-  //       );
-  //     })
-  //     .on('end', () => {
-  //       if (duplex === this.duplex) {
-  //         this.duplex = null;
-  //         this.updateClientsSettings({
-  //           monitorUISettings: {
-  //             connected: false, // TODO: should be removed when plotter app understand the `connectionStatus` message
-  //             connectionStatus: 'not-connected',
-  //           },
-  //         });
-  //       }
-  //       this.logger.info(
-  //         `monitor to ${this.port?.address} using ${this.port?.protocol} closed by server`
-  //       );
-  //     });
-
-  //   for (const handler of additionalHandlers) {
-  //     duplex.on(handler.key, handler.callback);
-  //   }
-  // }
-
-  // pollWriteToStream(request: Partial<MonitorRequest>): Promise<void> {
-  //   const createWriteToStreamExecutor =
-  //     (duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>) =>
-  //     (resolve: () => void, reject: (reason?: unknown) => void) => {
-  //       const resolvingDuplexHandlers: DuplexHandler[] = [
-  //         {
-  //           key: 'error',
-  //           callback: async (err: Error) => {
-  //             this.logger.error(err);
-  //             const details = ServiceError.is(err) ? err.details : err.message;
-  //             reject(createConnectionFailedError(this.port, details));
-  //           },
-  //         },
-  //         {
-  //           key: 'data',
-  //           callback: async (monitorResponse: MonitorResponse) => {
-  //             if (monitorResponse.getError()) {
-  //               // TODO: Maybe disconnect
-  //               this.logger.error(monitorResponse.getError());
-  //               return;
-  //             }
-  //             if (monitorResponse.getSuccess()) {
-  //               resolve();
-  //               return;
-  //             }
-  //             const data = monitorResponse.getRxData();
-  //             const message =
-  //               typeof data === 'string'
-  //                 ? data
-  //                 : this.streamingTextDecoder.decode(data, { stream: true });
-  //             this.messages.push(...splitLines(message));
-  //           },
-  //         },
-  //       ];
-
-  //       this.setDuplexHandlers(duplex, resolvingDuplexHandlers);
-  //       duplex.write(request);
-  //     };
-
-  //   return Promise.race([
-  //     retry(
-  //       async () => {
-  //         let createdDuplex = undefined;
-  //         try {
-  //           createdDuplex = await this.createDuplex();
-  //           await new Promise<void>(createWriteToStreamExecutor(createdDuplex));
-  //           this.duplex = createdDuplex;
-  //         } catch (err) {
-  //           createdDuplex?.end();
-  //           throw err;
-  //         }
-  //       },
-  //       2_000,
-  //       MAX_WRITE_TO_STREAM_TRIES
-  //     ),
-  //     timeoutReject(
-  //       WRITE_TO_STREAM_TIMEOUT_MS,
-  //       nls.localize(
-  //         'arduino/monitor/connectionTimeout',
-  //         "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it"
-  //       )
-  //     ),
-  //   ]) as Promise<unknown> as Promise<void>;
-  // }
-
   /**
    * Pauses the currently running monitor, it still closes the gRPC connection
    * with the underlying monitor process but it doesn't stop the message handlers
@@ -431,6 +339,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
       // It's enough to close the connection with the client
       // to stop the monitor process
       this.monitor.dispose();
+      this.monitor = undefined;
       this.logger.info(
         `stopped monitor to ${this.port?.address} using ${this.port?.protocol}`
       );
