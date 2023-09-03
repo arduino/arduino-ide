@@ -540,5 +540,107 @@
       "invalidExtension": ".{0} is not a valid extension",
       "newFileName": "New name for file"
     }
+  },
+  "vscode": {
+    "abstractTree": {
+      "clear": "Clear"
+    },
+    "bulkEditService": {
+      "quit": "Quit"
+    },
+    "date": {
+      "date.fromNow.days.plural.ago": "{0} days ago",
+      "date.fromNow.days.singular.ago": "{0} day ago",
+      "date.fromNow.hours.plural.ago": "{0} hours ago",
+      "date.fromNow.hours.singular.ago": "{0} hour ago",
+      "date.fromNow.minutes.plural.ago": "{0} minutes ago",
+      "date.fromNow.minutes.singular.ago": "{0} minute ago",
+      "date.fromNow.months.plural.ago": "{0} months ago",
+      "date.fromNow.months.singular.ago": "{0} month ago",
+      "date.fromNow.weeks.plural.ago": "{0} weeks ago",
+      "date.fromNow.weeks.singular.ago": "{0} week ago",
+      "date.fromNow.years.plural.ago": "{0} years ago",
+      "date.fromNow.years.singular.ago": "{0} year ago"
+    },
+    "debug.contribution": {
+      "startDebuggingHelp": "Start Debugging"
+    },
+    "dialog": {
+      "dialogErrorMessage": "Error"
+    },
+    "editor.contribution": {
+      "close": "Close"
+    },
+    "editorStatus": {
+      "status.editor.mode": "Language"
+    },
+    "extensionsActions": {
+      "reloadRequired": "Reload required"
+    },
+    "extensionsUtils": {
+      "no": "No",
+      "yes": "Yes"
+    },
+    "fileActions": {
+      "delete": "Delete",
+      "rename": "Rename"
+    },
+    "fileActions.contribution": {
+      "miAutoSave": "Auto save"
+    },
+    "fileCommands": {
+      "save": "Save"
+    },
+    "findController": {
+      "findNextMatchAction": "Find Next",
+      "findPreviousMatchAction": "Find Previous",
+      "startFindAction": "Find",
+      "startFindWithSelectionAction": "Use Selection for Find"
+    },
+    "helpActions": {
+      "miKeyboardShortcuts": "Keyboard Shortcuts"
+    },
+    "issueMainService": {
+      "cancel": "Cancel",
+      "ok": "OK"
+    },
+    "menubar": {
+      "mNewTab": "New Tab",
+      "mShowNextTab": "Next Tab",
+      "mShowPreviousTab": "Previous Tab"
+    },
+    "notificationsCenter": {
+      "notifications": "NOTIFICATIONS",
+      "notificationsEmpty": "NO NEW NOTIFICATIONS"
+    },
+    "notificationsCommands": {
+      "clearAllNotifications": "Clear All"
+    },
+    "notificationsStatus": {
+      "hideNotifications": "Hide Notification Center"
+    },
+    "output.contribution": {
+      "clearOutput.label": "Clear Output",
+      "toggleAutoScroll": "Toggle Autoscroll"
+    },
+    "preferences.contribution": {
+      "openSettings2": "Open Preferences",
+      "preferences": "Preferences"
+    },
+    "settingsTree": {
+      "settings": "Settings"
+    },
+    "standaloneStrings": {
+      "gotoLineActionLabel": "Go to Line..."
+    },
+    "textInputActions": {
+      "copy": "Copy"
+    },
+    "themes.contribution": {
+      "selectTheme.label": "Theme"
+    },
+    "workspaceActions": {
+      "openFileFolder": "Open..."
+    }
   }
 }
