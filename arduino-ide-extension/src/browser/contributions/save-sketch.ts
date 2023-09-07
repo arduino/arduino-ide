@@ -25,7 +25,7 @@ export class SaveSketch extends SketchContribution {
   override registerMenus(registry: MenuModelRegistry): void {
     registry.registerMenuAction(ArduinoMenus.FILE__SKETCH_GROUP, {
       commandId: SaveSketch.Commands.SAVE_SKETCH.id,
-      label: nls.localize('vscode/fileCommands/save', 'Save'),
+      label: nls.localize('vscode/fileCommands/save', 'Speichern'),
       order: '7',
     });
   }
