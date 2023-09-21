@@ -76,7 +76,9 @@ export class UpdateArduinoState extends SketchContribution {
   }
 
   override onReady(): void {
-    this.updateBoardsConfig(this.boardsServiceProvider.boardsConfig); // TODO: verify!
+    this.boardsServiceProvider.ready.then(() => {
+      this.updateBoardsConfig(this.boardsServiceProvider.boardsConfig);
+    });
     this.updateSketchPath(this.sketchServiceClient.tryGetCurrentSketch());
     this.updateUserDirPath(this.configService.tryGetSketchDirUri());
     this.updateDataDirPath(this.configService.tryGetDataDirUri());
