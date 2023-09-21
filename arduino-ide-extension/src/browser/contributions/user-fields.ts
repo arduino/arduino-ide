@@ -1,10 +1,10 @@
+import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { nls } from '@theia/core/lib/common';
 import { BoardUserField, CoreError } from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { UserFieldsDialog } from '../dialogs/user-fields/user-fields-dialog';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { MenuModelRegistry, Contribution } from './contribution';
+import { Contribution, MenuModelRegistry } from './contribution';
 import { UploadSketch } from './upload-sketch';
 
 @injectable()
@@ -21,12 +21,11 @@ export class UserFields extends Contribution {
 
   protected override init(): void {
     super.init();
-    this.boardsServiceProvider.onBoardsConfigDidChange(async () => {
-      const userFields =
-        await this.boardsServiceProvider.selectedBoardUserFields();
-      this.boardRequiresUserFields = userFields.length > 0;
-      this.menuManager.update();
-    });
+    this.boardsServiceProvider.onBoardsConfigDidChange(() => this.refresh());
+  }
+
+  override onReady(): void {
+    this.boardsServiceProvider.ready.then(() => this.refresh());
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
@@ -35,6 +34,13 @@ export class UserFields extends Contribution {
       label: UploadSketch.Commands.UPLOAD_WITH_CONFIGURATION.label,
       order: '2',
     });
+  }
+
+  private async refresh(): Promise<void> {
+    const userFields =
+      await this.boardsServiceProvider.selectedBoardUserFields();
+    this.boardRequiresUserFields = userFields.length > 0;
+    this.menuManager.update();
   }
 
   private selectedFqbnAddress(): string | undefined {
