@@ -1,35 +1,33 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
+import type { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
+import { environment } from '@theia/application-package/lib/environment';
 import {
   app,
   BrowserWindow,
   contentTracing,
-  ipcMain,
   Event as ElectronEvent,
+  ipcMain,
 } from '@theia/core/electron-shared/electron';
-import { fork } from 'node:child_process';
-import { AddressInfo } from 'node:net';
-import { join, isAbsolute, resolve } from 'node:path';
-import { promises as fs, rm, rmSync } from 'node:fs';
-import type { MaybePromise, Mutable } from '@theia/core/lib/common/types';
-import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
-import { FrontendApplicationConfig } from '@theia/application-package/lib/application-props';
-import { environment } from '@theia/application-package/lib/environment';
-import {
-  ElectronMainApplication as TheiaElectronMainApplication,
-  ElectronMainExecutionParams,
-} from '@theia/core/lib/electron-main/electron-main-application';
-import { URI } from '@theia/core/shared/vscode-uri';
-import { Deferred } from '@theia/core/lib/common/promise-util';
-import * as os from '@theia/core/lib/common/os';
-import { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
-import { IsTempSketch } from '../../node/is-temp-sketch';
-import { ErrnoException } from '../../node/utils/errors';
-import { isAccessibleSketchPath } from '../../node/sketches-service-impl';
-import { FileUri } from '@theia/core/lib/node/file-uri';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { isOSX } from '@theia/core/lib/common/os';
+import { Deferred } from '@theia/core/lib/common/promise-util';
+import { isObject, MaybePromise, Mutable } from '@theia/core/lib/common/types';
+import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
+import {
+  ElectronMainApplication as TheiaElectronMainApplication,
+  ElectronMainExecutionParams,
+} from '@theia/core/lib/electron-main/electron-main-application';
+import type { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import { URI } from '@theia/core/shared/vscode-uri';
+import { log as logToFile, setup as setupFileLog } from 'node-log-rotate';
+import { fork } from 'node:child_process';
+import { promises as fs, rm, rmSync } from 'node:fs';
+import type { AddressInfo } from 'node:net';
+import { isAbsolute, join, resolve } from 'node:path';
 import { Sketch } from '../../common/protocol';
 import {
   AppInfo,
@@ -39,8 +37,70 @@ import {
   CHANNEL_SHOW_PLOTTER_WINDOW,
   isShowPlotterWindowParams,
 } from '../../electron-common/electron-arduino';
+import { IsTempSketch } from '../../node/is-temp-sketch';
+import { isAccessibleSketchPath } from '../../node/sketches-service-impl';
+import { ErrnoException } from '../../node/utils/errors';
 
 app.commandLine.appendSwitch('disable-http-cache');
+
+const consoleLogFunctionNames = [
+  'log',
+  'trace',
+  'debug',
+  'info',
+  'warn',
+  'error',
+] as const;
+type ConsoleLogSeverity = (typeof consoleLogFunctionNames)[number];
+interface ConsoleLogParams {
+  readonly severity: ConsoleLogSeverity;
+  readonly message: string;
+}
+function isConsoleLogParams(arg: unknown): arg is ConsoleLogParams {
+  return (
+    isObject<ConsoleLogParams>(arg) &&
+    typeof arg.message === 'string' &&
+    typeof arg.severity === 'string' &&
+    consoleLogFunctionNames.includes(arg.severity as ConsoleLogSeverity)
+  );
+}
+
+// Patch for on Linux when `XDG_CONFIG_HOME` is not available, `node-log-rotate` creates the folder with `undefined` name.
+// See https://github.com/lemon-sour/node-log-rotate/issues/23 and https://github.com/arduino/arduino-ide/issues/394.
+// If the IDE2 is running on Linux, and the `XDG_CONFIG_HOME` variable is not available, set it to avoid the `undefined` folder.
+// From the specs: https://specifications.freedesktop.org/basedir-spec/latest/ar01s03.html
+// "If $XDG_CONFIG_HOME is either not set or empty, a default equal to $HOME/.config should be used."
+function enableFileLogger() {
+  const os = require('os');
+  const util = require('util');
+  if (os.platform() === 'linux' && !process.env['XDG_CONFIG_HOME']) {
+    const { join } = require('path');
+    const home = process.env['HOME'];
+    const xdgConfigHome = home
+      ? join(home, '.config')
+      : join(os.homedir(), '.config');
+    process.env['XDG_CONFIG_HOME'] = xdgConfigHome;
+  }
+  setupFileLog({
+    appName: 'Arduino IDE',
+    maxSize: 10 * 1024 * 1024,
+  });
+  for (const name of consoleLogFunctionNames) {
+    const original = console[name];
+    console[name] = function () {
+      // eslint-disable-next-line prefer-rest-params
+      const messages = Object.values(arguments);
+      const message = util.format(...messages);
+      original(message);
+      logToFile(message);
+    };
+  }
+}
+
+const isProductionMode = !environment.electron.isDevMode();
+if (isProductionMode) {
+  enableFileLogger();
+}
 
 interface WorkspaceOptions {
   file: string;
@@ -185,7 +245,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 
   private attachFileAssociations(cwd: string): void {
     // OSX: register open-file event
-    if (os.isOSX) {
+    if (isOSX) {
       app.on('open-file', async (event, path) => {
         event.preventDefault();
         const resolvedPath = await this.resolvePath(path, cwd);
@@ -495,9 +555,14 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       );
       console.log(`Starting backend process. PID: ${backendProcess.pid}`);
       return new Promise((resolve, reject) => {
-        // The backend server main file is also supposed to send the resolved http(s) server port via IPC.
-        backendProcess.on('message', (address: AddressInfo) => {
-          resolve(address.port);
+        // The forked backend process sends the resolved http(s) server port via IPC, and forwards the log messages.
+        backendProcess.on('message', (arg: unknown) => {
+          if (isConsoleLogParams(arg)) {
+            const { message, severity } = arg;
+            console[severity](message);
+          } else if (isAddressInfo(arg)) {
+            resolve(arg.port);
+          }
         });
         backendProcess.on('error', (error) => {
           reject(error);
@@ -703,7 +768,7 @@ class InterruptWorkspaceRestoreError extends Error {
 async function updateFrontendApplicationConfigFromPackageJson(
   config: FrontendApplicationConfig
 ): Promise<FrontendApplicationConfig> {
-  if (environment.electron.isDevMode()) {
+  if (!isProductionMode) {
     console.debug(
       'Skipping frontend application configuration customizations. Running in dev mode.'
     );
@@ -776,4 +841,8 @@ function updateAppInfo(
     }
   });
   return toUpdate;
+}
+
+function isAddressInfo(arg: unknown): arg is Pick<AddressInfo, 'port'> {
+  return isObject<AddressInfo>(arg) && typeof arg.port === 'number'; // `family` might be
 }

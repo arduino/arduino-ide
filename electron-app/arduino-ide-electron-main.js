@@ -18,8 +18,6 @@ if (config.buildDate) {
   ]
     .filter(Boolean)
     .join(',');
-  // Enables the file logger in the backend process.
-  process.env.IDE2_FILE_LOGGER = 'true';
 }
 
 require('./lib/backend/electron-main');
