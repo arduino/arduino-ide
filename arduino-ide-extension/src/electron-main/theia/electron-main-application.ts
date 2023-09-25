@@ -844,5 +844,7 @@ function updateAppInfo(
 }
 
 function isAddressInfo(arg: unknown): arg is Pick<AddressInfo, 'port'> {
-  return isObject<AddressInfo>(arg) && typeof arg.port === 'number'; // `family` might be
+  // Cannot do the type-guard on all properties, but the port is sufficient as the address is always `localhost`.
+  // For example, the `family` might be absent if the address is IPv6.
+  return isObject<AddressInfo>(arg) && typeof arg.port === 'number';
 }
