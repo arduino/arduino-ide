@@ -53,7 +53,7 @@
     "prepackage": "rimraf dist",
     "package": "node ./scripts/package.js",
     "postpackage": "node ./scripts/post-package.js",
-    "rebuild": "theia rebuild:browser && theia rebuild:electron"
+    "rebuild": "theia rebuild:browser --cacheRoot ../.. && theia rebuild:electron --cacheRoot ../.."
   },
   "theia": {
     "target": "electron",
