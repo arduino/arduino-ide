@@ -1,5 +1,5 @@
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { LocalStorageService } from '@theia/core/lib/browser/storage-service';
+import { StorageService } from '@theia/core/lib/browser/storage-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -23,8 +23,11 @@ export class BoardsDataStore implements FrontendApplicationContribution {
   private readonly boardsService: BoardsService;
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
-  @inject(LocalStorageService)
-  private readonly storageService: LocalStorageService;
+  // When `@theia/workspace` is part of the application, the workspace-scoped storage service is the default implementation, and the `StorageService` symbol must be used for the injection.
+  // https://github.com/eclipse-theia/theia/blob/ba3722b04ff91eb6a4af6a571c9e263c77cdd8b5/packages/workspace/src/browser/workspace-frontend-module.ts#L97-L98
+  // In other words, store the data (such as the board configs) per sketch, not per IDE2 installation. https://github.com/arduino/arduino-ide/issues/2240
+  @inject(StorageService)
+  private readonly storageService: StorageService;
 
   private readonly onChangedEmitter = new Emitter<string[]>();
   private readonly toDispose = new DisposableCollection(this.onChangedEmitter);
