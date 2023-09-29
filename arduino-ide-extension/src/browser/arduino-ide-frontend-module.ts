@@ -358,6 +358,9 @@ import { MonacoEditorMenuContribution as TheiaMonacoEditorMenuContribution } fro
 import { UpdateArduinoState } from './contributions/update-arduino-state';
 import { TerminalFrontendContribution } from './theia/terminal/terminal-frontend-contribution';
 import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } from '@theia/terminal/lib/browser/terminal-frontend-contribution';
+import { SelectionService } from '@theia/core/lib/common/selection-service';
+import { CommandService } from '@theia/core/lib/common/command';
+import { CorePreferences } from '@theia/core/lib/browser/core-preferences';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -796,10 +799,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     );
     const iconThemeService =
       context.container.get<IconThemeService>(IconThemeService);
+    const selectionService =
+      context.container.get<SelectionService>(SelectionService);
+    const commandService =
+      context.container.get<CommandService>(CommandService);
+    const corePreferences =
+      context.container.get<CorePreferences>(CorePreferences);
     return new TabBarRenderer(
       contextMenuRenderer,
       decoratorService,
-      iconThemeService
+      iconThemeService,
+      selectionService,
+      commandService,
+      corePreferences
     );
   });
 

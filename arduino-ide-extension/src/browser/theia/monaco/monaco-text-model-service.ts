@@ -19,7 +19,9 @@ export class MonacoTextModelService extends TheiaMonacoTextModelService {
     const factory = this.factories
       .getContributions()
       .find(({ scheme }) => resource.uri.scheme === scheme);
-    const readOnly = this.sketchesServiceClient.isReadOnly(resource.uri);
+    const readOnly =
+      Boolean(resource.isReadonly) ||
+      this.sketchesServiceClient.isReadOnly(resource.uri);
     return factory
       ? factory.createModel(resource)
       : new MaybeReadonlyMonacoEditorModel(

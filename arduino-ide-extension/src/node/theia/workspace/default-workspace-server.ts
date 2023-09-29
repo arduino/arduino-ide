@@ -1,8 +1,7 @@
-import { promises as fs, constants } from 'node:fs';
-import { injectable, inject } from '@theia/core/shared/inversify';
+import { FileUri } from '@theia/core/lib/node';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { DefaultWorkspaceServer as TheiaDefaultWorkspaceServer } from '@theia/workspace/lib/node/default-workspace-server';
 import { SketchesService } from '../../../common/protocol';
-import { FileUri } from '@theia/core/lib/node';
 import { IsTempSketch } from '../../is-temp-sketch';
 
 @injectable()
@@ -19,26 +18,6 @@ export class DefaultWorkspaceServer extends TheiaDefaultWorkspaceServer {
       return uri;
     }
     return uri;
-  }
-
-  /**
-   * This is the async re-implementation of the default Theia behavior.
-   */
-  override async getRecentWorkspaces(): Promise<string[]> {
-    const listUri: string[] = [];
-    const data = await this.readRecentWorkspacePathsFromUserHome();
-    if (data && data.recentRoots) {
-      await Promise.all(
-        data.recentRoots
-          .filter((element) => Boolean(element))
-          .map(async (element) => {
-            if (await this.exists(element)) {
-              listUri.push(element);
-            }
-          })
-      );
-    }
-    return listUri;
   }
 
   protected override async writeToUserHome(
@@ -68,15 +47,6 @@ export class DefaultWorkspaceServer extends TheiaDefaultWorkspaceServer {
     return {
       recentRoots,
     };
-  }
-
-  private async exists(uri: string): Promise<boolean> {
-    try {
-      await fs.access(FileUri.fsPath(uri), constants.R_OK | constants.W_OK);
-      return true;
-    } catch {
-      return false;
-    }
   }
 }
 

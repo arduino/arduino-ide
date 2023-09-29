@@ -1,13 +1,13 @@
-import { injectable } from '@theia/core/shared/inversify';
-import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import {
-  CommonFrontendContribution as TheiaCommonFrontendContribution,
   CommonCommands,
+  CommonFrontendContribution as TheiaCommonFrontendContribution,
 } from '@theia/core/lib/browser/common-frontend-contribution';
-import { CommandRegistry } from '@theia/core/lib/common/command';
 import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application';
-import { KeybindingRegistry } from '@theia/core/lib/browser';
-import { isOSX } from '@theia/core';
+import type { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
+import type { CommandRegistry } from '@theia/core/lib/common/command';
+import type { MenuModelRegistry } from '@theia/core/lib/common/menu';
+import { isOSX } from '@theia/core/lib/common/os';
+import { injectable } from '@theia/core/shared/inversify';
 
 @injectable()
 export class CommonFrontendContribution extends TheiaCommonFrontendContribution {
@@ -25,6 +25,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.PIN_TAB,
       CommonCommands.UNPIN_TAB,
       CommonCommands.NEW_UNTITLED_FILE,
+      CommonCommands.NEW_UNTITLED_TEXT_FILE,
     ]) {
       commandRegistry.unregisterCommand(command);
     }
@@ -48,6 +49,7 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
       CommonCommands.ABOUT_COMMAND,
       CommonCommands.SAVE_WITHOUT_FORMATTING, // Patched for https://github.com/eclipse-theia/theia/pull/8877,
       CommonCommands.NEW_UNTITLED_FILE,
+      CommonCommands.NEW_UNTITLED_TEXT_FILE,
     ]) {
       registry.unregisterMenuAction(command);
     }
