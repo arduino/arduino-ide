@@ -19,16 +19,18 @@ export class SelectedBoard extends Contribution {
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
   override onStart(): void {
-    this.boardsServiceProvider.onBoardListDidChange(() =>
-      this.update(this.boardsServiceProvider.boardList)
+    this.boardsServiceProvider.onBoardListDidChange((boardList) =>
+      this.update(boardList)
     );
   }
 
   override onReady(): void {
-    this.update(this.boardsServiceProvider.boardList);
+    this.boardsServiceProvider.ready.then(() => this.update());
   }
 
-  private update(boardList: BoardList): void {
+  private update(
+    boardList: BoardList = this.boardsServiceProvider.boardList
+  ): void {
     const { selectedBoard, selectedPort } = boardList.boardsConfig;
     this.statusBar.setElement('arduino-selected-board', {
       alignment: StatusBarAlignment.RIGHT,
