@@ -5,7 +5,6 @@
 
 (() => {
   const path = require('path');
-  const shell = require('shelljs');
   const downloader = require('./downloader');
   const { goBuildFromGit } = require('./utils');
 
@@ -25,20 +24,20 @@
   })();
 
   if (!DEFAULT_LS_VERSION) {
-    shell.echo(
+    console.log(
       `Could not retrieve Arduino Language Server version info from the 'package.json'.`
     );
-    shell.exit(1);
+    process.exit(1);
   }
 
   if (!DEFAULT_CLANGD_VERSION) {
-    shell.echo(
+    console.log(
       `Could not retrieve clangd version info from the 'package.json'.`
     );
-    shell.exit(1);
+    process.exit(1);
   }
 
-  const yargs = require('yargs')
+  const yargs = require('@theia/core/shared/yargs')
     .option('ls-version', {
       alias: 'lv',
       default: DEFAULT_LS_VERSION,
@@ -114,10 +113,10 @@
       throw new Error(`Unsupported platform/arch: ${platformArch}.`);
   }
   if (!lsSuffix || !clangdSuffix) {
-    shell.echo(
+    console.log(
       `The arduino-language-server is not available for ${platform} ${arch}.`
     );
-    shell.exit(1);
+    process.exit(1);
   }
 
   if (typeof lsVersion === 'string') {

@@ -9,9 +9,9 @@ import { deepClone } from '@theia/core/lib/common/objects';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import type { Mutable } from '@theia/core/lib/common/types';
 import { BackendApplicationContribution } from '@theia/core/lib/node/backend-application';
+import { UUID } from '@theia/core/shared/@phosphor/coreutils';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { isDeepStrictEqual } from 'util';
-import { v4 } from 'uuid';
 import { Unknown } from '../common/nls';
 import {
   Board,
@@ -168,7 +168,7 @@ export class BoardDiscovery
       });
     const wrapper = {
       stream,
-      uuid: v4(),
+      uuid: UUID.uuid4(),
       dispose: () => {
         this.logger.info('disposing requesting cancel');
         // Cancelling the stream will kill the discovery `builtin:mdns-discovery process`.

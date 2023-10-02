@@ -5,10 +5,14 @@ const version = '1.10.0';
 
 (async () => {
   const os = require('node:os');
-  const { existsSync, promises: fs } = require('node:fs');
+  const {
+    existsSync,
+    promises: fs,
+    mkdirSync,
+    readdirSync,
+    cpSync,
+  } = require('node:fs');
   const path = require('node:path');
-  const shell = require('shelljs');
-  const { v4 } = require('uuid');
   const { exec } = require('./utils');
 
   const destination = path.join(
@@ -20,31 +24,38 @@ const version = '1.10.0';
     'Examples'
   );
   if (existsSync(destination)) {
-    shell.echo(
+    console.log(
       `Skipping Git checkout of the examples because the repository already exists: ${destination}`
     );
     return;
   }
 
-  const repository = path.join(os.tmpdir(), `${v4()}-arduino-examples`);
-  if (shell.mkdir('-p', repository).code !== 0) {
-    shell.exit(1);
-  }
+  const repository = await fs.mkdtemp(
+    path.join(os.tmpdir(), 'arduino-examples-')
+  );
 
   exec(
     'git',
     ['clone', 'https://github.com/arduino/arduino-examples.git', repository],
-    shell
+    { logStdout: true }
   );
 
   exec(
     'git',
     ['-C', repository, 'checkout', `tags/${version}`, '-b', version],
-    shell
+    { logStdout: true }
   );
 
-  shell.mkdir('-p', destination);
-  shell.cp('-fR', path.join(repository, 'examples', '*'), destination);
+  mkdirSync(destination, { recursive: true });
+  const examplesPath = path.join(repository, 'examples');
+  const exampleResources = readdirSync(examplesPath);
+  for (const exampleResource of exampleResources) {
+    cpSync(
+      path.join(examplesPath, exampleResource),
+      path.join(destination, exampleResource),
+      { recursive: true }
+    );
+  }
 
   const isSketch = async (pathLike) => {
     try {
@@ -104,5 +115,5 @@ const version = '1.10.0';
     JSON.stringify(examples, null, 2),
     { encoding: 'utf8' }
   );
-  shell.echo(`Generated output to ${path.join(destination, 'examples.json')}`);
+  console.log(`Generated output to ${path.join(destination, 'examples.json')}`);
 })();

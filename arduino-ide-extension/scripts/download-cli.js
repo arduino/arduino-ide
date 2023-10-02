@@ -2,7 +2,6 @@
 
 (async () => {
   const path = require('path');
-  const shell = require('shelljs');
   const semver = require('semver');
   const moment = require('moment');
   const downloader = require('./downloader');
@@ -29,8 +28,8 @@
   })();
 
   if (!version) {
-    shell.echo(`Could not retrieve CLI version info from the 'package.json'.`);
-    shell.exit(1);
+    console.log(`Could not retrieve CLI version info from the 'package.json'.`);
+    process.exit(1);
   }
 
   const { platform, arch } = process;
@@ -71,24 +70,24 @@
       }
     })();
     if (!suffix) {
-      shell.echo(`The CLI is not available for ${platform} ${arch}.`);
-      shell.exit(1);
+      console.log(`The CLI is not available for ${platform} ${arch}.`);
+      process.exit(1);
     }
     if (semver.valid(version)) {
       const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_${version}_${suffix}`;
-      shell.echo(
+      console.log(
         `📦  Identified released version of the CLI. Downloading version ${version} from '${url}'`
       );
       await downloader.downloadUnzipFile(url, destinationPath, 'arduino-cli');
     } else if (moment(version, 'YYYYMMDD', true).isValid()) {
       const url = `https://downloads.arduino.cc/arduino-cli/nightly/arduino-cli_nightly-${version}_${suffix}`;
-      shell.echo(
+      console.log(
         `🌙  Identified nightly version of the CLI. Downloading version ${version} from '${url}'`
       );
       await downloader.downloadUnzipFile(url, destinationPath, 'arduino-cli');
     } else {
-      shell.echo(`🔥  Could not interpret 'version': ${version}`);
-      shell.exit(1);
+      console.log(`🔥  Could not interpret 'version': ${version}`);
+      process.exit(1);
     }
   } else {
     taskBuildFromGit(version, destinationPath, 'CLI');

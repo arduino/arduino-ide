@@ -420,6 +420,29 @@ export namespace LoadSketchRequest {
     }
 }
 
+export class SketchProfile extends jspb.Message { 
+    getName(): string;
+    setName(value: string): SketchProfile;
+    getFqbn(): string;
+    setFqbn(value: string): SketchProfile;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SketchProfile.AsObject;
+    static toObject(includeInstance: boolean, msg: SketchProfile): SketchProfile.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SketchProfile, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SketchProfile;
+    static deserializeBinaryFromReader(message: SketchProfile, reader: jspb.BinaryReader): SketchProfile;
+}
+
+export namespace SketchProfile {
+    export type AsObject = {
+        name: string,
+        fqbn: string,
+    }
+}
+
 export class LoadSketchResponse extends jspb.Message { 
     getMainFile(): string;
     setMainFile(value: string): LoadSketchResponse;
@@ -443,6 +466,15 @@ export class LoadSketchResponse extends jspb.Message {
     setDefaultPort(value: string): LoadSketchResponse;
     getDefaultProtocol(): string;
     setDefaultProtocol(value: string): LoadSketchResponse;
+    clearProfilesList(): void;
+    getProfilesList(): Array<SketchProfile>;
+    setProfilesList(value: Array<SketchProfile>): LoadSketchResponse;
+    addProfiles(value?: SketchProfile, index?: number): SketchProfile;
+
+    hasDefaultProfile(): boolean;
+    clearDefaultProfile(): void;
+    getDefaultProfile(): SketchProfile | undefined;
+    setDefaultProfile(value?: SketchProfile): LoadSketchResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LoadSketchResponse.AsObject;
@@ -464,6 +496,8 @@ export namespace LoadSketchResponse {
         defaultFqbn: string,
         defaultPort: string,
         defaultProtocol: string,
+        profilesList: Array<SketchProfile.AsObject>,
+        defaultProfile?: SketchProfile.AsObject,
     }
 }
 

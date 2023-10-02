@@ -3,22 +3,18 @@
 (async () => {
   const os = require('node:os');
   const path = require('node:path');
+  const { mkdirSync, promises: fs } = require('node:fs');
   const { exec } = require('./utils');
   const glob = require('glob');
-  const { v4 } = require('uuid');
-  const shell = require('shelljs');
   const protoc = path.dirname(require('protoc/protoc'));
 
-  const repository = path.join(os.tmpdir(), `${v4()}-arduino-cli`);
-  if (shell.mkdir('-p', repository).code !== 0) {
-    shell.exit(1);
-  }
+  const repository = await fs.mkdtemp(path.join(os.tmpdir(), 'arduino-cli-'));
 
   const { owner, repo, commitish } = (() => {
     const pkg = require(path.join(__dirname, '..', 'package.json'));
     if (!pkg) {
-      shell.echo(`Could not parse the 'package.json'.`);
-      shell.exit(1);
+      console.log(`Could not parse the 'package.json'.`);
+      process.exit(1);
     }
 
     const defaultVersion = {
@@ -48,21 +44,21 @@
     // We assume an object with `owner`, `repo`, commitish?` properties.
     const { owner, repo, commitish } = version;
     if (!owner) {
-      shell.echo(`Could not retrieve 'owner' from ${JSON.stringify(version)}`);
-      shell.exit(1);
+      console.log(`Could not retrieve 'owner' from ${JSON.stringify(version)}`);
+      process.exit(1);
     }
     if (!repo) {
-      shell.echo(`Could not retrieve 'repo' from ${JSON.stringify(version)}`);
-      shell.exit(1);
+      console.log(`Could not retrieve 'repo' from ${JSON.stringify(version)}`);
+      process.exit(1);
     }
 
     return { owner, repo, commitish };
   })();
 
   const url = `https://github.com/${owner}/${repo}.git`;
-  shell.echo(`>>> Cloning repository from '${url}'...`);
-  exec('git', ['clone', url, repository], shell);
-  shell.echo(`<<< Repository cloned.`);
+  console.log(`>>> Cloning repository from '${url}'...`);
+  exec('git', ['clone', url, repository], { logStdout: true });
+  console.log(`<<< Repository cloned.`);
 
   const { platform } = process;
   const resourcesFolder = path.join(
@@ -76,10 +72,12 @@
     resourcesFolder,
     `arduino-cli${platform === 'win32' ? '.exe' : ''}`
   );
-  const versionJson = exec(cli, ['version', '--format', 'json'], shell).trim();
+  const versionJson = exec(cli, ['version', '--format', 'json'], {
+    logStdout: true,
+  }).trim();
   if (!versionJson) {
-    shell.echo(`Could not retrieve the CLI version from ${cli}.`);
-    shell.exit(1);
+    console.log(`Could not retrieve the CLI version from ${cli}.`);
+    process.exit(1);
   }
   // As of today (28.01.2021), the `VersionString` can be one of the followings:
   //  - `nightly-YYYYMMDD` stands for the nightly build, we use the , the `commitish` from the `package.json` to check out the code.
@@ -103,45 +101,51 @@
     version !== '0.0.0-git' &&
     version !== 'git-snapshot'
   ) {
-    shell.echo(`>>> Checking out tagged version: '${version}'...`);
-    exec('git', ['-C', repository, 'fetch', '--all', '--tags'], shell);
+    console.log(`>>> Checking out tagged version: '${version}'...`);
+    exec('git', ['-C', repository, 'fetch', '--all', '--tags'], {
+      logStdout: true,
+    });
     exec(
       'git',
       ['-C', repository, 'checkout', `tags/${version}`, '-b', version],
-      shell
+      { logStdout: true }
     );
-    shell.echo(`<<< Checked out tagged version: '${version}'.`);
+    console.log(`<<< Checked out tagged version: '${version}'.`);
   } else if (commitish) {
-    shell.echo(
+    console.log(
       `>>> Checking out commitish from 'package.json': '${commitish}'...`
     );
-    exec('git', ['-C', repository, 'checkout', commitish], shell);
-    shell.echo(
+    exec('git', ['-C', repository, 'checkout', commitish], { logStdout: true });
+    console.log(
       `<<< Checked out commitish from 'package.json': '${commitish}'.`
     );
   } else if (versionObject.Commit) {
-    shell.echo(
+    console.log(
       `>>> Checking out commitish from the CLI: '${versionObject.Commit}'...`
     );
-    exec('git', ['-C', repository, 'checkout', versionObject.Commit], shell);
-    shell.echo(
+    exec('git', ['-C', repository, 'checkout', versionObject.Commit], {
+      logStdout: true,
+    });
+    console.log(
       `<<< Checked out commitish from the CLI: '${versionObject.Commit}'.`
     );
   } else {
-    shell.echo(`WARN: no 'git checkout'. Generating from the HEAD revision.`);
+    console.log(`WARN: no 'git checkout'. Generating from the HEAD revision.`);
   }
 
-  shell.echo('>>> Generating TS/JS API from:');
-  exec('git', ['-C', repository, 'rev-parse', '--abbrev-ref', 'HEAD'], shell);
+  console.log('>>> Generating TS/JS API from:');
+  exec('git', ['-C', repository, 'rev-parse', '--abbrev-ref', 'HEAD'], {
+    logStdout: true,
+  });
 
   const rpc = path.join(repository, 'rpc');
   const out = path.join(__dirname, '..', 'src', 'node', 'cli-protocol');
-  shell.mkdir('-p', out);
+  mkdirSync(out, { recursive: true });
 
   const protos = await new Promise((resolve) =>
     glob('**/*.proto', { cwd: rpc }, (error, matches) => {
       if (error) {
-        shell.echo(error.stack ?? error.message);
+        console.log(error.stack ?? error.message);
         resolve([]);
         return;
       }
@@ -149,12 +153,11 @@
     })
   );
   if (!protos || protos.length === 0) {
-    shell.echo(`Could not find any .proto files under ${rpc}.`);
-    shell.exit(1);
+    console.log(`Could not find any .proto files under ${rpc}.`);
+    process.exit(1);
   }
 
   // Generate JS code from the `.proto` files.
-
   exec(
     'grpc_tools_node_protoc',
     [
@@ -164,7 +167,7 @@
       rpc,
       ...protos,
     ],
-    shell
+    { logStdout: true }
   );
 
   // Generate the `.d.ts` files for JS.
@@ -183,8 +186,8 @@
       rpc,
       ...protos,
     ],
-    shell
+    { logStdout: true }
   );
 
-  shell.echo('<<< Generation was successful.');
+  console.log('<<< Generation was successful.');
 })();
