@@ -29,6 +29,12 @@ export class CommonFrontendContribution extends TheiaCommonFrontendContribution 
     ]) {
       commandRegistry.unregisterCommand(command);
     }
+    commandRegistry.registerCommand(CommonCommands.NEW_UNTITLED_TEXT_FILE, {
+      execute: () => {
+        // register a noop command to avoid error when double-clicking in editor tabbar
+        // https://github.com/eclipse-theia/theia/pull/12867
+      },
+    });
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
