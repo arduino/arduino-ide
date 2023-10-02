@@ -2,7 +2,6 @@
 
 (async () => {
   const path = require('node:path');
-  const shell = require('shelljs');
   const semver = require('semver');
   const downloader = require('./downloader');
   const { taskBuildFromGit } = require('./utils');
@@ -28,10 +27,10 @@
   })();
 
   if (!version) {
-    shell.echo(
+    console.log(
       `Could not retrieve Firmware Uploader version info from the 'package.json'.`
     );
-    shell.exit(1);
+    process.exit(1);
   }
 
   const { platform, arch } = process;
@@ -71,14 +70,14 @@
       }
     })();
     if (!suffix) {
-      shell.echo(
+      console.log(
         `The Firmware Uploader is not available for ${platform} ${arch}.`
       );
-      shell.exit(1);
+      process.exit(1);
     }
     if (semver.valid(version)) {
       const url = `https://downloads.arduino.cc/arduino-fwuploader/arduino-fwuploader_${version}_${suffix}`;
-      shell.echo(
+      console.log(
         `📦  Identified released version of the Firmware Uploader. Downloading version ${version} from '${url}'`
       );
       await downloader.downloadUnzipFile(
@@ -87,8 +86,8 @@
         'arduino-fwuploader'
       );
     } else {
-      shell.echo(`🔥  Could not interpret 'version': ${version}`);
-      shell.exit(1);
+      console.log(`🔥  Could not interpret 'version': ${version}`);
+      process.exit(1);
     }
   } else {
     taskBuildFromGit(version, destinationPath, 'Firmware Uploader');

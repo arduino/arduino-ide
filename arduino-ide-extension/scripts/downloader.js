@@ -1,20 +1,19 @@
+// @ts-check
+
 const fs = require('fs');
 const path = require('path');
-const shell = require('shelljs');
 const decompress = require('decompress');
 const unzip = require('decompress-unzip');
 const untargz = require('decompress-targz');
 const untarbz2 = require('decompress-tarbz2');
 
-process.on('unhandledRejection', (reason, _) => {
-  shell.echo(String(reason));
-  shell.exit(1);
-  throw reason;
+process.on('unhandledRejection', (reason) => {
+  console.log(String(reason));
+  process.exit(1);
 });
 process.on('uncaughtException', (error) => {
-  shell.echo(String(error));
-  shell.exit(1);
-  throw error;
+  console.log(String(error));
+  process.exit(1);
 });
 
 /**
@@ -30,55 +29,42 @@ exports.downloadUnzipFile = async (
   force = false
 ) => {
   if (fs.existsSync(targetFile) && !force) {
-    shell.echo(`Skipping download because file already exists: ${targetFile}`);
+    console.log(`Skipping download because file already exists: ${targetFile}`);
     return;
   }
-  if (!fs.existsSync(path.dirname(targetFile))) {
-    if (shell.mkdir('-p', path.dirname(targetFile)).code !== 0) {
-      shell.echo('Could not create new directory.');
-      shell.exit(1);
-    }
-  }
+  fs.mkdirSync(path.dirname(targetFile), { recursive: true });
 
   const downloads = path.join(__dirname, '..', 'downloads');
-  if (shell.rm('-rf', targetFile, downloads).code !== 0) {
-    shell.exit(1);
-  }
+  fs.rmSync(targetFile, { recursive: true, force: true });
+  fs.rmSync(downloads, { recursive: true, force: true });
 
-  shell.echo(`>>> Downloading from '${url}'...`);
-  const { default: download } = await import('@xhmikosr/downloader');
+  console.log(`>>> Downloading from '${url}'...`);
   const data = await download(url);
-  shell.echo(`<<< Download succeeded.`);
+  console.log(`<<< Download succeeded.`);
 
-  shell.echo('>>> Decompressing...');
+  console.log('>>> Decompressing...');
   const files = await decompress(data, downloads, {
     plugins: [unzip(), untargz(), untarbz2()],
   });
   if (files.length === 0) {
-    shell.echo('Error ocurred while decompressing the archive.');
-    shell.exit(1);
+    console.log('Error ocurred while decompressing the archive.');
+    process.exit(1);
   }
   const fileIndex = files.findIndex((f) => f.path.startsWith(filePrefix));
   if (fileIndex === -1) {
-    shell.echo(
+    console.log(
       `The downloaded artifact does not contain any file with prefix ${filePrefix}.`
     );
-    shell.exit(1);
+    process.exit(1);
   }
-  shell.echo('<<< Decompressing succeeded.');
+  console.log('<<< Decompressing succeeded.');
 
-  if (
-    shell.mv('-f', path.join(downloads, files[fileIndex].path), targetFile)
-      .code !== 0
-  ) {
-    shell.echo(`Could not move file to target path: ${targetFile}`);
-    shell.exit(1);
-  }
+  fs.renameSync(path.join(downloads, files[fileIndex].path), targetFile);
   if (!fs.existsSync(targetFile)) {
-    shell.echo(`Could not find file: ${targetFile}`);
-    shell.exit(1);
+    console.log(`Could not find file: ${targetFile}`);
+    process.exit(1);
   }
-  shell.echo(`Done: ${targetFile}`);
+  console.log(`Done: ${targetFile}`);
 };
 
 /**
@@ -86,7 +72,7 @@ exports.downloadUnzipFile = async (
  * @param targetDir {string}  Directory into which to decompress the archive
  * @param targetFile {string} Path to the main file expected after decompressing
  * @param force {boolean}     Whether to download even if the target file exists
- * @param decompressOptions {import('decompress').DecompressOptions}
+ * @param decompressOptions {import('decompress').DecompressOptions|undefined} [decompressOptions]
  */
 exports.downloadUnzipAll = async (
   url,
@@ -96,22 +82,16 @@ exports.downloadUnzipAll = async (
   decompressOptions = undefined
 ) => {
   if (fs.existsSync(targetFile) && !force) {
-    shell.echo(`Skipping download because file already exists: ${targetFile}`);
+    console.log(`Skipping download because file already exists: ${targetFile}`);
     return;
   }
-  if (!fs.existsSync(targetDir)) {
-    if (shell.mkdir('-p', targetDir).code !== 0) {
-      shell.echo('Could not create new directory.');
-      shell.exit(1);
-    }
-  }
+  fs.mkdirSync(targetDir, { recursive: true });
 
-  shell.echo(`>>> Downloading from '${url}'...`);
-  const { default: download } = await import('@xhmikosr/downloader');
+  console.log(`>>> Downloading from '${url}'...`);
   const data = await download(url);
-  shell.echo(`<<< Download succeeded.`);
+  console.log(`<<< Download succeeded.`);
 
-  shell.echo('>>> Decompressing...');
+  console.log('>>> Decompressing...');
   let options = {
     plugins: [unzip(), untargz(), untarbz2()],
   };
@@ -120,14 +100,27 @@ exports.downloadUnzipAll = async (
   }
   const files = await decompress(data, targetDir, options);
   if (files.length === 0) {
-    shell.echo('Error ocurred while decompressing the archive.');
-    shell.exit(1);
+    console.log('Error ocurred while decompressing the archive.');
+    process.exit(1);
   }
-  shell.echo('<<< Decompressing succeeded.');
+  console.log('<<< Decompressing succeeded.');
 
   if (!fs.existsSync(targetFile)) {
-    shell.echo(`Could not find file: ${targetFile}`);
-    shell.exit(1);
+    console.log(`Could not find file: ${targetFile}`);
+    process.exit(1);
   }
-  shell.echo(`Done: ${targetFile}`);
+  console.log(`Done: ${targetFile}`);
 };
+
+/**
+ * @param {string} url
+ * @returns {Promise<import('node:buffer').Buffer>}
+ */
+async function download(url) {
+  const { default: download } = await import('@xhmikosr/downloader');
+  /** @type {import('node:buffer').Buffer} */
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const data = await download(url);
+  return data;
+}

@@ -1,5 +1,5 @@
-import { v4 } from 'uuid';
-import {
+import { UUID } from '@theia/core/shared/@phosphor/coreutils';
+import type {
   IndexType,
   IndexUpdateDidCompleteParams,
   IndexUpdateDidFailParams,
@@ -16,10 +16,10 @@ import {
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
 import {
   DownloadProgress,
-  TaskProgress,
+  DownloadProgressEnd,
   DownloadProgressStart,
   DownloadProgressUpdate,
-  DownloadProgressEnd,
+  TaskProgress,
 } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import { CompileResponse } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 import {
@@ -170,7 +170,7 @@ export namespace ExecuteWithProgress {
     progressId,
     reportResult,
   }: ExecuteWithProgress.Options): (response: R) => void {
-    const uuid = v4();
+    const uuid = UUID.uuid4();
     let message = '';
     let url = '';
     return (response: R) => {
@@ -330,7 +330,7 @@ export class IndexesUpdateProgressHandler {
       onComplete?: (params: IndexUpdateDidCompleteParams) => void;
     }
   ) {
-    this.progressId = v4();
+    this.progressId = UUID.uuid4();
     this.results = [];
     this.total = IndexesUpdateProgressHandler.total(types, additionalUrlsCount);
     // Note: at this point, the IDE2 backend might not have any connected clients, so this notification is not delivered to anywhere

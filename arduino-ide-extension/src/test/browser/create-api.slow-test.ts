@@ -1,3 +1,4 @@
+import { UUID } from '@theia/core/shared/@phosphor/coreutils';
 import {
   Container,
   ContainerModule,
@@ -9,7 +10,6 @@ import { rejects } from 'node:assert';
 import { posix } from 'node:path';
 import PQueue from 'p-queue';
 import queryString from 'query-string';
-import { v4 } from 'uuid';
 import { ArduinoPreferences } from '../../browser/arduino-preferences';
 import { AuthenticationClientService } from '../../browser/auth/authentication-client-service';
 import { CreateApi } from '../../browser/create/create-api';
@@ -145,7 +145,7 @@ describe('create-api', () => {
   }
 
   it('should delete sketch', async () => {
-    const name = v4();
+    const name = UUID.uuid4();
     const content = 'alma\nkorte';
     const posixPath = toPosix(name);
 
@@ -185,8 +185,8 @@ describe('create-api', () => {
   });
 
   it('should rename a sketch folder with all its content', async () => {
-    const name = v4();
-    const newName = v4();
+    const name = UUID.uuid4();
+    const newName = UUID.uuid4();
     const content = 'void setup(){} void loop(){}';
     const posixPath = toPosix(name);
     const newPosixPath = toPosix(newName);
@@ -214,8 +214,8 @@ describe('create-api', () => {
   });
 
   it('should error with HTTP 409 (Conflict) when renaming a sketch and the target already exists', async () => {
-    const name = v4();
-    const otherName = v4();
+    const name = UUID.uuid4();
+    const otherName = UUID.uuid4();
     const content = 'void setup(){} void loop(){}';
     const posixPath = toPosix(name);
     const otherPosixPath = toPosix(otherName);
@@ -243,7 +243,7 @@ describe('create-api', () => {
   });
 
   it('should error with HTTP 422 when reading a file but is a directory', async () => {
-    const name = v4();
+    const name = UUID.uuid4();
     const content = 'void setup(){} void loop(){}';
     const posixPath = toPosix(name);
 
@@ -257,7 +257,7 @@ describe('create-api', () => {
   });
 
   it('should error with HTTP 422 when listing a directory but is a file', async () => {
-    const name = v4();
+    const name = UUID.uuid4();
     const content = 'void setup(){} void loop(){}';
     const posixPath = toPosix(name);
 
@@ -272,7 +272,7 @@ describe('create-api', () => {
   });
 
   it("should error with HTTP 404 when deleting a non-existing directory via the '/files/d' endpoint", async () => {
-    const name = v4();
+    const name = UUID.uuid4();
     const posixPath = toPosix(name);
 
     const sketches = await createApi.sketches();
@@ -316,7 +316,7 @@ describe('create-api', () => {
   });
 
   it("should fetch the sketch when transforming the 'secrets' into '#include' and the sketch is not in the cache", async () => {
-    const name = v4();
+    const name = UUID.uuid4();
     const posixPath = toPosix(name);
     const newSketch = await createApi.createSketch(
       posixPath,
@@ -359,7 +359,9 @@ describe('create-api', () => {
       const content = 'void setup(){} void loop(){}';
       const maxLimit = 10;
       const sketchCount = maxLimit + diff;
-      const sketchNames = [...Array(sketchCount).keys()].map(() => v4());
+      const sketchNames = [...Array(sketchCount).keys()].map(() =>
+        UUID.uuid4()
+      );
 
       const createExecutionQueue = new PQueue({
         concurrency: 5,

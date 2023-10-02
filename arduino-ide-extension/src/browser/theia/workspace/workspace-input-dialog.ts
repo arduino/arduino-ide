@@ -1,4 +1,3 @@
-import { MaybePromise } from '@theia/core';
 import { Dialog, DialogError } from '@theia/core/lib/browser/dialogs';
 import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
@@ -10,13 +9,14 @@ import type {
   Progress,
   ProgressUpdate,
 } from '@theia/core/lib/common/message-service-protocol';
+import type { MaybePromise } from '@theia/core/lib/common/types';
+import { UUID } from '@theia/core/shared/@phosphor/coreutils';
 import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import { inject } from '@theia/core/shared/inversify';
 import {
   WorkspaceInputDialog as TheiaWorkspaceInputDialog,
   WorkspaceInputDialogProps,
 } from '@theia/workspace/lib/browser/workspace-input-dialog';
-import { v4 } from 'uuid';
 
 export class WorkspaceInputDialog extends TheiaWorkspaceInputDialog {
   private skipShowErrorMessageOnOpen: boolean;
@@ -161,7 +161,7 @@ export class WorkspaceInputDialogWithProgress<
 
         const cancellationSource = new CancellationTokenSource();
         const progress: Progress = {
-          id: v4(),
+          id: UUID.uuid4(),
           cancel: () => cancellationSource.cancel(),
           report: (update: ProgressUpdate) => {
             this.setProgressMessage(update);

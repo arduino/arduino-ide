@@ -7,7 +7,7 @@ import {
   CHANNEL_REQUEST_RELOAD,
   MenuDto,
 } from '@theia/core/lib/electron-common/electron-api';
-import { v4 } from 'uuid';
+import { UUID } from '@theia/core/shared/@phosphor/coreutils';
 import type { Sketch } from '../common/protocol/sketches-service';
 import {
   CHANNEL_APP_INFO,
@@ -43,7 +43,7 @@ function convertMenu(
   }
 
   return menu.map((item) => {
-    let nodeId = v4();
+    let nodeId = UUID.uuid4();
     if (item.execute) {
       if (!item.id) {
         throw new Error(

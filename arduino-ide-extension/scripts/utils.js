@@ -3,24 +3,21 @@
 const exec = (
   /** @type {string} */ command,
   /** @type {readonly string[]} */ args,
-  /** @type {import('shelljs')|undefined}*/ shell = undefined,
-  /** @type {import('node:child_process').ExecFileSyncOptionsWithStringEncoding|undefined} */ options = undefined
+  /** @type {Partial<import('node:child_process').ExecFileSyncOptionsWithStringEncoding> & { logStdout?: boolean }|undefined} */ options = undefined
 ) => {
   try {
-    const stdout = require('node:child_process').execFileSync(
-      command,
-      args,
-      options ? options : { encoding: 'utf8' }
-    );
-    if (shell) {
-      shell.echo(stdout.trim());
+    const stdout = require('node:child_process').execFileSync(command, args, {
+      encoding: 'utf8',
+      ...(options ?? {}),
+    });
+    if (options?.logStdout) {
+      console.log(stdout.trim());
     }
     return stdout;
   } catch (err) {
-    if (shell) {
-      shell.echo(err instanceof Error ? err.message : String(err));
-      shell.exit(1);
-    }
+    console.log(
+      `Failed to execute ${command} with args: ${JSON.stringify(args)}`
+    );
     throw err;
   }
 };
@@ -59,32 +56,31 @@ function buildFromGit(command, version, destinationPath, taskName) {
   const fs = require('node:fs');
   const path = require('node:path');
   const temp = require('temp');
-  const shell = require('shelljs');
 
   // We assume an object with `owner`, `repo`, commitish?` properties.
   if (typeof version !== 'object') {
-    shell.echo(
+    console.log(
       `Expected a \`{ owner, repo, commitish }\` object. Got <${version}> instead.`
     );
   }
   const { owner, repo, commitish } = version;
   if (!owner) {
-    shell.echo(`Could not retrieve 'owner' from ${JSON.stringify(version)}`);
-    shell.exit(1);
+    console.log(`Could not retrieve 'owner' from ${JSON.stringify(version)}`);
+    process.exit(1);
   }
   if (!repo) {
-    shell.echo(`Could not retrieve 'repo' from ${JSON.stringify(version)}`);
-    shell.exit(1);
+    console.log(`Could not retrieve 'repo' from ${JSON.stringify(version)}`);
+    process.exit(1);
   }
   const url = `https://github.com/${owner}/${repo}.git`;
-  shell.echo(
+  console.log(
     `Building ${taskName} from ${url}. Commitish: ${
       commitish ? commitish : 'HEAD'
     }`
   );
 
   if (fs.existsSync(destinationPath)) {
-    shell.echo(
+    console.log(
       `Skipping the ${taskName} build because it already exists: ${destinationPath}`
     );
     return;
@@ -97,48 +93,51 @@ function buildFromGit(command, version, destinationPath, taskName) {
     'node',
     'resources'
   );
-  if (shell.mkdir('-p', resourcesFolder).code !== 0) {
-    shell.echo('Could not create resources folder.');
-    shell.exit(1);
-  }
+  fs.mkdirSync(resourcesFolder, { recursive: true });
 
   const tempRepoPath = temp.mkdirSync();
-  shell.echo(`>>> Cloning ${taskName} source to ${tempRepoPath}...`);
-  exec('git', ['clone', url, tempRepoPath], shell);
-  shell.echo(`<<< Cloned ${taskName} repo.`);
+  console.log(`>>> Cloning ${taskName} source to ${tempRepoPath}...`);
+  exec('git', ['clone', url, tempRepoPath], { logStdout: true });
+  console.log(`<<< Cloned ${taskName} repo.`);
 
   if (commitish) {
-    shell.echo(`>>> Checking out ${commitish}...`);
-    exec('git', ['-C', tempRepoPath, 'checkout', commitish], shell);
-    shell.echo(`<<< Checked out ${commitish}.`);
+    console.log(`>>> Checking out ${commitish}...`);
+    exec('git', ['-C', tempRepoPath, 'checkout', commitish], {
+      logStdout: true,
+    });
+    console.log(`<<< Checked out ${commitish}.`);
   }
 
-  exec('git', ['-C', tempRepoPath, 'rev-parse', '--short', 'HEAD'], shell);
+  exec('git', ['-C', tempRepoPath, 'rev-parse', '--short', 'HEAD'], {
+    logStdout: true,
+  });
 
-  shell.echo(`>>> Building the ${taskName}...`);
-  exec(command, ['build'], shell, { cwd: tempRepoPath, encoding: 'utf8' });
-  shell.echo(`<<< Done ${taskName} build.`);
+  console.log(`>>> Building the ${taskName}...`);
+  exec(command, ['build'], {
+    cwd: tempRepoPath,
+    encoding: 'utf8',
+    logStdout: true,
+  });
+  console.log(`<<< Done ${taskName} build.`);
 
   const binName = path.basename(destinationPath);
   if (!fs.existsSync(path.join(tempRepoPath, binName))) {
-    shell.echo(
+    console.log(
       `Could not find the ${taskName} at ${path.join(tempRepoPath, binName)}.`
     );
-    shell.exit(1);
+    process.exit(1);
   }
 
   const binPath = path.join(tempRepoPath, binName);
-  shell.echo(
+  console.log(
     `>>> Copying ${taskName} from ${binPath} to ${destinationPath}...`
   );
-  if (shell.cp(binPath, destinationPath).code !== 0) {
-    shell.exit(1);
-  }
-  shell.echo(`<<< Copied the ${taskName}.`);
+  fs.copyFileSync(binPath, destinationPath);
+  console.log(`<<< Copied the ${taskName}.`);
 
-  shell.echo(`<<< Verifying ${taskName}...`);
+  console.log(`<<< Verifying ${taskName}...`);
   if (!fs.existsSync(destinationPath)) {
-    shell.exit(1);
+    process.exit(1);
   }
-  shell.echo(`>>> Verified ${taskName}.`);
+  console.log(`>>> Verified ${taskName}.`);
 }
