@@ -60,10 +60,43 @@ jobs:
 
           echo "result=$RESULT" >> $GITHUB_OUTPUT
 
-  build:
-    name: build (${{ matrix.config.name }})
+  build-type-determination:
     needs: run-determination
     if: needs.run-determination.outputs.result == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      is-release: ${{ steps.determination.outputs.is-release }}
+      is-nightly: ${{ steps.determination.outputs.is-nightly }}
+    permissions: {}
+    steps:
+      - name: Determine the type of build
+        id: determination
+        run: |
+          if [[
+            "${{ startsWith(github.ref, 'refs/tags/') }}" == "true"
+          ]]; then
+            is_release="true"
+            is_nightly="false"
+          elif [[
+            "${{ github.event_name }}" == "schedule" ||
+            (
+              "${{ github.event_name }}" == "workflow_dispatch" &&
+              "${{ github.ref }}" == "refs/heads/main"
+            )
+          ]]; then
+            is_release="false"
+            is_nightly="true"
+          else
+            is_release="false"
+            is_nightly="false"
+          fi
+
+          echo "is-release=$is_release" >> $GITHUB_OUTPUT
+          echo "is-nightly=$is_nightly" >> $GITHUB_OUTPUT
+
+  build:
+    name: build (${{ matrix.config.name }})
+    needs: build-type-determination
     strategy:
       matrix:
         config:
@@ -120,8 +153,8 @@ jobs:
           AC_TEAM_ID: ${{ secrets.AC_TEAM_ID }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
-          IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
+          IS_NIGHTLY: ${{ needs.build-type-determination.outputs.is-nightly }}
+          IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
           CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
         run: |
           # See: https://www.electron.build/code-signing
@@ -190,7 +223,9 @@ jobs:
           path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
 
   changelog:
-    needs: build
+    needs:
+      - build-type-determination
+      - build
     runs-on: ubuntu-latest
     outputs:
       BODY: ${{ steps.changelog.outputs.BODY }}
@@ -203,7 +238,7 @@ jobs:
       - name: Generate Changelog
         id: changelog
         env:
-          IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
+          IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
         run: |
           export LATEST_TAG=$(git describe --abbrev=0)
           export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
@@ -229,15 +264,19 @@ jobs:
           echo "$BODY" > CHANGELOG.txt
 
       - name: Upload Changelog [GitHub Actions]
-        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+        if: needs.build-type-determination.outputs.is-nightly == 'true'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: CHANGELOG.txt
 
   publish:
-    needs: changelog
-    if: github.repository == 'arduino/arduino-ide' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'))
+    needs:
+      - build-type-determination
+      - changelog
+    if: >
+      github.repository == 'arduino/arduino-ide' &&
+      needs.build-type-determination.outputs.is-nightly == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Download [GitHub Actions]
@@ -257,8 +296,10 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   release:
-    needs: changelog
-    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - build-type-determination
+      - changelog
+    if: needs.build-type-determination.outputs.is-release == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Download [GitHub Actions]
