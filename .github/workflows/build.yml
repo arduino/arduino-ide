@@ -61,24 +61,27 @@ jobs:
           echo "result=$RESULT" >> $GITHUB_OUTPUT
 
   build:
-    name: build (${{ matrix.config.os }})
+    name: build (${{ matrix.config.name }})
     needs: run-determination
     if: needs.run-determination.outputs.result == 'true'
     strategy:
       matrix:
         config:
-          - os: windows-2019
+          - name: Windows # Human identifier for the job.
+            runs-on: windows-2019
             certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
             certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
             certificate-extension: pfx # File extension for the certificate.
-          - os: ubuntu-20.04
-          - os: macos-latest
+          - name: Linux
+            runs-on: ubuntu-20.04
+          - name: macOS x86
+            runs-on: macos-latest
             # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
             # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
             certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
             certificate-password-secret: KEYCHAIN_PASSWORD
             certificate-extension: p12
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.config.runs-on }}
     timeout-minutes: 90
 
     steps:
