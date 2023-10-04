@@ -12,11 +12,17 @@ on:
       - '.vscode/**'
       - 'docs/**'
       - 'scripts/**'
+      - '!scripts/merge-channel-files.js'
       - 'static/**'
       - '*.md'
     tags:
       - '[0-9]+.[0-9]+.[0-9]+*'
   workflow_dispatch:
+    inputs:
+      paid-runners:
+        description: Include builds on non-free runners
+        type: boolean
+        default: false
   pull_request:
     paths-ignore:
       - '.github/**'
@@ -24,6 +30,7 @@ on:
       - '.vscode/**'
       - 'docs/**'
       - 'scripts/**'
+      - '!scripts/merge-channel-files.js'
       - 'static/**'
       - '*.md'
   schedule:
@@ -32,8 +39,69 @@ on:
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
   GO_VERSION: '1.19'
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: '18.17'
   JOB_TRANSFER_ARTIFACT: build-artifacts
   CHANGELOG_ARTIFACTS: changelog
+  STAGED_CHANNEL_FILES_ARTIFACT: staged-channel-files
+  BASE_BUILD_DATA: |
+    - config:
+        # Human identifier for the job.
+        name: Windows
+        runs-on: windows-2019
+        # Name of the secret that contains the certificate.
+        certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX
+        # Name of the secret that contains the certificate password.
+        certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD
+        # File extension for the certificate.
+        certificate-extension: pfx
+        # Quoting on the value is required here to allow the same comparison expression syntax to be used for this
+        # and the companion needs.select-targets.outputs.merge-channel-files property (output values always have string
+        # type).
+        mergeable-channel-file: 'false'
+      artifacts:
+        - path: '*Windows_64bit.exe'
+          name: Windows_X86-64_interactive_installer
+        - path: '*Windows_64bit.msi'
+          name: Windows_X86-64_MSI
+        - path: '*Windows_64bit.zip'
+          name: Windows_X86-64_zip
+    - config:
+        name: Linux
+        runs-on: ubuntu-20.04
+        mergeable-channel-file: 'false'
+      artifacts:
+        - path: '*Linux_64bit.zip'
+          name: Linux_X86-64_zip
+        - path: '*Linux_64bit.AppImage'
+          name: Linux_X86-64_app_image
+    - config:
+        name: macOS x86
+        runs-on: macos-latest
+        # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+        # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+        certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+        certificate-password-secret: KEYCHAIN_PASSWORD
+        certificate-extension: p12
+        mergeable-channel-file: 'true'
+      artifacts:
+        - path: '*macOS_64bit.dmg'
+          name: macOS_X86-64_dmg
+        - path: '*macOS_64bit.zip'
+          name: macOS_X86-64_zip
+  PAID_RUNNER_BUILD_DATA: |
+    - config:
+        name: macOS ARM
+        runs-on: macos-latest-xlarge
+        certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+        certificate-password-secret: KEYCHAIN_PASSWORD
+        certificate-extension: p12
+        mergeable-channel-file: 'true'
+      artifacts:
+        - path: '*macOS_arm64.dmg'
+          name: macOS_arm64_dmg
+        - path: '*macOS_arm64.zip'
+          name: macOS_arm64_zip
 
 jobs:
   run-determination:
@@ -67,6 +135,7 @@ jobs:
     outputs:
       is-release: ${{ steps.determination.outputs.is-release }}
       is-nightly: ${{ steps.determination.outputs.is-nightly }}
+      channel-name: ${{ steps.determination.outputs.channel-name }}
     permissions: {}
     steps:
       - name: Determine the type of build
@@ -77,6 +146,7 @@ jobs:
           ]]; then
             is_release="true"
             is_nightly="false"
+            channel_name="stable"
           elif [[
             "${{ github.event_name }}" == "schedule" ||
             (
@@ -86,34 +156,101 @@ jobs:
           ]]; then
             is_release="false"
             is_nightly="true"
+            channel_name="nightly"
           else
             is_release="false"
             is_nightly="false"
+            channel_name="nightly"
           fi
 
           echo "is-release=$is_release" >> $GITHUB_OUTPUT
           echo "is-nightly=$is_nightly" >> $GITHUB_OUTPUT
+          echo "channel-name=$channel_name" >> $GITHUB_OUTPUT
+
+  select-targets:
+    needs: build-type-determination
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-matrix: ${{ steps.assemble.outputs.artifact-matrix }}
+      build-matrix: ${{ steps.assemble.outputs.build-matrix }}
+      merge-channel-files: ${{ steps.assemble.outputs.merge-channel-files }}
+    permissions: {}
+    steps:
+      - name: Assemble target data
+        id: assemble
+        run: |
+          # Only run the builds that incur runner charges on release or select manually triggered runs.
+          if [[
+            "${{ needs.build-type-determination.outputs.is-release }}" == "true" ||
+            "${{ github.event.inputs.paid-runners }}" == "true"
+          ]]; then
+            build_matrix="$(
+              (
+                echo "${{ env.BASE_BUILD_DATA }}";
+                echo "${{ env.PAID_RUNNER_BUILD_DATA }}"
+              ) | \
+              yq \
+                --output-format json \
+                '[.[].config]'
+            )"
+
+            artifact_matrix="$(
+              (
+                echo "${{ env.BASE_BUILD_DATA }}";
+                echo "${{ env.PAID_RUNNER_BUILD_DATA }}"
+              ) | \
+              yq \
+                --output-format json \
+                '[.[].artifacts.[]]'
+            )"
+
+            # The build matrix produces two macOS jobs (x86 and ARM) so the "channel update info files"
+            # generated by each must be merged.
+            merge_channel_files="true"
+
+          else
+            build_matrix="$(
+              echo "${{ env.BASE_BUILD_DATA }}" | \
+              yq \
+                --output-format json \
+                '[.[].config]'
+            )"
+
+            artifact_matrix="$(
+              echo "${{ env.BASE_BUILD_DATA }}" | \
+              yq \
+                --output-format json \
+                '[.[].artifacts.[]]'
+            )"
+
+            merge_channel_files="false"
+          fi
+
+          # Set workflow step outputs.
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+          delimiter="$RANDOM"
+          echo "build-matrix<<$delimiter" >> $GITHUB_OUTPUT
+          echo "$build_matrix" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
+
+          delimiter="$RANDOM"
+          echo "artifact-matrix<<$delimiter" >> $GITHUB_OUTPUT
+          echo "$artifact_matrix" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
+
+          echo "merge-channel-files=$merge_channel_files" >> $GITHUB_OUTPUT
 
   build:
     name: build (${{ matrix.config.name }})
-    needs: build-type-determination
+    needs:
+      - build-type-determination
+      - select-targets
+    env:
+      # Location of artifacts generated by build.
+      BUILD_ARTIFACTS_PATH: electron-app/dist/build-artifacts
     strategy:
       matrix:
-        config:
-          - name: Windows # Human identifier for the job.
-            runs-on: windows-2019
-            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
-            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
-            certificate-extension: pfx # File extension for the certificate.
-          - name: Linux
-            runs-on: ubuntu-20.04
-          - name: macOS x86
-            runs-on: macos-latest
-            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
-            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
-            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
-            certificate-password-secret: KEYCHAIN_PASSWORD
-            certificate-extension: p12
+        config: ${{ fromJson(needs.select-targets.outputs.build-matrix) }}
     runs-on: ${{ matrix.config.runs-on }}
     timeout-minutes: 90
 
@@ -121,10 +258,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Node.js 18.17
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18.17'
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
 
@@ -179,35 +316,131 @@ jobs:
           yarn --cwd electron-app build
           yarn --cwd electron-app package
 
+      # Both macOS jobs generate a "channel update info file" with same path and name. The second job to complete would
+      # overwrite the file generated by the first in the workflow artifact.
+      - name: Stage channel file for merge
+        if: >
+          needs.select-targets.outputs.merge-channel-files == 'true' &&
+          matrix.config.mergeable-channel-file == 'true'
+        run: |
+          staged_channel_files_path="${{ runner.temp }}/staged-channel-files"
+          mkdir "$staged_channel_files_path"
+          mv \
+            "${{ env.BUILD_ARTIFACTS_PATH }}/${{ needs.build-type-determination.outputs.channel-name }}-mac.yml" \
+            "${staged_channel_files_path}/${{ needs.build-type-determination.outputs.channel-name }}-mac-${{ runner.arch }}.yml"
+
+          # Set workflow environment variable for use in other steps.
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "STAGED_CHANNEL_FILES_PATH=$staged_channel_files_path" >> "$GITHUB_ENV"
+
+      - name: Upload staged-for-merge channel file artifact
+        uses: actions/upload-artifact@v3
+        if: >
+          needs.select-targets.outputs.merge-channel-files == 'true' &&
+          matrix.config.mergeable-channel-file == 'true'
+        with:
+          if-no-files-found: error
+          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          path: ${{ env.STAGED_CHANNEL_FILES_PATH }}
+
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: electron-app/dist/build-artifacts
+          path: ${{ env.BUILD_ARTIFACTS_PATH }}
+
+  merge-channel-files:
+    needs:
+      - build-type-determination
+      - select-targets
+      - build
+    if: needs.select-targets.outputs.merge-channel-files == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Set environment variables
+        run: |
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "CHANNEL_FILES_PATH=${{ runner.temp }}/channel-files" >> "$GITHUB_ENV"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download staged-for-merge channel files artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          path: ${{ env.CHANNEL_FILES_PATH }}
+
+      - name: Remove no longer needed artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
+
+      - name: Install Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.x
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Merge "channel update info files"
+        run: |
+          node \
+            ./scripts/merge-channel-files.js \
+              --channel "${{ needs.build-type-determination.outputs.channel-name }}" \
+              --input "${{ env.CHANNEL_FILES_PATH }}"
+
+      - name: Upload merged channel files to job transfer artifact
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.CHANNEL_FILES_PATH }}
+
+  # This job serves only as a container for the logic necessary to allow dependent jobs to run if the
+  # merge-channel-files job was skipped.
+  merge-channel-files-complete:
+    needs:
+      - merge-channel-files
+    if: >
+      always() &&
+      (
+        needs.merge-channel-files.result == 'skipped' ||
+        needs.merge-channel-files.result == 'success'
+      )
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      # GitHub Actions requires every job to have >=1 step.
+      - name: Dummy step
+        run: ''
 
   artifacts:
     name: ${{ matrix.artifact.name }} artifact
-    needs: build
+    needs:
+      - select-targets
+      - build
     if: always() && needs.build.result != 'skipped'
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        artifact:
-          - path: '*Linux_64bit.zip'
-            name: Linux_X86-64_zip
-          - path: '*Linux_64bit.AppImage'
-            name: Linux_X86-64_app_image
-          - path: '*macOS_64bit.dmg'
-            name: macOS_dmg
-          - path: '*macOS_64bit.zip'
-            name: macOS_zip
-          - path: '*Windows_64bit.exe'
-            name: Windows_X86-64_interactive_installer
-          - path: '*Windows_64bit.msi'
-            name: Windows_X86-64_MSI
-          - path: '*Windows_64bit.zip'
-            name: Windows_X86-64_zip
+        artifact: ${{ fromJson(needs.select-targets.outputs.artifact-matrix) }}
 
     steps:
       - name: Download job transfer artifact
@@ -273,6 +506,7 @@ jobs:
   publish:
     needs:
       - build-type-determination
+      - merge-channel-files-complete
       - changelog
     if: >
       github.repository == 'arduino/arduino-ide' &&
@@ -298,6 +532,7 @@ jobs:
   release:
     needs:
       - build-type-determination
+      - merge-channel-files-complete
       - changelog
     if: needs.build-type-determination.outputs.is-release == 'true'
     runs-on: ubuntu-latest
@@ -329,8 +564,6 @@ jobs:
         run: |
           # See: https://github.com/arduino/arduino-ide/issues/2018
           rm "${{ env.JOB_TRANSFER_ARTIFACT }}/stable-linux.yml"
-          # See: https://github.com/arduino/arduino-ide/issues/408
-          rm "${{ env.JOB_TRANSFER_ARTIFACT }}/stable-mac.yml"
 
       - name: Publish Release [S3]
         if: github.repository == 'arduino/arduino-ide'
@@ -347,6 +580,7 @@ jobs:
     # This job must run after all jobs that use the transfer artifact.
     needs:
       - build
+      - merge-channel-files
       - publish
       - release
       - artifacts
