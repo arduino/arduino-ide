@@ -300,8 +300,8 @@ export class LibraryExamples extends Examples {
     this.notificationCenter.onLibraryDidUninstall(() => this.update());
   }
 
-  override async onReady(): Promise<void> {
-    this.update(); // no `await`
+  override onReady(): void {
+    this.boardsServiceProvider.ready.then(() => this.update());
   }
 
   protected override handleBoardChanged(board: Board | undefined): void {

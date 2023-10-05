@@ -19,7 +19,7 @@ import {
   SketchContribution,
   TabBarToolbarRegistry,
 } from './contribution';
-import { MaybePromise, MenuModelRegistry, nls } from '@theia/core/lib/common';
+import { MenuModelRegistry, nls } from '@theia/core/lib/common';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoMenus } from '../menu/arduino-menus';
 
@@ -99,8 +99,8 @@ export class Debug extends SketchContribution {
     this.notificationCenter.onPlatformDidUninstall(() => this.refreshState());
   }
 
-  override onReady(): MaybePromise<void> {
-    this.refreshState();
+  override onReady(): void {
+    this.boardsServiceProvider.ready.then(() => this.refreshState());
   }
 
   override registerCommands(registry: CommandRegistry): void {

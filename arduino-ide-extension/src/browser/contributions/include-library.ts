@@ -2,7 +2,6 @@ import PQueue from 'p-queue';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
-import { EditorManager } from '@theia/editor/lib/browser';
 import { MenuModelRegistry, MenuPath } from '@theia/core/lib/common/menu';
 import {
   Disposable,
@@ -22,28 +21,25 @@ import { CurrentSketch } from '../sketches-service-client-impl';
 @injectable()
 export class IncludeLibrary extends SketchContribution {
   @inject(CommandRegistry)
-  protected readonly commandRegistry: CommandRegistry;
+  private readonly commandRegistry: CommandRegistry;
 
   @inject(MenuModelRegistry)
-  protected readonly menuRegistry: MenuModelRegistry;
+  private readonly menuRegistry: MenuModelRegistry;
 
   @inject(MainMenuManager)
-  protected readonly mainMenuManager: MainMenuManager;
-
-  @inject(EditorManager)
-  protected override readonly editorManager: EditorManager;
+  private readonly mainMenuManager: MainMenuManager;
 
   @inject(NotificationCenter)
-  protected readonly notificationCenter: NotificationCenter;
+  private readonly notificationCenter: NotificationCenter;
 
   @inject(BoardsServiceProvider)
-  protected readonly boardsServiceProvider: BoardsServiceProvider;
+  private readonly boardsServiceProvider: BoardsServiceProvider;
 
   @inject(LibraryService)
-  protected readonly libraryService: LibraryService;
+  private readonly libraryService: LibraryService;
 
-  protected readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
-  protected readonly toDispose = new DisposableCollection();
+  private readonly queue = new PQueue({ autoStart: true, concurrency: 1 });
+  private readonly toDispose = new DisposableCollection();
 
   override onStart(): void {
     this.boardsServiceProvider.onBoardsConfigDidChange(() =>
@@ -56,8 +52,8 @@ export class IncludeLibrary extends SketchContribution {
     this.notificationCenter.onDidReinitialize(() => this.updateMenuActions());
   }
 
-  override async onReady(): Promise<void> {
-    this.updateMenuActions();
+  override onReady(): void {
+    this.boardsServiceProvider.ready.then(() => this.updateMenuActions());
   }
 
   override registerMenus(registry: MenuModelRegistry): void {
@@ -93,7 +89,7 @@ export class IncludeLibrary extends SketchContribution {
     });
   }
 
-  protected async updateMenuActions(): Promise<void> {
+  private async updateMenuActions(): Promise<void> {
     return this.queue.add(async () => {
       this.toDispose.dispose();
       this.mainMenuManager.update();
@@ -139,7 +135,7 @@ export class IncludeLibrary extends SketchContribution {
     });
   }
 
-  protected registerLibrary(
+  private registerLibrary(
     libraryOrPlaceholder: LibraryPackage | string,
     menuPath: MenuPath
   ): Disposable {
@@ -172,7 +168,7 @@ export class IncludeLibrary extends SketchContribution {
     );
   }
 
-  protected async includeLibrary(library: LibraryPackage): Promise<void> {
+  private async includeLibrary(library: LibraryPackage): Promise<void> {
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
       return;
