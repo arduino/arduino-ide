@@ -120,6 +120,8 @@ jobs:
           IS_NIGHTLY: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
           IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
           CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
+          # The CREATE_* environment vars are only used to run tests. These secrets are optional. Dependent tests will
+          # be skipped if not available.
           CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
           CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
           CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
