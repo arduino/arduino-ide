@@ -296,6 +296,11 @@ jobs:
           IS_NIGHTLY: ${{ needs.build-type-determination.outputs.is-nightly }}
           IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
           CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
+          # The CREATE_* environment vars are only used to run tests. These secrets are optional. Dependent tests will
+          # be skipped if not available.
+          CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
+          CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
+          CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
         run: |
           # See: https://www.electron.build/code-signing
           if [ $CAN_SIGN = false ]; then

@@ -82,6 +82,13 @@ export function isNotFound(err: unknown): err is NotFoundError {
   return isErrorWithStatusOf(err, 404);
 }
 
+export type UnprocessableContentError = CreateError & { status: 422 };
+export function isUnprocessableContent(
+  err: unknown
+): err is UnprocessableContentError {
+  return isErrorWithStatusOf(err, 422);
+}
+
 function isErrorWithStatusOf(
   err: unknown,
   status: number

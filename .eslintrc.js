@@ -10,7 +10,6 @@ module.exports = {
   ignorePatterns: [
     'node_modules/*',
     '**/node_modules/*',
-    '.node_modules/*',
     '.github/*',
     '.browser_modules/*',
     'docs/*',
@@ -21,6 +20,7 @@ module.exports = {
     '!electron-app/webpack.config.js',
     'plugins/*',
     'arduino-ide-extension/src/node/cli-protocol',
+    '**/lib/*',
   ],
   settings: {
     react: {
