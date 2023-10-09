@@ -6,7 +6,6 @@ import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
-import { rejects } from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import { basename, join } from 'node:path';
 import { sync as rimrafSync } from 'rimraf';
@@ -67,19 +66,30 @@ describe('isAccessibleSketchPath', () => {
     expect(actual).to.be.equal(aSketchFilePath);
   });
 
-  it('should ignore EACCESS (non-Windows)', async function () {
-    if (isWindows) {
-      // `stat` syscall does not result in an EACCESS on Windows after stripping the file permissions.
-      // an `open` syscall would, but IDE2 on purpose does not check the files.
-      // the sketch files are provided by the CLI after loading the sketch.
-      return this.skip();
-    }
+  it('should ignore EACCESS', async function () {
     const sketchFolderPath = join(testDirPath, 'my_sketch');
     const mainSketchFilePath = join(sketchFolderPath, 'my_sketch.ino');
     await fs.mkdir(sketchFolderPath, { recursive: true });
     await fs.writeFile(mainSketchFilePath, '', { encoding: 'utf8' });
     await fs.chmod(mainSketchFilePath, 0o000); // remove all permissions
-    await rejects(fs.readFile(mainSketchFilePath), ErrnoException.isEACCES);
+    try {
+      await fs.readFile(mainSketchFilePath);
+      // If reading the file without sufficient permissions does not result in EACCESS error, do not run the test.
+      // For example, a `stat` syscall does not result in an EACCESS on Windows after stripping the file permissions.
+      // an `open` syscall would, but IDE2 on purpose does not check the files.
+      // the sketch files are provided by the CLI after loading the sketch.
+      console.info(
+        'Skip. Reading the file content without permissions was successful.'
+      );
+      return this.skip();
+    } catch (err) {
+      expect(
+        ErrnoException.isEACCES(err),
+        `Expected an error with EACCES code. Got: ${
+          typeof err === 'object' ? JSON.stringify(err) : err
+        }`
+      ).to.be.true;
+    }
     const actual = await isAccessibleSketchPath(sketchFolderPath);
     expect(actual).to.be.equal(mainSketchFilePath);
   });
