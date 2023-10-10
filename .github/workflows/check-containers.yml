@@ -1,0 +1,58 @@
+name: Check Containers
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/check-containers.ya?ml"
+      - "**.Dockerfile"
+      - "**/Dockerfile"
+  push:
+    paths:
+      - ".github/workflows/check-containers.ya?ml"
+      - "**.Dockerfile"
+      - "**/Dockerfile"
+  repository_dispatch:
+  schedule:
+    # Run periodically to catch breakage caused by external changes.
+    - cron: "0 7 * * MON"
+  workflow_dispatch:
+
+jobs:
+  run:
+    name: Run (${{ matrix.image.path }})
+    runs-on: ubuntu-latest
+    permissions: {}
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
+    env:
+      IMAGE_NAME: name/app:latest
+      REGISTRY: localhost:5000
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - path: .github/workflows/assets/linux.Dockerfile
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and push to local registry
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.image.path }}
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Run container
+        run: |
+          docker \
+            run \
+              --rm \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}

@@ -35,6 +35,13 @@ on:
       - '*.md'
   schedule:
     - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
+  workflow_run:
+    workflows:
+      - Push Container Images
+    branches:
+      - main
+    types: 
+      - completed
 
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
@@ -49,6 +56,10 @@ env:
         # Human identifier for the job.
         name: Windows
         runs-on: windows-2019
+        # The value is a string representing a JSON document.
+        # Setting this to null causes the job to run directly in the runner machine instead of in a container.
+        container: |
+          null
         # Name of the secret that contains the certificate.
         certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX
         # Name of the secret that contains the certificate password.
@@ -68,7 +79,11 @@ env:
           name: Windows_X86-64_zip
     - config:
         name: Linux
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
+        container: |
+          {
+            \"image\": \"ghcr.io/arduino/arduino-ide/linux:main\"
+          }
         mergeable-channel-file: 'false'
       artifacts:
         - path: '*Linux_64bit.zip'
@@ -78,6 +93,8 @@ env:
     - config:
         name: macOS x86
         runs-on: macos-latest
+        container: |
+          null
         # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
         # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
         certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
@@ -93,6 +110,8 @@ env:
     - config:
         name: macOS ARM
         runs-on: macos-latest-xlarge
+        container: |
+          null
         certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
         certificate-password-secret: KEYCHAIN_PASSWORD
         certificate-extension: p12
@@ -255,13 +274,26 @@ jobs:
       matrix:
         config: ${{ fromJson(needs.select-targets.outputs.build-matrix) }}
     runs-on: ${{ matrix.config.runs-on }}
+    container: ${{ fromJSON(matrix.config.container) }}
+    defaults:
+      run:
+        # Avoid problems caused by different default shell for container jobs (sh) vs non-container jobs (bash).
+        shell: bash
+
     timeout-minutes: 90
 
     steps:
       - name: Checkout
+        if: fromJSON(matrix.config.container).image == null
         uses: actions/checkout@v4
 
+      - name: Checkout
+        # actions/checkout@v4 has dependency on a higher version of glibc than available in the Linux container.
+        if: fromJSON(matrix.config.container).image != null
+        uses: actions/checkout@v3
+
       - name: Install Node.js
+        if: fromJSON(matrix.config.container).image == null
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -269,6 +301,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install Python 3.x
+        if: fromJSON(matrix.config.container).image == null
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
@@ -285,7 +318,6 @@ jobs:
           version: 3.x
 
       - name: Package
-        shell: bash
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AC_USERNAME: ${{ secrets.AC_USERNAME }}

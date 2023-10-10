@@ -1,0 +1,70 @@
+name: Push Container Images
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/push-container-images.ya?ml"
+  push:
+    paths:
+      - ".github/workflows/push-container-images.ya?ml"
+      - "**.Dockerfile"
+      - "**/Dockerfile"
+  repository_dispatch:
+  schedule:
+    # Run periodically to catch breakage caused by external changes.
+    - cron: "0 8 * * MON"
+  workflow_dispatch:
+
+jobs:
+  push:
+    name: Push (${{ matrix.image.name }})
+    # Only run the job when GITHUB_TOKEN has the privileges required for Container registry login.
+    if: >
+      (
+        github.event_name != 'pull_request' &&
+        github.repository == 'arduino/arduino-ide'
+      ) ||
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == 'arduino/arduino-ide'
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - path: .github/workflows/assets/linux.Dockerfile
+            name: ${{ github.repository }}/linux
+            registry: ghcr.io
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ matrix.image.registry }}
+          username: ${{ github.repository_owner }}
+
+      - name: Extract metadata for image
+        id: metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image.registry }}/${{ matrix.image.name }}
+
+      - name: Build and push image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.image.path }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          # Workflow is triggered on relevant events for the sake of a "dry run" validation but image is only pushed to
+          # registry on commit to the main branch.
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.metadata.outputs.tags }}
