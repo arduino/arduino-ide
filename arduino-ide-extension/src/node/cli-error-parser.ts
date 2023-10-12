@@ -1,9 +1,10 @@
-import { notEmpty } from '@theia/core/lib/common/objects';
+import { ILogger } from '@theia/core/lib/common/logger';
 import { nls } from '@theia/core/lib/common/nls';
+import { notEmpty } from '@theia/core/lib/common/objects';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import {
-  Range,
   Position,
+  Range,
 } from '@theia/core/shared/vscode-languageserver-protocol';
 import { CoreError } from '../common/protocol';
 import { Sketch } from '../common/protocol/sketches-service';
@@ -11,6 +12,7 @@ import { Sketch } from '../common/protocol/sketches-service';
 export interface OutputSource {
   readonly content: string | ReadonlyArray<Uint8Array>;
   readonly sketch?: Sketch;
+  readonly logger?: ILogger;
 }
 export namespace OutputSource {
   export function content(source: OutputSource): string {
@@ -22,26 +24,33 @@ export namespace OutputSource {
 }
 
 export function tryParseError(source: OutputSource): CoreError.ErrorLocation[] {
-  const { sketch } = source;
-  const content = OutputSource.content(source);
-  if (sketch) {
-    return tryParse(content)
-      .map(remapErrorMessages)
-      .filter(isLocationInSketch(sketch))
-      .map(toErrorInfo)
-      .reduce((acc, curr) => {
-        const existingRef = acc.find((candidate) =>
-          CoreError.ErrorLocationRef.equals(candidate, curr)
-        );
-        if (existingRef) {
-          existingRef.rangesInOutput.push(...curr.rangesInOutput);
-        } else {
-          acc.push(curr);
-        }
-        return acc;
-      }, [] as CoreError.ErrorLocation[]);
+  const { sketch, logger } = source;
+  if (!sketch) {
+    logger?.info('Could not parse the compiler errors. Sketch not found.');
+    return [];
   }
-  return [];
+  const content = OutputSource.content(source);
+  logger?.info(`Parsing compiler errors. Sketch: ${sketch.uri.toString()}`);
+  logger?.info('----START----');
+  logger?.info(content);
+  logger?.info('----END----');
+  const locations = tryParse({ content, logger })
+    .map(remapErrorMessages)
+    .filter(isLocationInSketch(sketch))
+    .map(toErrorInfo)
+    .reduce((acc, curr) => {
+      const existingRef = acc.find((candidate) =>
+        CoreError.ErrorLocationRef.equals(candidate, curr)
+      );
+      if (existingRef) {
+        existingRef.rangesInOutput.push(...curr.rangesInOutput);
+      } else {
+        acc.push(curr);
+      }
+      return acc;
+    }, [] as CoreError.ErrorLocation[]);
+  logger?.info(`Parsed error locations: ${JSON.stringify(locations)}`);
+  return locations;
 }
 
 interface ParseResult {
@@ -105,7 +114,13 @@ function range(line: number, column?: number): Range {
   };
 }
 
-function tryParse(content: string): ParseResult[] {
+function tryParse({
+  content,
+  logger,
+}: {
+  content: string;
+  logger?: ILogger;
+}): ParseResult[] {
   // Shamelessly stolen from the Java IDE: https://github.com/arduino/Arduino/blob/43b0818f7fa8073301db1b80ac832b7b7596b828/arduino-core/src/cc/arduino/Compiler.java#L137
   const re = new RegExp(
     '(.+\\.\\w+):(\\d+)(:\\d+)*:\\s*((fatal)?\\s*error:\\s*)(.*)\\s*',
@@ -113,13 +128,13 @@ function tryParse(content: string): ParseResult[] {
   );
   return Array.from(content.matchAll(re) ?? [])
     .map((match) => {
-      const { index: start } = match;
+      const { index: startIndex } = match;
       const [, path, rawLine, rawColumn, errorPrefix, , error] = match.map(
         (match) => (match ? match.trim() : match)
       );
       const line = Number.parseInt(rawLine, 10);
       if (!Number.isInteger(line)) {
-        console.warn(
+        logger?.warn(
           `Could not parse line number. Raw input: <${rawLine}>, parsed integer: <${line}>.`
         );
         return undefined;
@@ -129,16 +144,17 @@ function tryParse(content: string): ParseResult[] {
         const normalizedRawColumn = rawColumn.slice(-1); // trims the leading colon => `:3` will be `3`
         column = Number.parseInt(normalizedRawColumn, 10);
         if (!Number.isInteger(column)) {
-          console.warn(
+          logger?.warn(
             `Could not parse column number. Raw input: <${normalizedRawColumn}>, parsed integer: <${column}>.`
           );
         }
       }
-      const rangeInOutput = findRangeInOutput(
-        start,
-        { path, rawLine, rawColumn },
-        content
-      );
+      const rangeInOutput = findRangeInOutput({
+        startIndex,
+        groups: { path, rawLine, rawColumn },
+        content,
+        logger,
+      });
       return {
         path,
         line,
@@ -182,13 +198,16 @@ const KnownErrors: Record<string, { error: string; message?: string }> = {
     ),
   },
 };
-
-function findRangeInOutput(
-  startIndex: number | undefined,
-  groups: { path: string; rawLine: string; rawColumn: string | null },
-  content: string // TODO? lines: string[]? can this code break line on `\n`? const lines = content.split(/\r?\n/) ?? [];
-): Range | undefined {
+interface FindRangeInOutputParams {
+  readonly startIndex: number | undefined;
+  readonly groups: { path: string; rawLine: string; rawColumn: string | null };
+  readonly content: string; // TODO? lines: string[]? can this code break line on `\n`? const lines = content.split(/\r?\n/) ?? [];
+  readonly logger?: ILogger;
+}
+function findRangeInOutput(params: FindRangeInOutputParams): Range | undefined {
+  const { startIndex, groups, content, logger } = params;
   if (startIndex === undefined) {
+    logger?.warn("No 'startIndex'. Skipping");
     return undefined;
   }
   // /path/to/location/Sketch/Sketch.ino:36:42
@@ -199,10 +218,18 @@ function findRangeInOutput(
     (groups.rawColumn ? groups.rawColumn.length : 0);
   const start = toPosition(startIndex, content);
   if (!start) {
+    logger?.warn(
+      `Could not resolve 'start'. Skipping. 'startIndex': ${startIndex}, 'content': ${content}`
+    );
     return undefined;
   }
   const end = toPosition(startIndex + offset, content);
   if (!end) {
+    logger?.warn(
+      `Could not resolve 'end'. Skipping. 'startIndex': ${startIndex}, 'offset': ${
+        startIndex + offset
+      }, 'content': ${content}`
+    );
     return undefined;
   }
   return { start, end };

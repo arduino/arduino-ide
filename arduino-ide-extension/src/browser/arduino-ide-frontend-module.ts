@@ -462,6 +462,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope()
     .whenTargetNamed('store');
+  bind(ILogger)
+    .toDynamicValue((ctx) => {
+      const parentLogger = ctx.container.get<ILogger>(ILogger);
+      return parentLogger.child('compiler-errors');
+    })
+    .inSingletonScope()
+    .whenTargetNamed('compiler-errors');
 
   // Boards auto-installer
   bind(BoardsAutoInstaller).toSelf().inSingletonScope();

@@ -345,6 +345,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     'discovery-log', // Boards discovery
     'config', // Logger for the CLI config reading and manipulation
     'sketches-service', // For creating, loading, and cloning sketches
+    'compiler-errors', // For parsing compilation errors and highlighting the error locations in the editors
     MonitorManagerName, // Logger for the monitor manager and its services
     MonitorServiceName,
   ].forEach((name) => bindChildLogger(bind, name));

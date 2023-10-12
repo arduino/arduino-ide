@@ -1,5 +1,5 @@
 import { FileUri } from '@theia/core/lib/node/file-uri';
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { relative } from 'node:path';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
@@ -35,7 +35,13 @@ import {
 } from '../common/protocol';
 import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
+import {
+  ApplicationError,
+  CommandService,
+  Disposable,
+  ILogger,
+  nls,
+} from '@theia/core';
 import { MonitorManager } from './monitor-manager';
 import { AutoFlushingBuffer } from './utils/buffers';
 import { tryParseError } from './cli-error-parser';
@@ -63,6 +69,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private readonly commandService: CommandService;
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
+  @inject(ILogger)
+  @named('compiler-errors')
+  private readonly errorsLogger: ILogger;
 
   async compile(options: CoreService.Options.Compile): Promise<void> {
     const coreClient = await this.coreClient;
@@ -91,6 +100,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             const compilerErrors = tryParseError({
               content: handler.content,
               sketch: options.sketch,
+              logger: this.errorsLogger,
             });
             const message = nls.localize(
               'arduino/compile/error',

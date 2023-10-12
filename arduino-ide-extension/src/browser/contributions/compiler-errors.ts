@@ -4,16 +4,19 @@ import {
   Disposable,
   DisposableCollection,
   Emitter,
+  ILogger,
   MaybeArray,
   MaybePromise,
   nls,
   notEmpty,
 } from '@theia/core';
-import { ApplicationShell, FrontendApplication } from '@theia/core/lib/browser';
-import { ITextModel } from '@theia/monaco-editor-core/esm/vs/editor/common/model';
+import type {
+  ApplicationShell,
+  FrontendApplication,
+} from '@theia/core/lib/browser';
 import URI from '@theia/core/lib/common/uri';
-import { inject, injectable } from '@theia/core/shared/inversify';
-import {
+import { inject, injectable, named } from '@theia/core/shared/inversify';
+import type {
   Location,
   Range,
 } from '@theia/core/shared/vscode-languageserver-protocol';
@@ -27,7 +30,9 @@ import {
 } from '@theia/editor/lib/browser/decorations/editor-decoration';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import * as monaco from '@theia/monaco-editor-core';
+import type { ITextModel } from '@theia/monaco-editor-core/esm/vs/editor/common/model';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
+import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';
 import { MonacoToProtocolConverter } from '@theia/monaco/lib/browser/monaco-to-protocol-converter';
 import { ProtocolToMonacoConverter } from '@theia/monaco/lib/browser/protocol-to-monaco-converter';
 import { OutputUri } from '@theia/output/lib/common/output-uri';
@@ -36,7 +41,6 @@ import { ErrorRevealStrategy } from '../arduino-preferences';
 import { ArduinoOutputSelector, InoSelector } from '../selectors';
 import { Contribution } from './contribution';
 import { CoreErrorHandler } from './core-error-handler';
-import { MonacoEditorModel } from '@theia/monaco/lib/browser/monaco-editor-model';
 
 interface ErrorDecorationRef {
   /**
@@ -132,15 +136,15 @@ export class CompilerErrors
   extends Contribution
   implements monaco.languages.CodeLensProvider, monaco.languages.LinkProvider
 {
+  @inject(ILogger)
+  @named('compiler-errors')
+  private readonly errorLogger: ILogger;
   @inject(EditorManager)
   private readonly editorManager: EditorManager;
-
   @inject(ProtocolToMonacoConverter)
   private readonly p2m: ProtocolToMonacoConverter;
-
   @inject(MonacoToProtocolConverter)
   private readonly m2p: MonacoToProtocolConverter;
-
   @inject(CoreErrorHandler)
   private readonly coreErrorHandler: CoreErrorHandler;
 
@@ -408,10 +412,15 @@ export class CompilerErrors
   private async handleCompilerErrorsDidChange(
     errors: CoreError.ErrorLocation[]
   ): Promise<void> {
-    this.toDisposeOnCompilerErrorDidChange.dispose();
+    this.errorLogger.info(
+      `Handling new compiler error locations: ${JSON.stringify(errors)}`
+    );
     const groupedErrors = this.groupBy(
       errors,
       (error: CoreError.ErrorLocation) => error.location.uri
+    );
+    this.errorLogger.info(
+      `Grouped error locations: ${JSON.stringify([...groupedErrors.entries()])}`
     );
     const decorations = await this.decorateEditors(groupedErrors);
     this.errors.push(...decorations.errors);
