@@ -290,7 +290,7 @@ jobs:
       - name: Checkout
         # actions/checkout@v4 has dependency on a higher version of glibc than available in the Linux container.
         if: fromJSON(matrix.config.container).image != null
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Node.js
         if: fromJSON(matrix.config.container).image == null
