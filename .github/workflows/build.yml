@@ -452,24 +452,6 @@ jobs:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: ${{ env.CHANNEL_FILES_PATH }}
 
-  # This job serves only as a container for the logic necessary to allow dependent jobs to run if the
-  # merge-channel-files job was skipped.
-  merge-channel-files-complete:
-    needs:
-      - merge-channel-files
-    if: >
-      always() &&
-      (
-        needs.merge-channel-files.result == 'skipped' ||
-        needs.merge-channel-files.result == 'success'
-      )
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      # GitHub Actions requires every job to have >=1 step.
-      - name: Dummy step
-        run: ''
-
   artifacts:
     name: ${{ matrix.artifact.name }} artifact
     needs:
@@ -546,9 +528,16 @@ jobs:
   publish:
     needs:
       - build-type-determination
-      - merge-channel-files-complete
+      - merge-channel-files
       - changelog
     if: >
+      always() &&
+      needs.build-type-determination.result == 'success' &&
+      (
+        needs.merge-channel-files.result == 'skipped' ||
+        needs.merge-channel-files.result == 'success'
+      ) &&
+      needs.changelog.result == 'success' &&
       needs.build-type-determination.outputs.publish-to-s3 == 'true' &&
       needs.build-type-determination.outputs.is-nightly == 'true'
     runs-on: ubuntu-latest
@@ -572,9 +561,17 @@ jobs:
   release:
     needs:
       - build-type-determination
-      - merge-channel-files-complete
+      - merge-channel-files
       - changelog
-    if: needs.build-type-determination.outputs.is-release == 'true'
+    if: >
+      always() &&
+      needs.build-type-determination.result == 'success' &&
+      (
+        needs.merge-channel-files.result == 'skipped' ||
+        needs.merge-channel-files.result == 'success'
+      ) &&
+      needs.changelog.result == 'success' &&
+      needs.build-type-determination.outputs.is-release == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Download [GitHub Actions]
