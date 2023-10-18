@@ -284,16 +284,16 @@ jobs:
 
     steps:
       - name: Checkout
-        if: fromJSON(matrix.config.container).image == null
+        if: fromJSON(matrix.config.container) == null
         uses: actions/checkout@v4
 
       - name: Checkout
         # actions/checkout@v4 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container).image != null
+        if: fromJSON(matrix.config.container) != null
         uses: actions/checkout@v3
 
       - name: Install Node.js
-        if: fromJSON(matrix.config.container).image == null
+        if: fromJSON(matrix.config.container) == null
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -301,7 +301,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install Python 3.x
-        if: fromJSON(matrix.config.container).image == null
+        if: fromJSON(matrix.config.container) == null
         uses: actions/setup-python@v4
         with:
           python-version: '3.11.x'
