@@ -304,7 +304,7 @@ jobs:
         if: fromJSON(matrix.config.container).image == null
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.11.x'
 
       - name: Install Go
         uses: actions/setup-go@v4
