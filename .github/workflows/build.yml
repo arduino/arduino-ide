@@ -294,7 +294,7 @@ jobs:
 
       - name: Install Node.js
         if: fromJSON(matrix.config.container) == null
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
@@ -418,7 +418,7 @@ jobs:
           name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
 
       - name: Install Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
