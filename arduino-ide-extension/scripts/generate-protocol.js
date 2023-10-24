@@ -6,6 +6,7 @@
   const { mkdirSync, promises: fs } = require('node:fs');
   const { exec } = require('./utils');
   const glob = require('glob');
+  const { SemVer, gte, valid: validSemVer } = require('semver');
   const protoc = path.dirname(require('protoc/protoc'));
 
   const repository = await fs.mkdtemp(path.join(os.tmpdir(), 'arduino-cli-'));
@@ -94,13 +95,12 @@
       }
       */
   const versionObject = JSON.parse(versionJson);
-  const version = versionObject.VersionString;
-  if (
-    version &&
-    !version.startsWith('nightly-') &&
-    version !== '0.0.0-git' &&
-    version !== 'git-snapshot'
-  ) {
+  let version = versionObject.VersionString;
+  if (validSemVer(version)) {
+    // https://github.com/arduino/arduino-cli/pull/2374
+    if (gte(new SemVer(version, { loose: true }), new SemVer('0.35.0-rc.1'))) {
+      version = `v${version}`;
+    }
     console.log(`>>> Checking out tagged version: '${version}'...`);
     exec('git', ['-C', repository, 'fetch', '--all', '--tags'], {
       logStdout: true,
