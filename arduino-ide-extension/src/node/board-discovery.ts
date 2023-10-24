@@ -1,4 +1,4 @@
-import type { ClientDuplexStream } from '@grpc/grpc-js';
+import type { ClientReadableStream } from '@grpc/grpc-js';
 import {
   Disposable,
   DisposableCollection,
@@ -30,9 +30,9 @@ import type { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/
 import { CoreClientAware } from './core-client-provider';
 import { ServiceError } from './service-error';
 
-type Duplex = ClientDuplexStream<BoardListWatchRequest, BoardListWatchResponse>;
+type Stream = ClientReadableStream<BoardListWatchResponse>;
 interface StreamWrapper extends Disposable {
-  readonly stream: Duplex;
+  readonly stream: Stream;
   readonly uuid: string; // For logging only
 }
 
@@ -121,34 +121,15 @@ export class BoardDiscovery
     return Disposable.create(() => clearTimeout(timer));
   }
 
-  private async requestStartWatch(
-    req: BoardListWatchRequest,
-    duplex: Duplex
-  ): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      if (
-        !duplex.write(req, (err: Error | undefined) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-        })
-      ) {
-        duplex.once('drain', resolve);
-      } else {
-        process.nextTick(resolve);
-      }
-    });
-  }
-
   private async createWrapper(
-    client: ArduinoCoreServiceClient
+    client: ArduinoCoreServiceClient,
+    req: BoardListWatchRequest
   ): Promise<StreamWrapper> {
     if (this.wrapper) {
       throw new Error(`Duplex was already set.`);
     }
     const stream = client
-      .boardListWatch()
+      .boardListWatch(req)
       .on('end', () => {
         this.logger.info('received end');
         this.onStreamDidEndEmitter.fire();
@@ -202,14 +183,11 @@ export class BoardDiscovery
     this.watching = new Deferred();
     this.logger.info('start new deferred');
     const { client, instance } = await this.coreClient;
-    const wrapper = await this.createWrapper(client);
-    wrapper.stream.on('data', (resp) => this.onBoardListWatchResponse(resp));
-    this.logger.info('start request start watch');
-    await this.requestStartWatch(
-      new BoardListWatchRequest().setInstance(instance),
-      wrapper.stream
+    const wrapper = await this.createWrapper(
+      client,
+      new BoardListWatchRequest().setInstance(instance)
     );
-    this.logger.info('start requested start watch');
+    wrapper.stream.on('data', (resp) => this.onBoardListWatchResponse(resp));
     this.watching.resolve();
     this.logger.info('start resolved watching');
   }

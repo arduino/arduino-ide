@@ -4181,8 +4181,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.toObject = func
  */
 proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-    interrupt: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -4224,10 +4223,6 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinaryFromRead
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
       msg.setInstance(value);
       break;
-    case 2:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setInterrupt(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -4263,13 +4258,6 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.serializeBinaryToWriter =
       1,
       f,
       cc_arduino_cli_commands_v1_common_pb.Instance.serializeBinaryToWriter
-    );
-  }
-  f = message.getInterrupt();
-  if (f) {
-    writer.writeBool(
-      2,
-      f
     );
   }
 };
@@ -4309,24 +4297,6 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.clearInstance =
  */
 proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * optional bool interrupt = 2;
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.getInterrupt = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.setInterrupt = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 
