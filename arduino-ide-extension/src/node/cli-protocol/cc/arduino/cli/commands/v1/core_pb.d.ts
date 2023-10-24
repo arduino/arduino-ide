@@ -23,6 +23,8 @@ export class PlatformInstallRequest extends jspb.Message {
     setSkipPostInstall(value: boolean): PlatformInstallRequest;
     getNoOverwrite(): boolean;
     setNoOverwrite(value: boolean): PlatformInstallRequest;
+    getSkipPreUninstall(): boolean;
+    setSkipPreUninstall(value: boolean): PlatformInstallRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallRequest.AsObject;
@@ -42,6 +44,7 @@ export namespace PlatformInstallRequest {
         version: string,
         skipPostInstall: boolean,
         noOverwrite: boolean,
+        skipPreUninstall: boolean,
     }
 }
 
@@ -156,6 +159,8 @@ export class PlatformUninstallRequest extends jspb.Message {
     setPlatformPackage(value: string): PlatformUninstallRequest;
     getArchitecture(): string;
     setArchitecture(value: string): PlatformUninstallRequest;
+    getSkipPreUninstall(): boolean;
+    setSkipPreUninstall(value: boolean): PlatformUninstallRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUninstallRequest.AsObject;
@@ -172,6 +177,7 @@ export namespace PlatformUninstallRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         platformPackage: string,
         architecture: string,
+        skipPreUninstall: boolean,
     }
 }
 
@@ -227,6 +233,8 @@ export class PlatformUpgradeRequest extends jspb.Message {
     setArchitecture(value: string): PlatformUpgradeRequest;
     getSkipPostInstall(): boolean;
     setSkipPostInstall(value: boolean): PlatformUpgradeRequest;
+    getSkipPreUninstall(): boolean;
+    setSkipPreUninstall(value: boolean): PlatformUpgradeRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeRequest.AsObject;
@@ -244,6 +252,7 @@ export namespace PlatformUpgradeRequest {
         platformPackage: string,
         architecture: string,
         skipPostInstall: boolean,
+        skipPreUninstall: boolean,
     }
 }
 

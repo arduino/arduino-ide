@@ -23,6 +23,7 @@ var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cl
 var cc_arduino_cli_commands_v1_board_pb = require('../../../../../cc/arduino/cli/commands/v1/board_pb.js');
 var cc_arduino_cli_commands_v1_compile_pb = require('../../../../../cc/arduino/cli/commands/v1/compile_pb.js');
 var cc_arduino_cli_commands_v1_core_pb = require('../../../../../cc/arduino/cli/commands/v1/core_pb.js');
+var cc_arduino_cli_commands_v1_debug_pb = require('../../../../../cc/arduino/cli/commands/v1/debug_pb.js');
 var cc_arduino_cli_commands_v1_monitor_pb = require('../../../../../cc/arduino/cli/commands/v1/monitor_pb.js');
 var cc_arduino_cli_commands_v1_upload_pb = require('../../../../../cc/arduino/cli/commands/v1/upload_pb.js');
 var cc_arduino_cli_commands_v1_lib_pb = require('../../../../../cc/arduino/cli/commands/v1/lib_pb.js');
@@ -225,6 +226,28 @@ function deserialize_cc_arduino_cli_commands_v1_CreateResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_commands_pb.CreateResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_v1_DebugRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_debug_pb.DebugRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.DebugRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_DebugRequest(buffer_arg) {
+  return cc_arduino_cli_commands_v1_debug_pb.DebugRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_DebugResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_debug_pb.DebugResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.DebugResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_DebugResponse(buffer_arg) {
+  return cc_arduino_cli_commands_v1_debug_pb.DebugResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_v1_DestroyRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.DestroyRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.DestroyRequest');
@@ -267,6 +290,28 @@ function serialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsRespon
 
 function deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse(buffer_arg) {
   return cc_arduino_cli_commands_v1_monitor_pb.EnumerateMonitorPortSettingsResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_GetDebugConfigRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.GetDebugConfigRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_GetDebugConfigRequest(buffer_arg) {
+  return cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_GetDebugConfigResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.GetDebugConfigResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_GetDebugConfigResponse(buffer_arg) {
+  return cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_cc_arduino_cli_commands_v1_GitLibraryInstallRequest(arg) {
@@ -1065,7 +1110,7 @@ boardSearch: {
   // List boards connection and disconnected events.
 boardListWatch: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardListWatch',
-    requestStream: true,
+    requestStream: false,
     responseStream: true,
     requestType: cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest,
     responseType: cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse,
@@ -1366,6 +1411,29 @@ enumerateMonitorPortSettings: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_EnumerateMonitorPortSettingsResponse,
+  },
+  // Start a debug session and communicate with the debugger tool.
+debug: {
+    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Debug',
+    requestStream: true,
+    responseStream: true,
+    requestType: cc_arduino_cli_commands_v1_debug_pb.DebugRequest,
+    responseType: cc_arduino_cli_commands_v1_debug_pb.DebugResponse,
+    requestSerialize: serialize_cc_arduino_cli_commands_v1_DebugRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_DebugRequest,
+    responseSerialize: serialize_cc_arduino_cli_commands_v1_DebugResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_DebugResponse,
+  },
+  getDebugConfig: {
+    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/GetDebugConfig',
+    requestStream: false,
+    responseStream: false,
+    requestType: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest,
+    responseType: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse,
+    requestSerialize: serialize_cc_arduino_cli_commands_v1_GetDebugConfigRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_GetDebugConfigRequest,
+    responseSerialize: serialize_cc_arduino_cli_commands_v1_GetDebugConfigResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_GetDebugConfigResponse,
   },
 };
 

@@ -31,6 +31,8 @@ var cc_arduino_cli_commands_v1_compile_pb = require('../../../../../cc/arduino/c
 goog.object.extend(proto, cc_arduino_cli_commands_v1_compile_pb);
 var cc_arduino_cli_commands_v1_core_pb = require('../../../../../cc/arduino/cli/commands/v1/core_pb.js');
 goog.object.extend(proto, cc_arduino_cli_commands_v1_core_pb);
+var cc_arduino_cli_commands_v1_debug_pb = require('../../../../../cc/arduino/cli/commands/v1/debug_pb.js');
+goog.object.extend(proto, cc_arduino_cli_commands_v1_debug_pb);
 var cc_arduino_cli_commands_v1_monitor_pb = require('../../../../../cc/arduino/cli/commands/v1/monitor_pb.js');
 goog.object.extend(proto, cc_arduino_cli_commands_v1_monitor_pb);
 var cc_arduino_cli_commands_v1_upload_pb = require('../../../../../cc/arduino/cli/commands/v1/upload_pb.js');

@@ -308,7 +308,7 @@ export namespace Sketch {
   export namespace Extensions {
     export const DEFAULT = '.ino';
     export const MAIN = [DEFAULT, '.pde'];
-    export const SOURCE = ['.c', '.cpp', '.S'];
+    export const SOURCE = ['.c', '.cpp', '.S', '.cxx', '.cc'];
     export const CODE_FILES = [
       ...MAIN,
       ...SOURCE,

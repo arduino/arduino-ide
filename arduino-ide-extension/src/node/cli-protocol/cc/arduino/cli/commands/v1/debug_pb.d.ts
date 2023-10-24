@@ -1,5 +1,5 @@
-// package: cc.arduino.cli.debug.v1
-// file: cc/arduino/cli/debug/v1/debug.proto
+// package: cc.arduino.cli.commands.v1
+// file: cc/arduino/cli/commands/v1/debug.proto
 
 /* tslint:disable */
 /* eslint-disable */
@@ -7,13 +7,14 @@
 import * as jspb from "google-protobuf";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_port_pb from "../../../../../cc/arduino/cli/commands/v1/port_pb";
+import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 
 export class DebugRequest extends jspb.Message { 
 
     hasDebugRequest(): boolean;
     clearDebugRequest(): void;
-    getDebugRequest(): DebugConfigRequest | undefined;
-    setDebugRequest(value?: DebugConfigRequest): DebugRequest;
+    getDebugRequest(): GetDebugConfigRequest | undefined;
+    setDebugRequest(value?: GetDebugConfigRequest): DebugRequest;
     getData(): Uint8Array | string;
     getData_asU8(): Uint8Array;
     getData_asB64(): string;
@@ -33,45 +34,45 @@ export class DebugRequest extends jspb.Message {
 
 export namespace DebugRequest {
     export type AsObject = {
-        debugRequest?: DebugConfigRequest.AsObject,
+        debugRequest?: GetDebugConfigRequest.AsObject,
         data: Uint8Array | string,
         sendInterrupt: boolean,
     }
 }
 
-export class DebugConfigRequest extends jspb.Message { 
+export class GetDebugConfigRequest extends jspb.Message { 
 
     hasInstance(): boolean;
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): DebugConfigRequest;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): GetDebugConfigRequest;
     getFqbn(): string;
-    setFqbn(value: string): DebugConfigRequest;
+    setFqbn(value: string): GetDebugConfigRequest;
     getSketchPath(): string;
-    setSketchPath(value: string): DebugConfigRequest;
+    setSketchPath(value: string): GetDebugConfigRequest;
 
     hasPort(): boolean;
     clearPort(): void;
     getPort(): cc_arduino_cli_commands_v1_port_pb.Port | undefined;
-    setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): DebugConfigRequest;
+    setPort(value?: cc_arduino_cli_commands_v1_port_pb.Port): GetDebugConfigRequest;
     getInterpreter(): string;
-    setInterpreter(value: string): DebugConfigRequest;
+    setInterpreter(value: string): GetDebugConfigRequest;
     getImportDir(): string;
-    setImportDir(value: string): DebugConfigRequest;
+    setImportDir(value: string): GetDebugConfigRequest;
     getProgrammer(): string;
-    setProgrammer(value: string): DebugConfigRequest;
+    setProgrammer(value: string): GetDebugConfigRequest;
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): DebugConfigRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: DebugConfigRequest): DebugConfigRequest.AsObject;
+    toObject(includeInstance?: boolean): GetDebugConfigRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: GetDebugConfigRequest): GetDebugConfigRequest.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: DebugConfigRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): DebugConfigRequest;
-    static deserializeBinaryFromReader(message: DebugConfigRequest, reader: jspb.BinaryReader): DebugConfigRequest;
+    static serializeBinaryToWriter(message: GetDebugConfigRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): GetDebugConfigRequest;
+    static deserializeBinaryFromReader(message: GetDebugConfigRequest, reader: jspb.BinaryReader): GetDebugConfigRequest;
 }
 
-export namespace DebugConfigRequest {
+export namespace GetDebugConfigRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         fqbn: string,
@@ -122,11 +123,22 @@ export class GetDebugConfigResponse extends jspb.Message {
     getServerPath(): string;
     setServerPath(value: string): GetDebugConfigResponse;
 
-    getToolchainConfigurationMap(): jspb.Map<string, string>;
-    clearToolchainConfigurationMap(): void;
+    hasToolchainConfiguration(): boolean;
+    clearToolchainConfiguration(): void;
+    getToolchainConfiguration(): google_protobuf_any_pb.Any | undefined;
+    setToolchainConfiguration(value?: google_protobuf_any_pb.Any): GetDebugConfigResponse;
 
-    getServerConfigurationMap(): jspb.Map<string, string>;
-    clearServerConfigurationMap(): void;
+    hasServerConfiguration(): boolean;
+    clearServerConfiguration(): void;
+    getServerConfiguration(): google_protobuf_any_pb.Any | undefined;
+    setServerConfiguration(value?: google_protobuf_any_pb.Any): GetDebugConfigResponse;
+
+    getCustomConfigsMap(): jspb.Map<string, string>;
+    clearCustomConfigsMap(): void;
+    getSvdFile(): string;
+    setSvdFile(value: string): GetDebugConfigResponse;
+    getProgrammer(): string;
+    setProgrammer(value: string): GetDebugConfigResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetDebugConfigResponse.AsObject;
@@ -146,9 +158,56 @@ export namespace GetDebugConfigResponse {
         toolchainPrefix: string,
         server: string,
         serverPath: string,
+        toolchainConfiguration?: google_protobuf_any_pb.Any.AsObject,
+        serverConfiguration?: google_protobuf_any_pb.Any.AsObject,
 
-        toolchainConfigurationMap: Array<[string, string]>,
+        customConfigsMap: Array<[string, string]>,
+        svdFile: string,
+        programmer: string,
+    }
+}
 
-        serverConfigurationMap: Array<[string, string]>,
+export class DebugGCCToolchainConfiguration extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DebugGCCToolchainConfiguration.AsObject;
+    static toObject(includeInstance: boolean, msg: DebugGCCToolchainConfiguration): DebugGCCToolchainConfiguration.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DebugGCCToolchainConfiguration, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DebugGCCToolchainConfiguration;
+    static deserializeBinaryFromReader(message: DebugGCCToolchainConfiguration, reader: jspb.BinaryReader): DebugGCCToolchainConfiguration;
+}
+
+export namespace DebugGCCToolchainConfiguration {
+    export type AsObject = {
+    }
+}
+
+export class DebugOpenOCDServerConfiguration extends jspb.Message { 
+    getPath(): string;
+    setPath(value: string): DebugOpenOCDServerConfiguration;
+    getScriptsDir(): string;
+    setScriptsDir(value: string): DebugOpenOCDServerConfiguration;
+    clearScriptsList(): void;
+    getScriptsList(): Array<string>;
+    setScriptsList(value: Array<string>): DebugOpenOCDServerConfiguration;
+    addScripts(value: string, index?: number): string;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): DebugOpenOCDServerConfiguration.AsObject;
+    static toObject(includeInstance: boolean, msg: DebugOpenOCDServerConfiguration): DebugOpenOCDServerConfiguration.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: DebugOpenOCDServerConfiguration, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): DebugOpenOCDServerConfiguration;
+    static deserializeBinaryFromReader(message: DebugOpenOCDServerConfiguration, reader: jspb.BinaryReader): DebugOpenOCDServerConfiguration;
+}
+
+export namespace DebugOpenOCDServerConfiguration {
+    export type AsObject = {
+        path: string,
+        scriptsDir: string,
+        scriptsList: Array<string>,
     }
 }
