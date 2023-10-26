@@ -175,7 +175,7 @@
       "version": "2.4.1"
     },
     "arduino-language-server": {
-      "version": "0.7.4"
+      "version": "0.7.5"
     },
     "clangd": {
       "version": "14.0.0"
