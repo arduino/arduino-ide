@@ -938,10 +938,10 @@
     "@babel/parser" "^7.22.15"
     "@babel/types" "^7.22.15"
 
-"@babel/traverse@^7.23.0":
-  version "7.23.0"
-  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.23.0.tgz#18196ddfbcf4ccea324b7f6d3ada00d8c5a99c53"
-  integrity sha512-t/QaEvyIoIkwzpiZ7aoSKK8kObQYeF7T2v+dazAYCb8SXtp58zEVkWW7zAnju8FNKNdr4ScAOEDmMItbyOmEYw==
+"@babel/traverse@^7.23.0", "@babel/traverse@^7.23.2":
+  version "7.23.2"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.23.2.tgz#329c7a06735e144a506bdb2cad0268b7f46f4ad8"
+  integrity sha512-azpe59SQ48qG6nu2CzcMLbxUudtN+dOM9kDbUqGq3HXUJRlo7i8fvPoxQUzYgLZ4cMVmuZgm8vvBpNeRhd6XSw==
   dependencies:
     "@babel/code-frame" "^7.22.13"
     "@babel/generator" "^7.23.0"
@@ -2697,10 +2697,10 @@
     "@tufjs/canonical-json" "1.0.0"
     minimatch "^9.0.0"
 
-"@types/auth0-js@^9.14.0":
-  version "9.21.1"
-  resolved "https://registry.yarnpkg.com/@types/auth0-js/-/auth0-js-9.21.1.tgz#3883693ae84746153507ea6e9bfa8c68811c1906"
-  integrity sha512-K8X2aBZynfeqjRI15P6fcpzcjAPXfppAVwaUNXxXnXmXMx66pz5IwQ5ZpzaDg8Q1P6aVF8+N2RZMTcBoOME9HA==
+"@types/auth0-js@^9.21.3":
+  version "9.21.3"
+  resolved "https://registry.yarnpkg.com/@types/auth0-js/-/auth0-js-9.21.3.tgz#de88abd4df6bbc3b8ad2fe5e299c65304f8ed691"
+  integrity sha512-5IZHQSljfOREU1fngFcwUXjHUlCq/CM4K1zmVytX0EvH3QnX3cYwK6HCxRuxK7seYMm8yeviWUUkWV1kqK2+sg==
 
 "@types/bent@^7.0.1":
   version "7.3.5"
@@ -4107,10 +4107,10 @@ atomically@^1.7.0:
   resolved "https://registry.yarnpkg.com/atomically/-/atomically-1.7.0.tgz#c07a0458432ea6dbc9a3506fffa424b48bccaafe"
   integrity sha512-Xcz9l0z7y9yQ9rdDaxlmaI4uJHf/T8g9hOEzJcsEqX2SjCj4J20uK7+ldkDHMbpJDK76wF7xEIgxc/vSlsfw5w==
 
-auth0-js@^9.14.0:
-  version "9.23.0"
-  resolved "https://registry.yarnpkg.com/auth0-js/-/auth0-js-9.23.0.tgz#e0f825b12a43ab6696464790470944a59df9c28a"
-  integrity sha512-AtvbseCU+9/hwCPTGbV9UI7iYc2EmT7rN1dPiRxNUyT4RXIFAnJRkuCSEwa0mhS20jlMPD4b28l5354vxBbYzw==
+auth0-js@^9.23.2:
+  version "9.23.2"
+  resolved "https://registry.yarnpkg.com/auth0-js/-/auth0-js-9.23.2.tgz#9760dc207c074995efd6fbc4d7b585e05709c85b"
+  integrity sha512-RiUBalXymeGjF0Ap/IyjKnsILO44eaFrSJDqchox6wUUWnJATGjEQLMTLzjWn8R1wZVKBGu1Fv7PPSViWhcYVQ==
   dependencies:
     base64-js "^1.5.1"
     idtoken-verifier "^2.2.2"
@@ -5350,9 +5350,9 @@ cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
     which "^2.0.1"
 
 crypto-js@^4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
-  integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 css-loader@^6.2.0:
   version "6.8.1"

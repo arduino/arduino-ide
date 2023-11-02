@@ -9,6 +9,9 @@
   "engines": {
     "node": ">=18.17.0 <21"
   },
+  "resolutions": {
+    "@theia/cli/@babel/traverse": "^7.23.2"
+  },
   "devDependencies": {
     "@theia/cli": "1.41.0",
     "@typescript-eslint/eslint-plugin": "^5.59.0",
