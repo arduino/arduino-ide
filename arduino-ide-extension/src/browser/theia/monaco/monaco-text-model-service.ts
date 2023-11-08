@@ -77,7 +77,7 @@ class MaybeReadonlyMonacoEditorModel extends SilentMonacoEditorModel {
     }
     this._dirty = dirty;
     if (dirty === false) {
-      (this as any).updateSavedVersionId();
+      this['updateSavedVersionId']();
     }
     this.onDirtyChangedEmitter.fire(undefined);
   }

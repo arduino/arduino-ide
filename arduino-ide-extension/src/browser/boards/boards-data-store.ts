@@ -10,13 +10,16 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone, deepFreeze } from '@theia/core/lib/common/objects';
+import type { Mutable } from '@theia/core/lib/common/types';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import {
   BoardDetails,
   BoardsService,
   ConfigOption,
+  ConfigValue,
   Programmer,
   isBoardIdentifierChangeEvent,
+  isProgrammer,
 } from '../../common/protocol';
 import { notEmpty } from '../../common/utils';
 import type {
@@ -74,7 +77,7 @@ export class BoardsDataStore
           const storedData =
             await this.storageService.getData<BoardsDataStore.Data>(key);
           if (!storedData) {
-            // if not previously value is available for the board, do not update the cache
+            // if no previously value is available for the board, do not update the cache
             continue;
           }
           const details = await this.loadBoardDetails(fqbn);
@@ -86,6 +89,13 @@ export class BoardsDataStore
         }
         if (changes.length) {
           this.fireChanged(...changes);
+        }
+      }),
+      this.onDidChange((event) => {
+        const selectedFqbn =
+          this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn;
+        if (event.changes.find((change) => change.fqbn === selectedFqbn)) {
+          this.updateSelectedBoardData(selectedFqbn);
         }
       }),
     ]);
@@ -174,7 +184,7 @@ export class BoardsDataStore
       return storedData;
     }
 
-    const boardDetails = await this.getBoardDetailsSafe(fqbn);
+    const boardDetails = await this.loadBoardDetails(fqbn);
     if (!boardDetails) {
       return BoardsDataStore.Data.EMPTY;
     }
@@ -220,11 +230,12 @@ export class BoardsDataStore
     }
     let updated = false;
     for (const value of configOption.values) {
-      if (value.value === selectedValue) {
-        (value as any).selected = true;
+      const mutable: Mutable<ConfigValue> = value;
+      if (mutable.value === selectedValue) {
+        mutable.selected = true;
         updated = true;
       } else {
-        (value as any).selected = false;
+        mutable.selected = false;
       }
     }
     if (!updated) {
@@ -245,9 +256,7 @@ export class BoardsDataStore
     return `.arduinoIDE-configOptions-${fqbn}`;
   }
 
-  protected async getBoardDetailsSafe(
-    fqbn: string
-  ): Promise<BoardDetails | undefined> {
+  async loadBoardDetails(fqbn: string): Promise<BoardDetails | undefined> {
     try {
       const details = await this.boardsService.getBoardDetails({ fqbn });
       return details;
@@ -280,21 +289,24 @@ export namespace BoardsDataStore {
     readonly configOptions: ConfigOption[];
     readonly programmers: Programmer[];
     readonly selectedProgrammer?: Programmer;
+    readonly defaultProgrammerId?: string;
   }
   export namespace Data {
     export const EMPTY: Data = deepFreeze({
       configOptions: [],
       programmers: [],
-      defaultProgrammerId: undefined,
     });
 
     export function is(arg: unknown): arg is Data {
       return (
-        !!arg &&
-        'configOptions' in arg &&
-        Array.isArray(arg['configOptions']) &&
-        'programmers' in arg &&
-        Array.isArray(arg['programmers'])
+        typeof arg === 'object' &&
+        arg !== null &&
+        Array.isArray((<Data>arg).configOptions) &&
+        Array.isArray((<Data>arg).programmers) &&
+        ((<Data>arg).selectedProgrammer === undefined ||
+          isProgrammer((<Data>arg).selectedProgrammer)) &&
+        ((<Data>arg).defaultProgrammerId === undefined ||
+          typeof (<Data>arg).defaultProgrammerId === 'string')
       );
     }
   }
@@ -304,7 +316,8 @@ export function isEmptyData(data: BoardsDataStore.Data): boolean {
   return (
     Boolean(!data.configOptions.length) &&
     Boolean(!data.programmers.length) &&
-    Boolean(!data.selectedProgrammer)
+    Boolean(!data.selectedProgrammer) &&
+    Boolean(!data.defaultProgrammerId)
   );
 }
 
@@ -324,16 +337,18 @@ export function findDefaultProgrammer(
 function createDataStoreEntry(details: BoardDetails): BoardsDataStore.Data {
   const configOptions = details.configOptions.slice();
   const programmers = details.programmers.slice();
+  const { defaultProgrammerId } = details;
   const selectedProgrammer = findDefaultProgrammer(
     programmers,
-    details.defaultProgrammerId
+    defaultProgrammerId
   );
-  return {
+  const data = {
     configOptions,
     programmers,
-    defaultProgrammerId: details.defaultProgrammerId,
-    selectedProgrammer,
+    ...(selectedProgrammer ? { selectedProgrammer } : {}),
+    ...(defaultProgrammerId ? { defaultProgrammerId } : {}),
   };
+  return data;
 }
 
 export interface BoardsDataStoreChange {

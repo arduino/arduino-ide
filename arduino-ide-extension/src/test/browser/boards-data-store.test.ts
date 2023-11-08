@@ -16,7 +16,6 @@ import {
 } from '@theia/core/lib/common/disposable';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { wait } from '@theia/core/lib/common/promise-util';
-import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
 import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { BoardsDataStore } from '../../browser/boards/boards-data-store';
@@ -30,7 +29,7 @@ import {
   Programmer,
 } from '../../common/protocol/boards-service';
 import { NotificationServiceServer } from '../../common/protocol/notification-service';
-import { ConsoleLogger, bindCommon } from '../common/common-test-bindings';
+import { bindBrowser } from './browser-test-bindings';
 
 disableJSDOM();
 
@@ -76,7 +75,6 @@ describe('boards-data-store', function () {
     const storedData: BoardsDataStore.Data = {
       configOptions: [],
       programmers: [edbg],
-      selectedProgrammer: edbg,
     };
     await setStorageData(fqbn, storedData);
     const data = await boardsDataStore.getData(fqbn);
@@ -86,7 +84,7 @@ describe('boards-data-store', function () {
   it('should update board details of selected board (selected with FQBN)', async () => {
     const updated = boardsServiceProvider.updateConfig(board);
     expect(updated).to.be.ok;
-    await wait(50);
+    await wait(1);
 
     const selectedBoardData = boardsDataStore['_selectedBoardData'];
     expect(selectedBoardData).to.be.deep.equal({
@@ -104,7 +102,7 @@ describe('boards-data-store', function () {
     const board = { name, fqbn };
     const updated = boardsServiceProvider.updateConfig(board);
     expect(updated).to.ok;
-    await wait(50);
+    await wait(1);
 
     const selectedBoardData = boardsDataStore['_selectedBoardData'];
     expect(selectedBoardData).to.be.undefined;
@@ -113,7 +111,7 @@ describe('boards-data-store', function () {
   it('should unset the the board details of selected board when no board was selected', async () => {
     let updated = boardsServiceProvider.updateConfig(board);
     expect(updated).to.ok;
-    await wait(50);
+    await wait(1);
 
     let selectedBoardData = boardsDataStore['_selectedBoardData'];
     expect(selectedBoardData).to.be.deep.equal({
@@ -126,18 +124,18 @@ describe('boards-data-store', function () {
 
     updated = boardsServiceProvider.updateConfig('unset-board');
     expect(updated).to.be.true;
-    await wait(50);
+    await wait(1);
 
     selectedBoardData = boardsDataStore['_selectedBoardData'];
     expect(selectedBoardData).to.be.undefined;
   });
 
   it('should provide startup tasks when the data is available for the selected board', async () => {
-    const updated = boardsServiceProvider.updateConfig(board);
+    let updated = boardsServiceProvider.updateConfig(board);
     expect(updated).to.be.true;
-    await wait(50);
+    await wait(1);
 
-    const tasks = boardsDataStore.tasks();
+    let tasks = boardsDataStore.tasks();
     expect(tasks).to.be.deep.equal([
       {
         command: 'arduino-use-inherited-boards-data',
@@ -152,11 +150,199 @@ describe('boards-data-store', function () {
         ],
       },
     ]);
+
+    updated = boardsServiceProvider.updateConfig('unset-board');
+    expect(updated).to.be.true;
+    await wait(1);
+
+    tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.empty;
   });
 
   it('should not provide any startup tasks when no data is available for the selected board', async () => {
     const tasks = boardsDataStore.tasks();
     expect(tasks).to.be.empty;
+  });
+
+  it('should update the startup task arg when the selected programmer changes', async () => {
+    let tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.empty;
+
+    let data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+    });
+
+    const updated = boardsServiceProvider.updateConfig(board);
+    expect(updated).to.be.ok;
+    await wait(1);
+
+    tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.deep.equal([
+      {
+        command: 'arduino-use-inherited-boards-data',
+        args: [
+          {
+            fqbn,
+            data: {
+              configOptions: [configOption1],
+              programmers: [edbg, jlink],
+            },
+          },
+        ],
+      },
+    ]);
+
+    const result = await boardsDataStore.selectProgrammer({
+      fqbn,
+      selectedProgrammer: edbg,
+    });
+    expect(result).to.be.ok;
+
+    data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+      selectedProgrammer: edbg,
+    });
+    tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.deep.equal([
+      {
+        command: 'arduino-use-inherited-boards-data',
+        args: [
+          {
+            fqbn,
+            data: {
+              configOptions: [configOption1],
+              programmers: [edbg, jlink],
+              selectedProgrammer: edbg,
+            },
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should update the startup task arg when the config options change', async () => {
+    let tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.empty;
+
+    let data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+    });
+
+    const updated = boardsServiceProvider.updateConfig(board);
+    expect(updated).to.be.ok;
+    await wait(1);
+
+    tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.deep.equal([
+      {
+        command: 'arduino-use-inherited-boards-data',
+        args: [
+          {
+            fqbn,
+            data: {
+              configOptions: [configOption1],
+              programmers: [edbg, jlink],
+            },
+          },
+        ],
+      },
+    ]);
+
+    const result = await boardsDataStore.selectConfigOption({
+      fqbn,
+      option: configOption1.option,
+      selectedValue: configOption1.values[1].value,
+    });
+    expect(result).to.be.ok;
+
+    data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [
+        {
+          ...configOption1,
+          values: [
+            { label: 'C1V1', selected: false, value: 'v1' },
+            { label: 'C1V2', selected: true, value: 'v2' },
+          ],
+        },
+      ],
+      programmers: [edbg, jlink],
+    });
+
+    tasks = boardsDataStore.tasks();
+    expect(tasks).to.be.deep.equal([
+      {
+        command: 'arduino-use-inherited-boards-data',
+        args: [
+          {
+            fqbn,
+            data: {
+              configOptions: [
+                {
+                  ...configOption1,
+                  values: [
+                    { label: 'C1V1', selected: false, value: 'v1' },
+                    { label: 'C1V2', selected: true, value: 'v2' },
+                  ],
+                },
+              ],
+              programmers: [edbg, jlink],
+            },
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should select the default programmer', async () => {
+    const storedData = await getStoredData(fqbn);
+    expect(storedData).to.be.undefined;
+
+    toDisposeAfterEach.push(
+      mockBoardDetails([
+        {
+          fqbn,
+          ...baseDetails,
+          defaultProgrammerId: edbg.id,
+        },
+      ])
+    );
+
+    const data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+      defaultProgrammerId: edbg.id,
+      selectedProgrammer: edbg,
+    });
+  });
+
+  it('should not select the default programmer when no match', async () => {
+    const storedData = await getStoredData(fqbn);
+    expect(storedData).to.be.undefined;
+
+    toDisposeAfterEach.push(
+      mockBoardDetails([
+        {
+          fqbn,
+          ...baseDetails,
+          defaultProgrammerId: 'missing',
+        },
+      ])
+    );
+
+    const data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+      defaultProgrammerId: 'missing',
+    });
   });
 
   it('should select a programmer', async () => {
@@ -306,7 +492,7 @@ describe('boards-data-store', function () {
       boardsDataStore.onDidChange(() => didChangeCounter++)
     );
     notificationCenter.notifyPlatformDidInstall({ item: boardsPackage });
-    await wait(50);
+    await wait(1);
     expect(didChangeCounter).to.be.equal(0);
 
     storedData = await getStoredData(fqbn);
@@ -326,7 +512,7 @@ describe('boards-data-store', function () {
       boardsDataStore.onDidChange(() => didChangeCounter++)
     );
     notificationCenter.notifyPlatformDidInstall({ item: boardsPackage });
-    await wait(50);
+    await wait(1);
     expect(didChangeCounter).to.be.equal(1);
 
     storedData = await getStoredData(fqbn);
@@ -359,7 +545,7 @@ describe('boards-data-store', function () {
       boardsDataStore.onDidChange(() => didChangeCounter++)
     );
     notificationCenter.notifyPlatformDidInstall({ item: boardsPackage });
-    await wait(50);
+    await wait(1);
     expect(didChangeCounter).to.be.equal(1);
 
     storedData = await boardsDataStore.getData(fqbn);
@@ -390,7 +576,7 @@ describe('boards-data-store', function () {
     const container = new Container({ defaultScope: 'Singleton' });
     container.load(
       new ContainerModule((bind, unbind, isBound, rebind) => {
-        bindCommon(bind);
+        bindBrowser(bind, unbind, isBound, rebind);
         bind(MessageService).toConstantValue(<MessageService>{});
         bind(BoardsService).toConstantValue(<BoardsService>{
           getDetectedPorts() {
@@ -415,11 +601,6 @@ describe('boards-data-store', function () {
         bind(WindowService).toConstantValue(<WindowService>{});
         bind(StorageService).toService(LocalStorageService);
         bind(BoardsServiceProvider).toSelf().inSingletonScope();
-        // IDE2's test console logger does not support `Loggable` arg.
-        // Rebind logger to suppress `[Function (anonymous)]` messages in tests when the storage service is initialized without `window.localStorage`.
-        // https://github.com/eclipse-theia/theia/blob/04c8cf07843ea67402131132e033cdd54900c010/packages/core/src/browser/storage-service.ts#L60
-        bind(MockLogger).toSelf().inSingletonScope();
-        rebind(ConsoleLogger).toService(MockLogger);
       })
     );
     return container;
@@ -460,7 +641,6 @@ describe('boards-data-store', function () {
     PID: '1',
     buildProperties: [],
     configOptions: [configOption1],
-    debuggingSupported: false,
     programmers: [edbg, jlink],
     requiredTools: [],
   };

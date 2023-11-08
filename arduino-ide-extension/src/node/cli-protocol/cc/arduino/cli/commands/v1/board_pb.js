@@ -730,10 +730,10 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.toObject = function(includ
     proto.cc.arduino.cli.commands.v1.ConfigOption.toObject, includeInstance),
     programmersList: jspb.Message.toObjectList(msg.getProgrammersList(),
     cc_arduino_cli_commands_v1_common_pb.Programmer.toObject, includeInstance),
-    debuggingSupported: jspb.Message.getBooleanFieldWithDefault(msg, 14, false),
     identificationPropertiesList: jspb.Message.toObjectList(msg.getIdentificationPropertiesList(),
     proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject, includeInstance),
-    buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 16)) == null ? undefined : f
+    buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 16)) == null ? undefined : f,
+    defaultProgrammerId: jspb.Message.getFieldWithDefault(msg, 17, "")
   };
 
   if (includeInstance) {
@@ -823,10 +823,6 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReade
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Programmer.deserializeBinaryFromReader);
       msg.addProgrammers(value);
       break;
-    case 14:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setDebuggingSupported(value);
-      break;
     case 15:
       var value = new proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties;
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader);
@@ -835,6 +831,10 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReade
     case 16:
       var value = /** @type {string} */ (reader.readString());
       msg.addBuildProperties(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDefaultProgrammerId(value);
       break;
     default:
       reader.skipField();
@@ -954,13 +954,6 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter = 
       cc_arduino_cli_commands_v1_common_pb.Programmer.serializeBinaryToWriter
     );
   }
-  f = message.getDebuggingSupported();
-  if (f) {
-    writer.writeBool(
-      14,
-      f
-    );
-  }
   f = message.getIdentificationPropertiesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
@@ -973,6 +966,13 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter = 
   if (f.length > 0) {
     writer.writeRepeatedString(
       16,
+      f
+    );
+  }
+  f = message.getDefaultProgrammerId();
+  if (f.length > 0) {
+    writer.writeString(
+      17,
       f
     );
   }
@@ -1294,24 +1294,6 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearProgrammers
 
 
 /**
- * optional bool debugging_supported = 14;
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getDebuggingSupported = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 14, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
- */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setDebuggingSupported = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 14, value);
-};
-
-
-/**
  * repeated BoardIdentificationProperties identification_properties = 15;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties>}
  */
@@ -1383,6 +1365,24 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addBuildProperti
  */
 proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearBuildPropertiesList = function() {
   return this.setBuildPropertiesList([]);
+};
+
+
+/**
+ * optional string default_programmer_id = 17;
+ * @return {string}
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getDefaultProgrammerId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setDefaultProgrammerId = function(value) {
+  return jspb.Message.setProto3StringField(this, 17, value);
 };
 
 
@@ -4181,8 +4181,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.toObject = func
  */
 proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-    interrupt: jspb.Message.getBooleanFieldWithDefault(msg, 2, false)
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -4224,10 +4223,6 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinaryFromRead
       reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
       msg.setInstance(value);
       break;
-    case 2:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setInterrupt(value);
-      break;
     default:
       reader.skipField();
       break;
@@ -4263,13 +4258,6 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.serializeBinaryToWriter =
       1,
       f,
       cc_arduino_cli_commands_v1_common_pb.Instance.serializeBinaryToWriter
-    );
-  }
-  f = message.getInterrupt();
-  if (f) {
-    writer.writeBool(
-      2,
-      f
     );
   }
 };
@@ -4309,24 +4297,6 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.clearInstance =
  */
 proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * optional bool interrupt = 2;
- * @return {boolean}
- */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.getInterrupt = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.setInterrupt = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 

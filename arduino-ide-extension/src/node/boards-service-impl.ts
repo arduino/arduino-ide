@@ -1,27 +1,38 @@
-import { injectable, inject } from '@theia/core/shared/inversify';
 import { ILogger } from '@theia/core/lib/common/logger';
+import { nls } from '@theia/core/lib/common/nls';
 import { notEmpty } from '@theia/core/lib/common/objects';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import {
-  BoardsService,
-  Installable,
-  BoardsPackage,
   Board,
   BoardDetails,
+  BoardSearch,
+  BoardUserField,
+  BoardWithPackage,
+  BoardsPackage,
+  BoardsService,
+  CheckDebugEnabledParams,
   ConfigOption,
   ConfigValue,
+  DetectedPorts,
+  Installable,
+  NotificationServiceServer,
   Programmer,
   ResponseService,
-  NotificationServiceServer,
-  DetectedPorts,
-  BoardWithPackage,
-  BoardUserField,
-  BoardSearch,
-  sortComponents,
   SortGroup,
-  platformInstallFailed,
   createPlatformIdentifier,
   platformIdentifierEquals,
+  platformInstallFailed,
+  sortComponents,
 } from '../common/protocol';
+import { BoardDiscovery } from './board-discovery';
+import {
+  BoardDetailsRequest,
+  BoardDetailsResponse,
+  BoardListAllRequest,
+  BoardListAllResponse,
+  BoardSearchRequest,
+} from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
+import { Platform } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
   PlatformInstallRequest,
   PlatformListRequest,
@@ -30,25 +41,16 @@ import {
   PlatformSearchResponse,
   PlatformUninstallRequest,
 } from './cli-protocol/cc/arduino/cli/commands/v1/core_pb';
-import { Platform } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
-import { BoardDiscovery } from './board-discovery';
-import { CoreClientAware } from './core-client-provider';
-import {
-  BoardDetailsRequest,
-  BoardDetailsResponse,
-  BoardListAllRequest,
-  BoardListAllResponse,
-  BoardSearchRequest,
-} from './cli-protocol/cc/arduino/cli/commands/v1/board_pb';
+import { IsDebugSupportedRequest } from './cli-protocol/cc/arduino/cli/commands/v1/debug_pb';
 import {
   ListProgrammersAvailableForUploadRequest,
   ListProgrammersAvailableForUploadResponse,
   SupportedUserFieldsRequest,
   SupportedUserFieldsResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
+import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress } from './grpc-progressible';
 import { ServiceError } from './service-error';
-import { nls } from '@theia/core/lib/common';
 
 @injectable()
 export class BoardsServiceImpl
@@ -99,8 +101,6 @@ export class BoardsServiceImpl
       return undefined;
     }
 
-    const debuggingSupported = detailsResp.getDebuggingSupported();
-
     const requiredTools = detailsResp.getToolsDependenciesList().map((t) => ({
       name: t.getName(),
       packager: t.getPackager(),
@@ -146,6 +146,7 @@ export class BoardsServiceImpl
           platform: p.getPlatform(),
         }
     );
+    const defaultProgrammerId = detailsResp.getDefaultProgrammerId();
 
     let VID = 'N/A';
     let PID = 'N/A';
@@ -164,11 +165,41 @@ export class BoardsServiceImpl
       requiredTools,
       configOptions,
       programmers,
-      debuggingSupported,
       VID,
       PID,
       buildProperties,
+      ...(defaultProgrammerId ? { defaultProgrammerId } : {}),
     };
+  }
+
+  async checkDebugEnabled(params: CheckDebugEnabledParams): Promise<string> {
+    const { fqbn, programmer } = params;
+    const { client, instance } = await this.coreClient;
+    const req = new IsDebugSupportedRequest()
+      .setInstance(instance)
+      .setFqbn(fqbn)
+      .setProgrammer(programmer);
+    try {
+      const debugFqbn = await new Promise<string>((resolve, reject) =>
+        client.isDebugSupported(req, (err, resp) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          if (resp.getDebuggingSupported()) {
+            const debugFqbn = resp.getDebugFqbn();
+            if (debugFqbn) {
+              resolve(debugFqbn);
+            }
+          }
+          reject(new Error(`Debugging is not supported.`));
+        })
+      );
+      return debugFqbn;
+    } catch (err) {
+      console.error(`Failed to get debug config: ${fqbn}, ${programmer}`, err);
+      throw err;
+    }
   }
 
   async getBoardPackage(options: {
