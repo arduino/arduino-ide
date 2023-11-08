@@ -406,6 +406,7 @@ export interface Programmer {
   readonly name: string;
   readonly platform: string;
   readonly id: string;
+  readonly default?: boolean;
 }
 export namespace Programmer {
   export function equals(
@@ -424,6 +425,20 @@ export namespace Programmer {
       left.platform === right.platform
     );
   }
+}
+export function isProgrammer(arg: unknown): arg is Programmer {
+  return (
+    typeof arg === 'object' &&
+    arg !== null &&
+    (<Programmer>arg).id !== undefined &&
+    typeof (<Programmer>arg).id === 'string' &&
+    (<Programmer>arg).name !== undefined &&
+    typeof (<Programmer>arg).name === 'string' &&
+    (<Programmer>arg).platform !== undefined &&
+    typeof (<Programmer>arg).platform === 'string' &&
+    ((<Programmer>arg).default === undefined ||
+      typeof (<Programmer>arg).default === 'boolean')
+  );
 }
 
 export namespace Board {

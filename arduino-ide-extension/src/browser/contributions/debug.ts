@@ -1,46 +1,81 @@
+import { Emitter, Event } from '@theia/core/lib/common/event';
+import { MenuModelRegistry } from '@theia/core/lib/common/menu/menu-model-registry';
+import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { Event, Emitter } from '@theia/core/lib/common/event';
 import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
-import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
-import { NotificationCenter } from '../notification-center';
+import { SelectManually } from '../../common/nls';
 import {
   Board,
   BoardIdentifier,
   BoardsService,
   ExecutableService,
+  SketchRef,
   isBoardIdentifierChangeEvent,
-  Sketch,
+  isProgrammer,
 } from '../../common/protocol';
+import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { NotificationCenter } from '../notification-center';
+import { CurrentSketch } from '../sketches-service-client-impl';
+import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
-  URI,
   Command,
   CommandRegistry,
   SketchContribution,
   TabBarToolbarRegistry,
+  URI,
 } from './contribution';
-import { MenuModelRegistry, nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../sketches-service-client-impl';
-import { ArduinoMenus } from '../menu/arduino-menus';
 
 const COMPILE_FOR_DEBUG_KEY = 'arduino-compile-for-debug';
+
+interface StartDebugParams {
+  /**
+   * Absolute filesystem path to the Arduino CLI executable.
+   */
+  readonly cliPath: string;
+  /**
+   * The the board to debug.
+   */
+  readonly board: Readonly<{ fqbn: string; name?: string }>;
+  /**
+   * Absolute filesystem path of the sketch to debug.
+   */
+  readonly sketchPath: string;
+  /**
+   * Location where the `launch.json` will be created on the fly before starting every debug session.
+   * If not defined, it falls back to `sketchPath/.vscode/launch.json`.
+   */
+  readonly launchConfigsDirPath?: string;
+  /**
+   * Absolute path to the `arduino-cli.yaml` file. If not specified, it falls back to `~/.arduinoIDE/arduino-cli.yaml`.
+   */
+  readonly cliConfigPath?: string;
+  /**
+   * Programmer for the debugging.
+   */
+  readonly programmer?: string;
+  /**
+   * Custom progress title to use when getting the debug information from the CLI.
+   */
+  readonly title?: string;
+}
+type StartDebugResult = boolean;
 
 @injectable()
 export class Debug extends SketchContribution {
   @inject(HostedPluginSupport)
   private readonly hostedPluginSupport: HostedPluginSupport;
-
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
-
   @inject(ExecutableService)
   private readonly executableService: ExecutableService;
-
   @inject(BoardsService)
   private readonly boardService: BoardsService;
-
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
+  @inject(BoardsDataStore)
+  private readonly boardsDataStore: BoardsDataStore;
 
   /**
    * If `undefined`, debugging is enabled. Otherwise, the reason why it's disabled.
@@ -175,44 +210,37 @@ export class Debug extends SketchContribution {
   private async startDebug(
     board: BoardIdentifier | undefined = this.boardsServiceProvider.boardsConfig
       .selectedBoard
-  ): Promise<void> {
-    if (!board) {
-      return;
-    }
-    const { name, fqbn } = board;
-    if (!fqbn) {
-      return;
+  ): Promise<StartDebugResult> {
+    const params = await this.createStartDebugParams(board);
+    if (!params) {
+      return false;
     }
     await this.hostedPluginSupport.didStart;
-    const [sketch, executables] = await Promise.all([
-      this.sketchServiceClient.currentSketch(),
-      this.executableService.list(),
-    ]);
-    if (!CurrentSketch.isValid(sketch)) {
-      return;
-    }
-    const ideTempFolderUri = await this.sketchesService.getIdeTempFolderUri(
-      sketch
-    );
-    const [cliPath, sketchPath, configPath] = await Promise.all([
-      this.fileService.fsPath(new URI(executables.cliUri)),
-      this.fileService.fsPath(new URI(sketch.uri)),
-      this.fileService.fsPath(new URI(ideTempFolderUri)),
-    ]);
-    const config = {
-      cliPath,
-      board: {
-        fqbn,
-        name,
-      },
-      sketchPath,
-      configPath,
-    };
     try {
-      await this.commandService.executeCommand('arduino.debug.start', config);
+      const result = await this.debug(params);
+      return Boolean(result);
     } catch (err) {
-      if (await this.isSketchNotVerifiedError(err, sketch)) {
-        const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
+      const yes = nls.localize('vscode/extensionsUtils/yes', 'Yes');
+      const sketchUri = await this.fileSystemExt.getUri(params.sketchPath);
+      const sketch = SketchRef.fromUri(sketchUri);
+      if (err instanceof Error && /missing programmer/gi.test(err.message)) {
+        const answer = await this.messageService.warn(
+          nls.localize(
+            'arduino/debug/programmerNotSelected',
+            'The debugger requires a programmer. Do you want to select a programmer? You can select it manually from the Tools > Programmer menu.'
+          ),
+          SelectManually,
+          yes
+        );
+        if (answer === yes) {
+          const result = await this.commandService.executeCommand(
+            'arduino-select-programmer'
+          );
+          if (isProgrammer(result)) {
+            return this.startDebug();
+          }
+        }
+      } else if (await this.isSketchNotVerifiedError(err, sketch)) {
         const answer = await this.messageService.error(
           nls.localize(
             'arduino/debug/sketchIsNotCompiled',
@@ -230,6 +258,16 @@ export class Debug extends SketchContribution {
         );
       }
     }
+    return false;
+  }
+
+  private async debug(
+    params: StartDebugParams
+  ): Promise<StartDebugResult | undefined> {
+    return this.commandService.executeCommand<StartDebugResult>(
+      'arduino.debug.start',
+      params
+    );
   }
 
   get compileForDebug(): boolean {
@@ -246,7 +284,7 @@ export class Debug extends SketchContribution {
 
   private async isSketchNotVerifiedError(
     err: unknown,
-    sketch: Sketch
+    sketch: SketchRef
   ): Promise<boolean> {
     if (err instanceof Error) {
       try {
@@ -259,6 +297,41 @@ export class Debug extends SketchContribution {
       }
     }
     return false;
+  }
+
+  private async createStartDebugParams(
+    board: BoardIdentifier | undefined
+  ): Promise<StartDebugParams | undefined> {
+    if (!board || !board.fqbn) {
+      return undefined;
+    }
+    const [sketch, executables, boardsData] = await Promise.all([
+      this.sketchServiceClient.currentSketch(),
+      this.executableService.list(),
+      this.boardsDataStore.getData(board.fqbn),
+    ]);
+    if (!CurrentSketch.isValid(sketch)) {
+      return;
+    }
+    const ideTempFolderUri = await this.sketchesService.getIdeTempFolderUri(
+      sketch
+    );
+    const [cliPath, sketchPath, launchConfigsDirPath] = await Promise.all([
+      this.fileService.fsPath(new URI(executables.cliUri)),
+      this.fileService.fsPath(new URI(sketch.uri)),
+      this.fileService.fsPath(new URI(ideTempFolderUri)),
+    ]);
+    return {
+      board: { fqbn: board.fqbn, name: board.name },
+      cliPath,
+      sketchPath,
+      launchConfigsDirPath,
+      programmer: boardsData.selectedProgrammer?.id,
+      title: nls.localize(
+        'arduino/debug/getDebugInfo',
+        'Getting debug info...'
+      ),
+    };
   }
 }
 export namespace Debug {

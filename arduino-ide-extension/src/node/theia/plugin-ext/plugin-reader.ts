@@ -12,25 +12,25 @@ export class HostedPluginReader extends TheiaHostedPluginReader {
   ): Promise<PluginContribution | undefined> {
     const scanner = this.scanner.getScanner(plugin);
     const contributions = await scanner.getContribution(plugin);
-    return this.filterContribution(plugin.name, contributions);
+    return this.mapContribution(plugin.name, contributions);
   }
 
-  private filterContribution(
+  private mapContribution(
     pluginName: string,
     contributions: PluginContribution | undefined
   ): PluginContribution | undefined {
     if (!contributions) {
       return contributions;
     }
-    const filter = pluginFilters.get(pluginName);
-    return filter ? filter(contributions) : contributions;
+    const mapper = pluginMappers.get(pluginName);
+    return mapper ? mapper(contributions) : contributions;
   }
 }
 
-type PluginContributionFilter = (
+type PluginContributionMapper = (
   contribution: PluginContribution
 ) => PluginContribution | undefined;
-const cortexDebugFilter: PluginContributionFilter = (
+const cortexDebugMapper: PluginContributionMapper = (
   contribution: PluginContribution
 ) => {
   if (contribution.viewsContainers) {
@@ -81,9 +81,24 @@ const cortexDebugFilter: PluginContributionFilter = (
       }
     }
   }
+  for (const _debugger of contribution.debuggers ?? []) {
+    if (_debugger.type === 'cortex-debug') {
+      for (const attributes of _debugger.configurationAttributes ?? []) {
+        if (attributes.properties) {
+          // Patch the cortex-debug debug config schema to allow the in-house `configId`.
+          attributes.properties['configId'] = {
+            type: 'string',
+            description:
+              'Arduino debug configuration identifier consisting of the Fully Qualified Board Name (FQBN) and the programmer identifier (for example, `esptool`)',
+          };
+        }
+      }
+    }
+  }
+
   return contribution;
 };
 
-const pluginFilters = new Map<string, PluginContributionFilter>([
-  ['cortex-debug', cortexDebugFilter],
+const pluginMappers = new Map<string, PluginContributionMapper>([
+  ['cortex-debug', cortexDebugMapper],
 ]);

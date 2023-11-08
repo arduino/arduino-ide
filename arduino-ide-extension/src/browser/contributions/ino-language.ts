@@ -20,26 +20,83 @@ import { NotificationCenter } from '../notification-center';
 import { SketchContribution, URI } from './contribution';
 import { BoardsDataStore } from '../boards/boards-data-store';
 
+interface DaemonAddress {
+  /**
+   * The host where the Arduino CLI daemon is available.
+   */
+  readonly hostname: string;
+  /**
+   * The port where the Arduino CLI daemon is listening.
+   */
+  readonly port: number;
+  /**
+   * The [id](https://arduino.github.io/arduino-cli/latest/rpc/commands/#instance) of the initialized core Arduino client instance.
+   */
+  readonly instance: number;
+}
+
+interface StartLanguageServerParams {
+  /**
+   * Absolute filesystem path to the Arduino Language Server executable.
+   */
+  readonly lsPath: string;
+  /**
+   * The hostname and the port for the gRPC channel connecting to the Arduino CLI daemon.
+   * The `instance` number is for the initialized core Arduino client.
+   */
+  readonly daemonAddress: DaemonAddress;
+  /**
+   * Absolute filesystem path to [`clangd`](https://clangd.llvm.org/).
+   */
+  readonly clangdPath: string;
+  /**
+   * The board is relevant to start a specific "flavor" of the language.
+   */
+  readonly board: { fqbn: string; name?: string };
+  /**
+   * `true` if the LS should generate the log files into the default location. The default location is the `cwd` of the process.
+   * It's very often the same as the workspace root of the IDE, aka the sketch folder.
+   * When it is a string, it is the absolute filesystem path to the folder to generate the log files.
+   * If `string`, but the path is inaccessible, the log files will be generated into the default location.
+   */
+  readonly log?: boolean | string;
+  /**
+   * Optional `env` for the language server process.
+   */
+  readonly env?: NodeJS.ProcessEnv;
+  /**
+   * Additional flags for the Arduino Language server process.
+   */
+  readonly flags?: readonly string[];
+  /**
+   * Set to `true`, to enable `Diagnostics`.
+   */
+  readonly realTimeDiagnostics?: boolean;
+  /**
+   * If `true`, the logging is not forwarded to the _Output_ view via the language client.
+   */
+  readonly silentOutput?: boolean;
+}
+
+/**
+ * The FQBN the language server runs with or `undefined` if it could not start.
+ */
+type StartLanguageServerResult = string | undefined;
+
 @injectable()
 export class InoLanguage extends SketchContribution {
   @inject(HostedPluginEvents)
   private readonly hostedPluginEvents: HostedPluginEvents;
-
   @inject(ExecutableService)
   private readonly executableService: ExecutableService;
-
   @inject(ArduinoDaemon)
   private readonly daemon: ArduinoDaemon;
-
   @inject(BoardsService)
   private readonly boardsService: BoardsService;
-
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
-
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
-
   @inject(BoardsDataStore)
   private readonly boardDataStore: BoardsDataStore;
 
@@ -129,6 +186,10 @@ export class InoLanguage extends SketchContribution {
     if (!port) {
       return;
     }
+    const portNumber = Number.parseInt(port, 10); // TODO: IDE2 APIs should provide a number and not string
+    if (Number.isNaN(portNumber)) {
+      return;
+    }
     const release = await this.languageServerStartMutex.acquire();
     const toDisposeOnRelease = new DisposableCollection();
     try {
@@ -197,22 +258,22 @@ export class InoLanguage extends SketchContribution {
           );
           toDisposeOnRelease.push(Disposable.create(() => clearTimeout(timer)));
         }),
-        this.commandService.executeCommand<string>(
-          'arduino.languageserver.start',
-          {
-            lsPath,
-            cliDaemonAddr: `localhost:${port}`,
-            clangdPath,
-            log: currentSketchPath ? currentSketchPath : log,
-            cliDaemonInstance: '1',
-            board: {
-              fqbn: fqbnWithConfig,
-              name: name ? `"${name}"` : undefined,
-            },
-            realTimeDiagnostics,
-            silentOutput: true,
-          }
-        ),
+        this.start({
+          lsPath,
+          daemonAddress: {
+            hostname: 'localhost',
+            port: portNumber,
+            instance: 1, // TODO: get it from the backend
+          },
+          clangdPath,
+          log: currentSketchPath ? currentSketchPath : log,
+          board: {
+            fqbn: fqbnWithConfig,
+            name,
+          },
+          realTimeDiagnostics,
+          silentOutput: true,
+        }),
       ]);
     } catch (e) {
       console.log(`Failed to start language server. Original FQBN: ${fqbn}`, e);
@@ -221,5 +282,14 @@ export class InoLanguage extends SketchContribution {
       toDisposeOnRelease.dispose();
       release();
     }
+  }
+
+  private async start(
+    params: StartLanguageServerParams
+  ): Promise<StartLanguageServerResult | undefined> {
+    return this.commandService.executeCommand<StartLanguageServerResult>(
+      'arduino.languageserver.start',
+      params
+    );
   }
 }

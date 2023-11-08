@@ -146,6 +146,7 @@
       "processing": "Processing",
       "recommended": "Recommended",
       "retired": "Retired",
+      "selectManually": "Select Manually",
       "selectedOn": "on {0}",
       "serialMonitor": "Serial Monitor",
       "type": "Type",
@@ -209,8 +210,10 @@
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
+      "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platform is not installed for '{0}'",
       "optimizeForDebugging": "Optimize for Debugging",
+      "programmerNotSelected": "The debugger requires a programmer. Do you want to select a programmer? You can select it manually from the Tools > Programmer menu.",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "developer": {
@@ -413,6 +416,7 @@
         "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
       }
     },
+    "quickSelectProgrammer": "Type the programmer. Press Enter to confirm or Escape to cancel.",
     "renameCloudSketch": {
       "renameSketchTitle": "New name of the Cloud Sketch"
     },

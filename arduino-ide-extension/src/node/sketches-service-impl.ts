@@ -555,12 +555,12 @@ export class SketchesServiceImpl
     return destinationUri;
   }
 
-  async getIdeTempFolderUri(sketch: Sketch): Promise<string> {
+  async getIdeTempFolderUri(sketch: SketchRef): Promise<string> {
     const genBuildPath = await this.getIdeTempFolderPath(sketch);
     return FileUri.create(genBuildPath).toString();
   }
 
-  private async getIdeTempFolderPath(sketch: Sketch): Promise<string> {
+  private async getIdeTempFolderPath(sketch: SketchRef): Promise<string> {
     const sketchPath = FileUri.fsPath(sketch.uri);
     await fs.readdir(sketchPath); // Validates the sketch folder and rejects if not accessible.
     const suffix = crypto.createHash('md5').update(sketchPath).digest('hex');

@@ -1,44 +1,44 @@
-import debounce from 'p-debounce';
-import { inject, injectable } from '@theia/core/shared/inversify';
-import URI from '@theia/core/lib/common/uri';
-import { Event, Emitter } from '@theia/core/lib/common/event';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { DebugConfiguration } from '@theia/debug/lib/common/debug-common';
-import { DebugConfigurationModel as TheiaDebugConfigurationModel } from '@theia/debug/lib/browser/debug-configuration-model';
+import { Disposable } from '@theia/core/lib/common/disposable';
+import { Emitter, Event } from '@theia/core/lib/common/event';
+import URI from '@theia/core/lib/common/uri';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
+import { DebugConfigurationModel as TheiaDebugConfigurationModel } from '@theia/debug/lib/browser/debug-configuration-model';
+import { DebugConfiguration } from '@theia/debug/lib/common/debug-common';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import {
+  FileOperationError,
+  FileOperationResult,
+} from '@theia/filesystem/lib/common/files';
+import debounce from 'p-debounce';
 import { SketchesService } from '../../../common/protocol';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../../sketches-service-client-impl';
+import { maybeUpdateReadOnlyState } from '../monaco/monaco-editor-provider';
 import { DebugConfigurationModel } from './debug-configuration-model';
-import {
-  FileOperationError,
-  FileOperationResult,
-} from '@theia/filesystem/lib/common/files';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
 
 @injectable()
 export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
   @inject(SketchesService)
-  protected readonly sketchesService: SketchesService;
-
+  private readonly sketchesService: SketchesService;
   @inject(SketchesServiceClientImpl)
-  protected readonly sketchesServiceClient: SketchesServiceClientImpl;
-
+  private readonly sketchesServiceClient: SketchesServiceClientImpl;
   @inject(FrontendApplicationStateService)
-  protected readonly appStateService: FrontendApplicationStateService;
-
+  private readonly appStateService: FrontendApplicationStateService;
   @inject(FileService)
-  protected readonly fileService: FileService;
+  private readonly fileService: FileService;
 
-  protected onTempContentDidChangeEmitter =
+  private onTempContentDidChangeEmitter =
     new Emitter<TheiaDebugConfigurationModel.JsonContent>();
   get onTempContentDidChange(): Event<TheiaDebugConfigurationModel.JsonContent> {
     return this.onTempContentDidChangeEmitter.event;
   }
 
   protected override async doInit(): Promise<void> {
+    this.watchLaunchConfigEditor();
     this.appStateService.reachedState('ready').then(async () => {
       const tempContent = await this.getTempLaunchJsonContent();
       if (!tempContent) {
@@ -73,6 +73,19 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
       this.updateModels();
     });
     return super.doInit();
+  }
+
+  /**
+   * Sets a listener on current sketch change, and maybe updates the readonly state of the editor showing the debug configuration. aka the `launch.json`.
+   */
+  private watchLaunchConfigEditor(): Disposable {
+    return this.sketchesServiceClient.onCurrentSketchDidChange(() => {
+      for (const widget of this.editorManager.all) {
+        maybeUpdateReadOnlyState(widget, (uri) =>
+          this.sketchesServiceClient.isReadOnly(uri)
+        );
+      }
+    });
   }
 
   protected override updateModels = debounce(async () => {
@@ -111,7 +124,7 @@ export class DebugConfigurationManager extends TheiaDebugConfigurationManager {
     this.updateCurrent();
   }, 500);
 
-  protected async getTempLaunchJsonContent(): Promise<
+  private async getTempLaunchJsonContent(): Promise<
     (TheiaDebugConfigurationModel.JsonContent & { uri: URI }) | URI | undefined
   > {
     const sketch = await this.sketchesServiceClient.currentSketch();

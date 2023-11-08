@@ -4,12 +4,15 @@ import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone } from '@theia/core/lib/common/objects';
+import type { Mutable } from '@theia/core/lib/common/types';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import {
   BoardDetails,
   BoardsService,
   ConfigOption,
+  ConfigValue,
   Programmer,
+  isProgrammer,
 } from '../../common/protocol';
 import { notEmpty } from '../../common/utils';
 import { NotificationCenter } from '../notification-center';
@@ -43,7 +46,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
           const key = this.getStorageKey(fqbn);
           let data = await this.storageService.getData<ConfigOption[]>(key);
           if (!data || !data.length) {
-            const details = await this.getBoardDetailsSafe(fqbn);
+            const details = await this.loadBoardDetails(fqbn);
             if (details) {
               data = details.configOptions;
               if (data.length) {
@@ -91,7 +94,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       return data;
     }
 
-    const boardDetails = await this.getBoardDetailsSafe(fqbn);
+    const boardDetails = await this.loadBoardDetails(fqbn);
     if (!boardDetails) {
       return BoardsDataStore.Data.EMPTY;
     }
@@ -99,6 +102,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     data = {
       configOptions: boardDetails.configOptions,
       programmers: boardDetails.programmers,
+      selectedProgrammer: boardDetails.programmers.find((p) => p.default),
     };
     await this.storageService.setData(key, data);
     return data;
@@ -142,11 +146,12 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
     let updated = false;
     for (const value of configOption.values) {
-      if (value.value === selectedValue) {
-        (value as any).selected = true;
+      const mutable: Mutable<ConfigValue> = value;
+      if (mutable.value === selectedValue) {
+        mutable.selected = true;
         updated = true;
       } else {
-        (value as any).selected = false;
+        mutable.selected = false;
       }
     }
     if (!updated) {
@@ -172,9 +177,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     return `.arduinoIDE-configOptions-${fqbn}`;
   }
 
-  protected async getBoardDetailsSafe(
-    fqbn: string
-  ): Promise<BoardDetails | undefined> {
+  async loadBoardDetails(fqbn: string): Promise<BoardDetails | undefined> {
     try {
       const details = this.boardsService.getBoardDetails({ fqbn });
       return details;
@@ -213,14 +216,23 @@ export namespace BoardsDataStore {
       configOptions: [],
       programmers: [],
     };
-    export function is(arg: any): arg is Data {
+    export function is(arg: unknown): arg is Data {
       return (
-        !!arg &&
-        'configOptions' in arg &&
-        Array.isArray(arg['configOptions']) &&
-        'programmers' in arg &&
-        Array.isArray(arg['programmers'])
+        typeof arg === 'object' &&
+        arg !== null &&
+        Array.isArray((<Data>arg).configOptions) &&
+        Array.isArray((<Data>arg).programmers) &&
+        ((<Data>arg).selectedProgrammer === undefined ||
+          isProgrammer((<Data>arg).selectedProgrammer))
       );
     }
   }
+}
+
+export function isEmptyData(data: BoardsDataStore.Data): boolean {
+  return (
+    Boolean(!data.configOptions.length) &&
+    Boolean(!data.programmers.length) &&
+    Boolean(!data.selectedProgrammer)
+  );
 }
