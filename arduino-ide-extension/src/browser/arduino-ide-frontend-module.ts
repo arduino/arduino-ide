@@ -1,5 +1,5 @@
 import '../../src/browser/style/index.css';
-import { ContainerModule } from '@theia/core/shared/inversify';
+import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { WidgetFactory } from '@theia/core/lib/browser/widget-manager';
 import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
@@ -361,6 +361,16 @@ import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } fro
 import { SelectionService } from '@theia/core/lib/common/selection-service';
 import { CommandService } from '@theia/core/lib/common/command';
 import { CorePreferences } from '@theia/core/lib/browser/core-preferences';
+import { AutoSelectProgrammer } from './contributions/auto-select-programmer';
+import { HostedPluginSupport } from './hosted/hosted-plugin-support';
+import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
+import { DebugSessionManager } from './theia/debug/debug-session-manager';
+import { DebugWidget } from '@theia/debug/lib/browser/view/debug-widget';
+import { DebugViewModel } from '@theia/debug/lib/browser/view/debug-view-model';
+import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-widget';
+import { DebugConfigurationWidget } from './theia/debug/debug-configuration-widget';
+import { DebugConfigurationWidget as TheiaDebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
+import { DebugToolBar } from '@theia/debug/lib/browser/view/debug-toolbar-widget';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -756,6 +766,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, CreateCloudCopy);
   Contribution.configure(bind, UpdateArduinoState);
   Contribution.configure(bind, BoardsDataMenuUpdater);
+  Contribution.configure(bind, AutoSelectProgrammer);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
@@ -857,6 +868,28 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To be able to use a `launch.json` from outside of the workspace.
   bind(DebugConfigurationManager).toSelf().inSingletonScope();
   rebind(TheiaDebugConfigurationManager).toService(DebugConfigurationManager);
+  // To update the currently selected debug config <select> option when starting a debug session.
+  bind(DebugSessionManager).toSelf().inSingletonScope();
+  rebind(TheiaDebugSessionManager).toService(DebugSessionManager);
+  // Customized debug widget with its customized config <select> to update it programmatically.
+  bind(WidgetFactory)
+    .toDynamicValue(({ container }) => ({
+      id: DebugWidget.ID,
+      createWidget: () => {
+        const child = new Container({ defaultScope: 'Singleton' });
+        child.parent = container;
+        child.bind(DebugViewModel).toSelf();
+        child.bind(DebugToolBar).toSelf();
+        child.bind(DebugSessionWidget).toSelf();
+        child.bind(DebugConfigurationWidget).toSelf(); // with the patched select
+        child // use the customized one in the Theia DI
+          .bind(TheiaDebugConfigurationWidget)
+          .toService(DebugConfigurationWidget);
+        child.bind(DebugWidget).toSelf();
+        return child.get(DebugWidget);
+      },
+    }))
+    .inSingletonScope();
 
   // To avoid duplicate tabs use deepEqual instead of string equal: https://github.com/eclipse-theia/theia/issues/11309
   bind(WidgetManager).toSelf().inSingletonScope();

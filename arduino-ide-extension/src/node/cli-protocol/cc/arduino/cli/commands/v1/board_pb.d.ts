@@ -74,8 +74,6 @@ export class BoardDetailsResponse extends jspb.Message {
     getProgrammersList(): Array<cc_arduino_cli_commands_v1_common_pb.Programmer>;
     setProgrammersList(value: Array<cc_arduino_cli_commands_v1_common_pb.Programmer>): BoardDetailsResponse;
     addProgrammers(value?: cc_arduino_cli_commands_v1_common_pb.Programmer, index?: number): cc_arduino_cli_commands_v1_common_pb.Programmer;
-    getDebuggingSupported(): boolean;
-    setDebuggingSupported(value: boolean): BoardDetailsResponse;
     clearIdentificationPropertiesList(): void;
     getIdentificationPropertiesList(): Array<BoardIdentificationProperties>;
     setIdentificationPropertiesList(value: Array<BoardIdentificationProperties>): BoardDetailsResponse;
@@ -84,6 +82,8 @@ export class BoardDetailsResponse extends jspb.Message {
     getBuildPropertiesList(): Array<string>;
     setBuildPropertiesList(value: Array<string>): BoardDetailsResponse;
     addBuildProperties(value: string, index?: number): string;
+    getDefaultProgrammerId(): string;
+    setDefaultProgrammerId(value: string): BoardDetailsResponse;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardDetailsResponse.AsObject;
@@ -109,9 +109,9 @@ export namespace BoardDetailsResponse {
         toolsDependenciesList: Array<ToolsDependencies.AsObject>,
         configOptionsList: Array<ConfigOption.AsObject>,
         programmersList: Array<cc_arduino_cli_commands_v1_common_pb.Programmer.AsObject>,
-        debuggingSupported: boolean,
         identificationPropertiesList: Array<BoardIdentificationProperties.AsObject>,
         buildPropertiesList: Array<string>,
+        defaultProgrammerId: string,
     }
 }
 
@@ -488,8 +488,6 @@ export class BoardListWatchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardListWatchRequest;
-    getInterrupt(): boolean;
-    setInterrupt(value: boolean): BoardListWatchRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListWatchRequest.AsObject;
@@ -504,7 +502,6 @@ export class BoardListWatchRequest extends jspb.Message {
 export namespace BoardListWatchRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        interrupt: boolean,
     }
 }
 

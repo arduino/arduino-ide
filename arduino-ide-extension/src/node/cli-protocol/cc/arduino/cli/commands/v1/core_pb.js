@@ -368,7 +368,8 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.toObject = function(incl
     architecture: jspb.Message.getFieldWithDefault(msg, 3, ""),
     version: jspb.Message.getFieldWithDefault(msg, 4, ""),
     skipPostInstall: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
-    noOverwrite: jspb.Message.getBooleanFieldWithDefault(msg, 6, false)
+    noOverwrite: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+    skipPreUninstall: jspb.Message.getBooleanFieldWithDefault(msg, 7, false)
   };
 
   if (includeInstance) {
@@ -429,6 +430,10 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.deserializeBinaryFromRea
     case 6:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setNoOverwrite(value);
+      break;
+    case 7:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkipPreUninstall(value);
       break;
     default:
       reader.skipField();
@@ -499,6 +504,13 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.serializeBinaryToWriter 
   if (f) {
     writer.writeBool(
       6,
+      f
+    );
+  }
+  f = message.getSkipPreUninstall();
+  if (f) {
+    writer.writeBool(
+      7,
       f
     );
   }
@@ -629,6 +641,24 @@ proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.getNoOverwrite
  */
 proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.setNoOverwrite = function(value) {
   return jspb.Message.setProto3BooleanField(this, 6, value);
+};
+
+
+/**
+ * optional bool skip_pre_uninstall = 7;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.getSkipPreUninstall = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 7, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.PlatformInstallRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.PlatformInstallRequest.prototype.setSkipPreUninstall = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 7, value);
 };
 
 
@@ -1361,7 +1391,8 @@ proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.toObject = function(in
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     platformPackage: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    architecture: jspb.Message.getFieldWithDefault(msg, 3, "")
+    architecture: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    skipPreUninstall: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -1411,6 +1442,10 @@ proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.deserializeBinaryFromR
       var value = /** @type {string} */ (reader.readString());
       msg.setArchitecture(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkipPreUninstall(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1459,6 +1494,13 @@ proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.serializeBinaryToWrite
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getSkipPreUninstall();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -1535,6 +1577,24 @@ proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.prototype.getArchitect
  */
 proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.prototype.setArchitecture = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool skip_pre_uninstall = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.prototype.getSkipPreUninstall = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.PlatformUninstallRequest.prototype.setSkipPreUninstall = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
@@ -1825,7 +1885,8 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.toObject = function(incl
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     platformPackage: jspb.Message.getFieldWithDefault(msg, 2, ""),
     architecture: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    skipPostInstall: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
+    skipPostInstall: jspb.Message.getBooleanFieldWithDefault(msg, 4, false),
+    skipPreUninstall: jspb.Message.getBooleanFieldWithDefault(msg, 5, false)
   };
 
   if (includeInstance) {
@@ -1878,6 +1939,10 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.deserializeBinaryFromRea
     case 4:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSkipPostInstall(value);
+      break;
+    case 5:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSkipPreUninstall(value);
       break;
     default:
       reader.skipField();
@@ -1934,6 +1999,13 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.serializeBinaryToWriter 
   if (f) {
     writer.writeBool(
       4,
+      f
+    );
+  }
+  f = message.getSkipPreUninstall();
+  if (f) {
+    writer.writeBool(
+      5,
       f
     );
   }
@@ -2028,6 +2100,24 @@ proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.prototype.getSkipPostIns
  */
 proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.prototype.setSkipPostInstall = function(value) {
   return jspb.Message.setProto3BooleanField(this, 4, value);
+};
+
+
+/**
+ * optional bool skip_pre_uninstall = 5;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.prototype.getSkipPreUninstall = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 5, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.PlatformUpgradeRequest.prototype.setSkipPreUninstall = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 5, value);
 };
 
 

@@ -195,6 +195,23 @@ export namespace Programmer {
     }
 }
 
+export class MissingProgrammerError extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MissingProgrammerError.AsObject;
+    static toObject(includeInstance: boolean, msg: MissingProgrammerError): MissingProgrammerError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MissingProgrammerError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MissingProgrammerError;
+    static deserializeBinaryFromReader(message: MissingProgrammerError, reader: jspb.BinaryReader): MissingProgrammerError;
+}
+
+export namespace MissingProgrammerError {
+    export type AsObject = {
+    }
+}
+
 export class Platform extends jspb.Message { 
     getId(): string;
     setId(value: string): Platform;

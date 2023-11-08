@@ -67,6 +67,7 @@ export class SketchesServiceClientImpl
   );
 
   private _currentSketch: CurrentSketch | undefined;
+  private _currentIdeTempFolderUri: URI | undefined;
   private currentSketchLoaded = new Deferred<CurrentSketch>();
 
   onStart(): void {
@@ -74,7 +75,10 @@ export class SketchesServiceClientImpl
     this.watchSketchbookDir(sketchDirUri);
     const refreshCurrentSketch = async () => {
       const currentSketch = await this.loadCurrentSketch();
-      this.useCurrentSketch(currentSketch);
+      const ideTempFolderUri = await this.getIdeTempFolderUriForSketch(
+        currentSketch
+      );
+      this.useCurrentSketch(currentSketch, ideTempFolderUri);
     };
     this.toDispose.push(
       this.configService.onDidChangeSketchDirUri((sketchDirUri) => {
@@ -141,7 +145,10 @@ export class SketchesServiceClientImpl
             }
 
             if (!Sketch.sameAs(this._currentSketch, reloadedSketch)) {
-              this.useCurrentSketch(reloadedSketch, true);
+              const ideTempFolderUri = await this.getIdeTempFolderUriForSketch(
+                reloadedSketch
+              );
+              this.useCurrentSketch(reloadedSketch, ideTempFolderUri, true);
             }
             return;
           }
@@ -179,11 +186,23 @@ export class SketchesServiceClientImpl
     ]);
   }
 
+  private async getIdeTempFolderUriForSketch(
+    sketch: CurrentSketch
+  ): Promise<URI | undefined> {
+    if (CurrentSketch.isValid(sketch)) {
+      const uri = await this.sketchesService.getIdeTempFolderUri(sketch);
+      return new URI(uri);
+    }
+    return undefined;
+  }
+
   private useCurrentSketch(
     currentSketch: CurrentSketch,
+    ideTempFolderUri: URI | undefined,
     reassignPromise = false
   ) {
     this._currentSketch = currentSketch;
+    this._currentIdeTempFolderUri = ideTempFolderUri;
     if (reassignPromise) {
       this.currentSketchLoaded = new Deferred();
     }
@@ -270,6 +289,14 @@ export class SketchesServiceClientImpl
   isReadOnly(uri: URI | monaco.Uri | string): boolean {
     const toCheck = uri instanceof URI ? uri : new URI(uri);
     if (toCheck.scheme === 'user-storage') {
+      return false;
+    }
+
+    if (
+      this._currentIdeTempFolderUri &&
+      this._currentIdeTempFolderUri.resolve('launch.json').toString() ===
+        toCheck.toString()
+    ) {
       return false;
     }
 

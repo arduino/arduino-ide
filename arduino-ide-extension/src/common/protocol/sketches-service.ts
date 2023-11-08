@@ -121,7 +121,7 @@ export interface SketchesService {
    * Hence, IDE2 has to provide multiple build paths on Windows. This hack will be obsolete when the CLI can provide error codes:
    * https://github.com/arduino/arduino-cli/issues/1762.
    */
-  tempBuildPath(sketch: Sketch): Promise<string[]>;
+  tempBuildPath(sketch: SketchRef): Promise<string[]>;
 }
 
 export interface SketchRef {
@@ -308,7 +308,7 @@ export namespace Sketch {
   export namespace Extensions {
     export const DEFAULT = '.ino';
     export const MAIN = [DEFAULT, '.pde'];
-    export const SOURCE = ['.c', '.cpp', '.S'];
+    export const SOURCE = ['.c', '.cpp', '.S', '.cxx', '.cc'];
     export const CODE_FILES = [
       ...MAIN,
       ...SOURCE,

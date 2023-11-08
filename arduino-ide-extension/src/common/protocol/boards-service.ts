@@ -80,6 +80,22 @@ export interface BoardsService
     fqbn: string;
     protocol: string;
   }): Promise<BoardUserField[]>;
+  /**
+   * Checks whether the debugging is enabled with the FQBN, programmer, current sketch, and custom board options.
+   *
+   * When the debugging is enabled, the promise resolves with the FQBN to use with the debugger. This is the same
+   * FQBN given in the `CheckDebugEnabledParams#fqbn` but cleaned up of the board options that do not affect the debugger configuration.
+   * It may be used by clients/IDE to group slightly different boards option selections under the same debug configuration.
+   */
+  checkDebugEnabled(params: CheckDebugEnabledParams): Promise<string>;
+}
+
+export interface CheckDebugEnabledParams {
+  /**
+   * The FQBN might contain custom board config options. For example, `arduino:esp32:nano_nora:USBMode=hwcdc,option2=value2`.
+   */
+  readonly fqbn: string;
+  readonly programmer: string;
 }
 
 export interface BoardSearch extends Searchable.Options {
@@ -330,10 +346,10 @@ export interface BoardDetails {
   readonly requiredTools: Tool[];
   readonly configOptions: ConfigOption[];
   readonly programmers: Programmer[];
-  readonly debuggingSupported: boolean;
   readonly VID: string;
   readonly PID: string;
   readonly buildProperties: string[];
+  readonly defaultProgrammerId?: string;
 }
 
 export interface Tool {
@@ -424,6 +440,18 @@ export namespace Programmer {
       left.platform === right.platform
     );
   }
+}
+export function isProgrammer(arg: unknown): arg is Programmer {
+  return (
+    typeof arg === 'object' &&
+    arg !== null &&
+    (<Programmer>arg).id !== undefined &&
+    typeof (<Programmer>arg).id === 'string' &&
+    (<Programmer>arg).name !== undefined &&
+    typeof (<Programmer>arg).name === 'string' &&
+    (<Programmer>arg).platform !== undefined &&
+    typeof (<Programmer>arg).platform === 'string'
+  );
 }
 
 export namespace Board {

@@ -139,6 +139,7 @@
       "installManually": "Install Manually",
       "later": "Later",
       "noBoardSelected": "No board selected",
+      "noSketchOpened": "No sketch opened",
       "notConnected": "[not connected]",
       "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
       "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
@@ -146,6 +147,7 @@
       "processing": "Processing",
       "recommended": "Recommended",
       "retired": "Retired",
+      "selectManually": "Select Manually",
       "selectedOn": "on {0}",
       "serialMonitor": "Serial Monitor",
       "type": "Type",
@@ -209,7 +211,9 @@
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
+      "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platform is not installed for '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
