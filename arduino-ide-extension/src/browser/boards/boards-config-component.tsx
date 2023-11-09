@@ -48,16 +48,17 @@ namespace BoardsConfigComponent {
   }
 }
 
-export abstract class Item<T> extends React.Component<{
+class Item<T> extends React.Component<{
   item: T;
   label: string;
   selected: boolean;
   onClick: (item: T) => void;
   missing?: boolean;
   details?: string;
+  title?: string | ((item: T) => string);
 }> {
   override render(): React.ReactNode {
-    const { selected, label, missing, details } = this.props;
+    const { selected, label, missing, details, item } = this.props;
     const classNames = ['item'];
     if (selected) {
       classNames.push('selected');
@@ -65,11 +66,15 @@ export abstract class Item<T> extends React.Component<{
     if (missing === true) {
       classNames.push('missing');
     }
+    let title = this.props.title ?? `${label}${!details ? '' : details}`;
+    if (typeof title === 'function') {
+      title = title(item);
+    }
     return (
       <div
         onClick={this.onClick}
         className={classNames.join(' ')}
-        title={`${label}${!details ? '' : details}`}
+        title={title}
       >
         <div className="label">{label}</div>
         {!details ? '' : <div className="details">{details}</div>}
@@ -234,9 +239,20 @@ export class BoardsConfigComponent extends React.Component<
         distinctBoards.set(key, board);
       }
     }
+    const title = (board: Board.Detailed): string => {
+      const { details, manuallyInstalled } = board;
+      let label = board.name;
+      if (details) {
+        label += details;
+      }
+      if (manuallyInstalled) {
+        label += nls.localize('arduino/board/inSketchbook', ' (in Sketchbook)');
+      }
+      return label;
+    };
 
     const boardsList = Array.from(distinctBoards.values()).map((board) => (
-      <Item<BoardWithPackage>
+      <Item<Board.Detailed>
         key={toKey(board)}
         item={board}
         label={board.name}
@@ -244,6 +260,7 @@ export class BoardsConfigComponent extends React.Component<
         selected={board.selected}
         onClick={this.selectBoard}
         missing={board.missing}
+        title={title}
       />
     ));
 
