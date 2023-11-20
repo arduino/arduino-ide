@@ -44,7 +44,7 @@
   "scripts": {
     "prepare": "theia download:plugins",
     "prebuild": "rimraf lib",
-    "build": "theia build",
+    "build": "theia build --mode development",
     "prebuild:dev": "yarn prebuild",
     "build:dev": "theia build --config webpack.dev.js --mode development",
     "test": "mocha \"./test/**/*.test.js\"",
