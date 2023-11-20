@@ -16,8 +16,8 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import { isObject, MaybePromise, Mutable } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import {
-  ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainExecutionParams,
+  ElectronMainApplication as TheiaElectronMainApplication,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import type { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
 import { FileUri } from '@theia/core/lib/node/file-uri';
@@ -25,7 +25,7 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { URI } from '@theia/core/shared/vscode-uri';
 import { log as logToFile, setup as setupFileLog } from 'node-log-rotate';
 import { fork } from 'node:child_process';
-import { promises as fs, rm, rmSync } from 'node:fs';
+import { promises as fs, readFileSync, rm, rmSync } from 'node:fs';
 import type { AddressInfo } from 'node:net';
 import { isAbsolute, join, resolve } from 'node:path';
 import { Sketch } from '../../common/protocol';
@@ -745,6 +745,19 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       }
     }
   }
+
+  // Fallback app config when starting IDE2 from an ino file (from Explorer, Finder, etc.) and the app config is not yet set.
+  // https://github.com/arduino/arduino-ide/issues/2209
+  private _fallbackConfig: FrontendApplicationConfig | undefined;
+  override get config(): FrontendApplicationConfig {
+    if (!this._config) {
+      if (!this._fallbackConfig) {
+        this._fallbackConfig = readFrontendAppConfigSync();
+      }
+      return this._fallbackConfig;
+    }
+    return super.config;
+  }
 }
 
 class InterruptWorkspaceRestoreError extends Error {
@@ -775,11 +788,8 @@ async function updateFrontendApplicationConfigFromPackageJson(
     return config;
   }
   try {
-    const modulePath = __filename;
-    // must go from `./lib/backend/electron-main.js` to `./package.json` when the app is webpacked.
-    const packageJsonPath = join(modulePath, '..', '..', '..', 'package.json');
     console.debug(
-      `Checking for frontend application configuration customizations. Module path: ${modulePath}, destination 'package.json': ${packageJsonPath}`
+      `Checking for frontend application configuration customizations. Module path: ${__filename}, destination 'package.json': ${packageJsonPath}`
     );
     const rawPackageJson = await fs.readFile(packageJsonPath, {
       encoding: 'utf8',
@@ -825,6 +835,46 @@ async function updateFrontendApplicationConfigFromPackageJson(
     );
   }
   return config;
+}
+
+const fallbackFrontendAppConfig: FrontendApplicationConfig = {
+  applicationName: 'Arduino IDE',
+  defaultTheme: {
+    light: 'arduino-theme',
+    dark: 'arduino-theme-dark',
+  },
+  defaultIconTheme: 'none',
+  validatePreferencesSchema: false,
+  defaultLocale: '',
+  electron: {},
+};
+
+// When the package.json must go from `./lib/backend/electron-main.js` to `./package.json` when the app is webpacked.
+// Only for production mode!
+const packageJsonPath = join(__filename, '..', '..', '..', 'package.json');
+
+function readFrontendAppConfigSync(): FrontendApplicationConfig {
+  if (environment.electron.isDevMode()) {
+    console.debug(
+      'Running in dev mode. Using the fallback fronted application config.'
+    );
+    return fallbackFrontendAppConfig;
+  }
+  try {
+    const raw = readFileSync(packageJsonPath, { encoding: 'utf8' });
+    const packageJson = JSON.parse(raw);
+    const config = packageJson?.theia?.frontend?.config;
+    if (config) {
+      return config;
+    }
+    throw new Error(`Frontend application config not found. ${packageJson}`);
+  } catch (err) {
+    console.error(
+      `Could not read package.json content from ${packageJsonPath}.`,
+      err
+    );
+    return fallbackFrontendAppConfig;
+  }
 }
 
 /**
