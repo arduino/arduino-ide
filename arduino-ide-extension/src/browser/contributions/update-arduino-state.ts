@@ -65,10 +65,13 @@ export class UpdateArduinoState extends SketchContribution {
           this.updateCompileSummary(args[0]);
         }
       }),
-      this.boardsDataStore.onChanged((fqbn) => {
+      this.boardsDataStore.onDidChange((event) => {
         const selectedFqbn =
           this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn;
-        if (selectedFqbn && fqbn.includes(selectedFqbn)) {
+        if (
+          selectedFqbn &&
+          event.changes.find((change) => change.fqbn === selectedFqbn)
+        ) {
           this.updateBoardDetails(selectedFqbn);
         }
       }),

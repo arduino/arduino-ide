@@ -454,6 +454,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // To be able to track, and update the menu based on the core settings (aka. board details) of the currently selected board.
   bind(BoardsDataStore).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(BoardsDataStore);
+  bind(CommandContribution).toService(BoardsDataStore);
+  bind(StartupTaskProvider).toService(BoardsDataStore); // to inherit the boards config options, programmer, etc in a new window
+
   // Logger for the Arduino daemon
   bind(ILogger)
     .toDynamicValue((ctx) => {
