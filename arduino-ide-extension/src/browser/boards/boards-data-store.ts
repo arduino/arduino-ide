@@ -1,21 +1,38 @@
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { StorageService } from '@theia/core/lib/browser/storage-service';
+import type {
+  Command,
+  CommandContribution,
+  CommandRegistry,
+} from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
-import { deepClone } from '@theia/core/lib/common/objects';
+import { deepClone, deepFreeze } from '@theia/core/lib/common/objects';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import {
   BoardDetails,
   BoardsService,
   ConfigOption,
   Programmer,
+  isBoardIdentifierChangeEvent,
 } from '../../common/protocol';
 import { notEmpty } from '../../common/utils';
+import type {
+  StartupTask,
+  StartupTaskProvider,
+} from '../../electron-common/startup-task';
 import { NotificationCenter } from '../notification-center';
+import { BoardsServiceProvider } from './boards-service-provider';
 
 @injectable()
-export class BoardsDataStore implements FrontendApplicationContribution {
+export class BoardsDataStore
+  implements
+    FrontendApplicationContribution,
+    StartupTaskProvider,
+    CommandContribution
+{
   @inject(ILogger)
   @named('store')
   private readonly logger: ILogger;
@@ -28,44 +45,110 @@ export class BoardsDataStore implements FrontendApplicationContribution {
   // In other words, store the data (such as the board configs) per sketch, not per IDE2 installation. https://github.com/arduino/arduino-ide/issues/2240
   @inject(StorageService)
   private readonly storageService: StorageService;
+  @inject(BoardsServiceProvider)
+  private readonly boardsServiceProvider: BoardsServiceProvider;
+  @inject(FrontendApplicationStateService)
+  private readonly appStateService: FrontendApplicationStateService;
 
-  private readonly onChangedEmitter = new Emitter<string[]>();
-  private readonly toDispose = new DisposableCollection(this.onChangedEmitter);
+  private readonly onDidChangeEmitter =
+    new Emitter<BoardsDataStoreChangeEvent>();
+  private readonly toDispose = new DisposableCollection(
+    this.onDidChangeEmitter
+  );
+  private _selectedBoardData: BoardsDataStoreChange | undefined;
 
   onStart(): void {
-    this.toDispose.push(
+    this.toDispose.pushAll([
+      this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
+        if (isBoardIdentifierChangeEvent(event)) {
+          this.updateSelectedBoardData(event.selectedBoard?.fqbn);
+        }
+      }),
       this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
-        const dataDidChangePerFqbn: string[] = [];
-        for (const fqbn of item.boards
+        const boardsWithFqbn = item.boards
           .map(({ fqbn }) => fqbn)
-          .filter(notEmpty)
-          .filter((fqbn) => !!fqbn)) {
+          .filter(notEmpty);
+        const changes: BoardsDataStoreChange[] = [];
+        for (const fqbn of boardsWithFqbn) {
           const key = this.getStorageKey(fqbn);
-          let data = await this.storageService.getData<ConfigOption[]>(key);
-          if (!data || !data.length) {
-            const details = await this.getBoardDetailsSafe(fqbn);
-            if (details) {
-              data = details.configOptions;
-              if (data.length) {
-                await this.storageService.setData(key, data);
-                dataDidChangePerFqbn.push(fqbn);
-              }
-            }
+          const storedData =
+            await this.storageService.getData<BoardsDataStore.Data>(key);
+          if (!storedData) {
+            // if not previously value is available for the board, do not update the cache
+            continue;
+          }
+          const details = await this.loadBoardDetails(fqbn);
+          if (details) {
+            const data = createDataStoreEntry(details);
+            await this.storageService.setData(key, data);
+            changes.push({ fqbn, data });
           }
         }
-        if (dataDidChangePerFqbn.length) {
-          this.fireChanged(...dataDidChangePerFqbn);
+        if (changes.length) {
+          this.fireChanged(...changes);
         }
-      })
+      }),
+    ]);
+
+    Promise.all([
+      this.boardsServiceProvider.ready,
+      this.appStateService.reachedState('ready'),
+    ]).then(() =>
+      this.updateSelectedBoardData(
+        this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn
+      )
     );
+  }
+
+  private async getSelectedBoardData(
+    fqbn: string | undefined
+  ): Promise<BoardsDataStoreChange | undefined> {
+    if (!fqbn) {
+      return undefined;
+    } else {
+      const data = await this.getData(fqbn);
+      if (data === BoardsDataStore.Data.EMPTY) {
+        return undefined;
+      }
+      return { fqbn, data };
+    }
+  }
+
+  private async updateSelectedBoardData(
+    fqbn: string | undefined
+  ): Promise<void> {
+    this._selectedBoardData = await this.getSelectedBoardData(fqbn);
   }
 
   onStop(): void {
     this.toDispose.dispose();
   }
 
-  get onChanged(): Event<string[]> {
-    return this.onChangedEmitter.event;
+  registerCommands(registry: CommandRegistry): void {
+    registry.registerCommand(USE_INHERITED_DATA, {
+      execute: async (arg: unknown) => {
+        if (isBoardsDataStoreChange(arg)) {
+          await this.setData(arg);
+          this.fireChanged(arg);
+        }
+      },
+    });
+  }
+
+  tasks(): StartupTask[] {
+    if (!this._selectedBoardData) {
+      return [];
+    }
+    return [
+      {
+        command: USE_INHERITED_DATA.id,
+        args: [this._selectedBoardData],
+      },
+    ];
+  }
+
+  get onDidChange(): Event<BoardsDataStoreChangeEvent> {
+    return this.onDidChangeEmitter.event;
   }
 
   async appendConfigToFqbn(
@@ -84,11 +167,11 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
 
     const key = this.getStorageKey(fqbn);
-    let data = await this.storageService.getData<
+    const storedData = await this.storageService.getData<
       BoardsDataStore.Data | undefined
     >(key, undefined);
-    if (BoardsDataStore.Data.is(data)) {
-      return data;
+    if (BoardsDataStore.Data.is(storedData)) {
+      return storedData;
     }
 
     const boardDetails = await this.getBoardDetailsSafe(fqbn);
@@ -96,10 +179,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       return BoardsDataStore.Data.EMPTY;
     }
 
-    data = {
-      configOptions: boardDetails.configOptions,
-      programmers: boardDetails.programmers,
-    };
+    const data = createDataStoreEntry(boardDetails);
     await this.storageService.setData(key, data);
     return data;
   }
@@ -111,17 +191,15 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     fqbn: string;
     selectedProgrammer: Programmer;
   }): Promise<boolean> {
-    const data = deepClone(await this.getData(fqbn));
-    const { programmers } = data;
+    const storedData = deepClone(await this.getData(fqbn));
+    const { programmers } = storedData;
     if (!programmers.find((p) => Programmer.equals(selectedProgrammer, p))) {
       return false;
     }
 
-    await this.setData({
-      fqbn,
-      data: { ...data, selectedProgrammer },
-    });
-    this.fireChanged(fqbn);
+    const data = { ...storedData, selectedProgrammer };
+    await this.setData({ fqbn, data });
+    this.fireChanged({ fqbn, data });
     return true;
   }
 
@@ -153,17 +231,12 @@ export class BoardsDataStore implements FrontendApplicationContribution {
       return false;
     }
     await this.setData({ fqbn, data });
-    this.fireChanged(fqbn);
+    this.fireChanged({ fqbn, data });
     return true;
   }
 
-  protected async setData({
-    fqbn,
-    data,
-  }: {
-    fqbn: string;
-    data: BoardsDataStore.Data;
-  }): Promise<void> {
+  protected async setData(change: BoardsDataStoreChange): Promise<void> {
+    const { fqbn, data } = change;
     const key = this.getStorageKey(fqbn);
     return this.storageService.setData(key, data);
   }
@@ -176,7 +249,7 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     fqbn: string
   ): Promise<BoardDetails | undefined> {
     try {
-      const details = this.boardsService.getBoardDetails({ fqbn });
+      const details = await this.boardsService.getBoardDetails({ fqbn });
       return details;
     } catch (err) {
       if (
@@ -197,8 +270,8 @@ export class BoardsDataStore implements FrontendApplicationContribution {
     }
   }
 
-  protected fireChanged(...fqbn: string[]): void {
-    this.onChangedEmitter.fire(fqbn);
+  protected fireChanged(...changes: BoardsDataStoreChange[]): void {
+    this.onDidChangeEmitter.fire({ changes });
   }
 }
 
@@ -209,11 +282,13 @@ export namespace BoardsDataStore {
     readonly selectedProgrammer?: Programmer;
   }
   export namespace Data {
-    export const EMPTY: Data = {
+    export const EMPTY: Data = deepFreeze({
       configOptions: [],
       programmers: [],
-    };
-    export function is(arg: any): arg is Data {
+      defaultProgrammerId: undefined,
+    });
+
+    export function is(arg: unknown): arg is Data {
       return (
         !!arg &&
         'configOptions' in arg &&
@@ -224,3 +299,61 @@ export namespace BoardsDataStore {
     }
   }
 }
+
+export function isEmptyData(data: BoardsDataStore.Data): boolean {
+  return (
+    Boolean(!data.configOptions.length) &&
+    Boolean(!data.programmers.length) &&
+    Boolean(!data.selectedProgrammer)
+  );
+}
+
+export function findDefaultProgrammer(
+  programmers: readonly Programmer[],
+  defaultProgrammerId: string | undefined | BoardsDataStore.Data
+): Programmer | undefined {
+  if (!defaultProgrammerId) {
+    return undefined;
+  }
+  const id =
+    typeof defaultProgrammerId === 'string'
+      ? defaultProgrammerId
+      : defaultProgrammerId.defaultProgrammerId;
+  return programmers.find((p) => p.id === id);
+}
+function createDataStoreEntry(details: BoardDetails): BoardsDataStore.Data {
+  const configOptions = details.configOptions.slice();
+  const programmers = details.programmers.slice();
+  const selectedProgrammer = findDefaultProgrammer(
+    programmers,
+    details.defaultProgrammerId
+  );
+  return {
+    configOptions,
+    programmers,
+    defaultProgrammerId: details.defaultProgrammerId,
+    selectedProgrammer,
+  };
+}
+
+export interface BoardsDataStoreChange {
+  readonly fqbn: string;
+  readonly data: BoardsDataStore.Data;
+}
+
+function isBoardsDataStoreChange(arg: unknown): arg is BoardsDataStoreChange {
+  return (
+    typeof arg === 'object' &&
+    arg !== null &&
+    typeof (<BoardsDataStoreChange>arg).fqbn === 'string' &&
+    BoardsDataStore.Data.is((<BoardsDataStoreChange>arg).data)
+  );
+}
+
+export interface BoardsDataStoreChangeEvent {
+  readonly changes: readonly BoardsDataStoreChange[];
+}
+
+const USE_INHERITED_DATA: Command = {
+  id: 'arduino-use-inherited-boards-data',
+};

@@ -90,7 +90,7 @@ export class InoLanguage extends SketchContribution {
       this.notificationCenter.onPlatformDidInstall(() => forceRestart()),
       this.notificationCenter.onPlatformDidUninstall(() => forceRestart()),
       this.notificationCenter.onDidReinitialize(() => forceRestart()),
-      this.boardDataStore.onChanged((dataChangePerFqbn) => {
+      this.boardDataStore.onDidChange((event) => {
         if (this.languageServerFqbn) {
           const sanitizedFqbn = sanitizeFqbn(this.languageServerFqbn);
           if (!sanitizeFqbn) {
@@ -98,13 +98,13 @@ export class InoLanguage extends SketchContribution {
               `Failed to sanitize the FQBN of the running language server. FQBN with the board settings was: ${this.languageServerFqbn}`
             );
           }
-          const matchingFqbn = dataChangePerFqbn.find(
-            (fqbn) => sanitizedFqbn === fqbn
+          const matchingChange = event.changes.find(
+            (change) => change.fqbn === sanitizedFqbn
           );
           const { boardsConfig } = this.boardsServiceProvider;
           if (
-            matchingFqbn &&
-            boardsConfig.selectedBoard?.fqbn === matchingFqbn
+            matchingChange &&
+            boardsConfig.selectedBoard?.fqbn === matchingChange.fqbn
           ) {
             start(boardsConfig.selectedBoard);
           }

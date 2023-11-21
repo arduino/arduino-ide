@@ -35,7 +35,7 @@ export class BoardsDataMenuUpdater extends Contribution {
   private readonly toDisposeOnBoardChange = new DisposableCollection();
 
   override onStart(): void {
-    this.boardsDataStore.onChanged(() =>
+    this.boardsDataStore.onDidChange(() =>
       this.updateMenuActions(
         this.boardsServiceProvider.boardsConfig.selectedBoard
       )
