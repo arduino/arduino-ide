@@ -69,6 +69,7 @@ export const CertificateUploaderComponent = ({
   const onItemSelect = React.useCallback(
     (item: BoardOptionValue | null) => {
       if (!item) {
+        setSelectedItem(null);
         return;
       }
       const board = item.board;

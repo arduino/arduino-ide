@@ -104,6 +104,7 @@ export const FirmwareUploaderComponent = ({
   const onItemSelect = React.useCallback(
     (item: BoardListItemWithBoard | null) => {
       if (!item) {
+        setSelectedItem(null);
         return;
       }
       const board = item.board;
