@@ -1,8 +1,9 @@
 import { nls } from '@theia/core/lib/common';
 import React from '@theia/core/shared/react';
-import type {
-  BoardList,
-  BoardListItemWithBoard,
+import {
+  boardListItemEquals,
+  type BoardList,
+  type BoardListItemWithBoard,
 } from '../../../common/protocol/board-list';
 import { ArduinoSelect } from '../../widgets/arduino-select';
 
@@ -75,7 +76,9 @@ export const SelectBoardComponent = ({
     setSelectOptions(boardOptions);
 
     if (selectedItem) {
-      selBoard = updatableBoards.indexOf(selectedItem);
+      selBoard = updatableBoards.findIndex((board) =>
+        boardListItemEquals(board, selectedItem)
+      );
     }
 
     selectOption(boardOptions[selBoard] || null);
