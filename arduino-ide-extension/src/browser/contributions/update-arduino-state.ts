@@ -21,7 +21,10 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { SketchContribution } from './contribution';
 
-interface UpdateStateParams<T extends ArduinoState> {
+/**
+ * (non-API) exported for tests
+ */
+export interface UpdateStateParams<T extends ArduinoState = ArduinoState> {
   readonly key: keyof T;
   readonly value: T[keyof T];
 }

@@ -39,6 +39,7 @@ import {
   uno,
   unoSerialPort,
 } from '../common/fixtures';
+import { bindBrowser } from './browser-test-bindings';
 
 disableJSDOM();
 
@@ -390,7 +391,7 @@ describe('board-service-provider', () => {
     const container = new Container({ defaultScope: 'Singleton' });
     container.load(
       new ContainerModule((bind, unbind, isBound, rebind) => {
-        bindCommon(bind);
+        bindBrowser(bind, unbind, isBound, rebind);
         bind(MessageService).toConstantValue(<MessageService>{});
         bind(BoardsService).toConstantValue(<BoardsService>{
           getDetectedPorts() {
