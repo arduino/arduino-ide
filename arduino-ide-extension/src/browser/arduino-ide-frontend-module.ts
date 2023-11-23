@@ -271,8 +271,8 @@ import { MonitorModel } from './monitor-model';
 import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { EditorManager } from './theia/editor/editor-manager';
-import { HostedPluginEvents } from './hosted-plugin-events';
-import { HostedPluginSupport } from './theia/plugin-ext/hosted-plugin';
+import { HostedPluginEvents } from './hosted/hosted-plugin-events';
+import { HostedPluginSupportImpl } from './theia/plugin-ext/hosted-plugin';
 import { HostedPluginSupport as TheiaHostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { Formatter, FormatterPath } from '../common/protocol/formatter';
 import { Format } from './contributions/format';
@@ -361,6 +361,7 @@ import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } fro
 import { SelectionService } from '@theia/core/lib/common/selection-service';
 import { CommandService } from '@theia/core/lib/common/command';
 import { CorePreferences } from '@theia/core/lib/browser/core-preferences';
+import { HostedPluginSupport } from './hosted/hosted-plugin-support';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -982,8 +983,9 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     })
     .inSingletonScope();
 
-  bind(HostedPluginSupport).toSelf().inSingletonScope();
-  rebind(TheiaHostedPluginSupport).toService(HostedPluginSupport);
+  bind(HostedPluginSupportImpl).toSelf().inSingletonScope();
+  bind(HostedPluginSupport).toService(HostedPluginSupportImpl);
+  rebind(TheiaHostedPluginSupport).toService(HostedPluginSupportImpl);
   bind(HostedPluginEvents).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(HostedPluginEvents);
 

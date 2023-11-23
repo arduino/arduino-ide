@@ -1,6 +1,6 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { Event, Emitter } from '@theia/core/lib/common/event';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { HostedPluginSupport } from '../hosted/hosted-plugin-support';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import { NotificationCenter } from '../notification-center';
 import {

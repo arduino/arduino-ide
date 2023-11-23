@@ -1,7 +1,7 @@
 import { DisposableCollection, Emitter, Event } from '@theia/core';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { HostedPluginSupport } from './theia/plugin-ext/hosted-plugin';
+import { HostedPluginSupport } from './hosted-plugin-support';
 
 /**
  * Frontend contribution to watch VS Code extension start/stop events from Theia.

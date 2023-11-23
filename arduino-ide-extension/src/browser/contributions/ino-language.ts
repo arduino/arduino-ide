@@ -15,7 +15,7 @@ import {
 } from '../../common/protocol';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { HostedPluginEvents } from '../hosted-plugin-events';
+import { HostedPluginEvents } from '../hosted/hosted-plugin-events';
 import { NotificationCenter } from '../notification-center';
 import { SketchContribution, URI } from './contribution';
 import { BoardsDataStore } from '../boards/boards-data-store';

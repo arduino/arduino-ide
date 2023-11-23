@@ -1,7 +1,7 @@
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import URI from '@theia/core/lib/common/uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { HostedPluginSupport } from '../hosted/hosted-plugin-support';
 import type { ArduinoState } from 'vscode-arduino-api';
 import {
   BoardsService,
