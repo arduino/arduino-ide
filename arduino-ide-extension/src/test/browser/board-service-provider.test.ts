@@ -15,7 +15,6 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
 import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { BoardsDataStore } from '../../browser/boards/boards-data-store';
@@ -31,7 +30,6 @@ import {
   PortIdentifierChangeEvent,
 } from '../../common/protocol/boards-service';
 import { NotificationServiceServer } from '../../common/protocol/notification-service';
-import { bindCommon, ConsoleLogger } from '../common/common-test-bindings';
 import {
   detectedPort,
   esp32S3DevModule,
@@ -414,11 +412,6 @@ describe('board-service-provider', () => {
         bind(WindowService).toConstantValue(<WindowService>{});
         bind(StorageService).toService(LocalStorageService);
         bind(BoardsServiceProvider).toSelf().inSingletonScope();
-        // IDE2's test console logger does not support `Loggable` arg.
-        // Rebind logger to suppress `[Function (anonymous)]` messages in tests when the storage service is initialized without `window.localStorage`.
-        // https://github.com/eclipse-theia/theia/blob/04c8cf07843ea67402131132e033cdd54900c010/packages/core/src/browser/storage-service.ts#L60
-        bind(MockLogger).toSelf().inSingletonScope();
-        rebind(ConsoleLogger).toService(MockLogger);
       })
     );
     return container;
