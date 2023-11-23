@@ -9,14 +9,25 @@ import { LogLevel } from '@theia/core/lib/common/logger-protocol';
 import { MockLogger } from '@theia/core/lib/common/test/mock-logger';
 import { injectable, interfaces } from '@theia/core/shared/inversify';
 
-export function bindCommon(bind: interfaces.Bind): interfaces.Bind {
+export interface Bind {
+  (
+    bind: interfaces.Bind,
+    unbind: interfaces.Unbind,
+    isBound: interfaces.IsBound,
+    rebind: interfaces.Rebind
+  ): void;
+}
+
+export const bindCommon: Bind = function (
+  ...args: Parameters<Bind>
+): ReturnType<Bind> {
+  const [bind] = args;
   bind(ConsoleLogger).toSelf().inSingletonScope();
   bind(ILogger).toService(ConsoleLogger);
   bind(CommandRegistry).toSelf().inSingletonScope();
   bind(CommandService).toService(CommandRegistry);
   bindContributionProvider(bind, CommandContribution);
-  return bind;
-}
+};
 
 @injectable()
 export class ConsoleLogger extends MockLogger {
