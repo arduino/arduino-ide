@@ -158,6 +158,37 @@ describe('sketches-service-impl', () => {
       );
     });
 
+    it('should error when the destination sketch folder name collides with an existing sketch file name', async () => {
+      const sketchesService =
+        container.get<SketchesServiceImpl>(SketchesService);
+      const tempDirPath = await sketchesService['createTempFolder']();
+      const destinationPath = join(tempDirPath, 'ExistingSketchFile');
+      let sketch = await sketchesService.createNewSketch();
+      toDispose.push(disposeSketch(sketch));
+      const sourcePath = FileUri.fsPath(sketch.uri);
+      const otherInoBasename = 'ExistingSketchFile.ino';
+      const otherInoPath = join(sourcePath, otherInoBasename);
+      await fs.writeFile(otherInoPath, '// a comment', { encoding: 'utf8' });
+
+      sketch = await sketchesService.loadSketch(sketch.uri);
+      expect(Sketch.isInSketch(FileUri.create(otherInoPath), sketch)).to.be
+        .true;
+
+      await rejects(
+        sketchesService.copy(sketch, {
+          destinationUri: FileUri.create(destinationPath).toString(),
+        }),
+        (reason) => {
+          return (
+            typeof reason === 'object' &&
+            reason !== null &&
+            SketchesError.SketchAlreadyContainsThisFile.is(reason) &&
+            reason.data.existingSketchFilename === otherInoBasename
+          );
+        }
+      );
+    });
+
     it('should copy a sketch when the destination does not exist', async () => {
       const sketchesService =
         container.get<SketchesServiceImpl>(SketchesService);

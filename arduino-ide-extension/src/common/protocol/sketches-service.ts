@@ -9,6 +9,7 @@ export namespace SketchesError {
     NotFound: 5001,
     InvalidName: 5002,
     InvalidFolderName: 5003,
+    SketchAlreadyContainsThisFile: 5004,
   };
   export const NotFound = ApplicationError.declare(
     Codes.NotFound,
@@ -34,6 +35,21 @@ export namespace SketchesError {
       return {
         message,
         data: { invalidFolderName },
+      };
+    }
+  );
+  // https://github.com/arduino/arduino-ide/issues/827
+  export const SketchAlreadyContainsThisFile = ApplicationError.declare(
+    Codes.SketchAlreadyContainsThisFile,
+    (
+      message: string,
+      sourceSketchName: string,
+      targetSketchName: string,
+      existingSketchFilename: string
+    ) => {
+      return {
+        message,
+        data: { sourceSketchName, targetSketchName, existingSketchFilename },
       };
     }
   );
