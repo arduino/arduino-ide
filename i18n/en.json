@@ -464,6 +464,8 @@
       "saveSketchAs": "Save sketch folder as...",
       "showFolder": "Show Sketch Folder",
       "sketch": "Sketch",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Local Sketchbook",
       "titleSketchbook": "Sketchbook",

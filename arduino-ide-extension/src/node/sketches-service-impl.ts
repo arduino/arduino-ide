@@ -530,6 +530,35 @@ export class SketchesServiceImpl
       throw SketchesError.InvalidFolderName(message, destinationFolderBasename);
     }
 
+    // verify a possible name collision with existing ino files
+    if (sourceFolderBasename !== destinationFolderBasename) {
+      try {
+        const otherInoBasename = `${destinationFolderBasename}.ino`;
+        const otherInoPath = join(source, otherInoBasename);
+        const stat = await fs.stat(otherInoPath);
+        if (stat.isFile()) {
+          const message = nls.localize(
+            'arduino/sketch/sketchAlreadyContainsThisFileError',
+            "The sketch already contains a file named '{0}'",
+            otherInoBasename
+          );
+          // if can read the file, it will be a collision
+          throw SketchesError.SketchAlreadyContainsThisFile(
+            message,
+            sourceFolderBasename,
+            destinationFolderBasename,
+            otherInoBasename
+          );
+        }
+        // Otherwise, it's OK, if it is an existing directory
+      } catch (err) {
+        // It's OK if the file is missing.
+        if (!ErrnoException.isENOENT(err)) {
+          throw err;
+        }
+      }
+    }
+
     let filter: CopyOptions['filter'];
     if (onlySketchFiles) {
       // The Windows paths, can be a trash (see below). Hence, it must be resolved with Node.js.

@@ -3,10 +3,12 @@ import { NavigatableWidget } from '@theia/core/lib/browser/navigatable';
 import { Saveable } from '@theia/core/lib/browser/saveable';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
 import { WorkspaceInput } from '@theia/workspace/lib/browser/workspace-service';
+import { SketchesError } from '../../common/protocol';
 import { StartupTasks } from '../../electron-common/startup-task';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
@@ -35,7 +37,29 @@ export class SaveAsSketch extends CloudSketchContribution {
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
-      execute: (args) => this.saveAs(args),
+      execute: async (args) => {
+        try {
+          return await this.saveAs(args);
+        } catch (err) {
+          let message = String(err);
+          if (ApplicationError.is(err)) {
+            if (SketchesError.SketchAlreadyContainsThisFile.is(err)) {
+              message = nls.localize(
+                'arduino/sketch/sketchAlreadyContainsThisFileMessage',
+                'Failed to save sketch "{0}" as "{1}". {2}',
+                err.data.sourceSketchName,
+                err.data.targetSketchName,
+                err.message
+              );
+            } else {
+              message = err.message;
+            }
+          } else if (err instanceof Error) {
+            message = err.message;
+          }
+          this.messageService.error(message);
+        }
+      },
     });
   }
 
@@ -58,13 +82,14 @@ export class SaveAsSketch extends CloudSketchContribution {
    * Resolves `true` if the sketch was successfully saved as something.
    */
   private async saveAs(
-    {
+    params = SaveAsSketch.Options.DEFAULT
+  ): Promise<boolean> {
+    const {
       execOnlyIfTemp,
       openAfterMove,
       wipeOriginal,
       markAsRecentlyOpened,
-    }: SaveAsSketch.Options = SaveAsSketch.Options.DEFAULT
-  ): Promise<boolean> {
+    } = params;
     assertConnectedToBackend({
       connectionStatusService: this.connectionStatusService,
       messageService: this.messageService,
