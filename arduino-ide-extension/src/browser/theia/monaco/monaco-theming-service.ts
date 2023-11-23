@@ -20,7 +20,7 @@ import {
 } from '@theia/monaco/lib/browser/monaco-theming-service';
 import { MonacoThemeRegistry as TheiaMonacoThemeRegistry } from '@theia/monaco/lib/browser/textmate/monaco-theme-registry';
 import type { ThemeMix } from '@theia/monaco/lib/browser/textmate/monaco-theme-types';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { HostedPluginSupport } from '../../hosted/hosted-plugin-support';
 import { ArduinoThemes, compatibleBuiltInTheme } from '../core/theming';
 import { WindowServiceExt } from '../core/window-service-ext';
 

@@ -5,9 +5,13 @@ import {
   PluginContributions,
   HostedPluginSupport as TheiaHostedPluginSupport,
 } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import { HostedPluginSupport } from '../../hosted/hosted-plugin-support';
 
 @injectable()
-export class HostedPluginSupport extends TheiaHostedPluginSupport {
+export class HostedPluginSupportImpl
+  extends TheiaHostedPluginSupport
+  implements HostedPluginSupport
+{
   private readonly onDidLoadEmitter = new Emitter<void>();
   private readonly onDidCloseConnectionEmitter = new Emitter<void>();
 

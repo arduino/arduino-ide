@@ -1,8 +1,4 @@
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { Event, Emitter } from '@theia/core/lib/common/event';
-import { HostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
-import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
-import { NotificationCenter } from '../notification-center';
 import {
   Board,
   BoardIdentifier,
@@ -12,6 +8,11 @@ import {
   Sketch,
 } from '../../common/protocol';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { HostedPluginSupport } from '../hosted/hosted-plugin-support';
+import { ArduinoMenus } from '../menu/arduino-menus';
+import { NotificationCenter } from '../notification-center';
+import { CurrentSketch } from '../sketches-service-client-impl';
+import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
   URI,
   Command,
@@ -97,6 +98,22 @@ export class Debug extends SketchContribution {
     });
     this.notificationCenter.onPlatformDidInstall(() => this.refreshState());
     this.notificationCenter.onPlatformDidUninstall(() => this.refreshState());
+    this.boardsDataStore.onDidChange((event) => {
+      const selectedFqbn =
+        this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn;
+      if (event.changes.find((change) => change.fqbn === selectedFqbn)) {
+        this.refreshState();
+      }
+    });
+    this.commandService.onDidExecuteCommand((event) => {
+      const { commandId, args } = event;
+      if (
+        commandId === 'arduino.languageserver.notifyBuildDidComplete' &&
+        isCompileSummary(args[0])
+      ) {
+        this.refreshState();
+      }
+    });
   }
 
   override onReady(): void {
