@@ -1,48 +1,55 @@
-import { injectable, inject, named } from '@theia/core/shared/inversify';
-import { promises as fs, realpath, lstat, Stats, constants } from 'node:fs';
-import os from 'node:os';
-import temp from 'temp';
-import path from 'node:path';
-import glob from 'glob';
-import crypto from 'node:crypto';
-import PQueue from 'p-queue';
-import type { Mutable } from '@theia/core/lib/common/types';
-import URI from '@theia/core/lib/common/uri';
-import { ILogger } from '@theia/core/lib/common/logger';
-import { FileUri } from '@theia/core/lib/node/file-uri';
-import { ConfigServiceImpl } from './config-service-impl';
-import {
-  SketchesService,
-  Sketch,
-  SketchRef,
-  SketchContainer,
-  SketchesError,
-} from '../common/protocol/sketches-service';
-import { NotificationServiceServer } from '../common/protocol';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { CoreClientAware } from './core-client-provider';
-import {
-  ArchiveSketchRequest,
-  LoadSketchRequest,
-} from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { ILogger } from '@theia/core/lib/common/logger';
+import { nls } from '@theia/core/lib/common/nls';
+import { isWindows } from '@theia/core/lib/common/os';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { escapeRegExpCharacters } from '@theia/core/lib/common/strings';
-import { ServiceError } from './service-error';
+import type { Mutable } from '@theia/core/lib/common/types';
+import URI from '@theia/core/lib/common/uri';
+import { FileUri } from '@theia/core/lib/node/file-uri';
+import { inject, injectable, named } from '@theia/core/shared/inversify';
+import glob from 'glob';
+import crypto from 'node:crypto';
 import {
-  IsTempSketch,
-  maybeNormalizeDrive,
-  TempSketchPrefix,
-  Win32DriveRegex,
-} from './is-temp-sketch';
-import { join } from 'node:path';
-import { ErrnoException } from './utils/errors';
-import { isWindows } from '@theia/core/lib/common/os';
+  CopyOptions,
+  Stats,
+  constants,
+  promises as fs,
+  lstat,
+  realpath,
+} from 'node:fs';
+import os from 'node:os';
+import path, { join } from 'node:path';
+import PQueue from 'p-queue';
+import temp from 'temp';
+import { NotificationServiceServer } from '../common/protocol';
+import {
+  Sketch,
+  SketchContainer,
+  SketchRef,
+  SketchesError,
+  SketchesService,
+} from '../common/protocol/sketches-service';
 import {
   firstToLowerCase,
   firstToUpperCase,
   startsWithUpperCase,
 } from '../common/utils';
+import {
+  ArchiveSketchRequest,
+  LoadSketchRequest,
+} from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
+import { ConfigServiceImpl } from './config-service-impl';
+import { CoreClientAware } from './core-client-provider';
+import {
+  IsTempSketch,
+  TempSketchPrefix,
+  Win32DriveRegex,
+  maybeNormalizeDrive,
+} from './is-temp-sketch';
+import { ServiceError } from './service-error';
 import { SettingsReader } from './settings-reader';
+import { ErrnoException } from './utils/errors';
 
 const RecentSketches = 'recent-sketches.json';
 const DefaultIno = `void setup() {
@@ -510,26 +517,75 @@ export class SketchesServiceImpl
     }
     const sourceFolderBasename = path.basename(source);
     const destinationFolderBasename = path.basename(destination);
-    let filter;
+
+    const errorMessage = Sketch.validateSketchFolderName(
+      destinationFolderBasename
+    );
+    if (errorMessage) {
+      const message = `${nls.localize(
+        'arduino/sketch/invalidSketchFolderNameMessage',
+        "Invalid sketch folder name: '{0}'",
+        destinationFolderBasename
+      )} ${errorMessage}`;
+      throw SketchesError.InvalidFolderName(message, destinationFolderBasename);
+    }
+
+    let filter: CopyOptions['filter'];
     if (onlySketchFiles) {
-      const sketchFilePaths = Sketch.uris(sketch).map(FileUri.fsPath);
-      filter = (file: { path: string }) => sketchFilePaths.includes(file.path);
+      // The Windows paths, can be a trash (see below). Hence, it must be resolved with Node.js.
+      // After resolving the path, the drive letter is still a gamble (can be upper or lower case) and could result in a false negative match.
+      // Here, all sketch file paths must be resolved by Node.js, to provide the same drive letter casing.
+      const sketchFilePaths = await Promise.all(
+        Sketch.uris(sketch)
+          .map(FileUri.fsPath)
+          .map((path) => fs.realpath(path))
+      );
+      filter = async (s) => {
+        // On Windows, the source path could start with a complete trash. For example, \\\\?\\c:\\Users\\kittaakos\\AppData\\Local\\Temp\\.arduinoIDE-unsaved20231024-9300-1hp64fi.g8yh\\sketch_nov24d.
+        // The path must be resolved.
+        const resolvedSource = await fs.realpath(s);
+        if (sketchFilePaths.includes(resolvedSource)) {
+          return true;
+        }
+        const stat = await fs.stat(resolvedSource);
+        if (stat.isFile()) {
+          return false;
+        }
+        // Copy the folder if any of the sketch file path starts with this folder
+        return sketchFilePaths.some((sketchFilePath) =>
+          sketchFilePath.startsWith(resolvedSource)
+        );
+      };
     } else {
       filter = () => true;
     }
-    const cpyModule = await import('cpy');
-    const cpy = cpyModule.default;
-    await cpy(sourceFolderBasename, destination, {
-      rename: (basename) =>
-        sourceFolderBasename !== destinationFolderBasename &&
-        basename === `${sourceFolderBasename}.ino`
-          ? `${destinationFolderBasename}.ino`
-          : basename,
+
+    const tempRoot = await this.createTempFolder();
+    const temp = join(tempRoot, destinationFolderBasename);
+    await fs.mkdir(temp, { recursive: true });
+
+    // copy to temp folder
+    await fs.cp(source, temp, {
       filter,
-      cwd: path.dirname(source),
+      recursive: true,
+      force: true,
     });
-    const copiedSketch = await this.doLoadSketch(destinationUri, false);
-    return copiedSketch;
+
+    // rename the main sketch file
+    await fs.rename(
+      join(temp, `${sourceFolderBasename}.ino`),
+      join(temp, `${destinationFolderBasename}.ino`)
+    );
+
+    // copy to destination
+    try {
+      await fs.cp(temp, destination, { recursive: true, force: true });
+      const copiedSketch = await this.doLoadSketch(destinationUri, false);
+      return copiedSketch;
+    } finally {
+      // remove temp
+      fs.rm(tempRoot, { recursive: true, force: true, maxRetries: 5 }); // no await
+    }
   }
 
   async archive(sketch: Sketch, destinationUri: string): Promise<string> {

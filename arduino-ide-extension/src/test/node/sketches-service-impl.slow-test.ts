@@ -8,9 +8,10 @@ import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { promises as fs } from 'node:fs';
 import { basename, join } from 'node:path';
+import { rejects } from 'node:assert/strict';
 import { sync as rimrafSync } from 'rimraf';
 import temp from 'temp';
-import { Sketch, SketchesService } from '../../common/protocol';
+import { Sketch, SketchesError, SketchesService } from '../../common/protocol';
 import {
   isAccessibleSketchPath,
   SketchesServiceImpl,
@@ -138,12 +139,31 @@ describe('sketches-service-impl', () => {
 
   after(() => toDispose.dispose());
 
-  describe('copy', () => {
-    it('should copy a sketch when the destination does not exist', async function () {
-      this.timeout(testTimeout);
+  describe('copy', function () {
+    this.timeout(testTimeout);
+    this.slow(250);
+
+    it('should error when the destination sketch folder name is invalid', async () => {
       const sketchesService =
         container.get<SketchesServiceImpl>(SketchesService);
-      const destinationPath = await sketchesService['createTempFolder']();
+      const tempDirPath = await sketchesService['createTempFolder']();
+      const destinationPath = join(tempDirPath, 'invalid with spaces');
+      const sketch = await sketchesService.createNewSketch();
+      toDispose.push(disposeSketch(sketch));
+      await rejects(
+        sketchesService.copy(sketch, {
+          destinationUri: FileUri.create(destinationPath).toString(),
+        }),
+        SketchesError.InvalidFolderName.is
+      );
+    });
+
+    it('should copy a sketch when the destination does not exist', async () => {
+      const sketchesService =
+        container.get<SketchesServiceImpl>(SketchesService);
+      const tempDirPath = await sketchesService['createTempFolder']();
+      const destinationPath = join(tempDirPath, 'Does_Not_Exist_but_valid');
+      await rejects(fs.readdir(destinationPath), ErrnoException.isENOENT);
       let sketch = await sketchesService.createNewSketch();
       toDispose.push(disposeSketch(sketch));
       const sourcePath = FileUri.fsPath(sketch.uri);
@@ -187,11 +207,11 @@ describe('sketches-service-impl', () => {
       ).to.be.true;
     });
 
-    it("should copy only sketch files if 'onlySketchFiles' is true", async function () {
-      this.timeout(testTimeout);
+    it("should copy only sketch files if 'onlySketchFiles' is true", async () => {
       const sketchesService =
         container.get<SketchesServiceImpl>(SketchesService);
-      const destinationPath = await sketchesService['createTempFolder']();
+      const tempDirPath = await sketchesService['createTempFolder']();
+      const destinationPath = join(tempDirPath, 'OnlySketchFiles');
       let sketch = await sketchesService.createNewSketch();
       toDispose.push(disposeSketch(sketch));
       const sourcePath = FileUri.fsPath(sketch.uri);
@@ -207,11 +227,25 @@ describe('sketches-service-impl', () => {
       const logContent = 'log file content';
       const logPath = join(sourcePath, logBasename);
       await fs.writeFile(logPath, logContent, { encoding: 'utf8' });
+      const srcPath = join(sourcePath, 'src');
+      await fs.mkdir(srcPath, { recursive: true });
+      const libInSrcBasename = 'lib_in_src.cpp';
+      const libInSrcContent = 'lib in src content';
+      const libInSrcPath = join(srcPath, libInSrcBasename);
+      await fs.writeFile(libInSrcPath, libInSrcContent, { encoding: 'utf8' });
+      const logInSrcBasename = 'inols-clangd-err_in_src.log';
+      const logInSrcContent = 'log file content in src';
+      const logInSrcPath = join(srcPath, logInSrcBasename);
+      await fs.writeFile(logInSrcPath, logInSrcContent, { encoding: 'utf8' });
 
       sketch = await sketchesService.loadSketch(sketch.uri);
       expect(Sketch.isInSketch(FileUri.create(libPath), sketch)).to.be.true;
       expect(Sketch.isInSketch(FileUri.create(headerPath), sketch)).to.be.true;
       expect(Sketch.isInSketch(FileUri.create(logPath), sketch)).to.be.false;
+      expect(Sketch.isInSketch(FileUri.create(libInSrcPath), sketch)).to.be
+        .true;
+      expect(Sketch.isInSketch(FileUri.create(logInSrcPath), sketch)).to.be
+        .false;
       const reloadedLogContent = await fs.readFile(logPath, {
         encoding: 'utf8',
       });
@@ -249,20 +283,25 @@ describe('sketches-service-impl', () => {
           copied
         )
       ).to.be.false;
-      try {
-        await fs.readFile(join(destinationPath, logBasename), {
-          encoding: 'utf8',
-        });
-        expect.fail(
-          'Log file must not exist in the destination. Expected ENOENT when loading the log file.'
-        );
-      } catch (err) {
-        expect(ErrnoException.isENOENT(err)).to.be.true;
-      }
+      expect(
+        Sketch.isInSketch(
+          FileUri.create(join(destinationPath, 'src', libInSrcBasename)),
+          copied
+        )
+      ).to.be.true;
+      expect(
+        Sketch.isInSketch(
+          FileUri.create(join(destinationPath, 'src', logInSrcBasename)),
+          copied
+        )
+      ).to.be.false;
+      await rejects(
+        fs.readFile(join(destinationPath, logBasename)),
+        ErrnoException.isENOENT
+      );
     });
 
-    it('should copy sketch inside the sketch folder', async function () {
-      this.timeout(testTimeout);
+    it('should copy sketch inside the sketch folder', async () => {
       const sketchesService =
         container.get<SketchesServiceImpl>(SketchesService);
       let sketch = await sketchesService.createNewSketch();
@@ -309,6 +348,55 @@ describe('sketches-service-impl', () => {
       ).to.be.true;
     });
 
+    it('should not modify the subfolder structure', async () => {
+      const sketchesService =
+        container.get<SketchesServiceImpl>(SketchesService);
+      const tempDirPath = await sketchesService['createTempFolder']();
+      const destinationPath = join(tempDirPath, 'HasSubfolders_copy');
+      await fs.mkdir(destinationPath, { recursive: true });
+      let sketch = await sketchesService.createNewSketch('HasSubfolders');
+      toDispose.push(disposeSketch(sketch));
+
+      const sourcePath = FileUri.fsPath(sketch.uri);
+      const srcPath = join(sourcePath, 'src');
+      await fs.mkdir(srcPath, { recursive: true });
+      const headerPath = join(srcPath, 'FomSubfolder.h');
+      await fs.writeFile(headerPath, '// empty', { encoding: 'utf8' });
+
+      sketch = await sketchesService.loadSketch(sketch.uri);
+
+      expect(sketch.mainFileUri).to.be.equal(
+        FileUri.create(join(sourcePath, 'HasSubfolders.ino')).toString()
+      );
+      expect(sketch.additionalFileUris).to.be.deep.equal([
+        FileUri.create(join(srcPath, 'FomSubfolder.h')).toString(),
+      ]);
+      expect(sketch.otherSketchFileUris).to.be.empty;
+      expect(sketch.rootFolderFileUris).to.be.empty;
+
+      const destinationUri = FileUri.create(destinationPath).toString();
+      const copySketch = await sketchesService.copy(sketch, { destinationUri });
+      toDispose.push(disposeSketch(copySketch));
+      expect(copySketch.mainFileUri).to.be.equal(
+        FileUri.create(
+          join(destinationPath, 'HasSubfolders_copy.ino')
+        ).toString()
+      );
+      expect(copySketch.additionalFileUris).to.be.deep.equal([
+        FileUri.create(
+          join(destinationPath, 'src', 'FomSubfolder.h')
+        ).toString(),
+      ]);
+      expect(copySketch.otherSketchFileUris).to.be.empty;
+      expect(copySketch.rootFolderFileUris).to.be.empty;
+
+      const actualHeaderContent = await fs.readFile(
+        join(destinationPath, 'src', 'FomSubfolder.h'),
+        { encoding: 'utf8' }
+      );
+      expect(actualHeaderContent).to.be.equal('// empty');
+    });
+
     it('should copy sketch with overwrite when source and destination sketch folder names are the same', async function () {
       this.timeout(testTimeout);
       const sketchesService =
@@ -346,7 +434,7 @@ describe('sketches-service-impl', () => {
         [
           '<',
           '>',
-          'chevrons',
+          'lt+gt',
           {
             predicate: () => isWindows,
             why: '< (less than) and > (greater than) are reserved characters on Windows (https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions)',

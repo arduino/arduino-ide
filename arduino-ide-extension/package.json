@@ -63,7 +63,6 @@
     "auth0-js": "^9.23.2",
     "btoa": "^1.2.1",
     "classnames": "^2.3.1",
-    "cpy": "^10.0.0",
     "cross-fetch": "^3.1.5",
     "dateformat": "^3.0.3",
     "deepmerge": "^4.2.2",
