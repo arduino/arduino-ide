@@ -8,6 +8,7 @@ export namespace SketchesError {
   export const Codes = {
     NotFound: 5001,
     InvalidName: 5002,
+    InvalidFolderName: 5003,
   };
   export const NotFound = ApplicationError.declare(
     Codes.NotFound,
@@ -24,6 +25,15 @@ export namespace SketchesError {
       return {
         message,
         data: { invalidMainSketchUri },
+      };
+    }
+  );
+  export const InvalidFolderName = ApplicationError.declare(
+    Codes.InvalidFolderName,
+    (message: string, invalidFolderName: string) => {
+      return {
+        message,
+        data: { invalidFolderName },
       };
     }
   );
