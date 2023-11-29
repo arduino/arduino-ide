@@ -32,7 +32,7 @@ RUN \
   apt-get \
     --yes \
     install \
-      "git=1:2.42.0-0ppa1~ubuntu18.04.1" && \
+      "git" && \
   \
   apt-get \
     --yes \
