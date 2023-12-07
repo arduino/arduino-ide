@@ -307,7 +307,15 @@ jobs:
           python-version: '3.11.x'
 
       - name: Install Go
+        if: fromJSON(matrix.config.container) == null
         uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Go
+        # actions/setup-go@v5 has dependency on a higher version of glibc than available in the Linux container.
+        if: fromJSON(matrix.config.container) != null
+        uses: actions/setup-go@v4
         with:
           go-version: ${{ env.GO_VERSION }}
 
