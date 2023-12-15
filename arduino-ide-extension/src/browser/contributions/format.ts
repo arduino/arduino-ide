@@ -1,4 +1,3 @@
-import { MaybePromise } from '@theia/core';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as monaco from '@theia/monaco-editor-core';
 import { Formatter } from '../../common/protocol/formatter';
@@ -15,13 +14,14 @@ export class Format
   @inject(Formatter)
   private readonly formatter: Formatter;
 
-  override onStart(): MaybePromise<void> {
+  override onStart(): void {
     monaco.languages.registerDocumentRangeFormattingEditProvider(
       InoSelector,
       this
     );
     monaco.languages.registerDocumentFormattingEditProvider(InoSelector, this);
   }
+
   async provideDocumentRangeFormattingEdits(
     model: monaco.editor.ITextModel,
     range: monaco.Range,

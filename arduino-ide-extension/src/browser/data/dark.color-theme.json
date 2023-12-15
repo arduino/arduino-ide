@@ -89,7 +89,8 @@
       "scope": [
         "storage",
         "support",
-        "string.quoted.single.c"
+        "string.quoted.single.c",
+        "macro"
       ],
       "settings": {
         "foreground": "#0ca1a6"
@@ -101,7 +102,8 @@
         "meta.function.c",
         "entity.name.function",
         "meta.function-call.c",
-        "variable.other"
+        "variable.other",
+        "label"
       ],
       "settings": {
         "foreground": "#F39C12"
@@ -146,7 +148,8 @@
       "name": "meta keywords",
       "scope": [
         "keyword.control",
-        "meta.preprocessor.c"
+        "meta.preprocessor.c",
+        "event"
       ],
       "settings": {
         "foreground": "#C586C0"

@@ -371,6 +371,7 @@ import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-
 import { DebugConfigurationWidget } from './theia/debug/debug-configuration-widget';
 import { DebugConfigurationWidget as TheiaDebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
 import { DebugToolBar } from '@theia/debug/lib/browser/view/debug-toolbar-widget';
+import { InoHighlight } from './contributions/ino-highlight';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -767,6 +768,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UpdateArduinoState);
   Contribution.configure(bind, BoardsDataMenuUpdater);
   Contribution.configure(bind, AutoSelectProgrammer);
+  Contribution.configure(bind, InoHighlight);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
