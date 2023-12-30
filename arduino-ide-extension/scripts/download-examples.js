@@ -1,7 +1,7 @@
 // @ts-check
 
 // The version to use.
-const version = '1.10.0';
+const version = '1.10.1';
 
 (async () => {
   const os = require('node:os');
