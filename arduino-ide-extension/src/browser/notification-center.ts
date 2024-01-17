@@ -46,7 +46,7 @@ export class NotificationCenter
     new Emitter<ProgressMessage>();
   private readonly indexUpdateDidFailEmitter =
     new Emitter<IndexUpdateDidFailParams>();
-  private readonly daemonDidStartEmitter = new Emitter<string>();
+  private readonly daemonDidStartEmitter = new Emitter<number>();
   private readonly daemonDidStopEmitter = new Emitter<void>();
   private readonly configDidChangeEmitter = new Emitter<ConfigState>();
   private readonly platformDidInstallEmitter = new Emitter<{
@@ -136,7 +136,7 @@ export class NotificationCenter
     this.indexUpdateDidFailEmitter.fire(params);
   }
 
-  notifyDaemonDidStart(port: string): void {
+  notifyDaemonDidStart(port: number): void {
     this.daemonDidStartEmitter.fire(port);
   }
 

@@ -111,7 +111,7 @@ class TestNotificationServiceServer implements NotificationServiceServer {
   notifyIndexUpdateDidFail(params: IndexUpdateDidFailParams): void {
     this.events.push(`notifyIndexUpdateDidFail:${JSON.stringify(params)}`);
   }
-  notifyDaemonDidStart(port: string): void {
+  notifyDaemonDidStart(port: number): void {
     this.events.push(`notifyDaemonDidStart:${port}`);
   }
   notifyDaemonDidStop(): void {

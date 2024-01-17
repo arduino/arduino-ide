@@ -51,7 +51,7 @@ export interface NotificationServiceClient {
   notifyIndexUpdateDidFail(params: IndexUpdateDidFailParams): void;
 
   // Daemon
-  notifyDaemonDidStart(port: string): void;
+  notifyDaemonDidStart(port: number): void;
   notifyDaemonDidStop(): void;
 
   // CLI config

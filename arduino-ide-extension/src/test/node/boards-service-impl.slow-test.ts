@@ -1,7 +1,7 @@
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
-import { BoardSearch, BoardsService } from '../../common/protocol';
+import { BoardSearch, BoardsService, Installable } from '../../common/protocol';
 import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 describe('boards-service-impl', () => {
@@ -22,6 +22,29 @@ describe('boards-service-impl', () => {
     it('should run search', async function () {
       const result = await boardService.search({});
       expect(result).is.not.empty;
+    });
+
+    it('should order the available platform release versions in descending order', async function () {
+      const result = await boardService.search({});
+      result.forEach((platform) =>
+        platform.availableVersions.forEach(
+          (currentVersion, index, versions) => {
+            if (index < versions.length - 2) {
+              const nextArrayElement = versions[index + 1];
+              const actual = Installable.Version.COMPARATOR(
+                currentVersion,
+                nextArrayElement
+              );
+              expect(actual).to.be.greaterThan(
+                0,
+                `Expected '${currentVersion}' to be gt '${nextArrayElement}'. All versions: ${JSON.stringify(
+                  versions
+                )}`
+              );
+            }
+          }
+        )
+      );
     });
 
     it("should boost a result when 'types' includes 'arduino', and lower the score if deprecated", async () => {

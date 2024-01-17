@@ -535,18 +535,31 @@ function updateCompileSummary(
   compileSummary: CompileSummaryFragment,
   response: CompileResponse
 ): CompileSummaryFragment {
-  const buildPath = response.getBuildPath();
+  const messageCase = response.getMessageCase();
+  if (messageCase !== CompileResponse.MessageCase.RESULT) {
+    return compileSummary;
+  }
+  const result = response.getResult();
+  if (!result) {
+    console.warn(
+      `Build result is missing from response: ${JSON.stringify(
+        response.toObject(false)
+      )}`
+    );
+    return compileSummary;
+  }
+  const buildPath = result.getBuildPath();
   if (buildPath) {
     compileSummary.buildPath = buildPath;
     compileSummary.buildOutputUri = FileUri.create(buildPath).toString();
   }
-  const executableSectionsSize = response.getExecutableSectionsSizeList();
+  const executableSectionsSize = result.getExecutableSectionsSizeList();
   if (executableSectionsSize) {
     compileSummary.executableSectionsSize = executableSectionsSize.map((item) =>
       item.toObject(false)
     );
   }
-  const usedLibraries = response.getUsedLibrariesList();
+  const usedLibraries = result.getUsedLibrariesList();
   if (usedLibraries) {
     compileSummary.usedLibraries = usedLibraries.map((item) => {
       const object = item.toObject(false);
@@ -575,15 +588,15 @@ function updateCompileSummary(
       return library;
     });
   }
-  const boardPlatform = response.getBoardPlatform();
+  const boardPlatform = result.getBoardPlatform();
   if (boardPlatform) {
     compileSummary.buildPlatform = boardPlatform.toObject(false);
   }
-  const buildPlatform = response.getBuildPlatform();
+  const buildPlatform = result.getBuildPlatform();
   if (buildPlatform) {
     compileSummary.buildPlatform = buildPlatform.toObject(false);
   }
-  const buildProperties = response.getBuildPropertiesList();
+  const buildProperties = result.getBuildPropertiesList();
   if (buildProperties) {
     compileSummary.buildProperties = buildProperties.slice();
   }

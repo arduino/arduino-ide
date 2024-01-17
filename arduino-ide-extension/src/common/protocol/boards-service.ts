@@ -75,6 +75,9 @@ export interface BoardsService
   }): Promise<BoardsPackage | undefined>;
   searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
   getInstalledBoards(): Promise<BoardWithPackage[]>;
+  /**
+   * Returns with all installed platforms including the manually installed ones.
+   */
   getInstalledPlatforms(): Promise<BoardsPackage[]>;
   getBoardUserFields(options: {
     fqbn: string;
