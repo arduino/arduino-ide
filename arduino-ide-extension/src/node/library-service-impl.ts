@@ -81,7 +81,7 @@ export class LibraryServiceImpl
     }
 
     const req = new LibrarySearchRequest();
-    req.setQuery(options.query || '');
+    req.setSearchArgs(options.query || '');
     req.setInstance(instance);
     req.setOmitReleasesDetails(true);
     const resp = await new Promise<LibrarySearchResponse>((resolve, reject) =>

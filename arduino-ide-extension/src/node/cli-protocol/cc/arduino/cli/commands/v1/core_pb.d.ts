@@ -299,8 +299,8 @@ export class PlatformSearchRequest extends jspb.Message {
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformSearchRequest;
     getSearchArgs(): string;
     setSearchArgs(value: string): PlatformSearchRequest;
-    getAllVersions(): boolean;
-    setAllVersions(value: boolean): PlatformSearchRequest;
+    getManuallyInstalled(): boolean;
+    setManuallyInstalled(value: boolean): PlatformSearchRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformSearchRequest.AsObject;
@@ -316,15 +316,15 @@ export namespace PlatformSearchRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         searchArgs: string,
-        allVersions: boolean,
+        manuallyInstalled: boolean,
     }
 }
 
 export class PlatformSearchResponse extends jspb.Message { 
     clearSearchOutputList(): void;
-    getSearchOutputList(): Array<cc_arduino_cli_commands_v1_common_pb.Platform>;
-    setSearchOutputList(value: Array<cc_arduino_cli_commands_v1_common_pb.Platform>): PlatformSearchResponse;
-    addSearchOutput(value?: cc_arduino_cli_commands_v1_common_pb.Platform, index?: number): cc_arduino_cli_commands_v1_common_pb.Platform;
+    getSearchOutputList(): Array<cc_arduino_cli_commands_v1_common_pb.PlatformSummary>;
+    setSearchOutputList(value: Array<cc_arduino_cli_commands_v1_common_pb.PlatformSummary>): PlatformSearchResponse;
+    addSearchOutput(value?: cc_arduino_cli_commands_v1_common_pb.PlatformSummary, index?: number): cc_arduino_cli_commands_v1_common_pb.PlatformSummary;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformSearchResponse.AsObject;
@@ -338,57 +338,6 @@ export class PlatformSearchResponse extends jspb.Message {
 
 export namespace PlatformSearchResponse {
     export type AsObject = {
-        searchOutputList: Array<cc_arduino_cli_commands_v1_common_pb.Platform.AsObject>,
-    }
-}
-
-export class PlatformListRequest extends jspb.Message { 
-
-    hasInstance(): boolean;
-    clearInstance(): void;
-    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
-    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): PlatformListRequest;
-    getUpdatableOnly(): boolean;
-    setUpdatableOnly(value: boolean): PlatformListRequest;
-    getAll(): boolean;
-    setAll(value: boolean): PlatformListRequest;
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): PlatformListRequest.AsObject;
-    static toObject(includeInstance: boolean, msg: PlatformListRequest): PlatformListRequest.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: PlatformListRequest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): PlatformListRequest;
-    static deserializeBinaryFromReader(message: PlatformListRequest, reader: jspb.BinaryReader): PlatformListRequest;
-}
-
-export namespace PlatformListRequest {
-    export type AsObject = {
-        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        updatableOnly: boolean,
-        all: boolean,
-    }
-}
-
-export class PlatformListResponse extends jspb.Message { 
-    clearInstalledPlatformsList(): void;
-    getInstalledPlatformsList(): Array<cc_arduino_cli_commands_v1_common_pb.Platform>;
-    setInstalledPlatformsList(value: Array<cc_arduino_cli_commands_v1_common_pb.Platform>): PlatformListResponse;
-    addInstalledPlatforms(value?: cc_arduino_cli_commands_v1_common_pb.Platform, index?: number): cc_arduino_cli_commands_v1_common_pb.Platform;
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): PlatformListResponse.AsObject;
-    static toObject(includeInstance: boolean, msg: PlatformListResponse): PlatformListResponse.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: PlatformListResponse, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): PlatformListResponse;
-    static deserializeBinaryFromReader(message: PlatformListResponse, reader: jspb.BinaryReader): PlatformListResponse;
-}
-
-export namespace PlatformListResponse {
-    export type AsObject = {
-        installedPlatformsList: Array<cc_arduino_cli_commands_v1_common_pb.Platform.AsObject>,
+        searchOutputList: Array<cc_arduino_cli_commands_v1_common_pb.PlatformSummary.AsObject>,
     }
 }

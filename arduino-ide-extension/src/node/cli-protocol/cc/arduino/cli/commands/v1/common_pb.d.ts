@@ -213,41 +213,16 @@ export namespace MissingProgrammerError {
 }
 
 export class Platform extends jspb.Message { 
-    getId(): string;
-    setId(value: string): Platform;
-    getInstalled(): string;
-    setInstalled(value: string): Platform;
-    getLatest(): string;
-    setLatest(value: string): Platform;
-    getName(): string;
-    setName(value: string): Platform;
-    getMaintainer(): string;
-    setMaintainer(value: string): Platform;
-    getWebsite(): string;
-    setWebsite(value: string): Platform;
-    getEmail(): string;
-    setEmail(value: string): Platform;
-    clearBoardsList(): void;
-    getBoardsList(): Array<Board>;
-    setBoardsList(value: Array<Board>): Platform;
-    addBoards(value?: Board, index?: number): Board;
-    getManuallyInstalled(): boolean;
-    setManuallyInstalled(value: boolean): Platform;
-    getDeprecated(): boolean;
-    setDeprecated(value: boolean): Platform;
-    clearTypeList(): void;
-    getTypeList(): Array<string>;
-    setTypeList(value: Array<string>): Platform;
-    addType(value: string, index?: number): string;
 
-    hasHelp(): boolean;
-    clearHelp(): void;
-    getHelp(): HelpResources | undefined;
-    setHelp(value?: HelpResources): Platform;
-    getIndexed(): boolean;
-    setIndexed(value: boolean): Platform;
-    getMissingMetadata(): boolean;
-    setMissingMetadata(value: boolean): Platform;
+    hasMetadata(): boolean;
+    clearMetadata(): void;
+    getMetadata(): PlatformMetadata | undefined;
+    setMetadata(value?: PlatformMetadata): Platform;
+
+    hasRelease(): boolean;
+    clearRelease(): void;
+    getRelease(): PlatformRelease | undefined;
+    setRelease(value?: PlatformRelease): Platform;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Platform.AsObject;
@@ -261,20 +236,131 @@ export class Platform extends jspb.Message {
 
 export namespace Platform {
     export type AsObject = {
+        metadata?: PlatformMetadata.AsObject,
+        release?: PlatformRelease.AsObject,
+    }
+}
+
+export class PlatformSummary extends jspb.Message { 
+
+    hasMetadata(): boolean;
+    clearMetadata(): void;
+    getMetadata(): PlatformMetadata | undefined;
+    setMetadata(value?: PlatformMetadata): PlatformSummary;
+
+    getReleasesMap(): jspb.Map<string, PlatformRelease>;
+    clearReleasesMap(): void;
+    getInstalledVersion(): string;
+    setInstalledVersion(value: string): PlatformSummary;
+    getLatestVersion(): string;
+    setLatestVersion(value: string): PlatformSummary;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformSummary.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformSummary): PlatformSummary.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformSummary, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformSummary;
+    static deserializeBinaryFromReader(message: PlatformSummary, reader: jspb.BinaryReader): PlatformSummary;
+}
+
+export namespace PlatformSummary {
+    export type AsObject = {
+        metadata?: PlatformMetadata.AsObject,
+
+        releasesMap: Array<[string, PlatformRelease.AsObject]>,
+        installedVersion: string,
+        latestVersion: string,
+    }
+}
+
+export class PlatformMetadata extends jspb.Message { 
+    getId(): string;
+    setId(value: string): PlatformMetadata;
+    getMaintainer(): string;
+    setMaintainer(value: string): PlatformMetadata;
+    getWebsite(): string;
+    setWebsite(value: string): PlatformMetadata;
+    getEmail(): string;
+    setEmail(value: string): PlatformMetadata;
+    getManuallyInstalled(): boolean;
+    setManuallyInstalled(value: boolean): PlatformMetadata;
+    getDeprecated(): boolean;
+    setDeprecated(value: boolean): PlatformMetadata;
+    getIndexed(): boolean;
+    setIndexed(value: boolean): PlatformMetadata;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformMetadata.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformMetadata): PlatformMetadata.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformMetadata, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformMetadata;
+    static deserializeBinaryFromReader(message: PlatformMetadata, reader: jspb.BinaryReader): PlatformMetadata;
+}
+
+export namespace PlatformMetadata {
+    export type AsObject = {
         id: string,
-        installed: string,
-        latest: string,
-        name: string,
         maintainer: string,
         website: string,
         email: string,
-        boardsList: Array<Board.AsObject>,
         manuallyInstalled: boolean,
         deprecated: boolean,
-        typeList: Array<string>,
-        help?: HelpResources.AsObject,
         indexed: boolean,
+    }
+}
+
+export class PlatformRelease extends jspb.Message { 
+    getName(): string;
+    setName(value: string): PlatformRelease;
+    getVersion(): string;
+    setVersion(value: string): PlatformRelease;
+    clearTypeList(): void;
+    getTypeList(): Array<string>;
+    setTypeList(value: Array<string>): PlatformRelease;
+    addType(value: string, index?: number): string;
+    getInstalled(): boolean;
+    setInstalled(value: boolean): PlatformRelease;
+    clearBoardsList(): void;
+    getBoardsList(): Array<Board>;
+    setBoardsList(value: Array<Board>): PlatformRelease;
+    addBoards(value?: Board, index?: number): Board;
+
+    hasHelp(): boolean;
+    clearHelp(): void;
+    getHelp(): HelpResources | undefined;
+    setHelp(value?: HelpResources): PlatformRelease;
+    getMissingMetadata(): boolean;
+    setMissingMetadata(value: boolean): PlatformRelease;
+    getDeprecated(): boolean;
+    setDeprecated(value: boolean): PlatformRelease;
+    getCompatible(): boolean;
+    setCompatible(value: boolean): PlatformRelease;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformRelease.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformRelease): PlatformRelease.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformRelease, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformRelease;
+    static deserializeBinaryFromReader(message: PlatformRelease, reader: jspb.BinaryReader): PlatformRelease;
+}
+
+export namespace PlatformRelease {
+    export type AsObject = {
+        name: string,
+        version: string,
+        typeList: Array<string>,
+        installed: boolean,
+        boardsList: Array<Board.AsObject>,
+        help?: HelpResources.AsObject,
         missingMetadata: boolean,
+        deprecated: boolean,
+        compatible: boolean,
     }
 }
 
@@ -370,5 +456,86 @@ export class HelpResources extends jspb.Message {
 export namespace HelpResources {
     export type AsObject = {
         online: string,
+    }
+}
+
+export class Sketch extends jspb.Message { 
+    getMainFile(): string;
+    setMainFile(value: string): Sketch;
+    getLocationPath(): string;
+    setLocationPath(value: string): Sketch;
+    clearOtherSketchFilesList(): void;
+    getOtherSketchFilesList(): Array<string>;
+    setOtherSketchFilesList(value: Array<string>): Sketch;
+    addOtherSketchFiles(value: string, index?: number): string;
+    clearAdditionalFilesList(): void;
+    getAdditionalFilesList(): Array<string>;
+    setAdditionalFilesList(value: Array<string>): Sketch;
+    addAdditionalFiles(value: string, index?: number): string;
+    clearRootFolderFilesList(): void;
+    getRootFolderFilesList(): Array<string>;
+    setRootFolderFilesList(value: Array<string>): Sketch;
+    addRootFolderFiles(value: string, index?: number): string;
+    getDefaultFqbn(): string;
+    setDefaultFqbn(value: string): Sketch;
+    getDefaultPort(): string;
+    setDefaultPort(value: string): Sketch;
+    getDefaultProtocol(): string;
+    setDefaultProtocol(value: string): Sketch;
+    clearProfilesList(): void;
+    getProfilesList(): Array<SketchProfile>;
+    setProfilesList(value: Array<SketchProfile>): Sketch;
+    addProfiles(value?: SketchProfile, index?: number): SketchProfile;
+
+    hasDefaultProfile(): boolean;
+    clearDefaultProfile(): void;
+    getDefaultProfile(): SketchProfile | undefined;
+    setDefaultProfile(value?: SketchProfile): Sketch;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): Sketch.AsObject;
+    static toObject(includeInstance: boolean, msg: Sketch): Sketch.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: Sketch, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): Sketch;
+    static deserializeBinaryFromReader(message: Sketch, reader: jspb.BinaryReader): Sketch;
+}
+
+export namespace Sketch {
+    export type AsObject = {
+        mainFile: string,
+        locationPath: string,
+        otherSketchFilesList: Array<string>,
+        additionalFilesList: Array<string>,
+        rootFolderFilesList: Array<string>,
+        defaultFqbn: string,
+        defaultPort: string,
+        defaultProtocol: string,
+        profilesList: Array<SketchProfile.AsObject>,
+        defaultProfile?: SketchProfile.AsObject,
+    }
+}
+
+export class SketchProfile extends jspb.Message { 
+    getName(): string;
+    setName(value: string): SketchProfile;
+    getFqbn(): string;
+    setFqbn(value: string): SketchProfile;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): SketchProfile.AsObject;
+    static toObject(includeInstance: boolean, msg: SketchProfile): SketchProfile.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: SketchProfile, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): SketchProfile;
+    static deserializeBinaryFromReader(message: SketchProfile, reader: jspb.BinaryReader): SketchProfile;
+}
+
+export namespace SketchProfile {
+    export type AsObject = {
+        name: string,
+        fqbn: string,
     }
 }

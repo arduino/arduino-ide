@@ -1,7 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { dirname } from 'node:path';
 import yaml from 'js-yaml';
-import * as grpc from '@grpc/grpc-js';
 import { injectable, inject, named } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -16,18 +15,17 @@ import {
   ConfigState,
 } from '../common/protocol';
 import { spawnCommand } from './exec-util';
-import {
-  MergeRequest,
-  WriteRequest,
-} from './cli-protocol/cc/arduino/cli/settings/v1/settings_pb';
-import { SettingsServiceClient } from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
-import * as serviceGrpcPb from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
 import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone, nls } from '@theia/core';
 import { ErrnoException } from './utils/errors';
+import {
+  SettingsMergeRequest,
+  SettingsWriteRequest,
+} from './cli-protocol/cc/arduino/cli/commands/v1/settings_pb';
+import { createArduinoCoreServiceClient } from './arduino-core-service-client';
 
 const deepmerge = require('deepmerge');
 
@@ -293,16 +291,16 @@ export class ConfigServiceImpl
   }
 
   private async updateDaemon(
-    port: string | number,
+    port: number | number,
     config: DefaultCliConfig
   ): Promise<void> {
-    const client = this.createClient(port);
-    const req = new MergeRequest();
+    const client = createArduinoCoreServiceClient({ port });
+    const req = new SettingsMergeRequest();
     const json = JSON.stringify(config, null, 2);
     req.setJsonData(json);
     this.logger.info(`Updating daemon with 'data': ${json}`);
     return new Promise<void>((resolve, reject) => {
-      client.merge(req, (error) => {
+      client.settingsMerge(req, (error) => {
         try {
           if (error) {
             reject(error);
@@ -316,14 +314,14 @@ export class ConfigServiceImpl
     });
   }
 
-  private async writeDaemonState(port: string | number): Promise<void> {
-    const client = this.createClient(port);
-    const req = new WriteRequest();
+  private async writeDaemonState(port: number | number): Promise<void> {
+    const client = createArduinoCoreServiceClient({ port });
+    const req = new SettingsWriteRequest();
     const cliConfigUri = await this.getCliConfigFileUri();
     const cliConfigPath = FileUri.fsPath(cliConfigUri);
     req.setFilePath(cliConfigPath);
     return new Promise<void>((resolve, reject) => {
-      client.write(req, (error) => {
+      client.settingsWrite(req, (error) => {
         try {
           if (error) {
             reject(error);
@@ -335,19 +333,6 @@ export class ConfigServiceImpl
         }
       });
     });
-  }
-
-  private createClient(port: string | number): SettingsServiceClient {
-    // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
-    const SettingsServiceClient = grpc.makeClientConstructor(
-      // @ts-expect-error: ignore
-      serviceGrpcPb['cc.arduino.cli.settings.v1.SettingsService'],
-      'SettingsServiceService'
-    ) as any;
-    return new SettingsServiceClient(
-      `localhost:${port}`,
-      grpc.credentials.createInsecure()
-    ) as SettingsServiceClient;
   }
 
   // #1445

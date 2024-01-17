@@ -3,7 +3,7 @@
 (async () => {
   const os = require('node:os');
   const path = require('node:path');
-  const { mkdirSync, promises: fs } = require('node:fs');
+  const { mkdirSync, promises: fs, rmSync } = require('node:fs');
   const { exec } = require('./utils');
   const glob = require('glob');
   const { SemVer, gte, valid: validSemVer } = require('semver');
@@ -140,6 +140,10 @@
 
   const rpc = path.join(repository, 'rpc');
   const out = path.join(__dirname, '..', 'src', 'node', 'cli-protocol');
+  // Must wipe the gen output folder. Otherwise, dangling service implementation remain in IDE2 code,
+  // although it has been removed from the proto file.
+  // For example, https://github.com/arduino/arduino-cli/commit/50a8bf5c3e61d5b661ccfcd6a055e82eeb510859.
+  rmSync(out, { recursive: true, maxRetries: 5, force: true });
   mkdirSync(out, { recursive: true });
 
   const protos = await new Promise((resolve) =>

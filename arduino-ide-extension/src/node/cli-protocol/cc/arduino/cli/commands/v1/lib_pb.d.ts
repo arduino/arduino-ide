@@ -298,6 +298,8 @@ export class LibraryResolveDependenciesRequest extends jspb.Message {
     setName(value: string): LibraryResolveDependenciesRequest;
     getVersion(): string;
     setVersion(value: string): LibraryResolveDependenciesRequest;
+    getDoNotUpdateInstalledLibraries(): boolean;
+    setDoNotUpdateInstalledLibraries(value: boolean): LibraryResolveDependenciesRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): LibraryResolveDependenciesRequest.AsObject;
@@ -314,6 +316,7 @@ export namespace LibraryResolveDependenciesRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         name: string,
         version: string,
+        doNotUpdateInstalledLibraries: boolean,
     }
 }
 
@@ -371,8 +374,6 @@ export class LibrarySearchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): LibrarySearchRequest;
-    getQuery(): string;
-    setQuery(value: string): LibrarySearchRequest;
     getOmitReleasesDetails(): boolean;
     setOmitReleasesDetails(value: boolean): LibrarySearchRequest;
     getSearchArgs(): string;
@@ -391,7 +392,6 @@ export class LibrarySearchRequest extends jspb.Message {
 export namespace LibrarySearchRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
-        query: string,
         omitReleasesDetails: boolean,
         searchArgs: string,
     }

@@ -169,13 +169,17 @@
   ],
   "arduino": {
     "arduino-cli": {
-      "version": "0.35.3"
+      "version": "0.36.0-rc.1"
     },
     "arduino-fwuploader": {
       "version": "2.4.1"
     },
     "arduino-language-server": {
-      "version": "0.7.6"
+      "version": {
+        "owner": "arduino",
+        "repo": "arduino-language-server",
+        "commitish": "91c2ba8"
+      }
     },
     "clangd": {
       "version": "14.0.0"

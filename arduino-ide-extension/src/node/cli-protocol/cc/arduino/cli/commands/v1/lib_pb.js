@@ -2648,7 +2648,8 @@ proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.toObject = fu
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    version: jspb.Message.getFieldWithDefault(msg, 3, "")
+    version: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    doNotUpdateInstalledLibraries: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -2698,6 +2699,10 @@ proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.deserializeBi
       var value = /** @type {string} */ (reader.readString());
       msg.setVersion(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDoNotUpdateInstalledLibraries(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2746,6 +2751,13 @@ proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.serializeBina
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getDoNotUpdateInstalledLibraries();
+  if (f) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -2822,6 +2834,24 @@ proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.prototype.get
  */
 proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.prototype.setVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool do_not_update_installed_libraries = 4;
+ * @return {boolean}
+ */
+proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.prototype.getDoNotUpdateInstalledLibraries = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.LibraryResolveDependenciesRequest.prototype.setDoNotUpdateInstalledLibraries = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
@@ -3208,9 +3238,8 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.toObject = funct
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-    query: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    omitReleasesDetails: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    searchArgs: jspb.Message.getFieldWithDefault(msg, 4, "")
+    omitReleasesDetails: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    searchArgs: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -3253,14 +3282,10 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.deserializeBinaryFromReade
       msg.setInstance(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setQuery(value);
-      break;
-    case 3:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setOmitReleasesDetails(value);
       break;
-    case 4:
+    case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setSearchArgs(value);
       break;
@@ -3301,24 +3326,17 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.serializeBinaryToWriter = 
       cc_arduino_cli_commands_v1_common_pb.Instance.serializeBinaryToWriter
     );
   }
-  f = message.getQuery();
-  if (f.length > 0) {
-    writer.writeString(
-      2,
-      f
-    );
-  }
   f = message.getOmitReleasesDetails();
   if (f) {
     writer.writeBool(
-      3,
+      2,
       f
     );
   }
   f = message.getSearchArgs();
   if (f.length > 0) {
     writer.writeString(
-      4,
+      3,
       f
     );
   }
@@ -3363,29 +3381,11 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.hasInstance = fu
 
 
 /**
- * optional string query = 2;
- * @return {string}
- */
-proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getQuery = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.cc.arduino.cli.commands.v1.LibrarySearchRequest} returns this
- */
-proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setQuery = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional bool omit_releases_details = 3;
+ * optional bool omit_releases_details = 2;
  * @return {boolean}
  */
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getOmitReleasesDetails = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 2, false));
 };
 
 
@@ -3394,16 +3394,16 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getOmitReleasesD
  * @return {!proto.cc.arduino.cli.commands.v1.LibrarySearchRequest} returns this
  */
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setOmitReleasesDetails = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 3, value);
+  return jspb.Message.setProto3BooleanField(this, 2, value);
 };
 
 
 /**
- * optional string search_args = 4;
+ * optional string search_args = 3;
  * @return {string}
  */
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getSearchArgs = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
@@ -3412,7 +3412,7 @@ proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.getSearchArgs = 
  * @return {!proto.cc.arduino.cli.commands.v1.LibrarySearchRequest} returns this
  */
 proto.cc.arduino.cli.commands.v1.LibrarySearchRequest.prototype.setSearchArgs = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

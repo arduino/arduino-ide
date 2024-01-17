@@ -167,7 +167,16 @@ export class SketchesServiceImpl
           reject(rejectWith);
           return;
         }
-        const responseSketchPath = maybeNormalizeDrive(resp.getLocationPath());
+        const sketch = resp.getSketch();
+        if (!sketch) {
+          reject(
+            new Error(`Incomplete LoadSketch response. Sketch is missing.`)
+          );
+          return;
+        }
+        const responseSketchPath = maybeNormalizeDrive(
+          sketch.getLocationPath()
+        );
         if (requestSketchPath !== responseSketchPath) {
           this.logger.warn(
             `Warning! The request sketch path was different than the response sketch path from the CLI. This could be a potential bug. Request: <${requestSketchPath}>, response: <${responseSketchPath}>.`
@@ -185,14 +194,14 @@ export class SketchesServiceImpl
         resolve({
           name: path.basename(responseSketchPath),
           uri: FileUri.create(responseSketchPath).toString(),
-          mainFileUri: FileUri.create(resp.getMainFile()).toString(),
-          otherSketchFileUris: resp
+          mainFileUri: FileUri.create(sketch.getMainFile()).toString(),
+          otherSketchFileUris: sketch
             .getOtherSketchFilesList()
             .map((p) => FileUri.create(p).toString()),
-          additionalFileUris: resp
+          additionalFileUris: sketch
             .getAdditionalFilesList()
             .map((p) => FileUri.create(p).toString()),
-          rootFolderFileUris: resp
+          rootFolderFileUris: sketch
             .getRootFolderFilesList()
             .map((p) => FileUri.create(p).toString()),
           mtimeMs,

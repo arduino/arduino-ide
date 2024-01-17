@@ -43,7 +43,7 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyIndexUpdateDidFail(params));
   }
 
-  notifyDaemonDidStart(port: string): void {
+  notifyDaemonDidStart(port: number): void {
     this.clients.forEach((client) => client.notifyDaemonDidStart(port));
   }
 

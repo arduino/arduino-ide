@@ -196,11 +196,7 @@ export class InoLanguage extends SketchContribution {
     forceStart = false
   ): Promise<void> {
     const port = await this.daemon.tryGetPort();
-    if (!port) {
-      return;
-    }
-    const portNumber = Number.parseInt(port, 10); // TODO: IDE2 APIs should provide a number and not string
-    if (Number.isNaN(portNumber)) {
+    if (typeof port !== 'number') {
       return;
     }
     const release = await this.languageServerStartMutex.acquire();
@@ -280,7 +276,7 @@ export class InoLanguage extends SketchContribution {
           lsPath,
           daemonAddress: {
             hostname: 'localhost',
-            port: portNumber,
+            port,
             instance: 1, // TODO: get it from the backend
           },
           clangdPath,
