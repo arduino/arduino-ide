@@ -64,8 +64,26 @@ interface StartDebugParams {
 }
 type StartDebugResult = boolean;
 
+export const DebugDisabledStatusMessageSource = Symbol(
+  'DebugDisabledStatusMessageSource'
+);
+export interface DebugDisabledStatusMessageSource {
+  /**
+   * `undefined` if debugging is enabled (for the currently selected board + programmer + config options).
+   * Otherwise, it's the human readable message why it's disabled.
+   */
+  get message(): string | undefined;
+  /**
+   * Emits an event when {@link message} changes.
+   */
+  get onDidChangeMessage(): Event<string | undefined>;
+}
+
 @injectable()
-export class Debug extends SketchContribution {
+export class Debug
+  extends SketchContribution
+  implements DebugDisabledStatusMessageSource
+{
   @inject(HostedPluginSupport)
   private readonly hostedPluginSupport: HostedPluginSupport;
   @inject(NotificationCenter)
@@ -83,10 +101,10 @@ export class Debug extends SketchContribution {
    * If `undefined`, debugging is enabled. Otherwise, the human-readable reason why it's disabled.
    */
   private _message?: string = noBoardSelected; // Initial pessimism.
-  private didChangeMessageEmitter = new Emitter<string | undefined>();
-  private onDidChangeMessage = this.didChangeMessageEmitter.event;
+  private readonly didChangeMessageEmitter = new Emitter<string | undefined>();
+  readonly onDidChangeMessage = this.didChangeMessageEmitter.event;
 
-  private get message(): string | undefined {
+  get message(): string | undefined {
     return this._message;
   }
   private set message(message: string | undefined) {
@@ -349,6 +367,8 @@ export namespace Debug {
 }
 
 /**
+ * Resolves with the FQBN to use for the `debug --info --programmer p --fqbn $FQBN` command. Otherwise, rejects.
+ *
  * (non-API)
  */
 export async function isDebugEnabled(

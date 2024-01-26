@@ -180,7 +180,7 @@ import { TabBarRenderer } from './theia/core/tab-bars';
 import { EditorCommandContribution } from './theia/editor/editor-command';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-decorator';
-import { Debug } from './contributions/debug';
+import { Debug, DebugDisabledStatusMessageSource } from './contributions/debug';
 import { Sketchbook } from './contributions/sketchbook';
 import { DebugFrontendApplicationContribution } from './theia/debug/debug-frontend-application-contribution';
 import { DebugFrontendApplicationContribution as TheiaDebugFrontendApplicationContribution } from '@theia/debug/lib/browser/debug-frontend-application-contribution';
@@ -365,7 +365,8 @@ import { AutoSelectProgrammer } from './contributions/auto-select-programmer';
 import { HostedPluginSupport } from './hosted/hosted-plugin-support';
 import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
 import { DebugSessionManager } from './theia/debug/debug-session-manager';
-import { DebugWidget } from '@theia/debug/lib/browser/view/debug-widget';
+import { DebugWidget as TheiaDebugWidget } from '@theia/debug/lib/browser/view/debug-widget';
+import { DebugWidget } from './theia/debug/debug-widget';
 import { DebugViewModel } from '@theia/debug/lib/browser/view/debug-view-model';
 import { DebugSessionWidget } from '@theia/debug/lib/browser/view/debug-session-widget';
 import { DebugConfigurationWidget } from './theia/debug/debug-configuration-widget';
@@ -771,6 +772,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window
 
+  bind(DebugDisabledStatusMessageSource).toService(Debug);
+
   // Disabled the quick-pick customization from Theia when multiple formatters are available.
   // Use the default VS Code behavior, and pick the first one. In the IDE2, clang-format has `exclusive` selectors.
   bind(MonacoFormattingConflictsContribution).toSelf().inSingletonScope();
@@ -874,7 +877,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Customized debug widget with its customized config <select> to update it programmatically.
   bind(WidgetFactory)
     .toDynamicValue(({ container }) => ({
-      id: DebugWidget.ID,
+      id: TheiaDebugWidget.ID,
       createWidget: () => {
         const child = new Container({ defaultScope: 'Singleton' });
         child.parent = container;
