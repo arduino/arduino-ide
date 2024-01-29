@@ -115,7 +115,7 @@
       "remote": "Remoto",
       "share": "Compartir...",
       "shareSketch": "Compartir Sketch",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "Mostrar/Ocultar Sketchbook Remoto",
       "signIn": "Iniciar sesión",
       "signInToCloud": "Iniciar sesión en Arduino Cloud",
       "signOut": "Cerrar sesión",
@@ -124,13 +124,13 @@
       "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
     },
     "cloudSketch": {
-      "alreadyExists": "Cloud sketch '{0}' already exists.",
-      "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
-      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
-      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "alreadyExists": "El sketch remoto '{0}' ya existe.",
+      "creating": "Creando sketch remoto '{0}'...",
+      "new": "Nuevo Sketch en la Nube",
+      "notFound": "No se pudieron obtener los cambios del sketch remoto '{0}'. No existe.",
+      "pulling": "Sincronizando sketchbook, extrayendo '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
-      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "renaming": "Renombrando el sketch remoto de '{0}' a '{1}'...",
       "synchronizingSketchbook": "Sincronizando carpeta..."
     },
     "common": {
@@ -139,6 +139,7 @@
       "installManually": "Instalar manualmente",
       "later": "Más tarde",
       "noBoardSelected": "Ninguna placa seleccionada.",
+      "noSketchOpened": "No sketch opened",
       "notConnected": "[no conectado]",
       "offlineIndicator": "Al parecer no estás en línea. Sin una conexión a internet, el CLI de Arduino no podrá descargar los recursos necesarios, lo cual puede ocasionar fallos. Por favor, conecte a internet y reinicie la aplicación.",
       "oldFormat": "La página '{0}' sigue utilizando el formato antiguo `.pde`. ¿Quieres cambiar a la nueva extensión `.ino`?",
@@ -146,6 +147,7 @@
       "processing": "Procesando",
       "recommended": "Recomendado",
       "retired": "Retirado",
+      "selectManually": "Select Manually",
       "selectedOn": "en {0}",
       "serialMonitor": "Monitor Serie",
       "type": "Tipo",
@@ -178,7 +180,7 @@
       }
     },
     "connectionStatus": {
-      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+      "connectionLost": "Conexión perdida. Las acciones y actualizaciones de los sketchs remotos no estarán disponibles."
     },
     "contributions": {
       "addFile": "Añadir fichero...",
@@ -209,9 +211,11 @@
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
+      "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimizar para depuración",
-      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+      "sketchIsNotCompiled": "El sketch '{0}' debe ser verificado antes de iniciar una sesión de depuración. Por favor, verifique el sketch e inicia la depuración nuevamente. ¿Deseas verificar el sketch ahora?"
     },
     "developer": {
       "clearBoardList": "Clear the Board List History",
@@ -342,7 +346,7 @@
       "unableToConnectToWebSocket": "No se puede conectar al websocket"
     },
     "newCloudSketch": {
-      "newSketchTitle": "Name of the new Cloud Sketch"
+      "newSketchTitle": "Nombre del nuevo Sketch Remoto"
     },
     "portProtocol": {
       "network": "Red",
@@ -414,7 +418,7 @@
       }
     },
     "renameCloudSketch": {
-      "renameSketchTitle": "New name of the Cloud Sketch"
+      "renameSketchTitle": "Nuevo nombre del Sketch Remoto"
     },
     "replaceMsg": "¿Sustituir la versión existente de {0}?",
     "selectZip": "Seleccione un archivo zip que contenga la biblioteca que deseas añadir",
@@ -443,7 +447,7 @@
       "editInvalidSketchFolderQuestion": "¿Quieres intentar guardar el código con un nombre diferente?",
       "exportBinary": "Exportar binario compilado",
       "invalidCloudSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 36.",
-      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationDetails": "No puedes guardar un sketch dentro de una carpeta dentro de sí misma.",
       "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
       "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
       "invalidSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 63.",
@@ -460,6 +464,8 @@
       "saveSketchAs": "Guardar carpeta de sketch como...",
       "showFolder": "Mostrar carpeta de Sketch",
       "sketch": "Sketch",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Sketchbook Local",
       "titleSketchbook": "Sketchbook",
@@ -471,7 +477,7 @@
       "verifyOrCompile": "Verificar/Compilar"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
+      "newCloudSketch": "Nuevo Sketch en la Nube",
       "newSketch": "New Sketch"
     },
     "survey": {

@@ -12,13 +12,13 @@
     },
     "board": {
       "board": "Board{0}",
-      "boardConfigDialogTitle": "Anderes Boards und Ports wählen",
+      "boardConfigDialogTitle": "Andere Boards und Ports wählen",
       "boardInfo": "Board-Informationen",
       "boards": "Boards",
       "configDialog1": "Wählen Sie ein Board und einen Port, wenn Sie den Sketch hochladen möchten.",
       "configDialog2": "Wenn Sie nur ein Board auswählen, werden Sie den Sketch nur kompilieren können, jedoch nicht hochladen.",
       "couldNotFindPreviouslySelected": "Zuvor gewähltes Board '{0}' wurde nicht in der installierten Plattform '{1}' gefunden. Bitte Board erneut auswählen. Jetzt auswählen?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Board und Port ändern...",
       "getBoardInfo": "Board-Informationen abrufen",
       "inSketchbook": "(im Sketchbook)",
       "installNow": "Der \"{0} {1}\" Core muss für das ausgewählte \"{2}\" Board installiert werden. Jetzt installieren?",
@@ -32,7 +32,7 @@
       "ports": "Ports",
       "programmer": "Programmer",
       "reselectLater": "Später auswählen",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "Verwende {0} an {1}",
       "searchBoard": "Board suchen",
       "selectBoard": "Board wählen",
       "selectPortForInfo": "Wähle ein Port, um Informationen über das Board zu erhalten.",
@@ -41,7 +41,7 @@
       "succesfullyInstalledPlatform": "Plattform erfolgreich installiert {0}:{1}",
       "succesfullyUninstalledPlatform": "Plattform erfolgreich deinstalliert {0}:{1}",
       "typeOfPorts": "{0} Ports",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "Board nicht bestätigt",
       "unknownBoard": "Unbekanntes Board"
     },
     "boardsManager": "Board-Verwaltung",
@@ -102,16 +102,16 @@
       "offline": "Offline",
       "openInCloudEditor": "Im Cloud Editor öffnen",
       "options": "Optionen ...",
-      "privateVisibility": "Private. Nur du siehst diesen Sketch.",
+      "privateVisibility": "Privat. Nur du siehst diesen Sketch.",
       "profilePicture": "Profilbild",
-      "publicVisibility": "Public. Jeder kann mit diesen Link den Sketch sehen.",
+      "publicVisibility": "Öffentlich - Jeder kann mit diesen Link den Sketch sehen.",
       "pull": "Pull",
       "pullFirst": "Du musst zuerst herunterladen, damit du in die Cloud schieben kannst.",
       "pullSketch": "Pull Sketch",
       "pullSketchMsg": "Wenn du diesen Sketch aus der Cloud lädst, wird die lokale Version überschrieben. Möchtest du fortfahren?",
       "push": "Push",
       "pushSketch": "Push Sketch",
-      "pushSketchMsg": "Das ist ein öffentliches Sketch. Vor dem Pushen solltest du überprüfen, ob alle sensiblen Informationen in arduino_secrets.h definiert sind. Du kannst einen Sketch mit dem Teilen-Feld privat machen.",
+      "pushSketchMsg": "Das ist ein öffentlicher Sketch. Vor dem Pushen solltest du überprüfen, ob alle sensiblen Informationen in arduino_secrets.h definiert sind. Du kannst einen Sketch mit dem Teilen-Feld als privat definieren.",
       "remote": "Remote",
       "share": "Teilen....",
       "shareSketch": "Sketch teilen",
@@ -139,6 +139,7 @@
       "installManually": "Manuell installieren",
       "later": "später",
       "noBoardSelected": "Kein Board ausgewählt",
+      "noSketchOpened": "No sketch opened",
       "notConnected": "[keine Verbindung]",
       "offlineIndicator": "Anscheinend bist du offline. Ohne eine aktive Internetverbindung kann das Arduino CLI nicht die nötigen Ressourcen herunterladen, was zu Problemen führen kann. Bitte überprüfe deine Internetverbindung und starte das Programm neu. ",
       "oldFormat": "Der Sketch '{0}' verwendet noch das alte '.pde' Format. Möchtest du auf die neuere '.ino' Endung wechseln?",
@@ -146,6 +147,7 @@
       "processing": "Verarbeiten",
       "recommended": "Empfohlen",
       "retired": "Zurückgezogen",
+      "selectManually": "Select Manually",
       "selectedOn": "an {0}",
       "serialMonitor": "Serieller Monitor",
       "type": "Typ",
@@ -209,14 +211,16 @@
     "debug": {
       "debugWithMessage": "Debug - {0}",
       "debuggingNotSupported": "'{0}' unterstützt kein Debuggen",
+      "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Die Platform für '{0}' ist nicht instaliert.",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Für Debugging optimieren",
       "sketchIsNotCompiled": "Der Sketch '{0}' muss vor dem Starten einer Debugging-Sitzung überprüft werden. Bitte überprüfe den Sketch und starte das Debugging erneut. Möchtest du den Sketch jetzt überprüfen?"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "Board-Tabellen-Historie leeren",
+      "clearBoardsConfig": "Board- und Portauswahl aufheben",
+      "dumpBoardList": "Board-Tabelle löschen"
     },
     "dialog": {
       "dontAskAgain": "Nicht noch einmal fragen"
@@ -267,18 +271,18 @@
     "ide-updater": {
       "checkForUpdates": "Nach Arduino IDE Updates suchen",
       "closeAndInstallButton": "Schließen und Installieren",
-      "closeToInstallNotice": "Schließe die Software und installiere das Update auf deinem Computer",
+      "closeToInstallNotice": "Beende die Software und installiere das Update auf deinem Computer",
       "downloadButton": "Download",
       "downloadingNotice": "Die neueste Version der Arduino IDE wird heruntergeladen",
       "errorCheckingForUpdates": "Fehler bei der Suche nach IDE Updates{0}",
-      "goToDownloadButton": "Zum Download Wechseln",
-      "goToDownloadPage": "Eine Update für die Arduino IDE ist verfügbar, konnte aber nicht automatisch heruntergeladen und installiert werden. Bitte gehen sie zur Download-Seite und laden sie dort die neueste Version herunter",
+      "goToDownloadButton": "Zum Download wechseln",
+      "goToDownloadPage": "Ein Update für die Arduino IDE ist verfügbar, konnte aber nicht automatisch heruntergeladen und installiert werden. Bitte gehen sie zur Download-Seite und laden sie dort die neueste Version herunter ",
       "ideUpdaterDialog": "Software Update",
       "newVersionAvailable": "Eine neue Version der Arduino IDE ({0}) ist zum Download verfügbar",
       "noUpdatesAvailable": "Es gibt keine neuen Updates für die Arduino IDE",
       "notNowButton": "Später",
-      "skipVersionButton": "Version Überspringen",
-      "updateAvailable": "Update Verfügbar",
+      "skipVersionButton": "Version überspringen",
+      "updateAvailable": "Update verfügbar",
       "versionDownloaded": "Arduino IDE {0} wurde heruntergeladen"
     },
     "installable": {
@@ -292,8 +296,8 @@
       "include": "Bibliothek einbinden",
       "installAll": "Alle installieren",
       "installLibraryDependencies": "Bibliotheksabhängigkeiten installieren",
-      "installMissingDependencies": "Möchten Sie alle fehlenden Ressourcen installieren?",
-      "installOneMissingDependency": "Möchten Sie die fehlende Ressource installieren?",
+      "installMissingDependencies": "Möchtest Du die fehlenden Abhängigkeiten installieren?",
+      "installOneMissingDependency": "Möchtest Du die fehlende Abhängigkeit installieren?",
       "installWithoutDependencies": "Ohne Abhängigkeiten installieren",
       "installedSuccessfully": "Bibliothek {0}:{1} erfolgreich installiert",
       "libraryAlreadyExists": "Eine Bibliothek existiert bereits. Möchten sie diese überschreiben?",
@@ -350,7 +354,7 @@
     },
     "preferences": {
       "additionalManagerURLs": "Zusätzliche Boardverwalter-URLs",
-      "auth.audience": "Das The OAuth2 Audience.",
+      "auth.audience": "Die OAuth2 Audience",
       "auth.clientID": "Die OAuth2 client ID.",
       "auth.domain": "Die OAuth2 Domain.",
       "auth.registerUri": "Das URI hat einen neuen Benutzer registriert.",
@@ -381,11 +385,11 @@
       "invalid.editorFontSize": "Ungültige Editor-Schriftgröße. Wert muss eine Ganzzahl größer 0 (Null) sein.",
       "invalid.sketchbook.location": "Ungültiger Sketchbook Speicherort: {0}",
       "invalid.theme": "Ungültiges Erscheinungsbild",
-      "language.log": "Wenn aktivert, werden Arduino-Sprach-Server-Logdateien in den Sketch-Ordner geschrieben. Standardgemäß deaktivert.",
+      "language.log": "Wenn aktivert, werden Arduino-Sprach-Server-Logdateien in den Sketch-Ordner geschrieben. Standardmäßig deaktivert. ",
       "language.realTimeDiagnostics": "Wenn aktiviert, bietet der Sprachserver bei der Eingabe im Editor eine Echtzeitdiagnose. Ist standardmäßig deaktiviert.",
       "manualProxy": "Manuelle Proxy Einstellung",
       "monitor": {
-        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+        "dockPanel": "Der Bereich der Applikations-Shell wo das {0}-Widget angezeigt werden soll. Entweder \"unten\" oder \"rechts\". Standardmäßig \"{1}\"."
       },
       "network": "Netzwerk",
       "newSketchbookLocation": "Wähle einen neuen Ort für das Sketchbook ",
@@ -402,15 +406,15 @@
         "inoBlueprint": "Absoluter Dateipfad zur Standard-'.ino'-Dateivorlage. Wenn angegeben, wird der Inhalt der Dateivorlage für jeden, mit der IDE erstellten, Sketch verwendet. Wenn nicht angegeben, werden die Sketches mit dem Standard-Arduino-Inhalt erstellt. Unauffindbare Dateivorlagen werden ignoriert. **Ein Neustarten der IDE ist erforderlich**, um diese Einstellung zu übernehmen."
       },
       "sketchbook.location": "Dateipfad des Sketchbooks",
-      "sketchbook.showAllFiles": "Wenn aktiviert, werden alle Sketch-Dateien innerhalb des Sketch angezeigt. Standardgemäß deaktiviert. ",
-      "survey.notification": "Wenn aktiviert, werden Nutzer benachrichtigt, wenn eine Umfrage verfügbar ist. Standardgemäß aktiviert.",
+      "sketchbook.showAllFiles": "Wenn aktiviert, werden alle Sketch-Dateien innerhalb des Sketch angezeigt. Standardmäßig deaktiviert. ",
+      "survey.notification": "Wenn aktiviert, werden Nutzer benachrichtigt, wenn eine Umfrage verfügbar ist. Standardmäßig aktiviert.",
       "unofficialBoardSupport": "Klicke hier für eine Liste von inoffiziell unterstützten Boards",
       "upload": "Hochladen",
-      "upload.verbose": "Wenn aktiviert, werden ausführliche Compiler-Meldungen angezeigt. Standardgemäß deaktiviert.",
+      "upload.verbose": "Wenn aktiviert, werden ausführliche Compiler-Meldungen angezeigt. Standardmäßig deaktiviert.",
       "verifyAfterUpload": "Code nach Hochladen überprüfen ",
       "window.autoScale": "Wenn aktiviert: Benutzeroberfläche soll mit Schriftgröße skalieren.",
       "window.zoomLevel": {
-        "deprecationMessage": "Veraltet. Bitte 'window.zommLevel' stattdessen benutzen."
+        "deprecationMessage": "Veraltet. Bitte 'window.zoomLevel' stattdessen benutzen."
       }
     },
     "renameCloudSketch": {
@@ -447,19 +451,21 @@
       "invalidSketchFolderLocationMessage": "Ungültiger Ort für Sketch-Ordner: '{0}'",
       "invalidSketchFolderNameMessage": "Ungültiger Name für einen Sketch-Ordner: '{0}'",
       "invalidSketchName": "Der Name muss mit einem Buchstaben, einer Ziffer oder einem Unterstrich beginnen und darf Buchstaben, Ziffern, Bindestriche, Punkte und Unterstriche enthalten. Die maximale Länge ist 63 Zeichen.",
-      "moving": "Übertragen...",
+      "moving": "Verschieben",
       "movingMsg": "Die Datei \"{0}\" muss sich in einen Sketch Ordner \"{1}\" befinden.\nOrdner erstellen, Datei verschieben und fortfahren?",
-      "new": "Neu",
+      "new": "Neuer Sketch",
       "noTrailingPeriod": "Ein Dateiname kann nicht mit einem Punkt enden",
       "openFolder": "Ordner öffnen",
       "openRecent": "Zuletzt geöffnet",
       "openSketchInNewWindow": "Sketch in neuen Fenster öffnen",
       "reservedFilename": "'{0}' ist ein reservierter Dateiname.",
       "saveFolderAs": "Sketch Ordner speichern als...",
-      "saveSketch": "Sketch speichern und später wieder öffnen",
+      "saveSketch": "Sketch für spätere Verwendung speichern",
       "saveSketchAs": "Sketch Ordner speichern als...",
       "showFolder": "Zeige Sketch Ordner",
       "sketch": "Sketch",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Lokales Sketchbook",
       "titleSketchbook": "Sketchbook",
@@ -509,7 +515,7 @@
       "abortFixTitle": "Ungültiger Sketch",
       "renameSketchFileMessage": "Die Sketch-Datei '{0}' kann nicht verwendet werden. {1} Soll die Sketch-Datei jetzt umbenannt werden?",
       "renameSketchFileTitle": "Ungültiger Sketch-Dateiname",
-      "renameSketchFolderMessage": "Der Sketch '{0}' kann nicht verwendet werden. {1} Um diese Nachricht loszuwerden, muss der Sketch umbenannt werden. Wollen Sie den Sketch jetzt umbenennen?",
+      "renameSketchFolderMessage": "Der Sketch '{0}' kann nicht verwendet werden. {1} Um diese Meldung loszuwerden, muss der Sketch umbenannt werden. Wollen Sie den Sketch jetzt umbenennen?",
       "renameSketchFolderTitle": "Ungültiger Sketch-Name"
     },
     "workspace": {
@@ -534,8 +540,8 @@
       "expand": "Ausklappen"
     },
     "workspace": {
-      "deleteCloudSketch": "Der Cloud-Sketch '{0}' wird dauerhaft vpn den Arduino-Servern und den lokalen Caches gelöscht. Diese Aktion ist nicht umkehrbar. Wollen Sie den aktuellen Sketch löschen?",
-      "deleteCurrentSketch": "Der Sketch '{0}' wird dauerhaft gelöscht. Diese Aktion ist nicht umkehrbar. Wollen Sie den aktuellen Sketch löschen?",
+      "deleteCloudSketch": "Der Cloud-Sketch '{0}' wird dauerhaft von den Arduino-Servern und den lokalen Caches gelöscht. Diese Aktion ist nicht umkehrbar. Möchtest Du den aktuellen Sketch löschen?",
+      "deleteCurrentSketch": "Der Sketch {0} wird dauerhaft gelöscht. Diese Aktion ist nicht umkehrbar. Möchtest Du den aktuellen Sketch löschen?",
       "fileNewName": "Name für die neue Datei",
       "invalidExtension": "\".{0}\" ist keine gültige Dateierweiterung.",
       "newFileName": "Neuer Name für die Datei"
