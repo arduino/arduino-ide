@@ -12,13 +12,13 @@
     },
     "board": {
       "board": "{0} 開發板",
-      "boardConfigDialogTitle": "選擇其他開發板和埠",
+      "boardConfigDialogTitle": "選擇其他開發板及連接埠",
       "boardInfo": "開發板資訊",
       "boards": "開發板",
-      "configDialog1": "若要上傳 Sketch 請選擇開發板及埠",
+      "configDialog1": "若要上傳 Sketch 請選擇開發板及連接埠",
       "configDialog2": "單選擇開發板只能編譯，不能上傳",
       "couldNotFindPreviouslySelected": "已安装平台{1}中找不到您選的開發板{0}。請手動選擇。你想選擇嗎？",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "編輯開發板和連接埠",
       "getBoardInfo": "取得開發板資訊",
       "inSketchbook": "(在 sketchbook 內)",
       "installNow": "選取的 {2} 開發板必須安裝 {0} {1} 核心程式，要現在安裝嗎？",
@@ -32,7 +32,7 @@
       "ports": "連接埠",
       "programmer": "燒錄器",
       "reselectLater": "請稍後再選擇",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "使用在  '{1}' 發現的 '{0}'",
       "searchBoard": "搜尋開發板",
       "selectBoard": "選擇開發版",
       "selectPortForInfo": "請選定連接埠以便取得開發板的資訊",
@@ -41,7 +41,7 @@
       "succesfullyInstalledPlatform": "成功安裝平台 {0}:{1}",
       "succesfullyUninstalledPlatform": "成功卸載平台 {0}:{1}",
       "typeOfPorts": "{0}連接埠",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "未知的開發板",
       "unknownBoard": "未知的開發版"
     },
     "boardsManager": "開發板管理員",
@@ -139,6 +139,7 @@
       "installManually": "手動安裝",
       "later": "稍後",
       "noBoardSelected": "未選取開發板",
+      "noSketchOpened": "未開啟 sketch",
       "notConnected": "[未連接]",
       "offlineIndicator": "您目前處於離線狀態，在沒有網路的情況下，Arduino命令列介面將無法下載需要的資源，並可能導致錯誤。請連接至網路並重新啟動程式。",
       "oldFormat": "'{0}'仍然使用舊的 `.pde` 格式，要切換成新版 `.ino`  嗎?",
@@ -146,6 +147,7 @@
       "processing": "資料處理中",
       "recommended": "推薦",
       "retired": "不再支援",
+      "selectManually": "手動選取",
       "selectedOn": "在 {0}",
       "serialMonitor": "序列埠監控窗",
       "type": "類型",
@@ -209,14 +211,16 @@
     "debug": {
       "debugWithMessage": "除錯 - {0}",
       "debuggingNotSupported": "'{0}' 不支援除錯功能。",
+      "getDebugInfo": "取得除錯資訊...",
       "noPlatformInstalledFor": "平台未安裝給'{0}'",
+      "noProgrammerSelectedFor": "未選取給 '{0}' 用的燒錄器",
       "optimizeForDebugging": "除錯最佳化",
       "sketchIsNotCompiled": "Sketch '{0}' 在除錯前必須已驗證過。請先驗證 sketch 後再除錯。要現在驗證 sketch 嗎？"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "清除開發板歷史清單",
+      "clearBoardsConfig": "清除已選取的開發板及連接埠",
+      "dumpBoardList": "列出開發板清單"
     },
     "dialog": {
       "dontAskAgain": "不要再詢問"
@@ -250,7 +254,7 @@
       "selectBoard": "選擇開發版",
       "selectVersion": "選擇韌體版本",
       "successfullyInstalled": "韌體安裝成功",
-      "updater": "Firmware Updater"
+      "updater": "韌體更新"
     },
     "help": {
       "environment": "環境",
@@ -289,7 +293,7 @@
       "addZip": "加入 .zip 程式庫 ...",
       "arduinoLibraries": "Arduino 程式庫",
       "contributedLibraries": "貢獻的程式庫",
-      "include": "含括程式庫",
+      "include": "程式庫",
       "installAll": "安裝全部",
       "installLibraryDependencies": "安裝相依的程式庫",
       "installMissingDependencies": "要安裝缺少的相依程式嗎？",
@@ -460,6 +464,8 @@
       "saveSketchAs": "另存 Sketch 資料夾為",
       "showFolder": "顯示 Sketch 資料夾",
       "sketch": "Sketch",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "本地端的 Sketchbook",
       "titleSketchbook": "Sketchbook",

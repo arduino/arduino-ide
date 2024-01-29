@@ -108,14 +108,14 @@
       "pull": "Pull",
       "pullFirst": "클라우드로 Push하려면 먼저 Pull 합니다.",
       "pullSketch": "Pull 스케치",
-      "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
+      "pullSketchMsg": "클라우드에서 이 스케치를 가져오면 로컬 버전을 덮어쓰게 됩니다. 계속하시겠습니까?",
       "push": "Push",
       "pushSketch": "Push 스케치",
-      "pushSketchMsg": "This is a Public Sketch. Before pushing, make sure any sensitive information is defined in arduino_secrets.h files. You can make a Sketch private from the Share panel.",
+      "pushSketchMsg": "이것은 공개 스케치입니다. 클라우드로 내보내기 전에 민감한 정보가 arduino_secrets.h 파일에 정의되어 있는지 확인하세요. 공유 패널에서 스케치를 비공개로 설정할 수 있습니다.",
       "remote": "원격",
       "share": "공유...",
       "shareSketch": "스케치 공유",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "클라우드 스케치북 보이기/숨기기",
       "signIn": "로그인",
       "signInToCloud": "아두이노 클라우드에 로그인",
       "signOut": "로그아웃",
@@ -139,6 +139,7 @@
       "installManually": "수동으로 설치",
       "later": "나중에",
       "noBoardSelected": "선택된 보드 없음",
+      "noSketchOpened": "No sketch opened",
       "notConnected": "[연결되지 않음]",
       "offlineIndicator": "오프라인 상태인 것 같습니다. 인터넷 연결이 없으면 Arduino CLI가 필요한 리소스를 다운로드하지 못하고 오작동을 일으킬 수 있습니다. 인터넷에 연결하고 애플리케이션을 다시 시작해주세요.",
       "oldFormat": "'{0}' 파일은 오래된 `.pde` 확장자로 되어있어요. 새로운 `.ino` 확장자로 변경하시겠어요?",
@@ -146,6 +147,7 @@
       "processing": "처리 중",
       "recommended": "추천됨",
       "retired": "Retired",
+      "selectManually": "Select Manually",
       "selectedOn": "{0} 켜기",
       "serialMonitor": "시리얼 모니터",
       "type": "Type",
@@ -170,7 +172,7 @@
       "title": "{0} by {1}",
       "uninstall": "설치해제",
       "uninstallMsg": "설치해제를 원하십니까 {0}?",
-      "update": "Update"
+      "update": "업데이트"
     },
     "configuration": {
       "cli": {
@@ -209,7 +211,9 @@
     "debug": {
       "debugWithMessage": "디버그 - {0}",
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
+      "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}'에 대한 플랫폼이 설치되어 있지 않습니다",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "디버깅 최적화",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -250,7 +254,7 @@
       "selectBoard": "보드 선택",
       "selectVersion": "펌웨어 버전 선택",
       "successfullyInstalled": "펌웨어가 성공적으로 설치되었습니다.",
-      "updater": "Firmware Updater"
+      "updater": "펌웨어 업데이터"
     },
     "help": {
       "environment": "환경",
@@ -460,6 +464,8 @@
       "saveSketchAs": "스케치 폴더를 다른 이름으로 저장...",
       "showFolder": "스케치 폴더 보기",
       "sketch": "스케치",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "스케치북",
       "titleLocalSketchbook": "로컬 스케치북",
       "titleSketchbook": "스케치북",

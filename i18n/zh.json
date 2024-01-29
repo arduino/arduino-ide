@@ -18,7 +18,7 @@
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
       "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
       "couldNotFindPreviouslySelected": "在安装的平台 ‘{1}’ 中找不到以前选择的开发板 ‘{0}’。请手动选择要使用的开发板。你想现在重新选择它吗？",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "编辑开发板和端口……",
       "getBoardInfo": "获得开发板信息",
       "inSketchbook": "（在项目文件夹中）",
       "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
@@ -32,7 +32,7 @@
       "ports": "端口",
       "programmer": "编程器",
       "reselectLater": "稍后重新选择",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "使用在 '{1}' 上发现的 '{0}'",
       "searchBoard": "搜索开发坂",
       "selectBoard": "选择开发板",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
@@ -41,7 +41,7 @@
       "succesfullyInstalledPlatform": "已成功安装平台 {0}：{1}",
       "succesfullyUninstalledPlatform": "已成功卸载平台 {0}：{1}",
       "typeOfPorts": "{0} 端口",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "没有经过确认的开发板",
       "unknownBoard": "未知开发板"
     },
     "boardsManager": "开发板管理器",
@@ -139,6 +139,7 @@
       "installManually": "手动安装",
       "later": "之后",
       "noBoardSelected": "没有选择开发板",
+      "noSketchOpened": "未打开项目",
       "notConnected": "[没有连接]",
       "offlineIndicator": "你似乎处于离线状态。如果没有网络连接，Arduino CLI 可能无法下载所需的资源，并可能导致故障。请连接网络并重新启动程序。",
       "oldFormat": "‘{0}’ 仍然使用旧的 ‘.pde’ 格式。是否要切换到新的 ‘.ino’ 扩展？",
@@ -146,6 +147,7 @@
       "processing": "正在处理中",
       "recommended": "推荐",
       "retired": "不再支持的",
+      "selectManually": "手动选择",
       "selectedOn": "在{0}上",
       "serialMonitor": "串口监视器",
       "type": "类型",
@@ -209,14 +211,16 @@
     "debug": {
       "debugWithMessage": "调试 - {0}",
       "debuggingNotSupported": "‘{0}’ 不支持调试",
+      "getDebugInfo": "正在获取调试信息。。。",
       "noPlatformInstalledFor": "‘{0}’ 平台未安装",
+      "noProgrammerSelectedFor": "未为'{0}'项目选择任何烧录器。",
       "optimizeForDebugging": "调试优化",
       "sketchIsNotCompiled": "项目 '{0}' 在开始调试会话之前必须经过验证。请验证草图并重新开始调试。你现在要验证草图吗？"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "清除开发板的历史列表",
+      "clearBoardsConfig": "清除已经选择的开发板和连接端口",
+      "dumpBoardList": "列出开发板列表"
     },
     "dialog": {
       "dontAskAgain": "不要再请求"
@@ -250,7 +254,7 @@
       "selectBoard": "选择开发板",
       "selectVersion": "选择固件版本",
       "successfullyInstalled": "固件成功安装",
-      "updater": "Firmware Updater"
+      "updater": "固件更新"
     },
     "help": {
       "environment": "环境",
@@ -282,8 +286,8 @@
       "versionDownloaded": "Arduino IDE {0} 已经下载。"
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "libraryInstallFailed": "库文件 '{0}{1}' 安装失败",
+      "platformInstallFailed": "平台安装失败：'{0}{1}'"
     },
     "library": {
       "addZip": "添加 .ZIP 库...",
@@ -385,7 +389,7 @@
       "language.realTimeDiagnostics": " True 则 language server 在编辑器中输入时提供实时诊断。默认为 False。",
       "manualProxy": "手动配置代理",
       "monitor": {
-        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+        "dockPanel": "_{0}_窗口小部件所在的应用程序shell区域不是在 \"bottom\" 或  \"bottom\"。默认为 \"{1}\"。"
       },
       "network": "网络",
       "newSketchbookLocation": "选择新的项目文件夹地址",
@@ -460,6 +464,8 @@
       "saveSketchAs": "将项目文件夹另存为…",
       "showFolder": "显示项目文件夹",
       "sketch": "项目",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "项目文件夹",
       "titleLocalSketchbook": "本地项目文件夹",
       "titleSketchbook": "项目文件夹",
@@ -483,8 +489,8 @@
       "currentThemeNotFound": "找不到当前选中的主题：{0}。Arduino IDE 已选择一个与缺失者兼容的内置主题。",
       "dark": "暗黑",
       "deprecated": "{0} （已弃用）",
-      "hc": "Dark High Contrast",
-      "hcLight": "Light High Contrast",
+      "hc": "深色高对比度",
+      "hcLight": "浅色高对比度",
       "light": "明亮",
       "user": "{0}（用户）"
     },

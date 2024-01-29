@@ -6,19 +6,19 @@
     },
     "account": {
       "goToCloudEditor": "前往雲端編輯器",
-      "goToIoTCloud": "前往物聯網雲",
-      "goToProfile": "到個人資訊",
+      "goToIoTCloud": "前往物聯網雲端",
+      "goToProfile": "前往個人資訊",
       "menuTitle": "Arduino雲"
     },
     "board": {
       "board": "{0} 開發板",
-      "boardConfigDialogTitle": "選擇其他開發板和埠",
+      "boardConfigDialogTitle": "選擇其他開發板及連接埠",
       "boardInfo": "開發板資訊",
-      "boards": "開發版",
-      "configDialog1": "若要上傳 Sketch 請選擇開發板及埠",
+      "boards": "開發板",
+      "configDialog1": "若要上傳 Sketch 請選擇開發板及連接埠",
       "configDialog2": "單選擇開發板只能編譯，不能上傳",
       "couldNotFindPreviouslySelected": "已安装平台{1}中找不到您選的開發板{0}。請手動選擇。你想選擇嗎？",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "編輯開發板和連接埠",
       "getBoardInfo": "取得開發板資訊",
       "inSketchbook": "(在 sketchbook 內)",
       "installNow": "選取的 {2} 開發板必須安裝 {0} {1} 核心程式，要現在安裝嗎？",
@@ -27,22 +27,22 @@
       "noPortsDiscovered": "未找到連接埠",
       "nonSerialPort": "非序列埠，無法取得資訊。",
       "openBoardsConfig": "選擇其他開發板及連接埠",
-      "pleasePickBoard": "請選擇已連接上的開發版",
+      "pleasePickBoard": "請選擇已連接上的開發板",
       "port": "連接埠: {0}",
       "ports": "連接埠",
       "programmer": "燒錄器",
       "reselectLater": "請稍後再選擇",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "使用在  '{1}' 發現的 '{0}'",
       "searchBoard": "搜尋開發板",
-      "selectBoard": "選擇開發版",
+      "selectBoard": "選擇開發板",
       "selectPortForInfo": "請選定連接埠以便取得開發板的資訊",
       "showAllAvailablePorts": "當開啟時，顯示所有可用的埠",
       "showAllPorts": "顯示所有連接埠",
       "succesfullyInstalledPlatform": "成功安裝平台 {0}:{1}",
       "succesfullyUninstalledPlatform": "成功卸載平台 {0}:{1}",
       "typeOfPorts": "{0}連接埠",
-      "unconfirmedBoard": "Unconfirmed board",
-      "unknownBoard": "未知的開發版"
+      "unconfirmedBoard": "未確認的開發板",
+      "unknownBoard": "未知的開發板"
     },
     "boardsManager": "開發板管理員",
     "boardsType": {
@@ -76,11 +76,11 @@
     "checkForUpdates": {
       "checkForUpdates": "檢查 Arduino 更新",
       "installAll": "全部安裝",
-      "noUpdates": "没有更新版。",
+      "noUpdates": "沒有版本更新。",
       "promptUpdateBoards": "部分開發板有更新檔。",
-      "promptUpdateLibraries": "部分程式庫有更新檔。",
+      "promptUpdateLibraries": "部分函式庫有更新檔。",
       "updatingBoards": "更新開發板中...",
-      "updatingLibraries": "更新程式庫中..."
+      "updatingLibraries": "更新函式庫中..."
     },
     "cli-error-parser": {
       "keyboardError": "找不到 'Keyboard'，請檢查是否缺少 '#include <Keyboard.h>'。",
@@ -138,7 +138,8 @@
       "contributed": "已貢獻",
       "installManually": "手動安裝",
       "later": "稍後",
-      "noBoardSelected": "沒有選擇開發版",
+      "noBoardSelected": "沒有選擇開發板",
+      "noSketchOpened": "未開啟 sketch",
       "notConnected": "[未連接]",
       "offlineIndicator": "您目前處於離線狀態，在沒有網路的情況下，Arduino命令列介面將無法下載需要的資源，並可能導致錯誤。請連接至網路並重新啟動程式。",
       "oldFormat": "'{0}'仍然使用舊的 `.pde` 格式，要切換成新版 `.ino`  嗎?",
@@ -146,6 +147,7 @@
       "processing": "資料處理中",
       "recommended": "推薦",
       "retired": "不再支援",
+      "selectManually": "手動選取",
       "selectedOn": "在 {0}",
       "serialMonitor": "序列埠監控窗",
       "type": "類型",
@@ -156,7 +158,7 @@
       "error": "編譯錯誤:{0} "
     },
     "component": {
-      "boardsIncluded": "本套件內建的開發版：",
+      "boardsIncluded": "本套件內建的開發板：",
       "by": "by",
       "clickToOpen": "點擊以瀏覽器開啟：{0}",
       "filterSearch": "篩選搜尋結果...",
@@ -198,7 +200,7 @@
     },
     "coreContribution": {
       "copyError": "複製錯誤訊息",
-      "noBoardSelected": "未選取開發版。請從 工具 > 開發版 中選取開發版"
+      "noBoardSelected": "未選取開發板。請從 工具 > 開發板 中選取開發板"
     },
     "createCloudCopy": "推送 sketch 至雲端。",
     "daemon": {
@@ -209,14 +211,16 @@
     "debug": {
       "debugWithMessage": "除錯 - {0}",
       "debuggingNotSupported": "'{0}'不支援除錯。",
+      "getDebugInfo": "取得除錯資訊...",
       "noPlatformInstalledFor": "平台未安裝給'{0}'",
+      "noProgrammerSelectedFor": "未選取給 '{0}' 用的燒錄器",
       "optimizeForDebugging": "除錯最佳化",
       "sketchIsNotCompiled": "Sketch '{0}' 在除錯前必須已驗證過。請先驗證 sketch 後再除錯。要現在驗證 sketch 嗎？"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "清除開發板歷史清單",
+      "clearBoardsConfig": "清除已選取的開發板及連接埠",
+      "dumpBoardList": "列出開發板清單"
     },
     "dialog": {
       "dontAskAgain": "不要再詢問"
@@ -236,7 +240,7 @@
     "examples": {
       "builtInExamples": "內建範例",
       "couldNotInitializeExamples": "無法初始內建的範例",
-      "customLibrary": "客製程式庫的範例",
+      "customLibrary": "客製函式庫的範例",
       "for": "{0} 的範例",
       "forAny": "適用各種開發板的範例",
       "menu": "範例"
@@ -247,10 +251,10 @@
       "install": "安裝",
       "installingFirmware": "安裝韌體",
       "overwriteSketch": "安裝將覆寫開發板上的 Sketch",
-      "selectBoard": "選擇開發版",
+      "selectBoard": "選擇開發板",
       "selectVersion": "選擇韌體版本",
       "successfullyInstalled": "韌體安裝成功",
-      "updater": "Firmware Updater"
+      "updater": "韌體更新"
     },
     "help": {
       "environment": "環境",
@@ -282,30 +286,30 @@
       "versionDownloaded": "Arduino IDE{0}下載完成。"
     },
     "installable": {
-      "libraryInstallFailed": "程式庫 ' {0} {1}' : 安裝失敗。",
+      "libraryInstallFailed": "函式庫 ' {0} {1}' : 安裝失敗。",
       "platformInstallFailed": "平台安裝失敗: '{0} {1}' "
     },
     "library": {
-      "addZip": "加入 .zip 程式庫 ...",
-      "arduinoLibraries": "Arduino 程式庫",
-      "contributedLibraries": "貢獻的程式庫",
-      "include": "含括程式庫",
+      "addZip": "加入 .zip 函式庫 ...",
+      "arduinoLibraries": "Arduino 函式庫",
+      "contributedLibraries": "貢獻的函式庫",
+      "include": "函式庫",
       "installAll": "全部安裝",
-      "installLibraryDependencies": "安裝相依的程式庫",
+      "installLibraryDependencies": "安裝相依的函式庫",
       "installMissingDependencies": "要安裝缺少的相依程式嗎？",
-      "installOneMissingDependency": "要安裝缺少的相依程式庫嗎 ?",
+      "installOneMissingDependency": "要安裝缺少的相依函式庫嗎 ?",
       "installWithoutDependencies": "不管相依性直接安裝",
-      "installedSuccessfully": "成功安裝程式庫 {0}:{1} ",
-      "libraryAlreadyExists": "程式庫已存在，要覆寫它嗎？",
-      "manageLibraries": "管理程式庫",
-      "namedLibraryAlreadyExists": "{0} 程式庫資料夾已存在，要覆寫它嗎？",
-      "needsMultipleDependencies": "程式庫<b>{0}：{1}</b>需要下列未安裝的相依程式:",
-      "needsOneDependency": "程式庫<b>{0}：{1}</b>需要其他未安装的相依程式：",
-      "overwriteExistingLibrary": "要覆寫既有的程式庫嗎？",
-      "successfullyInstalledZipLibrary": "從 {0} 成功安裝程式庫",
-      "title": "程式庫管理員",
-      "uninstalledSuccessfully": "成功卸載程式庫 {0}:{1}",
-      "zipLibrary": "程式庫"
+      "installedSuccessfully": "成功安裝函式庫 {0}:{1} ",
+      "libraryAlreadyExists": "函式庫已存在，要覆寫它嗎？",
+      "manageLibraries": "管理函式庫",
+      "namedLibraryAlreadyExists": "{0} 函式庫資料夾已存在，要覆寫它嗎？",
+      "needsMultipleDependencies": "函式庫<b>{0}：{1}</b>需要下列未安裝的相依程式:",
+      "needsOneDependency": "函式庫<b>{0}：{1}</b>需要其他未安装的相依程式：",
+      "overwriteExistingLibrary": "要覆寫既有的函式庫嗎？",
+      "successfullyInstalledZipLibrary": "從 {0} 成功安裝函式庫",
+      "title": "函式庫管理員",
+      "uninstalledSuccessfully": "成功卸載函式庫 {0}:{1}",
+      "zipLibrary": "函式庫"
     },
     "librarySearchProperty": {
       "topic": "主題"
@@ -349,15 +353,15 @@
       "serial": "序列"
     },
     "preferences": {
-      "additionalManagerURLs": "其他開發版管理器網址",
+      "additionalManagerURLs": "其他開發板管理器網址",
       "auth.audience": "OAuth2閱聽者",
       "auth.clientID": "OAuth2客戶端ID",
       "auth.domain": "OAuth2 網域",
       "auth.registerUri": "註冊新使用者的 URI",
       "automatic": "自動調整",
-      "board.certificates": "可上傳到開發版的憑証列表",
+      "board.certificates": "可上傳到開發板的憑証列表",
       "browse": "瀏覽",
-      "checkForUpdate": "接收 IDE、開發板和程式庫的更新通知。 更改後需要重啟 IDE。 預設:開啟。",
+      "checkForUpdate": "接收 IDE、開發板和函式庫的更新通知。 更改後需要重啟 IDE。 預設:開啟。",
       "choose": "選擇",
       "cli.daemonDebug": "啟用 Arduino CLI 內 gRPC 呼叫記錄。 需要重啟 IDE 才能生效。 預設:關閉。",
       "cloud.enabled": "Sketch 同步, 預設:開啟。",
@@ -404,7 +408,7 @@
       "sketchbook.location": "sketchbook 位置",
       "sketchbook.showAllFiles": "顯示 sketch 內全部檔案。預設: false。",
       "survey.notification": "有新問卷時會通知使用者, 預設為: true。",
-      "unofficialBoardSupport": "點擊來取得非官方開發版的支援網址",
+      "unofficialBoardSupport": "點擊來取得非官方開發板的支援網址",
       "upload": "上傳",
       "upload.verbose": "上傳時輸出的詳細資訊。預設: False",
       "verifyAfterUpload": "上傳後驗證程式碼",
@@ -417,7 +421,7 @@
       "renameSketchTitle": "雲 sketch 的新名稱"
     },
     "replaceMsg": "取代現有的 {0} 版本？",
-    "selectZip": "選擇內含程式庫的 zip 檔",
+    "selectZip": "選擇內含函式庫的 zip 檔",
     "serial": {
       "autoscroll": "自動捲動",
       "carriageReturn": "內有 CR",
@@ -427,7 +431,7 @@
       "newLineCarriageReturn": "NL和CR字元",
       "noLineEndings": "沒有斷行字元",
       "notConnected": "未連上。請選擇開發板及連接埠後自動連接",
-      "openSerialPlotter": "序列埠監控窗",
+      "openSerialPlotter": "開啟序列繪圖家",
       "timestamp": "時間戳記",
       "toggleTimestamp": "切換時戳"
     },
@@ -460,13 +464,15 @@
       "saveSketchAs": "另存 Sketch 資料夾為",
       "showFolder": "顯示 Sketch 資料夾",
       "sketch": "Sketch",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "本地端的 Sketchbook",
       "titleSketchbook": "Sketchbook",
       "upload": "上傳",
       "uploadUsingProgrammer": "使用燒錄器上傳",
       "uploading": "上傳...",
-      "userFieldsNotFoundError": "找不到已連接開發版中的用戶欄",
+      "userFieldsNotFoundError": "找不到已連接開發板中的用戶欄",
       "verify": "驗證",
       "verifyOrCompile": "驗證/編譯"
     },
@@ -493,7 +499,7 @@
     },
     "updateIndexes": {
       "updateIndexes": "更新索引",
-      "updateLibraryIndex": "更新程式庫索引",
+      "updateLibraryIndex": "更新函式庫索引",
       "updatePackageIndex": "更新套件索引"
     },
     "upload": {

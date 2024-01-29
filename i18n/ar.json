@@ -18,7 +18,7 @@
       "configDialog1": "اختر لوحة و منفذ معا اذا اردت ان ترفع السكتش",
       "configDialog2": "اذا قمت باختيار لوحة فقط ستسطيع ان تترجم لكن بدون ان ترفع المشروع",
       "couldNotFindPreviouslySelected": "تعذر ايجاد اللوحة '{0}'  المختارة مسبقا في المنصة المثبتة '{1}' . الرجاء اعادة اختيار اللوحة التي تريد استعمالها يدويا . هل تريد باعادة الاختيار الان؟",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "تعديل اللوحة و المنفذ",
       "getBoardInfo": "الحصول على معلومات اللوحة",
       "inSketchbook": "(داخل ملف المشاريع)",
       "installNow": "نواة \"{0} {1}\" يجب تثبيتها للوحة \"{2}\" التي تم اختيارها . هل تريد تثبيتها الان ؟",
@@ -32,7 +32,7 @@
       "ports": "منافذ",
       "programmer": "المبرمجة",
       "reselectLater": "اعد الاختيار لاحقا",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "استخدم '{0}' تعامل مع '{1}'",
       "searchBoard": "أبحث عن متحكم",
       "selectBoard": "اختر لوحة",
       "selectPortForInfo": "الرجاء اختيار منفذ من اجل الحصول على معلومات اللوحة",
@@ -41,7 +41,7 @@
       "succesfullyInstalledPlatform": "تم تثبيت المنصة {0}:{1} بنجاح",
       "succesfullyUninstalledPlatform": "تم الغاء تثبيت المنصة {0}:{1} بنجاح",
       "typeOfPorts": "المنافذ {0}",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "اللوحة غير مدعومة",
       "unknownBoard": "لوحة غير معروفة"
     },
     "boardsManager": "مدير اللوحة",
@@ -139,6 +139,7 @@
       "installManually": "ثبّت يدويا",
       "later": "لاحقا",
       "noBoardSelected": "لم يتم اختيار اي لوحة",
+      "noSketchOpened": "No sketch opened",
       "notConnected": "[غير متصل]",
       "offlineIndicator": "انت غير متصل بالانترنت على الارجح , بدون الاتصال بالانترنت لن تستطيع واجهة سطر الاوامر الخاصة بالاردوينو \"Arduino CLI\" تحميل الموارد المطلوبة و من الممكن ان تسبب باخطاء , الرجاء الاتصال بالانترنت و اعادة تشغيل البرنامج",
       "oldFormat": "ال '{0}' ما زالت تستخدم صيغة `.pde` القديمة . هل تريد الانتقال الى صيغة `.ino`  الجديدة ؟",
@@ -146,6 +147,7 @@
       "processing": "تتم المعالجة",
       "recommended": "يُنصح به",
       "retired": "متقاعد",
+      "selectManually": "Select Manually",
       "selectedOn": "{0} شغّل",
       "serialMonitor": "مراقب المنفذ التسلسلي \"سيريال بورت\"\n ",
       "type": "النوع",
@@ -209,14 +211,16 @@
     "debug": {
       "debugWithMessage": "تصحيح برمجي - {0}",
       "debuggingNotSupported": "'{0}' لا يقبل التصحيح البرمجي",
+      "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "المنصة غير مثبتة ل '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "التحسين من اجل التصحيح البرمجي",
       "sketchIsNotCompiled": "المشروع '{0}' يجب ان يتم التحقق منه قبل بدء جلسة تصحيح الاخطاء . الرجاء التحقق من المشروع و اعادة تشغيل مصحح الاخطاء مرة اخرى .\nهل تريد التحقق من المشروع الان؟"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "أمسح سجل قائمة اللوحة",
+      "clearBoardsConfig": "إزالة تحديد المنفذ و اللوحة المحددة",
+      "dumpBoardList": "تفريغ قائمة اللوحة"
     },
     "dialog": {
       "dontAskAgain": "لا تسأل مرة اخرى"
@@ -250,7 +254,7 @@
       "selectBoard": "اختر لوحة",
       "selectVersion": "اختر نسخة البرامج الثابتة",
       "successfullyInstalled": "تم تثبيت البرامج الثابتة بنجاح",
-      "updater": "Firmware Updater"
+      "updater": "تحديث البرنامج"
     },
     "help": {
       "environment": "البيئة",
@@ -385,7 +389,7 @@
       "language.realTimeDiagnostics": "اذا تم تفعيله , سيقوم سيرفر اللغة باعطاء تشخيصات للاخطاء خلال الوقت الحقيقي اثناء الكتابة ضمن المحرر . غير مفعل بشكل افتراضي",
       "manualProxy": "اعدادات الوكيل يدوياً",
       "monitor": {
-        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+        "dockPanel": "منطقة التطبيق هي _{0}_ حيث سيتم وضع عنصر واجهة المستخدم. إنها إما \"أسفل\" أو \"يمين\". الأفتراضي هو \"{1}\""
       },
       "network": "شبكة",
       "newSketchbookLocation": "اختر مكان المشروع الجديد",
@@ -460,6 +464,8 @@
       "saveSketchAs": "حفظ ملف المشروع باسم ...",
       "showFolder": "اعرض ملف المشروع",
       "sketch": "مشروع",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
       "sketchbook": "مجلد المشاريع",
       "titleLocalSketchbook": "مجلد المشاريع المحلي",
       "titleSketchbook": "مجلد المشاريع",
