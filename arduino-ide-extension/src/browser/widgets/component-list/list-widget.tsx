@@ -192,10 +192,3 @@ export namespace ListWidget {
     readonly defaultSearchOptions: S;
   }
 }
-
-export class UserAbortError extends Error {
-  constructor(message = 'User abort') {
-    super(message);
-    Object.setPrototypeOf(this, UserAbortError.prototype);
-  }
-}

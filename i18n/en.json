@@ -152,7 +152,8 @@
       "serialMonitor": "Serial Monitor",
       "type": "Type",
       "unknown": "Unknown",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Compilation error: {0}"

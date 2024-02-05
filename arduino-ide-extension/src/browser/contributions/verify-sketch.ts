@@ -1,18 +1,18 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
 import { Emitter } from '@theia/core/lib/common/event';
+import { nls } from '@theia/core/lib/common/nls';
+import { inject, injectable } from '@theia/core/shared/inversify';
+import type { CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
 import {
-  CoreServiceContribution,
   Command,
   CommandRegistry,
-  MenuModelRegistry,
+  CoreServiceContribution,
   KeybindingRegistry,
+  MenuModelRegistry,
   TabBarToolbarRegistry,
 } from './contribution';
-import { nls } from '@theia/core/lib/common';
-import { CurrentSketch } from '../sketches-service-client-impl';
-import { CoreService } from '../../common/protocol';
 import { CoreErrorHandler } from './core-error-handler';
 
 export interface VerifySketchParams {
@@ -131,11 +131,15 @@ export class VerifySketch extends CoreServiceContribution {
           'arduino/sketch/compile',
           'Compiling sketch...'
         ),
-        task: (progressId, coreService) =>
-          coreService.compile({
-            ...options,
-            progressId,
-          }),
+        task: (progressId, coreService, token) =>
+          coreService.compile(
+            {
+              ...options,
+              progressId,
+            },
+            token
+          ),
+        cancelable: true,
       });
       this.messageService.info(
         nls.localize('arduino/sketch/doneCompiling', 'Done compiling.'),
