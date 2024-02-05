@@ -1,4 +1,5 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
+import type { CancellationToken } from '@theia/core/lib/common/cancellation';
 import { nls } from '@theia/core/lib/common/nls';
 import type {
   Location,
@@ -7,7 +8,7 @@ import type {
 } from '@theia/core/shared/vscode-languageserver-protocol';
 import type { CompileSummary as ApiCompileSummary } from 'vscode-arduino-api';
 import type { BoardUserField, Installable } from '../../common/protocol/';
-import { isPortIdentifier, PortIdentifier, Programmer } from './boards-service';
+import { PortIdentifier, Programmer, isPortIdentifier } from './boards-service';
 import type { IndexUpdateSummary } from './notification-service';
 import type { Sketch } from './sketches-service';
 
@@ -162,9 +163,18 @@ export function isUploadResponse(arg: unknown): arg is UploadResponse {
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
-  compile(options: CoreService.Options.Compile): Promise<void>;
-  upload(options: CoreService.Options.Upload): Promise<UploadResponse>;
-  burnBootloader(options: CoreService.Options.Bootloader): Promise<void>;
+  compile(
+    options: CoreService.Options.Compile,
+    cancellationToken?: CancellationToken
+  ): Promise<void>;
+  upload(
+    options: CoreService.Options.Upload,
+    cancellationToken?: CancellationToken
+  ): Promise<UploadResponse>;
+  burnBootloader(
+    options: CoreService.Options.Bootloader,
+    cancellationToken?: CancellationToken
+  ): Promise<void>;
   /**
    * Refreshes the underling core gRPC client for the Arduino CLI.
    */

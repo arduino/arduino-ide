@@ -1,22 +1,44 @@
+import type { ClientReadableStream } from '@grpc/grpc-js';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
+import type { CancellationToken } from '@theia/core/lib/common/cancellation';
+import { CommandService } from '@theia/core/lib/common/command';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { nls } from '@theia/core/lib/common/nls';
+import type { Mutable } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { relative } from 'node:path';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
-import type { ClientReadableStream } from '@grpc/grpc-js';
+import path from 'node:path';
 import {
-  CompilerWarnings,
-  CoreService,
-  CoreError,
+  UploadResponse as ApiUploadResponse,
+  OutputMessage,
+  Port,
+  PortIdentifier,
+  resolveDetectedPort,
+} from '../common/protocol';
+import {
   CompileSummary,
+  CompilerWarnings,
+  CoreError,
+  CoreService,
   isCompileSummary,
   isUploadResponse,
 } from '../common/protocol/core-service';
+import { ResponseService } from '../common/protocol/response-service';
+import { firstToUpperCase, notEmpty } from '../common/utils';
+import { BoardDiscovery, createApiPort } from './board-discovery';
+import { tryParseError } from './cli-error-parser';
+import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
+import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
   CompileRequest,
   CompileResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
-import { CoreClientAware } from './core-client-provider';
+import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
   BurnBootloaderRequest,
   BurnBootloaderResponse,
@@ -25,26 +47,13 @@ import {
   UploadUsingProgrammerRequest,
   UploadUsingProgrammerResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
-import { ResponseService } from '../common/protocol/response-service';
-import {
-  resolveDetectedPort,
-  OutputMessage,
-  PortIdentifier,
-  Port,
-  UploadResponse as ApiUploadResponse,
-} from '../common/protocol';
-import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
-import { MonitorManager } from './monitor-manager';
-import { AutoFlushingBuffer } from './utils/buffers';
-import { tryParseError } from './cli-error-parser';
-import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
-import { firstToUpperCase, notEmpty } from '../common/utils';
-import { ServiceError } from './service-error';
+import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
-import type { Mutable } from '@theia/core/lib/common/types';
-import { BoardDiscovery, createApiPort } from './board-discovery';
+import { MonitorManager } from './monitor-manager';
+import { ServiceError } from './service-error';
+import { AutoFlushingBuffer } from './utils/buffers';
+import { userAbort } from '../common/nls';
+import { UserAbortApplicationError } from '../common/protocol/progressible';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
@@ -64,9 +73,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
 
-  async compile(options: CoreService.Options.Compile): Promise<void> {
+  async compile(
+    options: CoreService.Options.Compile,
+    cancellationToken?: CancellationToken
+  ): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
+    const request = this.compileRequest(options, instance);
     const compileSummary = <CompileSummaryFragment>{};
     const progressHandler = this.createProgressHandler(options);
     const compileSummaryHandler = (response: CompileResponse) =>
@@ -75,10 +88,15 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       progressHandler,
       compileSummaryHandler
     );
-    const request = this.compileRequest(options, instance);
+    const toDisposeOnFinally = new DisposableCollection(handler);
     return new Promise<void>((resolve, reject) => {
-      client
-        .compile(request)
+      const call = client.compile(request);
+      if (cancellationToken) {
+        toDisposeOnFinally.push(
+          cancellationToken.onCancellationRequested(() => call.cancel())
+        );
+      }
+      call
         .on('data', handler.onData)
         .on('error', (error) => {
           if (!ServiceError.is(error)) {
@@ -87,30 +105,39 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               error
             );
             reject(error);
-          } else {
-            const compilerErrors = tryParseError({
-              content: handler.content,
-              sketch: options.sketch,
-            });
-            const message = nls.localize(
-              'arduino/compile/error',
-              'Compilation error: {0}',
-              compilerErrors
-                .map(({ message }) => message)
-                .filter(notEmpty)
-                .shift() ?? error.details
-            );
-            this.sendResponse(
-              error.details + '\n\n' + message,
-              OutputMessage.Severity.Error
-            );
-            reject(CoreError.VerifyFailed(message, compilerErrors));
+            return;
           }
+          if (ServiceError.isCancel(error)) {
+            console.log(userAbort);
+            reject(UserAbortApplicationError());
+            return;
+          }
+          const compilerErrors = tryParseError({
+            content: handler.content,
+            sketch: options.sketch,
+          });
+          const message = nls.localize(
+            'arduino/compile/error',
+            'Compilation error: {0}',
+            compilerErrors
+              .map(({ message }) => message)
+              .filter(notEmpty)
+              .shift() ?? error.details
+          );
+          this.sendResponse(
+            error.details + '\n\n' + message,
+            OutputMessage.Severity.Error
+          );
+          reject(CoreError.VerifyFailed(message, compilerErrors));
         })
         .on('end', resolve);
     }).finally(() => {
-      handler.dispose();
+      toDisposeOnFinally.dispose();
       if (!isCompileSummary(compileSummary)) {
+        if (cancellationToken && cancellationToken.isCancellationRequested) {
+          // NOOP
+          return;
+        }
         console.error(
           `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
             compileSummary
@@ -176,7 +203,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  upload(options: CoreService.Options.Upload): Promise<ApiUploadResponse> {
+  upload(
+    options: CoreService.Options.Upload,
+    cancellationToken?: CancellationToken
+  ): Promise<ApiUploadResponse> {
     const { usingProgrammer } = options;
     return this.doUpload(
       options,
@@ -190,7 +220,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       usingProgrammer
         ? CoreError.UploadUsingProgrammerFailed
         : CoreError.UploadFailed,
-      `upload${usingProgrammer ? ' using programmer' : ''}`
+      `upload${usingProgrammer ? ' using programmer' : ''}`,
+      cancellationToken
     );
   }
 
@@ -204,7 +235,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       client: ArduinoCoreServiceClient
     ) => (request: REQ) => ClientReadableStream<RESP>,
     errorCtor: ApplicationError.Constructor<number, CoreError.ErrorLocation[]>,
-    task: string
+    task: string,
+    cancellationToken?: CancellationToken
   ): Promise<ApiUploadResponse> {
     const portBeforeUpload = options.port;
     const uploadResponseFragment: Mutable<Partial<ApiUploadResponse>> = {
@@ -241,33 +273,47 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       progressHandler,
       updateUploadResponseFragmentHandler
     );
+    const toDisposeOnFinally = new DisposableCollection(handler);
     const grpcCall = responseFactory(client);
     return this.notifyUploadWillStart(options).then(() =>
       new Promise<ApiUploadResponse>((resolve, reject) => {
-        grpcCall(this.initUploadRequest(request, options, instance))
+        const call = grpcCall(
+          this.initUploadRequest(request, options, instance)
+        );
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
+          );
+        }
+        call
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
               console.error(`Unexpected error occurred while ${task}.`, error);
               reject(error);
-            } else {
-              const message = nls.localize(
-                'arduino/upload/error',
-                '{0} error: {1}',
-                firstToUpperCase(task),
-                error.details
-              );
-              this.sendResponse(error.details, OutputMessage.Severity.Error);
-              reject(
-                errorCtor(
-                  message,
-                  tryParseError({
-                    content: handler.content,
-                    sketch: options.sketch,
-                  })
-                )
-              );
+              return;
             }
+            if (ServiceError.isCancel(error)) {
+              console.log(userAbort);
+              reject(UserAbortApplicationError());
+              return;
+            }
+            const message = nls.localize(
+              'arduino/upload/error',
+              '{0} error: {1}',
+              firstToUpperCase(task),
+              error.details
+            );
+            this.sendResponse(error.details, OutputMessage.Severity.Error);
+            reject(
+              errorCtor(
+                message,
+                tryParseError({
+                  content: handler.content,
+                  sketch: options.sketch,
+                })
+              )
+            );
           })
           .on('end', () => {
             if (isUploadResponse(uploadResponseFragment)) {
@@ -285,7 +331,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             }
           });
       }).finally(async () => {
-        handler.dispose();
+        toDisposeOnFinally.dispose();
         await this.notifyUploadDidFinish(
           Object.assign(options, {
             afterPort: uploadResponseFragment.portAfterUpload,
@@ -320,16 +366,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  async burnBootloader(options: CoreService.Options.Bootloader): Promise<void> {
+  async burnBootloader(
+    options: CoreService.Options.Bootloader,
+    cancellationToken?: CancellationToken
+  ): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const progressHandler = this.createProgressHandler(options);
     const handler = this.createOnDataHandler(progressHandler);
     const request = this.burnBootloaderRequest(options, instance);
+    const toDisposeOnFinally = new DisposableCollection(handler);
     return this.notifyUploadWillStart(options).then(() =>
       new Promise<void>((resolve, reject) => {
-        client
-          .burnBootloader(request)
+        const call = client.burnBootloader(request);
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
+          );
+        }
+        call
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
@@ -338,23 +393,28 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
                 error
               );
               reject(error);
-            } else {
-              this.sendResponse(error.details, OutputMessage.Severity.Error);
-              reject(
-                CoreError.BurnBootloaderFailed(
-                  nls.localize(
-                    'arduino/burnBootloader/error',
-                    'Error while burning the bootloader: {0}',
-                    error.details
-                  ),
-                  tryParseError({ content: handler.content })
-                )
-              );
+              return;
             }
+            if (ServiceError.isCancel(error)) {
+              console.log(userAbort);
+              reject(UserAbortApplicationError());
+              return;
+            }
+            this.sendResponse(error.details, OutputMessage.Severity.Error);
+            reject(
+              CoreError.BurnBootloaderFailed(
+                nls.localize(
+                  'arduino/burnBootloader/error',
+                  'Error while burning the bootloader: {0}',
+                  error.details
+                ),
+                tryParseError({ content: handler.content })
+              )
+            );
           })
           .on('end', resolve);
       }).finally(async () => {
-        handler.dispose();
+        toDisposeOnFinally.dispose();
         await this.notifyUploadDidFinish(
           Object.assign(options, { afterPort: options.port })
         );
@@ -463,7 +523,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     for (const uri of Object.keys(options.sourceOverride)) {
       const content = options.sourceOverride[uri];
       if (content) {
-        const relativePath = relative(sketchPath, FileUri.fsPath(uri));
+        const relativePath = path.relative(sketchPath, FileUri.fsPath(uri));
         req.getSourceOverrideMap().set(relativePath, content);
       }
     }

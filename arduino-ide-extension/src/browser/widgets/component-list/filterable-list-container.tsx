@@ -5,7 +5,10 @@ import { CommandService } from '@theia/core/lib/common/command';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { ConfirmDialog } from '@theia/core/lib/browser/dialogs';
 import { Searchable } from '../../../common/protocol/searchable';
-import { ExecuteWithProgress } from '../../../common/protocol/progressible';
+import {
+  ExecuteWithProgress,
+  UserAbortError,
+} from '../../../common/protocol/progressible';
 import {
   Installable,
   libraryInstallFailed,
@@ -13,7 +16,7 @@ import {
 } from '../../../common/protocol/installable';
 import { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { SearchBar } from './search-bar';
-import { ListWidget, UserAbortError } from './list-widget';
+import { ListWidget } from './list-widget';
 import { ComponentList } from './component-list';
 import { ListItemRenderer } from './list-item-renderer';
 import {

@@ -39,3 +39,5 @@ export const noSketchOpened = nls.localize(
   'arduino/common/noSketchOpened',
   'No sketch opened'
 );
+
+export const userAbort = nls.localize('arduino/common/userAbort', 'User abort');

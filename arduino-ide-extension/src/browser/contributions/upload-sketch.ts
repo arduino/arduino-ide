@@ -136,9 +136,10 @@ export class UploadSketch extends CoreServiceContribution {
 
       const uploadResponse = await this.doWithProgress({
         progressText: nls.localize('arduino/sketch/uploading', 'Uploading...'),
-        task: (progressId, coreService) =>
-          coreService.upload({ ...uploadOptions, progressId }),
+        task: (progressId, coreService, token) =>
+          coreService.upload({ ...uploadOptions, progressId }, token),
         keepOutput: true,
+        cancelable: true,
       });
       // the port update is NOOP if nothing has changed
       this.boardsServiceProvider.updateConfig(uploadResponse.portAfterUpload);

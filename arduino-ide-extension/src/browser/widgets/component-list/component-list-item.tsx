@@ -2,7 +2,7 @@ import React from '@theia/core/shared/react';
 import type { ArduinoComponent } from '../../../common/protocol/arduino-component';
 import { Installable } from '../../../common/protocol/installable';
 import type { ListItemRenderer } from './list-item-renderer';
-import { UserAbortError } from './list-widget';
+import { UserAbortError } from '../../../common/protocol/progressible';
 
 export class ComponentListItem<
   T extends ArduinoComponent
