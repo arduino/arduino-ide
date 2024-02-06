@@ -54,6 +54,10 @@ export function isMonitorWidgetDockPanel(
   return arg === 'bottom' || arg === 'right';
 }
 
+export const defaultAsyncWorkers = 0 as const;
+export const minAsyncWorkers = defaultAsyncWorkers;
+export const maxAsyncWorkers = 8 as const;
+
 type StrictPreferenceSchemaProperties<T extends object> = {
   [p in keyof T]: PreferenceSchemaProperty;
 };
@@ -78,6 +82,16 @@ const properties: ArduinoPreferenceSchemaProperties = {
       "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default."
     ),
     default: false,
+  },
+  'arduino.language.asyncWorkers': {
+    type: 'number',
+    description: nls.localize(
+      'arduino/preferences/language.asyncWorkers',
+      'Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.'
+    ),
+    minimum: minAsyncWorkers,
+    maximum: maxAsyncWorkers,
+    default: defaultAsyncWorkers,
   },
   'arduino.compile.verbose': {
     type: 'boolean',
@@ -298,6 +312,7 @@ export const ArduinoConfigSchema: PreferenceSchema = {
 export interface ArduinoConfiguration {
   'arduino.language.log': boolean;
   'arduino.language.realTimeDiagnostics': boolean;
+  'arduino.language.asyncWorkers': number;
   'arduino.compile.verbose': boolean;
   'arduino.compile.experimental': boolean;
   'arduino.compile.revealRange': ErrorRevealStrategy;

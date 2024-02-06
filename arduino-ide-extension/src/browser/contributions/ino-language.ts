@@ -6,19 +6,24 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import { Mutex } from 'async-mutex';
 import {
   ArduinoDaemon,
-  assertSanitizedFqbn,
   BoardIdentifier,
   BoardsService,
   ExecutableService,
+  assertSanitizedFqbn,
   isBoardIdentifierChangeEvent,
   sanitizeFqbn,
 } from '../../common/protocol';
-import { CurrentSketch } from '../sketches-service-client-impl';
+import {
+  defaultAsyncWorkers,
+  maxAsyncWorkers,
+  minAsyncWorkers,
+} from '../arduino-preferences';
+import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { HostedPluginEvents } from '../hosted/hosted-plugin-events';
 import { NotificationCenter } from '../notification-center';
+import { CurrentSketch } from '../sketches-service-client-impl';
 import { SketchContribution, URI } from './contribution';
-import { BoardsDataStore } from '../boards/boards-data-store';
 
 interface DaemonAddress {
   /**
@@ -76,6 +81,10 @@ interface StartLanguageServerParams {
    * If `true`, the logging is not forwarded to the _Output_ view via the language client.
    */
   readonly silentOutput?: boolean;
+  /**
+   * Number of async workers used by `clangd`. Background index also uses this many workers. If `0`, `clangd` uses all available cores. It's `0` by default.
+   */
+  readonly jobs?: number;
 }
 
 /**
@@ -137,6 +146,7 @@ export class InoLanguage extends SketchContribution {
             switch (preferenceName) {
               case 'arduino.language.log':
               case 'arduino.language.realTimeDiagnostics':
+              case 'arduino.language.asyncWorkers':
                 forceRestart();
             }
           }
@@ -168,9 +178,12 @@ export class InoLanguage extends SketchContribution {
         }
       }),
     ]);
-    this.boardsServiceProvider.ready.then(() =>
-      start(this.boardsServiceProvider.boardsConfig.selectedBoard)
-    );
+    Promise.all([
+      this.boardsServiceProvider.ready,
+      this.preferences.ready,
+    ]).then(() => {
+      start(this.boardsServiceProvider.boardsConfig.selectedBoard);
+    });
   }
 
   onStop(): void {
@@ -230,10 +243,15 @@ export class InoLanguage extends SketchContribution {
         // NOOP
         return;
       }
-      this.logger.info(`Starting language server: ${fqbnWithConfig}`);
       const log = this.preferences.get('arduino.language.log');
       const realTimeDiagnostics = this.preferences.get(
         'arduino.language.realTimeDiagnostics'
+      );
+      const jobs = this.getAsyncWorkersPreferenceSafe();
+      this.logger.info(
+        `Starting language server: ${fqbnWithConfig}${
+          jobs ? ` (async worker count: ${jobs})` : ''
+        }`
       );
       let currentSketchPath: string | undefined = undefined;
       if (log) {
@@ -273,6 +291,7 @@ export class InoLanguage extends SketchContribution {
           },
           realTimeDiagnostics,
           silentOutput: true,
+          jobs,
         }),
       ]);
     } catch (e) {
@@ -282,6 +301,21 @@ export class InoLanguage extends SketchContribution {
       toDisposeOnRelease.dispose();
       release();
     }
+  }
+  // The Theia preference UI validation is bogus.
+  // To restrict the number of jobs to a valid value.
+  private getAsyncWorkersPreferenceSafe(): number {
+    const jobs = this.preferences.get(
+      'arduino.language.asyncWorkers',
+      defaultAsyncWorkers
+    );
+    if (jobs < minAsyncWorkers) {
+      return minAsyncWorkers;
+    }
+    if (jobs > maxAsyncWorkers) {
+      return maxAsyncWorkers;
+    }
+    return jobs;
   }
 
   private async start(
