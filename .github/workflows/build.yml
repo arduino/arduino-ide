@@ -329,7 +329,7 @@ jobs:
       - name: Install Taskfile
         # actions/setup-task@v2 has dependency on a higher version of glibc than available in the Linux container.
         if: fromJSON(matrix.config.container) != null
-        uses: arduino/setup-task@v1
+        uses: arduino/setup-task@v2
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
