@@ -1,8 +1,5 @@
-import {
-  codicon,
-  PanelLayout,
-  Widget,
-} from '@theia/core/lib/browser/widgets/widget';
+import { codicon } from '@theia/core/lib/browser/widgets/widget';
+import { Widget } from '@theia/core/shared/@phosphor/widgets';
 import {
   inject,
   injectable,
@@ -10,6 +7,10 @@ import {
 } from '@theia/core/shared/inversify';
 import { DebugWidget as TheiaDebugWidget } from '@theia/debug/lib/browser/view/debug-widget';
 import { DebugDisabledStatusMessageSource } from '../../contributions/debug';
+import {
+  removeWidgetIfPresent,
+  unshiftWidgetIfNotPresent,
+} from '../dialogs/widgets';
 
 @injectable()
 export class DebugWidget extends TheiaDebugWidget {
@@ -38,12 +39,10 @@ export class DebugWidget extends TheiaDebugWidget {
       this.messageNode.textContent = message ?? '';
       const enabled = !message;
       updateVisibility(enabled, this.toolbar, this.sessionWidget);
-      if (this.layout instanceof PanelLayout) {
-        if (enabled) {
-          this.layout.removeWidget(this.statusMessageWidget);
-        } else {
-          this.layout.insertWidget(0, this.statusMessageWidget);
-        }
+      if (enabled) {
+        removeWidgetIfPresent(this.layout, this.statusMessageWidget);
+      } else {
+        unshiftWidgetIfNotPresent(this.layout, this.statusMessageWidget);
       }
       this.title.iconClass = enabled ? codicon('debug-alt') : 'fa fa-ban'; // TODO: find a better icon?
     });
