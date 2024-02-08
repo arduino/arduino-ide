@@ -15,11 +15,14 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { MessageService } from '@theia/core/lib/common/message-service';
-import { wait } from '@theia/core/lib/common/promise-util';
+import { wait, waitForEvent } from '@theia/core/lib/common/promise-util';
 import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { BoardsDataStore } from '../../browser/boards/boards-data-store';
-import { BoardsServiceProvider } from '../../browser/boards/boards-service-provider';
+import {
+  BoardsServiceProvider,
+  UpdateBoardsConfigParams,
+} from '../../browser/boards/boards-service-provider';
 import { NotificationCenter } from '../../browser/notification-center';
 import {
   BoardDetails,
@@ -30,6 +33,7 @@ import {
 } from '../../common/protocol/boards-service';
 import { NotificationServiceServer } from '../../common/protocol/notification-service';
 import { bindBrowser } from './browser-test-bindings';
+import { unoSerialPort } from '../common/fixtures';
 
 disableJSDOM();
 
@@ -256,8 +260,12 @@ describe('boards-data-store', function () {
 
     const result = await boardsDataStore.selectConfigOption({
       fqbn,
-      option: configOption1.option,
-      selectedValue: configOption1.values[1].value,
+      optionsToUpdate: [
+        {
+          option: configOption1.option,
+          selectedValue: configOption1.values[1].value,
+        },
+      ],
     });
     expect(result).to.be.ok;
 
@@ -409,8 +417,12 @@ describe('boards-data-store', function () {
     );
     const result = await boardsDataStore.selectConfigOption({
       fqbn,
-      option: configOption1.option,
-      selectedValue: configOption1.values[1].value,
+      optionsToUpdate: [
+        {
+          option: configOption1.option,
+          selectedValue: configOption1.values[1].value,
+        },
+      ],
     });
     expect(result).to.be.ok;
     expect(didChangeCounter).to.be.equal(1);
@@ -423,6 +435,220 @@ describe('boards-data-store', function () {
           values: [
             { label: 'C1V1', selected: false, value: 'v1' },
             { label: 'C1V2', selected: true, value: 'v2' },
+          ],
+        },
+      ],
+      programmers: [edbg, jlink],
+    });
+  });
+
+  it('should select multiple config options', async () => {
+    // reconfigure the board details mock for this test case to have multiple config options
+    toDisposeAfterEach.push(
+      mockBoardDetails([
+        {
+          fqbn,
+          ...baseDetails,
+          configOptions: [configOption1, configOption2],
+        },
+      ])
+    );
+
+    let data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1, configOption2],
+      programmers: [edbg, jlink],
+    });
+
+    let didChangeCounter = 0;
+    toDisposeAfterEach.push(
+      boardsDataStore.onDidChange(() => didChangeCounter++)
+    );
+    const result = await boardsDataStore.selectConfigOption({
+      fqbn,
+      optionsToUpdate: [
+        {
+          option: configOption1.option,
+          selectedValue: configOption1.values[1].value,
+        },
+        {
+          option: configOption2.option,
+          selectedValue: configOption2.values[1].value,
+        },
+      ],
+    });
+    expect(result).to.be.ok;
+    expect(didChangeCounter).to.be.equal(1);
+
+    data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [
+        {
+          ...configOption1,
+          values: [
+            { label: 'C1V1', selected: false, value: 'v1' },
+            { label: 'C1V2', selected: true, value: 'v2' },
+          ],
+        },
+        {
+          ...configOption2,
+          values: [
+            { label: 'C2V1', selected: false, value: 'v1' },
+            { label: 'C2V2', selected: true, value: 'v2' },
+          ],
+        },
+      ],
+      programmers: [edbg, jlink],
+    });
+  });
+
+  it('should emit a did change event when updating with multiple config options and at least one of them is known (valid option + valid value)', async () => {
+    // reconfigure the board details mock for this test case to have multiple config options
+    toDisposeAfterEach.push(
+      mockBoardDetails([
+        {
+          fqbn,
+          ...baseDetails,
+          configOptions: [configOption1, configOption2],
+        },
+      ])
+    );
+
+    let data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1, configOption2],
+      programmers: [edbg, jlink],
+    });
+
+    let didChangeCounter = 0;
+    toDisposeAfterEach.push(
+      boardsDataStore.onDidChange(() => didChangeCounter++)
+    );
+    const result = await boardsDataStore.selectConfigOption({
+      fqbn,
+      optionsToUpdate: [
+        {
+          option: 'an unknown option',
+          selectedValue: configOption1.values[1].value,
+        },
+        {
+          option: configOption1.option,
+          selectedValue: configOption1.values[1].value,
+        },
+        {
+          option: configOption2.option,
+          selectedValue: 'an unknown value',
+        },
+      ],
+    });
+    expect(result).to.be.ok;
+    expect(didChangeCounter).to.be.equal(1);
+
+    data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [
+        {
+          ...configOption1,
+          values: [
+            { label: 'C1V1', selected: false, value: 'v1' },
+            { label: 'C1V2', selected: true, value: 'v2' },
+          ],
+        },
+        configOption2,
+      ],
+      programmers: [edbg, jlink],
+    });
+  });
+
+  it('should not emit a did change event when updating with multiple config options and all of the are unknown', async () => {
+    let data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+    });
+
+    let didChangeCounter = 0;
+    toDisposeAfterEach.push(
+      boardsDataStore.onDidChange(() => didChangeCounter++)
+    );
+    const result = await boardsDataStore.selectConfigOption({
+      fqbn,
+      optionsToUpdate: [
+        {
+          option: 'an unknown option',
+          selectedValue: configOption1.values[1].value,
+        },
+        {
+          option: configOption1.option,
+          selectedValue: 'an unknown value',
+        },
+      ],
+    });
+    expect(result).to.be.not.ok;
+    expect(didChangeCounter).to.be.equal(0);
+
+    data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1],
+      programmers: [edbg, jlink],
+    });
+  });
+
+  it("should automatically update the selected config options if the boards config change 'reason' is the 'toolbar' and the (CLI) detected FQBN has config options", async () => {
+    // reconfigure the board details mock for this test case to have multiple config options
+    toDisposeAfterEach.push(
+      mockBoardDetails([
+        {
+          fqbn,
+          ...baseDetails,
+          configOptions: [configOption1, configOption2],
+        },
+      ])
+    );
+
+    let data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [configOption1, configOption2],
+      programmers: [edbg, jlink],
+    });
+
+    let didChangeCounter = 0;
+    toDisposeAfterEach.push(
+      boardsDataStore.onDidChange(() => didChangeCounter++)
+    );
+
+    const boardsConfig = {
+      selectedPort: unoSerialPort, // the port value does not matter here, but the change must come from a toolbar as a boards config: with port+board,
+      selectedBoard: {
+        fqbn: `${board.fqbn}:${configOption1.option}=${configOption1.values[1].value},${configOption2.option}=${configOption2.values[1].value}`,
+        name: board.name,
+      },
+    };
+    const params: UpdateBoardsConfigParams = {
+      ...boardsConfig,
+      reason: 'toolbar',
+    };
+    const updated = boardsServiceProvider.updateConfig(params);
+    expect(updated).to.be.ok;
+
+    await waitForEvent(boardsDataStore.onDidChange, 100);
+
+    expect(didChangeCounter).to.be.equal(1);
+    data = await boardsDataStore.getData(fqbn);
+    expect(data).to.be.deep.equal({
+      configOptions: [
+        {
+          ...configOption1,
+          values: [
+            { label: 'C1V1', selected: false, value: 'v1' },
+            { label: 'C1V2', selected: true, value: 'v2' },
+          ],
+        },
+        {
+          ...configOption2,
+          values: [
+            { label: 'C2V1', selected: false, value: 'v1' },
+            { label: 'C2V2', selected: true, value: 'v2' },
           ],
         },
       ],
@@ -444,8 +670,9 @@ describe('boards-data-store', function () {
     );
     const result = await boardsDataStore.selectConfigOption({
       fqbn,
-      option: 'missing',
-      selectedValue: configOption1.values[1].value,
+      optionsToUpdate: [
+        { option: 'missing', selectedValue: configOption1.values[1].value },
+      ],
     });
     expect(result).to.be.not.ok;
     expect(didChangeCounter).to.be.equal(0);
@@ -470,8 +697,9 @@ describe('boards-data-store', function () {
     );
     const result = await boardsDataStore.selectConfigOption({
       fqbn,
-      option: configOption1.option,
-      selectedValue: 'missing',
+      optionsToUpdate: [
+        { option: configOption1.option, selectedValue: 'missing' },
+      ],
     });
     expect(result).to.be.not.ok;
     expect(didChangeCounter).to.be.equal(0);

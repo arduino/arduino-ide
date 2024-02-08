@@ -87,8 +87,7 @@ export class BoardsDataMenuUpdater extends Contribution {
                   execute: () =>
                     this.boardsDataStore.selectConfigOption({
                       fqbn,
-                      option,
-                      selectedValue: value.value,
+                      optionsToUpdate: [{ option, selectedValue: value.value }],
                     }),
                   isToggled: () => value.selected,
                 };

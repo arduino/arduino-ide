@@ -1,4 +1,5 @@
 import { nls } from '@theia/core/lib/common/nls';
+import { FQBN } from 'fqbn';
 import type { MaybePromise } from '@theia/core/lib/common/types';
 import type URI from '@theia/core/lib/common/uri';
 import {
@@ -367,40 +368,6 @@ export interface ConfigOption {
   readonly values: ConfigValue[];
 }
 export namespace ConfigOption {
-  /**
-   * Appends the configuration options to the `fqbn` argument.
-   * Throws an error if the `fqbn` does not have the `segment(':'segment)*` format.
-   * The provided output format is always segment(':'segment)*(':'option'='value(','option'='value)*)?
-   */
-  export function decorate(
-    fqbn: string,
-    configOptions: ConfigOption[]
-  ): string {
-    if (!configOptions.length) {
-      return fqbn;
-    }
-
-    const toValue = (values: ConfigValue[]) => {
-      const selectedValue = values.find(({ selected }) => selected);
-      if (!selectedValue) {
-        console.warn(
-          `None of the config values was selected. Values were: ${JSON.stringify(
-            values
-          )}`
-        );
-        return undefined;
-      }
-      return selectedValue.value;
-    };
-    const options = configOptions
-      .map(({ option, values }) => [option, toValue(values)])
-      .filter(([, value]) => !!value)
-      .map(([option, value]) => `${option}=${value}`)
-      .join(',');
-
-    return `${fqbn}:${options}`;
-  }
-
   export class ConfigOptionError extends Error {
     constructor(message: string) {
       super(message);
@@ -575,27 +542,12 @@ export namespace Board {
 }
 
 /**
- * Throws an error if the `fqbn` argument is not sanitized. A sanitized FQBN has the `VENDOR:ARCHITECTURE:BOARD_ID` construct.
- */
-export function assertSanitizedFqbn(fqbn: string): void {
-  if (fqbn.split(':').length !== 3) {
-    throw new Error(
-      `Expected a sanitized FQBN with three segments in the following format: 'VENDOR:ARCHITECTURE:BOARD_ID'. Got ${fqbn} instead.`
-    );
-  }
-}
-
-/**
  * Converts the `VENDOR:ARCHITECTURE:BOARD_ID[:MENU_ID=OPTION_ID[,MENU2_ID=OPTION_ID ...]]` FQBN to
  * `VENDOR:ARCHITECTURE:BOARD_ID` format.
  * See the details of the `{build.fqbn}` entry in the [specs](https://arduino.github.io/arduino-cli/latest/platform-specification/#global-predefined-properties).
  */
-export function sanitizeFqbn(fqbn: string | undefined): string | undefined {
-  if (!fqbn) {
-    return undefined;
-  }
-  const [vendor, arch, id] = fqbn.split(':');
-  return `${vendor}:${arch}:${id}`;
+export function sanitizeFqbn(fqbn: string): string {
+  return new FQBN(fqbn).sanitize().toString();
 }
 
 export type PlatformIdentifier = Readonly<{ vendorId: string; arch: string }>;
@@ -752,8 +704,8 @@ export function boardIdentifierEquals(
     return false; // TODO: This a strict now. Maybe compare name in the future.
   }
   if (left.fqbn && right.fqbn) {
-    const leftFqbn = options.looseFqbn ? sanitizeFqbn(left.fqbn) : left.fqbn;
-    const rightFqbn = options.looseFqbn ? sanitizeFqbn(right.fqbn) : right.fqbn;
+    const leftFqbn = new FQBN(left.fqbn).toString(options.looseFqbn);
+    const rightFqbn = new FQBN(right.fqbn).toString(options.looseFqbn);
     return leftFqbn === rightFqbn;
   }
   // No more Genuino hack.

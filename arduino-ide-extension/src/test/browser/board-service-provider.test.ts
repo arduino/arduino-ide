@@ -170,6 +170,36 @@ describe('board-service-provider', () => {
     expect(events).deep.equals([expectedEvent]);
   });
 
+  it('should ignore custom board configs from the FQBN', () => {
+    boardsServiceProvider['_boardsConfig'] = {
+      selectedBoard: uno,
+      selectedPort: unoSerialPort,
+    };
+    const events: BoardsConfigChangeEvent[] = [];
+    toDisposeAfterEach.push(
+      boardsServiceProvider.onBoardsConfigDidChange((event) =>
+        events.push(event)
+      )
+    );
+    const mkr1000WithCustomOptions = {
+      ...mkr1000,
+      fqbn: `${mkr1000.fqbn}:c1=v1`,
+    };
+    const didUpdate = boardsServiceProvider.updateConfig(
+      mkr1000WithCustomOptions
+    );
+    expect(didUpdate).to.be.true;
+    const expectedEvent: BoardIdentifierChangeEvent = {
+      previousSelectedBoard: uno,
+      selectedBoard: mkr1000WithCustomOptions, // the even has the custom board options
+    };
+    expect(events).deep.equals([expectedEvent]);
+    // the persisted state does not have the config options property
+    expect(boardsServiceProvider.boardsConfig.selectedBoard?.fqbn).to.equal(
+      mkr1000.fqbn
+    );
+  });
+
   it('should not update the board if did not change (board identifier)', () => {
     boardsServiceProvider['_boardsConfig'] = {
       selectedBoard: uno,

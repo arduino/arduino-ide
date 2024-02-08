@@ -267,24 +267,12 @@ export class BoardDiscovery
       const { port, boards } = detectedPort;
       const key = Port.keyOf(port);
       if (eventType === EventType.Add) {
-        const alreadyDetectedPort = newState[key];
-        if (alreadyDetectedPort) {
-          console.warn(
-            `Detected a new port that has been already discovered. The old value will be overridden. Old value: ${JSON.stringify(
-              alreadyDetectedPort
-            )}, new value: ${JSON.stringify(detectedPort)}`
-          );
-        }
+        // Note that, the serial discovery might detect port details (such as addressLabel) in chunks.
+        // For example, first, the Teensy 4.1 port is detected with the `[no_device] Triple Serial` address label,
+        // Then, when more refinements are available, the same port is detected with `/dev/cu.usbmodem127902301 Triple Serial` address label.
+        // In such cases, an `add` event is received from the CLI, and the the detected port is overridden in the state.
         newState[key] = { port, boards };
       } else if (eventType === EventType.Remove) {
-        const alreadyDetectedPort = newState[key];
-        if (!alreadyDetectedPort) {
-          console.warn(
-            `Detected a port removal but it has not been discovered. This is most likely a bug! Detected port was: ${JSON.stringify(
-              detectedPort
-            )}`
-          );
-        }
         delete newState[key];
       }
     }
