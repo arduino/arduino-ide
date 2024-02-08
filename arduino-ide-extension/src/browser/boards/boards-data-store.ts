@@ -12,6 +12,7 @@ import { ILogger } from '@theia/core/lib/common/logger';
 import { deepClone, deepFreeze } from '@theia/core/lib/common/objects';
 import type { Mutable } from '@theia/core/lib/common/types';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
+import { FQBN } from 'fqbn';
 import {
   BoardDetails,
   BoardsService,
@@ -20,6 +21,7 @@ import {
   Programmer,
   isBoardIdentifierChangeEvent,
   isProgrammer,
+  sanitizeFqbn,
 } from '../../common/protocol';
 import { notEmpty } from '../../common/utils';
 import type {
@@ -28,6 +30,14 @@ import type {
 } from '../../electron-common/startup-task';
 import { NotificationCenter } from '../notification-center';
 import { BoardsServiceProvider } from './boards-service-provider';
+
+export interface SelectConfigOptionParams {
+  readonly fqbn: string;
+  readonly optionsToUpdate: readonly Readonly<{
+    option: string;
+    selectedValue: string;
+  }>[];
+}
 
 @injectable()
 export class BoardsDataStore
@@ -64,7 +74,12 @@ export class BoardsDataStore
     this.toDispose.pushAll([
       this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
         if (isBoardIdentifierChangeEvent(event)) {
-          this.updateSelectedBoardData(event.selectedBoard?.fqbn);
+          this.updateSelectedBoardData(
+            event.selectedBoard?.fqbn,
+            // If the change event comes from toolbar and the FQBN contains custom board options, change the currently selected options
+            // https://github.com/arduino/arduino-ide/issues/1588
+            event.reason === 'toolbar'
+          );
         }
       }),
       this.notificationCenter.onPlatformDidInstall(async ({ item }) => {
@@ -116,7 +131,7 @@ export class BoardsDataStore
     if (!fqbn) {
       return undefined;
     } else {
-      const data = await this.getData(fqbn);
+      const data = await this.getData(sanitizeFqbn(fqbn));
       if (data === BoardsDataStore.Data.EMPTY) {
         return undefined;
       }
@@ -125,9 +140,22 @@ export class BoardsDataStore
   }
 
   private async updateSelectedBoardData(
-    fqbn: string | undefined
+    fqbn: string | undefined,
+    updateConfigOptions = false
   ): Promise<void> {
     this._selectedBoardData = await this.getSelectedBoardData(fqbn);
+    if (fqbn && updateConfigOptions) {
+      const { options } = new FQBN(fqbn);
+      if (options) {
+        const optionsToUpdate = Object.entries(options).map(([key, value]) => ({
+          option: key,
+          selectedValue: value,
+        }));
+        const params = { fqbn, optionsToUpdate };
+        await this.selectConfigOption(params);
+        this._selectedBoardData = await this.getSelectedBoardData(fqbn); // reload the updated data
+      }
+    }
   }
 
   onStop(): void {
@@ -168,7 +196,7 @@ export class BoardsDataStore
       return undefined;
     }
     const { configOptions } = await this.getData(fqbn);
-    return ConfigOption.decorate(fqbn, configOptions);
+    return new FQBN(fqbn).withConfigOptions(...configOptions).toString();
   }
 
   async getData(fqbn: string | undefined): Promise<BoardsDataStore.Data> {
@@ -201,48 +229,63 @@ export class BoardsDataStore
     fqbn: string;
     selectedProgrammer: Programmer;
   }): Promise<boolean> {
-    const storedData = deepClone(await this.getData(fqbn));
+    const sanitizedFQBN = sanitizeFqbn(fqbn);
+    const storedData = deepClone(await this.getData(sanitizedFQBN));
     const { programmers } = storedData;
     if (!programmers.find((p) => Programmer.equals(selectedProgrammer, p))) {
       return false;
     }
 
-    const data = { ...storedData, selectedProgrammer };
-    await this.setData({ fqbn, data });
-    this.fireChanged({ fqbn, data });
+    const change: BoardsDataStoreChange = {
+      fqbn: sanitizedFQBN,
+      data: { ...storedData, selectedProgrammer },
+    };
+    await this.setData(change);
+    this.fireChanged(change);
     return true;
   }
 
-  async selectConfigOption({
-    fqbn,
-    option,
-    selectedValue,
-  }: {
-    fqbn: string;
-    option: string;
-    selectedValue: string;
-  }): Promise<boolean> {
-    const data = deepClone(await this.getData(fqbn));
-    const { configOptions } = data;
-    const configOption = configOptions.find((c) => c.option === option);
-    if (!configOption) {
+  async selectConfigOption(params: SelectConfigOptionParams): Promise<boolean> {
+    const { fqbn, optionsToUpdate } = params;
+    if (!optionsToUpdate.length) {
       return false;
     }
-    let updated = false;
-    for (const value of configOption.values) {
-      const mutable: Mutable<ConfigValue> = value;
-      if (mutable.value === selectedValue) {
-        mutable.selected = true;
-        updated = true;
-      } else {
-        mutable.selected = false;
+
+    const sanitizedFQBN = sanitizeFqbn(fqbn);
+    const mutableData = deepClone(await this.getData(sanitizedFQBN));
+    let didChange = false;
+
+    for (const { option, selectedValue } of optionsToUpdate) {
+      const { configOptions } = mutableData;
+      const configOption = configOptions.find((c) => c.option === option);
+      if (configOption) {
+        const configOptionValueIndex = configOption.values.findIndex(
+          (configOptionValue) => configOptionValue.value === selectedValue
+        );
+        if (configOptionValueIndex >= 0) {
+          // unselect all
+          configOption.values
+            .map((value) => value as Mutable<ConfigValue>)
+            .forEach((value) => (value.selected = false));
+          const mutableConfigValue: Mutable<ConfigValue> =
+            configOption.values[configOptionValueIndex];
+          // make the new value `selected`
+          mutableConfigValue.selected = true;
+          didChange = true;
+        }
       }
     }
-    if (!updated) {
+
+    if (!didChange) {
       return false;
     }
-    await this.setData({ fqbn, data });
-    this.fireChanged({ fqbn, data });
+
+    const change: BoardsDataStoreChange = {
+      fqbn: sanitizedFQBN,
+      data: mutableData,
+    };
+    await this.setData(change);
+    this.fireChanged(change);
     return true;
   }
 
