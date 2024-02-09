@@ -6,7 +6,7 @@ import { Deferred } from '@theia/core/lib/common/promise-util';
 import { escapeRegExpCharacters } from '@theia/core/lib/common/strings';
 import type { Mutable } from '@theia/core/lib/common/types';
 import URI from '@theia/core/lib/common/uri';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import glob from 'glob';
 import crypto from 'node:crypto';

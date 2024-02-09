@@ -20,12 +20,12 @@ export class DefaultDebugSessionFactory extends TheiaDefaultDebugSessionFactory 
       sessionId,
       () =>
         new Promise<DebugChannel>((resolve) =>
-          this.connectionProvider.openChannel(
+          this.connectionProvider.listen(
             `${DebugAdapterPath}/${sessionId}`,
-            (wsChannel) => {
+            (_, wsChannel) => {
               resolve(new ForwardingDebugChannel(wsChannel));
             },
-            { reconnecting: false }
+            false
           )
         ),
       this.getTraceOutputChannel()

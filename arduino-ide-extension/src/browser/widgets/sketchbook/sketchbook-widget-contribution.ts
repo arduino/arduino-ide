@@ -3,7 +3,7 @@ import { CommandRegistry } from '@theia/core/lib/common/command';
 import { MenuModelRegistry } from '@theia/core/lib/common/menu';
 import { PreferenceService } from '@theia/core/lib/browser/preferences/preference-service';
 import { AbstractViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { MainMenuManager } from '../../../common/main-menu-manager';
 import { ArduinoPreferences } from '../../arduino-preferences';
 import { SketchbookWidget } from './sketchbook-widget';

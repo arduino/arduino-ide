@@ -1,8 +1,6 @@
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
-import {
-  FrontendApplication,
-  FrontendApplicationContribution,
-} from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
   KeybindingContribution,

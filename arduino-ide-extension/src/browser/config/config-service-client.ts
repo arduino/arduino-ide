@@ -1,4 +1,4 @@
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';

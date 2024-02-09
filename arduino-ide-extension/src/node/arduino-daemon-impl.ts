@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
 import { spawn, ChildProcess } from 'node:child_process';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { Deferred, retry } from '@theia/core/lib/common/promise-util';
 import {

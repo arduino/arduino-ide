@@ -6,13 +6,14 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { nls } from '@theia/core/lib/common/nls';
 import type { Mutable } from '@theia/core/lib/common/types';
-import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as jspb from 'google-protobuf';
 import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 import path from 'node:path';
+import { userAbort } from '../common/nls';
 import {
   UploadResponse as ApiUploadResponse,
   OutputMessage,
@@ -28,6 +29,7 @@ import {
   isCompileSummary,
   isUploadResponse,
 } from '../common/protocol/core-service';
+import { UserAbortApplicationError } from '../common/protocol/progressible';
 import { ResponseService } from '../common/protocol/response-service';
 import { firstToUpperCase, notEmpty } from '../common/utils';
 import { BoardDiscovery, createApiPort } from './board-discovery';
@@ -52,8 +54,6 @@ import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
 import { MonitorManager } from './monitor-manager';
 import { ServiceError } from './service-error';
 import { AutoFlushingBuffer } from './utils/buffers';
-import { userAbort } from '../common/nls';
-import { UserAbortApplicationError } from '../common/protocol/progressible';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;

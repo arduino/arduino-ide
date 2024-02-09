@@ -1,4 +1,4 @@
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { injectable } from '@theia/core/shared/inversify';
 import { ExecutableService } from '../common/protocol/executable-service';
 import {

@@ -1,10 +1,10 @@
+import { ConnectionHandler } from '@theia/core/lib/common/messaging/handler';
 import { JsonRpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
 import { ElectronMainWindowService } from '@theia/core/lib/electron-common/electron-main-window-service';
-import { ElectronConnectionHandler } from '@theia/core/lib/electron-common/messaging/electron-connection-handler';
 import { TheiaMainApi } from '@theia/core/lib/electron-main/electron-api-main';
 import {
-  ElectronMainApplication as TheiaElectronMainApplication,
   ElectronMainApplicationContribution,
+  ElectronMainApplication as TheiaElectronMainApplication,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import { TheiaElectronWindow as DefaultTheiaElectronWindow } from '@theia/core/lib/electron-main/theia-electron-window';
 import { ContainerModule } from '@theia/core/shared/inversify';
@@ -33,7 +33,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(IDEUpdaterImpl).toSelf().inSingletonScope();
   bind(IDEUpdater).toService(IDEUpdaterImpl);
   bind(ElectronMainApplicationContribution).toService(IDEUpdater);
-  bind(ElectronConnectionHandler)
+  bind(ConnectionHandler)
     .toDynamicValue(
       (context) =>
         new JsonRpcConnectionHandler<IDEUpdaterClient>(

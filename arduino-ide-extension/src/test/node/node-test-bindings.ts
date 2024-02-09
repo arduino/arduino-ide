@@ -5,7 +5,7 @@ import {
 import { EnvVariablesServer as TheiaEnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { waitForEvent } from '@theia/core/lib/common/promise-util';
 import URI from '@theia/core/lib/common/uri';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { ProcessUtils } from '@theia/core/lib/node/process-utils';
 import {
   Container,

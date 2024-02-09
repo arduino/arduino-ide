@@ -1,4 +1,4 @@
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { MessageType } from '@theia/core/lib/common/message-service-protocol';

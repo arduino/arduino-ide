@@ -408,7 +408,6 @@
       },
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "upload",
       "upload.verbose": "True for verbose upload output. False by default.",
@@ -480,11 +479,6 @@
     "sketchbook": {
       "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
-    },
-    "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
     },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",

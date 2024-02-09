@@ -6,7 +6,7 @@ import {
 import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import {
   IndexUpdateDidCompleteParams,
   IndexUpdateDidFailParams,
