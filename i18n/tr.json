@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Hatalı editör yazı tipi boyutu. Pozitif bir tam sayı olmalı.",
       "invalid.sketchbook.location": "Hatalı eskiz defteri konumu: {0}",
       "invalid.theme": "Hatalı tema.",
+      "language.asyncWorkers": "Arduino Language Server (clangd) tarafından kullanılan asenkron işlem sayısı. Arkaplan dizinleticisi de bu kadar işlem kullanır. Asgari değer 0, azami ise 8. 0 olduğu zaman dil sunucusu mevcut olan tüm çekirdekleri kullanır. Varsayılan değer 0.",
       "language.log": "Arduino Language Server eskiz klasörüne log dosyaları oluşturacaksa True. Aksi takdirde false. Varsayılan: false.",
       "language.realTimeDiagnostics": "Açılırsa, dil sunucusu editöre yazarken gerçek zamanlı kontroller sağlar. Varsayılan olarak kapalıdır.",
       "manualProxy": "Elle vekil ayarlama",

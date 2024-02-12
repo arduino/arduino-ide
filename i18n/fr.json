@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Police de l'éditeur invalide. La taille doit être un entier positif.",
       "invalid.sketchbook.location": "Localisation invalide du croquis : {0}",
       "invalid.theme": "Thème invalide.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Vrai si le serveur de langage Arduino devrait générer des fichiers logs dans le dossier du croquis. Si non faux. La valeur par défaut est faux.",
       "language.realTimeDiagnostics": "Si c'est vrai, le serveur de langue fournit des diagnostics en temps réel lors de la saisie dans l'éditeur. C'est faux par défaut.",
       "manualProxy": "Configuration manuelle du proxy",

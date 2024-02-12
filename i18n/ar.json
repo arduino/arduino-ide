@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "حجم خط المحرّر غير صالح . يجب ان يكون عدد موجب",
       "invalid.sketchbook.location": "موقع ملف المشروع غير صالح : {0}",
       "invalid.theme": "سمة غير صالحة",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "\"True\" اذا كان مخدم اللغات الخاص بArduino يستطيع توليد سجلات الى ملف المشروع , و الا \"False\", و هي كذلك بشكل افتراضي.",
       "language.realTimeDiagnostics": "اذا تم تفعيله , سيقوم سيرفر اللغة باعطاء تشخيصات للاخطاء خلال الوقت الحقيقي اثناء الكتابة ضمن المحرر . غير مفعل بشكل افتراضي",
       "manualProxy": "اعدادات الوكيل يدوياً",

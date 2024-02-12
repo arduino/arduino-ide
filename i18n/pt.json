@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Tamanho da fonte do editor inválido. Deve ser um número inteiro positivo.",
       "invalid.sketchbook.location": "Localização inválida para o caderno de esboços: {0}",
       "invalid.theme": "Tema inválido",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Verdadeiro se o Arduino Language Server deverá gerar arquivos de log na pasta do esboço. Caso contrário, falso. O padrão é falso.",
       "language.realTimeDiagnostics": "Se marcado, diagnósticos em tempo-real serão exibidos enquanto digita no editor. Fica desmarcado por padrão.",
       "manualProxy": "Configurações manuais de proxy",

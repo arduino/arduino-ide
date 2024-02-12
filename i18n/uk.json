@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Хибний розмір шрифта редактора. Значення повинно бути цілим числом.",
       "invalid.sketchbook.location": "Хибний шлях до книги скетчів: {0}",
       "invalid.theme": "Недійсна тема.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "\"Так\", якщо треба генерувати log-файли журналу в папці скетча. В іншому випадку \"Ні\". За замовчуванням це \"Ні\". ",
       "language.realTimeDiagnostics": "Якщо \"Так\", перевірка синтаксису відбувається в режимі реального часу. Під час введення тексту в редакторі. Знчення замовчуванням  - \"Ні\".",
       "manualProxy": "Налаштування проксі вручну",

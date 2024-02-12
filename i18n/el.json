@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Μη-έγκυρο μέγεθος γραμματοσειράς συντάκτη. Πρέπει να είναι θετικός ακέραιος.",
       "invalid.sketchbook.location": "Μη-έγκυρη τοποθεσία σχεδίων: {0}",
       "invalid.theme": "Μη-έγκυρο θέμα.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Σωστό εάν ο διακομιστής γλώσσας Arduino πρέπει να δημιουργήσει αρχεία καταγραφής στο φάκελο σκίτσου. Διαφορετικά, ψευδής. Είναι ψευδές από προεπιλογή.",
       "language.realTimeDiagnostics": "Εάν ισχύει, ο διακομιστής γλώσσας παρέχει διαγνωστικά σε πραγματικό χρόνο όταν πληκτρολογείτε στον επεξεργαστή. Είναι ψευδές από προεπιλογή.",
       "manualProxy": "Μη αυτόματη διαμόρφωση proxy διακομιστή μεσολάβησης",

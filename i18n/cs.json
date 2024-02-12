@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Neplatná velikost editoru písem: Toto číslo musí být kladné.",
       "invalid.sketchbook.location": "Neplatné umístění projektů:{0}",
       "invalid.theme": "Neplatné téma.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Ano pokud by jazykový server pro Arduino měl generovat logovací soubory do složky se sketchi, jinak ne. Ne je výchozí hodnota.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ruční nastavení proxy",

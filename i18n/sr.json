@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Неважећа величина текста уређивача. Мора да буде позитиван цијели број.",
       "invalid.sketchbook.location": "Неважећа локација радне свеске: {0}",
       "invalid.theme": "Неважећа тема.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Тачно ако Ардуино језички сервер треба да генерише датотеке евиденције у фасциклу за скице. Иначе, нетачно. Подразумевано је нетачно.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ручно подешавање посредника",

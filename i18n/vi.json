@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Cỡ chữ trình biên dịch không hợp lệ. Bắt buộc phải là số nguyên dương.",
       "invalid.sketchbook.location": "Địa điểm sketchbook không hợp lệ: {0}",
       "invalid.theme": "Chủ đề không hợp lệ.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "'True' nếu như muốn Arduino Language Server tạo tệp log vào trong thư mục chứa sketch. Nếu không thì là 'false'. Mặc định là 'false'.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Cấu hình proxy thủ công",
