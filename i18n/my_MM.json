@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "အယ်ဒီတာဖောင့်အရွယ်အစားမမှန်ကန်ပါ။ အပေါင်းကိန်းပြည့်ဖြစ်ရပါမည်။",
       "invalid.sketchbook.location": "မမှန်ကန်သောကုတ်ဖိုင်လ်စာအုပ်တည်နေရာ-{0}",
       "invalid.theme": "မမှန်ကန်သောသင်း",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "အမှန်ဖြစ်နေပါက Arduinoဘာသာစကားစစ်ဆေးမှုဆာဗာသည် မှတ်တမ်းဖိုင်လ်များကို ကုတ်ဖိုင်လ်ဖိုလ်ဒါတွင် ထုတ်ပေးမည်။ မူရင်းတန်းဖိုးသည် အမှားဖြစ်သည်။",
       "language.realTimeDiagnostics": "အမှန်ခြစ်ထားပါက အယ်ဒီတာတွင် စာရေးသောအခါ ဘာသာစကားစစ်ဆေးမှုဆာဗာသည် အချိန်နှင့်တပြေးညီ စစ်ဆေးပေးမည်။ မူလတန်ဖိုးသည် အမှားဖြစ်သည်။",
       "manualProxy": "ကိုယ်တိုင် ကြားခံကွန်ရက်ပြင်ဆင်ခြင်း",

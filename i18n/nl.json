@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Ongeldige lettergrootte voor editor. Het moet een positief geheel getal zijn.",
       "invalid.sketchbook.location": "Ongeldige schetsboek locatie: {0}",
       "invalid.theme": "Ongeldig Thema.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Waar als de Arduino Taal Server log bestanden moet genereren in de schets map. Anders onwaar. Standaard ingesteld op onwaar.",
       "language.realTimeDiagnostics": "Indien waar, geeft de taalserver real-time diagnostiek tijdens het typen in de editor. Standaard is dit onwaar.",
       "manualProxy": "Manuele proxy configuratie",

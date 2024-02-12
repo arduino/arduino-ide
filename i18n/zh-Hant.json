@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "無效的編輯器字體大小, 必須是正整數。",
       "invalid.sketchbook.location": "無效的 sketchbook 位置:{0}",
       "invalid.theme": "無效的佈景主題。",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Arduino語言伺服器會自動在 sketch 內產生日誌檔。預設為關閉。",
       "language.realTimeDiagnostics": "語言服務器提供即時診斷。預設關閉。",
       "manualProxy": "手動設定代理伺服器",

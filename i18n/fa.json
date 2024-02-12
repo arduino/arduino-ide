@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "اندازه فونت ویرایشگر نامعتبر است. باید یک عدد صحیح مثبت باشد.",
       "invalid.sketchbook.location": "مکان نامعتبر منبع طرح ها: {0}",
       "invalid.theme": "طرح زمینه موجود نیست",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "اگر سرور زبان آردوینو باید فایل های گزارش را در پوشه طرح ایجاد کند درست می باشد. در غیر این صورت، نادرست است. به طور پیش فرض نادرست است.",
       "language.realTimeDiagnostics": "اگر درست باشد، سرور زبان هنگام تایپ در ویرایشگر، عیب‌یابی بی‌درنگ ارائه می‌کند. به طور پیش فرض نادرست است.",
       "manualProxy": "پیکربندی دستی پروکسی",

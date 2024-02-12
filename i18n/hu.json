@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "A szerkesztő betűmérete érvénytelen. Pozitív egész számnak kell lennie. ",
       "invalid.sketchbook.location": "Érvénytelen elérési út a vázlatfüzethez/sketchbook-hoz: {0} ",
       "invalid.theme": "Érvénytelen megjelenési felület/téma. ",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Igaz/kipipálva/, ha az Arduino Language Server naplófájlokat generál a vázlat mappába. Ellenkező esetben hamis/nincs kipipálva. Alapértelmezés szerint: hamis. ",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Kézi proxy konfiguráció",

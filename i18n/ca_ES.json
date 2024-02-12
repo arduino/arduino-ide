@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Mida del tipus de lletra de l'editor no vàlida. Ha de ser un nombre enter positiu.",
       "invalid.sketchbook.location": "La ubicació del quadern de programes no és vàlida: {0}",
       "invalid.theme": "Tema no vàlid.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "És cert si el servidor d'idiomes Arduino hauria de generar fitxers de registre a la carpeta de programes. En cas contrari, fals. És fals per defecte.",
       "language.realTimeDiagnostics": "Si està activat, el servidor d'idiomes ofereix diagnòstics en temps real mentre s'escriu. Per defecte està desactivat.",
       "manualProxy": "Configuració manual del proxy",
