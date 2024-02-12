@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "잘못된 에디터 글꼴크기, 반드시 양의 정수를 사용해야합니다.",
       "invalid.sketchbook.location": "잘못된 스케치북 위치: {0}",
       "invalid.theme": "잘못된 테마.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Arduino 언어 서버가 스케치 폴더에 로그 파일을 생성해야 하는 경우 true이고, 그렇지 않으면 false입니다. 기본은 false입니다.",
       "language.realTimeDiagnostics": "true인 경우 언어 서버는 편집기에 입력할 때 실시간 진단을 제공하며 기본적으로 false입니다.",
       "manualProxy": "수동 프록시 구성",

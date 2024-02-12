@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Невалиден размер на шрифта на редактора. Трябва да е положително цяло число.",
       "invalid.sketchbook.location": "Невалидно местоположение на скицника: {0}",
       "invalid.theme": "Невалидна тема.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "True, ако езиковият сървър на Arduino трябва да генерира лог файлове в папката за скици. В противен случай false. По подразбиране е false.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Ръчна конфигурация на прокси",

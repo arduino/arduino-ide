@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "अवैध सम्पादक फन्ट साइज। यो सकारात्मक पूर्णांक हुनुपर्छ।",
       "invalid.sketchbook.location": "अवैध स्केचबुक स्थान: {0}",
       "invalid.theme": "अमान्य विषयवस्तु।",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "यदि अर्डुइनो भाषा सर्भरले स्केच फोल्डरमा लग फाइलहरू उत्पन्न गर्नुपर्छ भने सक्षम गर्नुहोस्। अन्यथा, असक्षम। यो पूर्वनिर्धारित रूपमा असक्षम छ।",
       "language.realTimeDiagnostics": "यदि सक्षम छ भने, सम्पादकमा टाइप गर्दा भाषा सर्भरले वास्तविक समय निदान प्रदान गर्दछ। यो पूर्वनिर्धारित रूपमा असक्षम हुन्छ।",
       "manualProxy": "म्यानुअल प्रोक्सी कन्फिगरेसन",

@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Неверный размер шрифта редактора. Это должно быть положительное целое число.",
       "invalid.sketchbook.location": "Неправильный путь к альбому со скетчами: {0}",
       "invalid.theme": "Неверная тема.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "True - сервер Arduino Language будет создавать файлы журнала в папке скетча. В противном случае - false. По умолчанию - false.",
       "language.realTimeDiagnostics": "Если включено, то языковой сервер проводит диагностику набранного текста в реальном времени. По умолчанию отключено.",
       "manualProxy": "Ручная настройка параметров прокси-сервера",

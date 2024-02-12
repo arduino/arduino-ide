@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Tamaño de fuente del editor no válido. Debe ser un número entero positivo.",
       "invalid.sketchbook.location": "Ruta del sketchbook no válida: {0}",
       "invalid.theme": "Tema no válido.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Verdadero si el Servidor de Lenguaje Arduino debe generar archivos de registro en la carpeta del sketch. En caso contrario, falso. Por defecto es falso.",
       "language.realTimeDiagnostics": "Si está habilitado, el lenguaje proveerá diagnoticos en tiepo real meintras se teclea en el editor. Deshabilitado por defecto.",
       "manualProxy": "Configuración manual del proxy",

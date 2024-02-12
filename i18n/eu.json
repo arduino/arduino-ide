@@ -385,6 +385,7 @@
       "invalid.editorFontSize": "Editorearen letra-tamaina baliogabea. Osoko zenbaki positibo bat izan behar du.",
       "invalid.sketchbook.location": "Programa bildumaren kokaleku baliogabea: {0}",
       "invalid.theme": "Itxura baliogabea.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
       "language.log": "Egia Arduino Language Server-ek egunkari-fitxategiak sortu behar baditu programaren karpetan. Bestela, gezurra. Lehenetsia gezurra da.",
       "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
       "manualProxy": "Proxyaren eskuzko konfigurazioa",
