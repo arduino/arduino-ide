@@ -398,12 +398,9 @@ export async function isDebugEnabled(
       `Failed to append boards config to the FQBN. Original FQBN was: ${fqbn}`
     );
   }
-  if (!data.selectedProgrammer) {
-    throw new Error(noProgrammerSelectedFor(board.name));
-  }
   const params = {
     fqbn: fqbnWithConfig,
-    programmer: data.selectedProgrammer.id,
+    programmer: data.selectedProgrammer?.id,
   };
   try {
     const debugFqbn = await checkDebugEnabled(params);
@@ -440,16 +437,6 @@ export function debuggingNotSupported(boardName: string): string {
   return nls.localize(
     'arduino/debug/debuggingNotSupported',
     "Debugging is not supported by '{0}'",
-    boardName
-  );
-}
-/**
- * (non-API)
- */
-export function noProgrammerSelectedFor(boardName: string): string {
-  return nls.localize(
-    'arduino/debug/noProgrammerSelectedFor',
-    "No programmer selected for '{0}'",
     boardName
   );
 }

@@ -178,7 +178,7 @@ export class BoardsServiceImpl
     const req = new IsDebugSupportedRequest()
       .setInstance(instance)
       .setFqbn(fqbn)
-      .setProgrammer(programmer);
+      .setProgrammer(programmer ?? '');
     try {
       const debugFqbn = await new Promise<string>((resolve, reject) =>
         client.isDebugSupported(req, (err, resp) => {

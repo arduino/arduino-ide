@@ -95,7 +95,7 @@ export interface CheckDebugEnabledParams {
    * The FQBN might contain custom board config options. For example, `arduino:esp32:nano_nora:USBMode=hwcdc,option2=value2`.
    */
   readonly fqbn: string;
-  readonly programmer: string;
+  readonly programmer?: string;
 }
 
 export interface BoardSearch extends Searchable.Options {
