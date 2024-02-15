@@ -28,7 +28,6 @@ import {
   debuggingNotSupported,
   isDebugEnabled,
   noPlatformInstalledFor,
-  noProgrammerSelectedFor,
 } from '../../browser/contributions/debug';
 import { NotificationCenter } from '../../browser/notification-center';
 import { noBoardSelected } from '../../common/nls';
@@ -117,20 +116,20 @@ describe('debug', () => {
       );
     });
 
-    it('should error when no programmer selected', async () => {
+    it('should resolve when no programmer is selected (arduino/arduino-cli#2540)', async () => {
       const copyData: Mutable<BoardsDataStore.Data> = deepClone(data);
       delete copyData.selectedProgrammer;
-      await rejects(
+      await doesNotReject(
         isDebugEnabled(
           board,
           () => boardDetails,
           () => copyData,
           (fqbn) => fqbn,
-          unexpectedCall()
-        ),
-        (reason) =>
-          reason instanceof Error &&
-          reason.message === noProgrammerSelectedFor(board.name)
+          async (params) => {
+            expect(params.programmer).to.be.undefined;
+            return params.fqbn;
+          }
+        )
       );
     });
 
