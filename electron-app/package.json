@@ -196,7 +196,7 @@
   "theiaPlugins": {
     "vscode-builtin-cpp": "https://open-vsx.org/api/vscode/cpp/1.52.1/file/vscode.cpp-1.52.1.vsix",
     "vscode-arduino-api": "https://github.com/dankeboy36/vscode-arduino-api/releases/download/0.1.2/vscode-arduino-api-0.1.2.vsix",
-    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.1.2.vsix",
+    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.1.3.vsix",
     "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
     "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
     "cortex-debug": "https://downloads.arduino.cc/marus25.cortex-debug/marus25.cortex-debug-1.5.1.vsix",
