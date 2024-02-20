@@ -1,6 +1,7 @@
 import { ILogger } from '@theia/core/lib/common/logger';
 import { nls } from '@theia/core/lib/common/nls';
 import { notEmpty } from '@theia/core/lib/common/objects';
+import { Mutable } from '@theia/core/lib/common/types';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   BoardDetails,
@@ -592,7 +593,7 @@ function createBoardsPackage(
   const availableVersions = Array.from(versionReleaseMap.keys())
     .sort(Installable.Version.COMPARATOR)
     .reverse();
-  return {
+  const boardsPackage: Mutable<BoardsPackage> = {
     id,
     name,
     summary: nls.localize(
@@ -607,6 +608,10 @@ function createBoardsPackage(
     deprecated,
     availableVersions,
   };
+  if (summary.installedVersion) {
+    boardsPackage.installedVersion = summary.installedVersion;
+  }
+  return boardsPackage;
 }
 
 type PlatformSummaryWithMetadata = PlatformSummary.AsObject &

@@ -1,7 +1,18 @@
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
-import { BoardSearch, BoardsService, Installable } from '../../common/protocol';
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import temp from 'temp';
+import {
+  BoardSearch,
+  BoardsPackage,
+  BoardsService,
+  Installable,
+} from '../../common/protocol';
 import { createBaseContainer, startDaemon } from './node-test-bindings';
 
 describe('boards-service-impl', () => {
@@ -10,8 +21,12 @@ describe('boards-service-impl', () => {
 
   before(async function () {
     this.timeout(20_000);
-    toDispose = new DisposableCollection();
-    const container = await createContainer();
+    const tracked = temp.track();
+    toDispose = new DisposableCollection(
+      Disposable.create(() => tracked.cleanupSync())
+    );
+    const testDirPath = tracked.mkdirSync();
+    const container = await createContainer(testDirPath);
     await start(container, toDispose);
     boardService = container.get<BoardsService>(BoardsService);
   });
@@ -110,10 +125,45 @@ describe('boards-service-impl', () => {
       expect(first.deprecated).to.be.false;
     });
   });
+
+  it('should have the installed version set', async function () {
+    const timeout = 5 * 60 * 1_000; // five minutes to install/uninstall the core
+    this.timeout(timeout);
+
+    // ensure installed
+    let result = await boardService.search({ query: 'arduino:avr' });
+    let avr = result.find(
+      (boardsPackage) => boardsPackage.id === 'arduino:avr'
+    );
+    expect(avr).to.be.not.undefined;
+    await boardService.install({
+      item: <BoardsPackage>avr,
+      skipPostInstall: true,
+    });
+
+    // when installed the version is set
+    result = await boardService.search({ query: 'arduino:avr' });
+    avr = result.find((boardsPackage) => boardsPackage.id === 'arduino:avr');
+    expect(avr).to.be.not.undefined;
+    expect(avr?.installedVersion).to.be.not.undefined;
+
+    // uninstall the core
+    await boardService.uninstall({ item: <BoardsPackage>avr });
+    result = await boardService.search({ query: 'arduino:avr' });
+    avr = result.find((boardsPackage) => boardsPackage.id === 'arduino:avr');
+    expect(avr).to.be.not.undefined;
+    expect(avr?.installedVersion).to.be.undefined;
+  });
 });
 
-async function createContainer(): Promise<Container> {
-  return createBaseContainer();
+async function createContainer(testDirPath: string): Promise<Container> {
+  const data = path.join(testDirPath, 'data');
+  const user = path.join(testDirPath, 'user');
+  await Promise.all([
+    fs.mkdir(data, { recursive: true }),
+    fs.mkdir(user, { recursive: true }),
+  ]);
+  return createBaseContainer({ cliConfig: { directories: { data, user } } });
 }
 
 async function start(
