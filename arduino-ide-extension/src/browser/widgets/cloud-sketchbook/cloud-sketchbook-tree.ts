@@ -389,15 +389,21 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   private async sync(source: URI, dest: URI): Promise<void> {
     const { filesToWrite, filesToDelete } = await this.treeDiff(source, dest);
-    await Promise.all(
-      filesToWrite.map(async ({ source, dest }) => {
-        if ((await this.fileService.resolve(source)).isFile) {
-          const content = await this.fileService.read(source);
-          return this.fileService.write(dest, content.value);
-        }
-        return this.fileService.createFolder(dest);
-      })
+    // Sort by the URIs. The shortest comes first. It's to ensure creating the parent folder for nested resources, for example.
+    // When sorting the URIs, it does not matter whether on source or dest, only the URI path and its length matters; they're the same for a source+dest pair
+    filesToWrite.sort(
+      (left, right) =>
+        left.source.path.toString().length - right.source.path.toString().length
     );
+    for (const { source, dest } of filesToWrite) {
+      const stat = await this.fileService.resolve(source);
+      if (stat.isFile) {
+        const content = await this.fileService.read(source);
+        await this.fileService.write(dest, content.value);
+      } else {
+        await this.fileService.createFolder(dest);
+      }
+    }
 
     await Promise.all(
       filesToDelete.map((file) =>

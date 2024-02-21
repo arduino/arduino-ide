@@ -1,35 +1,36 @@
-import { inject, injectable } from '@theia/core/shared/inversify';
-import URI from '@theia/core/lib/common/uri';
-import { Event } from '@theia/core/lib/common/event';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
 import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import {
-  Stat,
-  FileType,
-  FileChange,
-  FileWriteOptions,
-  FileDeleteOptions,
-  FileOverwriteOptions,
-  FileSystemProvider,
-  FileSystemProviderError,
-  FileSystemProviderErrorCode,
-  FileSystemProviderCapabilities,
-  WatchOptions,
-} from '@theia/filesystem/lib/common/files';
+import { Event } from '@theia/core/lib/common/event';
+import URI from '@theia/core/lib/common/uri';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import {
   FileService,
   FileServiceContribution,
 } from '@theia/filesystem/lib/browser/file-service';
+import {
+  FileChange,
+  FileDeleteOptions,
+  FileOverwriteOptions,
+  FileSystemProvider,
+  FileSystemProviderCapabilities,
+  FileSystemProviderError,
+  FileSystemProviderErrorCode,
+  FileType,
+  FileWriteOptions,
+  Stat,
+  WatchOptions,
+  createFileSystemProviderError,
+} from '@theia/filesystem/lib/common/files';
+import { SketchesService } from '../../common/protocol';
+import { stringToUint8Array } from '../../common/utils';
+import { ArduinoPreferences } from '../arduino-preferences';
 import { AuthenticationClientService } from '../auth/authentication-client-service';
 import { CreateApi } from './create-api';
 import { CreateUri } from './create-uri';
-import { SketchesService } from '../../common/protocol';
-import { ArduinoPreferences } from '../arduino-preferences';
-import { Create } from './typings';
-import { stringToUint8Array } from '../../common/utils';
+import { Create, isNotFound } from './typings';
 
 @injectable()
 export class CreateFsProvider
@@ -90,14 +91,27 @@ export class CreateFsProvider
         size: 0,
       };
     }
-    const resource = await this.getCreateApi.stat(uri.path.toString());
-    const mtime = Date.parse(resource.modified_at);
-    return {
-      type: this.toFileType(resource.type),
-      ctime: mtime,
-      mtime,
-      size: 0,
-    };
+    try {
+      const resource = await this.getCreateApi.stat(uri.path.toString());
+      const mtime = Date.parse(resource.modified_at);
+      return {
+        type: this.toFileType(resource.type),
+        ctime: mtime,
+        mtime,
+        size: 0,
+      };
+    } catch (err) {
+      let errToRethrow = err;
+      // Not Found (Create API) errors must be remapped to VS Code filesystem provider specific errors
+      // https://code.visualstudio.com/api/references/vscode-api#FileSystemError
+      if (isNotFound(err)) {
+        errToRethrow = createFileSystemProviderError(
+          err,
+          FileSystemProviderErrorCode.FileNotFound
+        );
+      }
+      throw errToRethrow;
+    }
   }
 
   async mkdir(uri: URI): Promise<void> {
