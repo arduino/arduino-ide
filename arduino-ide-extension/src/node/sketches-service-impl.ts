@@ -609,9 +609,13 @@ export class SketchesServiceImpl
       force: true,
     });
 
+    const sourceMainSketchFilePath = FileUri.fsPath(sketch.mainFileUri);
+    // Can copy sketch with pde main sketch file: https://github.com/arduino/arduino-ide/issues/2377
+    const ext = path.extname(sourceMainSketchFilePath);
+
     // rename the main sketch file
     await fs.rename(
-      join(temp, `${sourceFolderBasename}.ino`),
+      join(temp, `${sourceFolderBasename}${ext}`),
       join(temp, `${destinationFolderBasename}.ino`)
     );
 
