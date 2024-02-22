@@ -104,9 +104,9 @@ export class CreateFsProvider
       let errToRethrow = err;
       // Not Found (Create API) errors must be remapped to VS Code filesystem provider specific errors
       // https://code.visualstudio.com/api/references/vscode-api#FileSystemError
-      if (isNotFound(err)) {
+      if (isNotFound(errToRethrow)) {
         errToRethrow = createFileSystemProviderError(
-          err,
+          errToRethrow,
           FileSystemProviderErrorCode.FileNotFound
         );
       }
