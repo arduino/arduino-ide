@@ -152,7 +152,8 @@
       "serialMonitor": "सिरियल मनिटर",
       "type": "प्रकार",
       "unknown": "थाहा नभएको",
-      "updateable": "अपडेट गर्न मिल्ने"
+      "updateable": "अपडेट गर्न मिल्ने",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "संकलन त्रुटि: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "डिबगिङ '{0}' द्वारा समर्थित छैन",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}' को लागि प्लेटफर्म स्थापना गरिएको छैन",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "डिबगिङका लागि अप्टिमाइज गर्नुहोस्",
       "sketchIsNotCompiled": "डिबग अवधि सुरु गर्नु अघि स्केच {0} पुष्टि गरिनुपर्छ। कृपया स्केच पुष्टि गर्नुहोस् र फेरि डिबगिङ सुरु गर्नुहोस्। के तपाई अहिले स्केच पुष्टि गर्न चाहनुहुन्छ?"
     },

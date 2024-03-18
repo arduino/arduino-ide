@@ -152,7 +152,8 @@
       "serialMonitor": "Serieller Monitor",
       "type": "Typ",
       "unknown": "unbekannt",
-      "updateable": "Aktualisierbar"
+      "updateable": "Aktualisierbar",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Fehler beim kompilieren: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "'{0}' unterstützt kein Debuggen",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Die Platform für '{0}' ist nicht instaliert.",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Für Debugging optimieren",
       "sketchIsNotCompiled": "Der Sketch '{0}' muss vor dem Starten einer Debugging-Sitzung überprüft werden. Bitte überprüfe den Sketch und starte das Debugging erneut. Möchtest du den Sketch jetzt überprüfen?"
     },

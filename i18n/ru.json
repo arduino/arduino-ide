@@ -152,7 +152,8 @@
       "serialMonitor": "Монитор порта",
       "type": "Type",
       "unknown": "Неизвестно",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Ошибка компиляции: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Отладка не поддерживается '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Платформа не установлена для '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Оптимизировать для отладки",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

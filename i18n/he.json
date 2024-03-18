@@ -152,7 +152,8 @@
       "serialMonitor": "מוניטור סיריאלי",
       "type": "סוג",
       "unknown": "לא ידוע",
-      "updateable": "ניתן לעדכון"
+      "updateable": "ניתן לעדכון",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "שגיאת קומפילציה: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "דיבאג לא נתמך על ידי '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "פלטפורמה אינה מותקנת עבור ׳{0}׳",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "אופטימיזציה לדיבאג",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

@@ -152,7 +152,8 @@
       "serialMonitor": "Seriový monitor",
       "type": "typ",
       "unknown": "Neznámý",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Chyba kompilace: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debugging není podporován s  '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platforma není nainstalována pro '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "optimalizovat pro Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

@@ -152,7 +152,8 @@
       "serialMonitor": "Monitor sèrie",
       "type": "Tipus",
       "unknown": "Desconegut",
-      "updateable": "Actualitzable"
+      "updateable": "Actualitzable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Error de compilació: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "La depuració no és compatible amb '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plataforma no està instal·lada per a '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimitzar per a la depuració",
       "sketchIsNotCompiled": "El programa \"{0}\" s'ha de comprovar abans de començar la depuració. Per favor, verifica el programa i comença a depurar de nou. Vols verificar el programa ara?"
     },
