@@ -152,7 +152,8 @@
       "serialMonitor": "Seri Port Ekranı",
       "type": "Tür",
       "unknown": "Bilinmeyen",
-      "updateable": "Güncellenebilir"
+      "updateable": "Güncellenebilir",
+      "userAbort": "Kullanıcı iptali"
     },
     "compile": {
       "error": "Derleme hatası: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",
       "getDebugInfo": "Hata ayıklama bilgisi alınıyor...",
       "noPlatformInstalledFor": "'{0}' için platform kurulmadı",
-      "noProgrammerSelectedFor": "'{0}' için programlayıcı seçilmedi",
       "optimizeForDebugging": "Debug için Optimize et",
       "sketchIsNotCompiled": "Hata ayıklama -debug- oturumuna başlamadan önce '{0}' eskizi doğrulanmalıdır. Lütfen eskizi doğrulayın ve hata ayıklamayı yeniden başlatın. Eskizi şimdi doğrulamak ister misiniz?"
     },

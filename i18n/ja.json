@@ -152,7 +152,8 @@
       "serialMonitor": "シリアルモニタ",
       "type": "タイプ",
       "unknown": "不明",
-      "updateable": "アップデート可能"
+      "updateable": "アップデート可能",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "コンパイルエラー: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "デバッグは'{0}'ではサポートされていません。",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}'用にプラットフォームがインストールされていません。",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "デバッグに最適化",
       "sketchIsNotCompiled": "デバッグセッションを開始する前に、スケッチ'{0}'を検証する必要があります。スケッチを検証してから、もう一度デバッグを開始してください。今すぐスケッチを検証しますか？"
     },

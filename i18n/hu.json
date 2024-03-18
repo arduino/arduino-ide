@@ -152,7 +152,8 @@
       "serialMonitor": "Soros monitor",
       "type": "Type",
       "unknown": "ismeretlen",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Összeállítási hiba: {0} "
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja ",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "A platform nincs telepítve a következőhöz: „{0}” ",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimalizálás hibakereséséhez",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

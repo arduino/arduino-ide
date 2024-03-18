@@ -152,7 +152,8 @@
       "serialMonitor": "Monitor portu szeregowego",
       "type": "Typ",
       "unknown": "Nieznany",
-      "updateable": "Możliwość aktualizacji"
+      "updateable": "Możliwość aktualizacji",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Błąd kompilacji: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debugowanie nie jest wspierane przez '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platforma nie jest zainstalowana dla '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optymalizuj pod kątem debugowania",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

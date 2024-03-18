@@ -152,7 +152,8 @@
       "serialMonitor": "Монитор серијског порта",
       "type": "Type",
       "unknown": "Непознато",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Грешка приликом превођења: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "'{0}' не подржава отклањање грешака",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Платформа није инсталирана за '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Оптимизовано за отклањање грешака",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

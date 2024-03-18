@@ -152,7 +152,8 @@
       "serialMonitor": "مراقب المنفذ التسلسلي \"سيريال بورت\"\n ",
       "type": "النوع",
       "unknown": "غير معروف",
-      "updateable": "يمكن تحديثه"
+      "updateable": "يمكن تحديثه",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "خطا في الترجمة : {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "'{0}' لا يقبل التصحيح البرمجي",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "المنصة غير مثبتة ل '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "التحسين من اجل التصحيح البرمجي",
       "sketchIsNotCompiled": "المشروع '{0}' يجب ان يتم التحقق منه قبل بدء جلسة تصحيح الاخطاء . الرجاء التحقق من المشروع و اعادة تشغيل مصحح الاخطاء مرة اخرى .\nهل تريد التحقق من المشروع الان؟"
     },

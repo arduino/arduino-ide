@@ -152,7 +152,8 @@
       "serialMonitor": "Seriaal Monitor",
       "type": "Type",
       "unknown": "Onbekend",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Compilation error: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platform is nie geïnstalleer vir ' {0} '",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Geoptimaliseerd vir ontfouting",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

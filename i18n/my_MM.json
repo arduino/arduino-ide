@@ -152,7 +152,8 @@
       "serialMonitor": "အတန်းလိုက်ဆက်သွယ်မှုမော်နီတာ",
       "type": "အမျိုးအစား",
       "unknown": "မသိ",
-      "updateable": "အပ်ဒိတ်တင်၍ရသော"
+      "updateable": "အပ်ဒိတ်တင်၍ရသော",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "ကုတ်ပေါင်းခြင်းဆိုင်ရာအမှား- {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "ကုတ်ပြစ်ချက်ရှာဖွေမှုကို '{0}'မှ မပေးထားပါ",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}' အတွက် ပလက်ဖောင်းကို မထည့်သွင်းရသေးပါ",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "ကုတ်ပြစ်ချက်ရှာဖွေရန်အတွက်ဦးစားပေးမည်",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

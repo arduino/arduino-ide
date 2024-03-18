@@ -152,7 +152,8 @@
       "serialMonitor": "Serial Monitor",
       "type": "Kiểu",
       "unknown": "Không xác định",
-      "updateable": "Có thể cập nhật"
+      "updateable": "Có thể cập nhật",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Lỗi biên dịch: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Sửa lỗi không hỗ trợ bởi '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Nền tảng chưa được cài đặt cho '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Tối ưu hóa cho sửa lỗi",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
