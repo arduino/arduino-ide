@@ -430,7 +430,7 @@ jobs:
           path: ${{ env.CHANNEL_FILES_PATH }}
 
       - name: Remove no longer needed artifact
-        uses: geekyeggo/delete-artifact@v2
+        uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
 
@@ -636,6 +636,6 @@ jobs:
 
     steps:
       - name: Remove unneeded job transfer artifact
-        uses: geekyeggo/delete-artifact@v2
+        uses: geekyeggo/delete-artifact@v5
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
