@@ -100,7 +100,7 @@ async function getArtifactName(version) {
   switch (platform) {
     case 'win32': {
       if (arch === 'x64') {
-        return `${name}_${version}_Windows_64bit.\$\{ext}`;
+        return `${name}_${version}_Windows_64bit_unsigned.\$\{ext}`;
       }
       throw new Error(`Unsupported platform, arch: ${platform}, ${arch}`);
     }
