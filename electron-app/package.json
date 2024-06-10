@@ -133,7 +133,8 @@
         "msi",
         "nsis",
         "zip"
-      ]
+      ],
+      "sign": "./scripts/windowsCustomSign.js"
     },
     "mac": {
       "darkModeSupport": true,
