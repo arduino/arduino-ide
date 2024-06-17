@@ -128,7 +128,7 @@
   },
   "optionalDependencies": {
     "grpc-tools": "^1.12.4",
-    "protoc": "^1.0.4"
+    "@pingghost/protoc": "^1.0.2"
   },
   "mocha": {
     "require": [
