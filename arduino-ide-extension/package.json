@@ -170,7 +170,7 @@
   ],
   "arduino": {
     "arduino-cli": {
-      "version": "0.36.0-rc.1"
+      "version": "1.0.4"
     },
     "arduino-fwuploader": {
       "version": "2.4.1"
