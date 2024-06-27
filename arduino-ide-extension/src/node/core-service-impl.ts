@@ -11,7 +11,6 @@ import type { Mutable } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as jspb from 'google-protobuf';
-import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 import path from 'node:path';
 import {
   UploadResponse as ApiUploadResponse,
@@ -195,9 +194,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     request.setVerbose(options.verbose);
     request.setQuiet(false);
     if (typeof options.exportBinaries === 'boolean') {
-      const exportBinaries = new BoolValue();
-      exportBinaries.setValue(options.exportBinaries);
-      request.setExportBinaries(exportBinaries);
+      request.setExportBinaries(options.exportBinaries);
     }
     this.mergeSourceOverrides(request, options);
     return request;

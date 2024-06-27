@@ -123,18 +123,30 @@ export namespace MonitorPortConfiguration {
 }
 
 export class MonitorResponse extends jspb.Message { 
+
+    hasError(): boolean;
+    clearError(): void;
     getError(): string;
     setError(value: string): MonitorResponse;
+
+    hasRxData(): boolean;
+    clearRxData(): void;
     getRxData(): Uint8Array | string;
     getRxData_asU8(): Uint8Array;
     getRxData_asB64(): string;
     setRxData(value: Uint8Array | string): MonitorResponse;
-    clearAppliedSettingsList(): void;
-    getAppliedSettingsList(): Array<MonitorPortSetting>;
-    setAppliedSettingsList(value: Array<MonitorPortSetting>): MonitorResponse;
-    addAppliedSettings(value?: MonitorPortSetting, index?: number): MonitorPortSetting;
+
+    hasAppliedSettings(): boolean;
+    clearAppliedSettings(): void;
+    getAppliedSettings(): MonitorPortConfiguration | undefined;
+    setAppliedSettings(value?: MonitorPortConfiguration): MonitorResponse;
+
+    hasSuccess(): boolean;
+    clearSuccess(): void;
     getSuccess(): boolean;
     setSuccess(value: boolean): MonitorResponse;
+
+    getMessageCase(): MonitorResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorResponse.AsObject;
@@ -150,9 +162,18 @@ export namespace MonitorResponse {
     export type AsObject = {
         error: string,
         rxData: Uint8Array | string,
-        appliedSettingsList: Array<MonitorPortSetting.AsObject>,
+        appliedSettings?: MonitorPortConfiguration.AsObject,
         success: boolean,
     }
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        ERROR = 1,
+        RX_DATA = 2,
+        APPLIED_SETTINGS = 3,
+        SUCCESS = 4,
+    }
+
 }
 
 export class MonitorPortSetting extends jspb.Message { 

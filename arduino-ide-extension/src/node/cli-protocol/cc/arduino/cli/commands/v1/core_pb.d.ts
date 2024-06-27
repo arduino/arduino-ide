@@ -60,6 +60,13 @@ export class PlatformInstallResponse extends jspb.Message {
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformInstallResponse;
 
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): PlatformInstallResponse.Result | undefined;
+    setResult(value?: PlatformInstallResponse.Result): PlatformInstallResponse;
+
+    getMessageCase(): PlatformInstallResponse.MessageCase;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformInstallResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformInstallResponse): PlatformInstallResponse.AsObject;
@@ -74,7 +81,35 @@ export namespace PlatformInstallResponse {
     export type AsObject = {
         progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
         taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        result?: PlatformInstallResponse.Result.AsObject,
     }
+
+
+    export class Result extends jspb.Message { 
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Result.AsObject;
+        static toObject(includeInstance: boolean, msg: Result): Result.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Result, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Result;
+        static deserializeBinaryFromReader(message: Result, reader: jspb.BinaryReader): Result;
+    }
+
+    export namespace Result {
+        export type AsObject = {
+        }
+    }
+
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        PROGRESS = 1,
+        TASK_PROGRESS = 2,
+        RESULT = 3,
+    }
+
 }
 
 export class PlatformLoadingError extends jspb.Message { 
@@ -133,6 +168,13 @@ export class PlatformDownloadResponse extends jspb.Message {
     getProgress(): cc_arduino_cli_commands_v1_common_pb.DownloadProgress | undefined;
     setProgress(value?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress): PlatformDownloadResponse;
 
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): PlatformDownloadResponse.Result | undefined;
+    setResult(value?: PlatformDownloadResponse.Result): PlatformDownloadResponse;
+
+    getMessageCase(): PlatformDownloadResponse.MessageCase;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformDownloadResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformDownloadResponse): PlatformDownloadResponse.AsObject;
@@ -146,7 +188,34 @@ export class PlatformDownloadResponse extends jspb.Message {
 export namespace PlatformDownloadResponse {
     export type AsObject = {
         progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
+        result?: PlatformDownloadResponse.Result.AsObject,
     }
+
+
+    export class Result extends jspb.Message { 
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Result.AsObject;
+        static toObject(includeInstance: boolean, msg: Result): Result.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Result, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Result;
+        static deserializeBinaryFromReader(message: Result, reader: jspb.BinaryReader): Result;
+    }
+
+    export namespace Result {
+        export type AsObject = {
+        }
+    }
+
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        PROGRESS = 1,
+        RESULT = 2,
+    }
+
 }
 
 export class PlatformUninstallRequest extends jspb.Message { 
@@ -188,6 +257,13 @@ export class PlatformUninstallResponse extends jspb.Message {
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformUninstallResponse;
 
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): PlatformUninstallResponse.Result | undefined;
+    setResult(value?: PlatformUninstallResponse.Result): PlatformUninstallResponse;
+
+    getMessageCase(): PlatformUninstallResponse.MessageCase;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUninstallResponse.AsObject;
     static toObject(includeInstance: boolean, msg: PlatformUninstallResponse): PlatformUninstallResponse.AsObject;
@@ -201,7 +277,34 @@ export class PlatformUninstallResponse extends jspb.Message {
 export namespace PlatformUninstallResponse {
     export type AsObject = {
         taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
+        result?: PlatformUninstallResponse.Result.AsObject,
     }
+
+
+    export class Result extends jspb.Message { 
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Result.AsObject;
+        static toObject(includeInstance: boolean, msg: Result): Result.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Result, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Result;
+        static deserializeBinaryFromReader(message: Result, reader: jspb.BinaryReader): Result;
+    }
+
+    export namespace Result {
+        export type AsObject = {
+        }
+    }
+
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        TASK_PROGRESS = 1,
+        RESULT = 2,
+    }
+
 }
 
 export class AlreadyAtLatestVersionError extends jspb.Message { 
@@ -268,10 +371,12 @@ export class PlatformUpgradeResponse extends jspb.Message {
     getTaskProgress(): cc_arduino_cli_commands_v1_common_pb.TaskProgress | undefined;
     setTaskProgress(value?: cc_arduino_cli_commands_v1_common_pb.TaskProgress): PlatformUpgradeResponse;
 
-    hasPlatform(): boolean;
-    clearPlatform(): void;
-    getPlatform(): cc_arduino_cli_commands_v1_common_pb.Platform | undefined;
-    setPlatform(value?: cc_arduino_cli_commands_v1_common_pb.Platform): PlatformUpgradeResponse;
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): PlatformUpgradeResponse.Result | undefined;
+    setResult(value?: PlatformUpgradeResponse.Result): PlatformUpgradeResponse;
+
+    getMessageCase(): PlatformUpgradeResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformUpgradeResponse.AsObject;
@@ -287,8 +392,41 @@ export namespace PlatformUpgradeResponse {
     export type AsObject = {
         progress?: cc_arduino_cli_commands_v1_common_pb.DownloadProgress.AsObject,
         taskProgress?: cc_arduino_cli_commands_v1_common_pb.TaskProgress.AsObject,
-        platform?: cc_arduino_cli_commands_v1_common_pb.Platform.AsObject,
+        result?: PlatformUpgradeResponse.Result.AsObject,
     }
+
+
+    export class Result extends jspb.Message { 
+
+        hasPlatform(): boolean;
+        clearPlatform(): void;
+        getPlatform(): cc_arduino_cli_commands_v1_common_pb.Platform | undefined;
+        setPlatform(value?: cc_arduino_cli_commands_v1_common_pb.Platform): Result;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Result.AsObject;
+        static toObject(includeInstance: boolean, msg: Result): Result.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Result, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Result;
+        static deserializeBinaryFromReader(message: Result, reader: jspb.BinaryReader): Result;
+    }
+
+    export namespace Result {
+        export type AsObject = {
+            platform?: cc_arduino_cli_commands_v1_common_pb.Platform.AsObject,
+        }
+    }
+
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        PROGRESS = 1,
+        TASK_PROGRESS = 2,
+        RESULT = 3,
+    }
+
 }
 
 export class PlatformSearchRequest extends jspb.Message { 
