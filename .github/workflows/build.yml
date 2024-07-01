@@ -311,6 +311,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11.x'
+      
+      - name: Ensure distutils is available
+        run: |
+          python -m pip install setuptools
 
       - name: Install Go
         if: fromJSON(matrix.config.container) == null && env.IS_WINDOWS_CONFIG == false
