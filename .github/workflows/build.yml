@@ -287,9 +287,6 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      - name: Print IS_WINDOWS_CONFIG
-        run: echo "${{ fromJSON(matrix.config.container) }}"
-
       - name: Checkout
         if: fromJSON(matrix.config.container) == null
         uses: actions/checkout@v4
@@ -312,11 +309,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11.x'
-      
-      - name: Ensure distutils is available
-        if: env.IS_MACOS_CONFIG == true
-        run: |
-          python -m pip install setuptools
 
       - name: Install Go
         if: fromJSON(matrix.config.container) == null && env.IS_WINDOWS_CONFIG == false
