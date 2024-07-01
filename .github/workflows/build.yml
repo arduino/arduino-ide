@@ -286,6 +286,9 @@ jobs:
     timeout-minutes: 90
 
     steps:
+      - name: Print IS_WINDOWS_CONFIG
+        run: echo "IS_WINDOWS_CONFIG=${{ env.IS_WINDOWS_CONFIG }}"
+
       - name: Checkout
         if: fromJSON(matrix.config.container) == null
         uses: actions/checkout@v4
