@@ -585,7 +585,7 @@ function createBoardsPackage(
   if (!actualRelease) {
     return undefined;
   }
-  const { name, typeList, boardsList, deprecated, compatible } = actualRelease;
+  const { name, typesList, boardsList, deprecated, compatible } = actualRelease;
   if (!compatible) {
     return undefined; // never show incompatible platforms
   }
@@ -602,7 +602,7 @@ function createBoardsPackage(
     ),
     description: boardsList.map(({ name }) => name).join(', '),
     boards: boardsList,
-    types: typeList,
+    types: typesList,
     moreInfoLink: website,
     author: maintainer,
     deprecated,

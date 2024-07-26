@@ -5,7 +5,6 @@
 /* eslint-disable */
 
 import * as jspb from "google-protobuf";
-import * as google_protobuf_wrappers_pb from "google-protobuf/google/protobuf/wrappers_pb";
 import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_lib_pb from "../../../../../cc/arduino/cli/commands/v1/lib_pb";
 
@@ -57,8 +56,8 @@ export class CompileRequest extends jspb.Message {
 
     hasExportBinaries(): boolean;
     clearExportBinaries(): void;
-    getExportBinaries(): google_protobuf_wrappers_pb.BoolValue | undefined;
-    setExportBinaries(value?: google_protobuf_wrappers_pb.BoolValue): CompileRequest;
+    getExportBinaries(): boolean | undefined;
+    setExportBinaries(value: boolean): CompileRequest;
     clearLibraryList(): void;
     getLibraryList(): Array<string>;
     setLibraryList(value: Array<string>): CompileRequest;
@@ -73,6 +72,10 @@ export class CompileRequest extends jspb.Message {
     setSkipLibrariesDiscovery(value: boolean): CompileRequest;
     getDoNotExpandBuildProperties(): boolean;
     setDoNotExpandBuildProperties(value: boolean): CompileRequest;
+    clearBuildCacheExtraPathsList(): void;
+    getBuildCacheExtraPathsList(): Array<string>;
+    setBuildCacheExtraPathsList(value: Array<string>): CompileRequest;
+    addBuildCacheExtraPaths(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CompileRequest.AsObject;
@@ -105,13 +108,14 @@ export namespace CompileRequest {
         createCompilationDatabaseOnly: boolean,
 
         sourceOverrideMap: Array<[string, string]>,
-        exportBinaries?: google_protobuf_wrappers_pb.BoolValue.AsObject,
+        exportBinaries?: boolean,
         libraryList: Array<string>,
         keysKeychain: string,
         signKey: string,
         encryptKey: string,
         skipLibrariesDiscovery: boolean,
         doNotExpandBuildProperties: boolean,
+        buildCacheExtraPathsList: Array<string>,
     }
 }
 
@@ -169,6 +173,23 @@ export namespace CompileResponse {
         RESULT = 4,
     }
 
+}
+
+export class InstanceNeedsReinitializationError extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): InstanceNeedsReinitializationError.AsObject;
+    static toObject(includeInstance: boolean, msg: InstanceNeedsReinitializationError): InstanceNeedsReinitializationError.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: InstanceNeedsReinitializationError, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): InstanceNeedsReinitializationError;
+    static deserializeBinaryFromReader(message: InstanceNeedsReinitializationError, reader: jspb.BinaryReader): InstanceNeedsReinitializationError;
+}
+
+export namespace InstanceNeedsReinitializationError {
+    export type AsObject = {
+    }
 }
 
 export class BuilderResult extends jspb.Message { 

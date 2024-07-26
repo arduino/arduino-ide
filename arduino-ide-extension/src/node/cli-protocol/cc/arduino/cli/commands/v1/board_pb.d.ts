@@ -384,6 +384,10 @@ export class BoardListResponse extends jspb.Message {
     getPortsList(): Array<DetectedPort>;
     setPortsList(value: Array<DetectedPort>): BoardListResponse;
     addPorts(value?: DetectedPort, index?: number): DetectedPort;
+    clearWarningsList(): void;
+    getWarningsList(): Array<string>;
+    setWarningsList(value: Array<string>): BoardListResponse;
+    addWarnings(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListResponse.AsObject;
@@ -398,6 +402,7 @@ export class BoardListResponse extends jspb.Message {
 export namespace BoardListResponse {
     export type AsObject = {
         portsList: Array<DetectedPort.AsObject>,
+        warningsList: Array<string>,
     }
 }
 
