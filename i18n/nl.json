@@ -152,7 +152,8 @@
       "serialMonitor": "Seriële Monitor",
       "type": "Type",
       "unknown": "Onbekend",
-      "updateable": "Bijwerkbaar"
+      "updateable": "Bijwerkbaar",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Compilatiefout: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Foutopsporing wordt niet ondersteund door '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platform is niet geïnstalleerd voor '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimaliseren voor foutopsporing",
       "sketchIsNotCompiled": "Schets  '{0}' moet geverifieerd worden voordat de foutopsporing kan beginnen. Verifieer aub de schets opnieuw en herstart foutopsporing. Wil je de schets nu opnieuw verifiëren?"
     },

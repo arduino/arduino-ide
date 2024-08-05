@@ -18,7 +18,7 @@
       "configDialog1": "Selecione uma placa e uma porta se quiser fazer o upload de um sketch.",
       "configDialog2": "Se você selecionar apenas uma Placa, você será capaz de compilar, mas não de enviar o seu esboço.",
       "couldNotFindPreviouslySelected": "Não foi possível encontrar a placa selecionada anteriormente '{0}' na plataforma instalada '{1}'. Por favor, selecione manualmente a placa que deseja usar. Você deseja selecioná-la novamente agora?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Editar Placa e Porta...",
       "getBoardInfo": "Obter Informações da Placa",
       "inSketchbook": "(no Sketchbook)",
       "installNow": "O núcleo \"{0} {1}\" deve ser instalado para a placa \"{2}\" atualmente selecionada. Quer instalar agora?",
@@ -32,7 +32,7 @@
       "ports": "portas",
       "programmer": "Programador/Gravador",
       "reselectLater": "Selecionar novamente mais tarde",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "Uso '{0}' descoberto em '{1}'",
       "searchBoard": "Procurar placa",
       "selectBoard": "Selecionar Placa",
       "selectPortForInfo": "Selecione uma porta para obter informações sobre a placa.",
@@ -41,7 +41,7 @@
       "succesfullyInstalledPlatform": "Plataforma instalada com sucesso {0}: {1}",
       "succesfullyUninstalledPlatform": "Plataforma desinstalada com sucesso {0}: {1}",
       "typeOfPorts": "{0} portas",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "Placa não confirmada",
       "unknownBoard": "Placa desconhecida"
     },
     "boardsManager": "Gerenciador de Placas",
@@ -139,7 +139,7 @@
       "installManually": "Instalar Manualmente",
       "later": "Depois",
       "noBoardSelected": "Nenhuma placa selecionada.",
-      "noSketchOpened": "No sketch opened",
+      "noSketchOpened": "Nenhum sketch aberto",
       "notConnected": "[não está conectado]",
       "offlineIndicator": "Parece que você está offline. Sem conexão com a Internet, o Arduino CLI não será capaz de baixar os recursos exigidos e poderá provovar mau funcionamento. Por favor, conecte-se à Internet e reinicie o aplicativo.",
       "oldFormat": "O '{0}' ainda utiliza o formato antigo `.pde`. Deseja mudar para a nova extensão `.ino`?",
@@ -147,12 +147,13 @@
       "processing": "Em processamento",
       "recommended": "Recomendado",
       "retired": "Afastado",
-      "selectManually": "Select Manually",
+      "selectManually": "Selecionar Manualmente",
       "selectedOn": "em {0}",
       "serialMonitor": "Monitor Serial",
       "type": "Tipo",
       "unknown": "Desconhecido",
-      "updateable": "Atualizável"
+      "updateable": "Atualizável",
+      "userAbort": "Abortado pelo usuário"
     },
     "compile": {
       "error": "Erro de compilação: {0}"
@@ -211,16 +212,15 @@
     "debug": {
       "debugWithMessage": "Depuração - {0}",
       "debuggingNotSupported": "A depuração não é suportada por '{0}'",
-      "getDebugInfo": "Getting debug info...",
+      "getDebugInfo": "Obtendo informações de depuração...",
       "noPlatformInstalledFor": "A plataforma não está instalada para '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Otimizar para Depuração",
       "sketchIsNotCompiled": "O Esboço '{0}' deve ser verificado antes de iniciar uma sessão de depuramento. Por favor, verifique o esboço e comece a depurar novamente. Você quer verificar o esboço agora?"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "Limpar Histórico de Lista de Placas",
+      "clearBoardsConfig": "Limpar Seleção de Placa e Porta",
+      "dumpBoardList": "Despejo da Lista de Placas"
     },
     "dialog": {
       "dontAskAgain": "Não perguntar novamente"
@@ -254,7 +254,7 @@
       "selectBoard": "Selecionar Placa",
       "selectVersion": "Selecione a versão do firmware",
       "successfullyInstalled": "Firmware instalado com sucesso. ",
-      "updater": "Firmware Updater"
+      "updater": "Atualizador de Firmware"
     },
     "help": {
       "environment": "Ambiente",
@@ -385,7 +385,7 @@
       "invalid.editorFontSize": "Tamanho da fonte do editor inválido. Deve ser um número inteiro positivo.",
       "invalid.sketchbook.location": "Localização inválida para o caderno de esboços: {0}",
       "invalid.theme": "Tema inválido",
-      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.asyncWorkers": "Número de trabalhadores assíncronos usados ​​pelo Arduino Language Server (clangd). O índice de segundo plano também usa esse número de trabalhadores. O valor mínimo é 0 e o máximo é 8. Quando for 0, o servidor de idioma usa todos os núcleos disponíveis. O valor padrão é 0.",
       "language.log": "Verdadeiro se o Arduino Language Server deverá gerar arquivos de log na pasta do esboço. Caso contrário, falso. O padrão é falso.",
       "language.realTimeDiagnostics": "Se marcado, diagnósticos em tempo-real serão exibidos enquanto digita no editor. Fica desmarcado por padrão.",
       "manualProxy": "Configurações manuais de proxy",
@@ -465,12 +465,12 @@
       "saveSketchAs": "Salvar o diretório de esboços como...",
       "showFolder": "Mostrar o diretório de Esboços...",
       "sketch": "Esboço",
-      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
-      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchAlreadyContainsThisFileError": "O sketch já possui um arquivo nomeado '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Falha ao salvar sketch \"{0}\" como \"{1}\". {2}",
       "sketchbook": "Caderno de Esboços",
       "titleLocalSketchbook": "Caderno de Esboços local",
       "titleSketchbook": "Caderno de Esboços",
-      "upload": "Carregar",
+      "upload": "Enviar usando Programador",
       "uploadUsingProgrammer": "Enviar Usando Programador",
       "uploading": "Enviando...",
       "userFieldsNotFoundError": "Não é possível encontrar dados de usuário para placa conectada",

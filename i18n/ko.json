@@ -152,7 +152,8 @@
       "serialMonitor": "시리얼 모니터",
       "type": "Type",
       "unknown": "알 수 없음",
-      "updateable": "업데이트 가능함"
+      "updateable": "업데이트 가능함",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "컴파일 오류: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}'에 대한 플랫폼이 설치되어 있지 않습니다",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "디버깅 최적화",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

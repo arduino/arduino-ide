@@ -152,7 +152,8 @@
       "serialMonitor": "序列埠監控窗",
       "type": "類型",
       "unknown": "未知",
-      "updateable": "可更新"
+      "updateable": "可更新",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "編譯錯誤:{0} "
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "'{0}' 不支援除錯功能。",
       "getDebugInfo": "取得除錯資訊...",
       "noPlatformInstalledFor": "平台未安裝給'{0}'",
-      "noProgrammerSelectedFor": "未選取給 '{0}' 用的燒錄器",
       "optimizeForDebugging": "除錯最佳化",
       "sketchIsNotCompiled": "Sketch '{0}' 在除錯前必須已驗證過。請先驗證 sketch 後再除錯。要現在驗證 sketch 嗎？"
     },

@@ -76,8 +76,8 @@
     "checkForUpdates": {
       "checkForUpdates": "Periksa Pembaruan Arduino",
       "installAll": "Pasang Semua",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "noUpdates": "Tidak ada pembaruan terbaru yang tersedia.",
+      "promptUpdateBoards": "Pembaruan tersedia untuk beberapa papan Anda.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
       "updatingBoards": "Updating boards...",
       "updatingLibraries": "Updating libraries..."
@@ -152,7 +152,8 @@
       "serialMonitor": "Serial Monitor",
       "type": "Type",
       "unknown": "Unknown",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Compilation error: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platform is not installed for '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

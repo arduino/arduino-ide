@@ -152,7 +152,8 @@
       "serialMonitor": "Monitor seriale",
       "type": "Tipo",
       "unknown": "Sconosciuto",
-      "updateable": "Aggiornabile"
+      "updateable": "Aggiornabile",
+      "userAbort": "Interruzione da parte dell'utente"
     },
     "compile": {
       "error": "Errore di compilazione: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Il debug non è supportato da '{0}'",
       "getDebugInfo": "Acquisizione delle informazioni di debug in corso...",
       "noPlatformInstalledFor": "La piattaforma non è ancora stata installata per '{0}'",
-      "noProgrammerSelectedFor": "Nessun programmatore selezionato per '{0}'",
       "optimizeForDebugging": "Ottimizzato per il Debug.",
       "sketchIsNotCompiled": "Lo sketch '{0}' deve essere verificato prima di avviare una sessione di debug. Verificare lo sketch e avviare nuovamente il debug. Si desidera verificare lo sketch adesso?"
     },
@@ -454,7 +454,7 @@
       "invalidSketchName": "Il nome deve iniziare con una lettera, un numero o un trattino basso, seguito da lettere, numeri, trattini, punti e trattini bassi. La lunghezza massima è di 63 caratteri.",
       "moving": "Spostando",
       "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
-      "new": "Nuovo Sketch",
+      "new": "Nuovo sketch",
       "noTrailingPeriod": "Il nome di un file non può terminare con un punto",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",

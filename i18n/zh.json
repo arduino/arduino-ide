@@ -152,7 +152,8 @@
       "serialMonitor": "串口监视器",
       "type": "类型",
       "unknown": "未知",
-      "updateable": "可更新"
+      "updateable": "可更新",
+      "userAbort": "用户终止"
     },
     "compile": {
       "error": "编译错误：{0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "‘{0}’ 不支持调试",
       "getDebugInfo": "正在获取调试信息。。。",
       "noPlatformInstalledFor": "‘{0}’ 平台未安装",
-      "noProgrammerSelectedFor": "未为 '{0}' 项目选择任何编程器。",
       "optimizeForDebugging": "调试优化",
       "sketchIsNotCompiled": "项目 '{0}' 在开始调试会话之前必须经过验证。请验证草图并重新开始调试。你现在要验证草图吗？"
     },
