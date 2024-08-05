@@ -15,7 +15,7 @@
       "boardConfigDialogTitle": "Επιλέξτε Άλλη Πλακέτα & Θύρα",
       "boardInfo": "Πληροφορίες Πλακέτας",
       "boards": "Πίνακες - Πλακέτες",
-      "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
+      "configDialog1": "Επίλεξε Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα έργο.",
       "configDialog2": "Αν επιλέξεις μονο Πλακέτα θα μπορείς να κάνεις μόνο μεταγγλώτιση, αλλά οχι να ανεβάσεις το σχέδιο.",
       "couldNotFindPreviouslySelected": "Δεν έγινε εντοπισμός της προηγουμένως επιλεγμένης πλακέτας '{0}' στην εγκατεστημένη πλατφόρμα '{1}'. Παρακαλώ επίλεξε πάλι χειροκίνητα την πλακέτα που θέλεις να χρησιμοποιήσεις. Θέλεις να την επιλέξεις τώρα;",
       "editBoardsConfig": "Πλακέτα και θύρα...",
@@ -32,7 +32,7 @@
       "ports": "Θύρες",
       "programmer": "Προγραμματιστής",
       "reselectLater": "Επιλογή αργότερα",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "Χρησιμοποιήστε '{0}' που ανακαλύφθηκε στο '{1}'",
       "searchBoard": "Αναζήτηση πλακέτας",
       "selectBoard": "Επιλογή Πλακέτας",
       "selectPortForInfo": "Παρακαλώ επίλεξε μια θύρα για εμφάνιση πληροφοριών πλακέτας.",
@@ -83,12 +83,12 @@
       "updatingLibraries": "Ενημέρωση βιβλιοθηκών..."
     },
     "cli-error-parser": {
-      "keyboardError": "Το \"πληκτρολόγιο\" δεν βρέθηκε. Το σχέδιό σας περιλαμβάνει τη γραμμή '#include <Keyboard.h>';",
-      "mouseError": "Το 'Ποντίκι' δεν βρέθηκε. Περιλαμβάνει το σχέδιό σας τη γραμμή '#include <Mouse.h>'; "
+      "keyboardError": "Το \"πληκτρολόγιο\" δεν βρέθηκε. Το έργο σας περιλαμβάνει τη γραμμή '#include <Keyboard.h>';",
+      "mouseError": "Το 'Ποντίκι' δεν βρέθηκε. Περιλαμβάνει το έργο σας τη γραμμή '#include <Mouse.h>'; "
     },
     "cloud": {
-      "chooseSketchVisibility": "Επίλεξε την ορατότητα του Σχεδίου σου:",
-      "cloudSketchbook": "Σχέδια Cloud",
+      "chooseSketchVisibility": "Επιλέξτε την εμφάνιση του έργου σας:",
+      "cloudSketchbook": "Cloud Άλμπουμ έργων.",
       "connected": "Συνδέθηκε",
       "continue": "Συνέχεια",
       "donePulling": "Τελείωσε το κατέβασμα '{0}'.",
@@ -109,8 +109,8 @@
       "pullFirst": "Πρώτα πρέπει να τραβήξετε για να μπορέσετε να το ανεβάσετε στο Cloud.",
       "pullSketch": "Τραβήξτε το σχέδιο",
       "pullSketchMsg": "Αν τραβήξετε αυτό το Σχέδιο από το Cloud, θα αντικατασταθεί η τοπική του έκδοση. Είσαι σίγουρος ότι θέλεις να συνεχίσεις;",
-      "push": "Push",
-      "pushSketch": "Push Sketch",
+      "push": "Πιέστε",
+      "pushSketch": "Τραβήξτε το σχέδιο",
       "pushSketchMsg": "Αυτό είναι ένα Δημόσιο Σχέδιο. Βεβαιωθείτε ότι οποιεσδήποτε ευαίσθητες πληροφορίες έχουν οριστεί στο φάκελο arduino_secrets.h. Μπορείτε να κάνετε ένα Σχέδιο ιδιωτικό από τον πίνακα Κοινή χρήση.",
       "remote": "Απομακρυνσμένο",
       "share": "Κοινοποίηση...",
@@ -126,16 +126,16 @@
     "cloudSketch": {
       "alreadyExists": "Υπάρχει ήδη το σχέδιο '{0}' στο Cloud ",
       "creating": "Δημιουργία σχεδίου στο cloud '{0}'...",
-      "new": "Νέο σχέδιο Cloud ",
-      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
-      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "new": "Νέο έργο στο Cloud",
+      "notFound": "Δεν ήταν δυνατή η ανάκτηση του έργου'{0}'. από το could. Δεν υπάρχει.",
+      "pulling": "Συγχρονισμός βιβλιοθήκη έργων, τραβώντας '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
-      "renaming": "Μετονομασία σχεδίου cloud από '{0}' σε '{1}'...",
+      "renaming": "Μετονομασία έργου could από '{0}' σε '{1}'...",
       "synchronizingSketchbook": "Synchronizing sketchbook..."
     },
     "common": {
       "all": "Όλα",
-      "contributed": "Contributed",
+      "contributed": "Συνεισέφερε",
       "installManually": "Χειροκίνητη Εγκατάσταση",
       "later": "Αργότερα",
       "noBoardSelected": "Δεν έχει επιλεχθεί πλακέτα",
@@ -143,16 +143,17 @@
       "notConnected": "[μη συνδεμένο]",
       "offlineIndicator": "Φαίνεται πως είστε εκτός σύνδεσης. Χωρίς σύνδεση στο Internet, το Arduino CLI ίσως να μη μπορεί να κάνει λήψη των απαιτούμενων πόρων και να υπάρξει δυσλειτουργία. Παρακαλώ συνδεθείτε στο Internet και επανεκκινήστε την εφαρμογή.",
       "oldFormat": "Το '{0}' χρησιμοποιεί ακόμα το παλιό '.pde' στυλ. Θέλετε να αλλάξετε στην νέα κατάληξη '.ino';",
-      "partner": "Partner",
+      "partner": "Συνεργάτης",
       "processing": "Επεξεργασία",
-      "recommended": "Recommended",
+      "recommended": "Συνιστάται",
       "retired": "Παλιό ",
       "selectManually": "Επιλέξτε Χειροκίνητα",
       "selectedOn": "στο {0}",
       "serialMonitor": "Παρακολούθηση Σειριακής",
       "type": "Τύπος",
       "unknown": "Άγνωστο",
-      "updateable": "Με δυνατότητα ενημέρωσης"
+      "updateable": "Με δυνατότητα ενημέρωσης",
+      "userAbort": "Ακύρωση χρήστη"
     },
     "compile": {
       "error": "Σφάλμα μεταγλώττισης: {0}"
@@ -213,14 +214,13 @@
       "debuggingNotSupported": "Δεν υποστιρίζεται αποσφαλμάτωση από '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Δεν έχει εγκατασταθεί πλατφόρμα για '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Βελτιστοποίηση για Αποσφαλμάτωση",
-      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+      "sketchIsNotCompiled": "Το έργο '{0}' πρέπει να επαληθευτεί πριν από την έναρξη μιας διαδικασίας αποσφαλμάτωσης. Παρακαλώ επαληθεύστε το σκίτσο και ξεκινήστε ξανά την αποσφαλμάτωση. Θέλετε να επαληθεύσετε το έργο τώρα;"
     },
     "developer": {
       "clearBoardList": "Clear the Board List History",
       "clearBoardsConfig": "Διαγράψτε την επιλογή πλακέτας και θύρας",
-      "dumpBoardList": "Dump the Board List"
+      "dumpBoardList": "Αδειάστε τη λίστα του Πίνακα"
     },
     "dialog": {
       "dontAskAgain": "Μην με ξαναρωτήσεις"
@@ -250,7 +250,7 @@
       "failedInstall": "Η εγκατάσταση απέτυχε. Παρακαλώ προσπαθήστε ξανά.",
       "install": "Εγκατάσταση",
       "installingFirmware": "Εγκατάσταση λογισμικού.",
-      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "overwriteSketch": "Η εγκατάσταση θα αντικαταστήσει το σχέδιο στον πίνακα.",
       "selectBoard": "Επιλογή Πλακέτας",
       "selectVersion": "Επιλέξτε έκδοση λογισμικού",
       "successfullyInstalled": "Το λογισμικό εγκαταστάθηκε με επιτυχία.",
@@ -263,7 +263,7 @@
       "gettingStarted": "Ξεκινώντας",
       "keyword": "Πληκτρολογήστε μια λέξη-κλειδί",
       "privacyPolicy": "Πολιτική Απορρήτου",
-      "reference": "Reference",
+      "reference": "Αναφορά",
       "search": "Αναζήτηση στο Arduino.cc",
       "troubleshooting": "Αντιμετώπιση προβλημάτων",
       "visit": "Επίσκεψη Arduino.cc"
@@ -277,17 +277,17 @@
       "errorCheckingForUpdates": "Σφάλμα κατά τον έλεγχο για ενημερώσεις του Arduino IDE.\n{0}",
       "goToDownloadButton": "Μετάβαση στη λήψη",
       "goToDownloadPage": "Υπάρχει διαθέσιμη ενημέρωση για το Arduino IDE, αλλά δεν μπορούμε να το κατεβάσουμε και να το εγκαταστήσουμε αυτόματα. Μεταβείτε στη σελίδα λήψης και κατεβάστε την πιο πρόσφατη έκδοση από εκεί. ",
-      "ideUpdaterDialog": "Software Update",
+      "ideUpdaterDialog": "Ενημέρωση λογισμικού",
       "newVersionAvailable": "Μια νέα έκδοση του Arduino IDE ({0}) είναι διαθέσιμη για λήψη.",
       "noUpdatesAvailable": "Δεν υπάρχουν διαθέσιμες πρόσφατες ενημερώσεις για το Arduino IDE",
       "notNowButton": "Όχι τώρα",
       "skipVersionButton": "Παράλειψη έκδοσης",
       "updateAvailable": "Διαθέσιμη ενημέρωση",
-      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+      "versionDownloaded": "Arduino IDE {0} έχει ληφθεί."
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "libraryInstallFailed": "Αποτυχία εγκατάστασης βιβλιοθήκης: '{0}{1}'.",
+      "platformInstallFailed": "Αποτυχία εγκατάστασης πλατφόρμας: '{0}{1}'."
     },
     "library": {
       "addZip": "Προσθέστε μια βιβλιοθήκη μορφής .ZIP",
@@ -295,9 +295,9 @@
       "contributedLibraries": "Συνεισφορά βιβλιοθηκών",
       "include": "Συμπεριλάβετε βιβλιοθήκη",
       "installAll": "Εγκατάσταση όλων",
-      "installLibraryDependencies": "Install library dependencies",
-      "installMissingDependencies": "Would you like to install all the missing dependencies?",
-      "installOneMissingDependency": "Would you like to install the missing dependency?",
+      "installLibraryDependencies": "Εγκαταστήστε τα στοιχεία της βιβλιοθήκης.",
+      "installMissingDependencies": "Θέλετε να εγκαταστήσετε όλα τα στοιχεία που λείπουν;",
+      "installOneMissingDependency": "Θέλετε να εγκαταστήσετε το στοιχείο που λείπει; ",
       "installWithoutDependencies": "Install without dependencies",
       "installedSuccessfully": "Επιτυχής εγκατάσταση Βιβλιοθήκης {0} :{1} ",
       "libraryAlreadyExists": "Μια βιβλιοθήκη υπάρχει ήδη. Θέλετε να την αντικαταστήσετε;",
@@ -319,7 +319,7 @@
       "dataProcessing": "Επεξεργασία δεδομένων",
       "dataStorage": "Αποθήκευση δεδομένων",
       "deviceControl": "Έλεγχος συσκευής",
-      "display": "Display",
+      "display": "Εμφάνιση",
       "other": "Άλλα",
       "sensors": "Αισθητήρες",
       "signalInputOutput": "Είσοδος/Έξοδος Σήματος",
@@ -368,7 +368,7 @@
       "cloud.pull.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν τραβηχτεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές.",
       "cloud.push.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
       "cloud.pushpublic.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα δημόσιο σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
-      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "cloud.sketchSyncEndpoint": "Το σημείο που χρησιμοποιείται για την αποστολή και λήψη σκίτσων από ένα πίσω μέρος. Από προεπιλογή δείχνει στο Arduino Cloud API.",
       "compile": "μεταγλώττιση",
       "compile.experimental": "Σωστό αν το IDE πρέπει να χειρίζεται πολλαπλά σφάλματα μεταγλωττιστή. Λάθος από προεπιλογή",
       "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
@@ -390,7 +390,7 @@
       "language.realTimeDiagnostics": "Εάν ισχύει, ο διακομιστής γλώσσας παρέχει διαγνωστικά σε πραγματικό χρόνο όταν πληκτρολογείτε στον επεξεργαστή. Είναι ψευδές από προεπιλογή.",
       "manualProxy": "Μη αυτόματη διαμόρφωση proxy διακομιστή μεσολάβησης",
       "monitor": {
-        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+        "dockPanel": "Η περιοχή του περιβλήματος της εφαρμογής όπου θα βρίσκεται το γραφικό στοιχείο  _{0}_. Είναι είτε \"κάτω\" είτε \"δεξιά\". Προεπιλέγεται σε \"{1}\"."
       },
       "network": "Δίκτυο",
       "newSketchbookLocation": "Επιλογή νέας τοποθεσίας σχεδίων",
@@ -454,7 +454,7 @@
       "invalidSketchName": "Το όνομα πρέπει να ξεκινά με γράμμα, αριθμό ή κάτω παύλα, ακολουθούμενα από γράμματα, αριθμούς, παύλες, τελείες και κάτω παύλες. Το μέγιστο μήκος είναι 63 χαρακτήρες.",
       "moving": "Μετακίνηση",
       "movingMsg": "Το αρχείο \"{0}\" πρέπει να βρίσκεται μέσα σε έναν φάκελο σχεδίου με το όνομα \"{1}\". \nΔημιουργία φακέλου, μεταφορά του αρχείου και συνέχεια;",
-      "new": "Νέο Σχέδιο ",
+      "new": "Νέο έργο",
       "noTrailingPeriod": "Ένα όνομα αρχείου δεν μπορεί να τελειώνει με τελεία",
       "openFolder": "Άνοιγμα φακέλου",
       "openRecent": "Άνοιγμα πρόσφατου",
@@ -541,8 +541,8 @@
       "expand": "Επαναφορά"
     },
     "workspace": {
-      "deleteCloudSketch": "Το σχέδιο του cloud '{0}' θα διαγραφεί οριστικά από τους διακομιστές Arduino και τις τοπικές κρυφές μνήμες. Αυτή η ενέργεια είναι μη αναστρέψιμη. Θέλετε να διαγράψετε το τρέχον σχέδιο;",
-      "deleteCurrentSketch": "Το σχέδιο '{0}' θα διαγραφεί οριστικά. Αυτή η ενέργεια είναι μη αναστρέψιμη. Θέλετε να διαγράψετε το τρέχον σχέδιο; ",
+      "deleteCloudSketch": "Το έργο του cloud '{0}' θα διαγραφεί οριστικά από τους διακομιστές Arduino και τις τοπικές κρυφές μνήμες. Αυτή η ενέργεια είναι μη αναστρέψιμη. Θέλετε να διαγράψετε το τρέχον έργο;",
+      "deleteCurrentSketch": "Το έργο '{0}' θα διαγραφεί μόνιμα. Αυτή η ενέργεια είναι ανεπανόρθωτη. Θέλετε να διαγράψετε το τρέχον έργο;",
       "fileNewName": "Όνομα για το νεό αρχείο",
       "invalidExtension": ". {0}δεν είναι έγκυρη επέκταση",
       "newFileName": "Νέο όνομα για το αρχείο"

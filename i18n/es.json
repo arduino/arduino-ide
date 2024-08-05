@@ -152,7 +152,8 @@
       "serialMonitor": "Monitor Serie",
       "type": "Tipo",
       "unknown": "Desconocido",
-      "updateable": "Actualizable"
+      "updateable": "Actualizable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Error de compilación: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimizar para depuración",
       "sketchIsNotCompiled": "El sketch '{0}' debe ser verificado antes de iniciar una sesión de depuración. Por favor, verifique el sketch e inicia la depuración nuevamente. ¿Deseas verificar el sketch ahora?"
     },

@@ -7,7 +7,7 @@
     "account": {
       "goToCloudEditor": "Go to Cloud Editor",
       "goToIoTCloud": "Go to IoT Cloud",
-      "goToProfile": "Go to Profile",
+      "goToProfile": "Przejdź do profilu",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
@@ -18,7 +18,7 @@
       "configDialog1": "Wybierz płytkę oraz port, aby wgrać szkic.",
       "configDialog2": "Jeżeli wybierzesz płytkę, ale nie wybierzesz portu to nie będziesz mógł wgrywać szkicy, ale nadal możesz je kompilować.",
       "couldNotFindPreviouslySelected": "Nie można znaleźć poprzednio wybranej płytki '{0}' na zainstalowanej platformie '{1}'. Wybierz ręcznie ponownie płytkęę, której chcesz użyć. Czy chcesz ją teraz ponownie wybrać?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Edytuj płytkę i port...",
       "getBoardInfo": "Pobierz informacje o płytce",
       "inSketchbook": "(w Szkicowniku)",
       "installNow": "Jądro \"{0} {1}\" musi zostać zainstalowane dla wybranej płytki \"{2}\". Czy chcesz zainstalować je teraz?",
@@ -41,8 +41,8 @@
       "succesfullyInstalledPlatform": "Pomyślnie zainstalowano platformę {0}:{1}",
       "succesfullyUninstalledPlatform": "Pomyślnie odinstalowano platformę {0}:{1}",
       "typeOfPorts": "{0} Porty",
-      "unconfirmedBoard": "Unconfirmed board",
-      "unknownBoard": "Unknown board"
+      "unconfirmedBoard": "Niepotwierdzona płytka",
+      "unknownBoard": "Nieznana płytka"
     },
     "boardsManager": "Menedżer Płytek",
     "boardsType": {
@@ -115,7 +115,7 @@
       "remote": "Zdalny",
       "share": "Udostępnij...",
       "shareSketch": "Udostępnij Szkic",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "Pokaż/ukryj szkicownik w chmurze",
       "signIn": "ZALOGUJ SIĘ",
       "signInToCloud": "Zaloguj się do Arduino Cloud",
       "signOut": "Wyloguj się",
@@ -131,15 +131,15 @@
       "pulling": "Synchronizing sketchbook, pulling '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
       "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
-      "synchronizingSketchbook": "Synchronizing sketchbook..."
+      "synchronizingSketchbook": "Synchronizacja szkicownika ..."
     },
     "common": {
-      "all": "Wszytko",
+      "all": "Wszystko",
       "contributed": "Przyczynił się",
       "installManually": "Zainstaluj ręcznie",
       "later": "Później",
       "noBoardSelected": "Nie wybrano płytki",
-      "noSketchOpened": "No sketch opened",
+      "noSketchOpened": "Nie otworzono żadnego szkicu",
       "notConnected": "[nie podłączone]",
       "offlineIndicator": "Wygląda na to, że jesteś w trybie offline. Bez połączenia z Internetem Arduino CLI może nie być w stanie pobrać wymaganych zasobów i może spowodować awarię. Połącz się z Internetem i uruchom ponownie aplikację.",
       "oldFormat": "'{0}' nadal używa starego formatu `.pde`. Czy chcesz się przełączyć na nowe rozszerzenie `.ino`?",
@@ -147,12 +147,13 @@
       "processing": "Przetwarzanie",
       "recommended": "Zalecane",
       "retired": "Odosobniony",
-      "selectManually": "Select Manually",
+      "selectManually": "Wybór ręczny",
       "selectedOn": "na {0}",
       "serialMonitor": "Monitor portu szeregowego",
       "type": "Typ",
       "unknown": "Nieznany",
-      "updateable": "Możliwość aktualizacji"
+      "updateable": "Możliwość aktualizacji",
+      "userAbort": "Anulowanie przez użytkownika"
     },
     "compile": {
       "error": "Błąd kompilacji: {0}"
@@ -160,19 +161,19 @@
     "component": {
       "boardsIncluded": "Płytka dołączona w pakiecie:",
       "by": "przez",
-      "clickToOpen": "Click to open in browser: {0}",
+      "clickToOpen": "Kliknij, aby otworzyć w przeglądarce: {0}",
       "filterSearch": "Filtruj przeszukiwanie....",
       "install": "Zainstaluj",
-      "installLatest": "Install Latest",
-      "installVersion": "Install {0}",
-      "installed": "{0} installed",
+      "installLatest": "Zainstaluj najnowszą",
+      "installVersion": "Zainstaluj{0}",
+      "installed": "{0}Zainstalowano",
       "moreInfo": "Więcej informacji",
-      "otherVersions": "Other Versions",
+      "otherVersions": "Pozostałe wersje",
       "remove": "Usuń",
-      "title": "{0} by {1}",
+      "title": "{0}do{1}",
       "uninstall": "Odinstaluj",
       "uninstallMsg": "Czy chcesz odinstalować {0}?",
-      "update": "Update"
+      "update": "Aktualizacja"
     },
     "configuration": {
       "cli": {
@@ -213,13 +214,12 @@
       "debuggingNotSupported": "Debugowanie nie jest wspierane przez '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platforma nie jest zainstalowana dla '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optymalizuj pod kątem debugowania",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "developer": {
       "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "clearBoardsConfig": "Wyczyść wybraną płytę i port",
       "dumpBoardList": "Dump the Board List"
     },
     "dialog": {
@@ -254,7 +254,7 @@
       "selectBoard": "Wybierz płytkę",
       "selectVersion": "Wybierz wersję firmware'u",
       "successfullyInstalled": "Firmware zainstalowany prawidłowo.",
-      "updater": "Firmware Updater"
+      "updater": "Aktualizacja firmware"
     },
     "help": {
       "environment": "Środowisko",
@@ -287,7 +287,7 @@
     },
     "installable": {
       "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "platformInstallFailed": "Nie udało się zainstalować platformy:'{0}{1}'."
     },
     "library": {
       "addZip": "Dodaj bibliotekę .ZIP...",
@@ -295,10 +295,10 @@
       "contributedLibraries": "Przesłane biblioteki",
       "include": "Dołącz bibliotekę",
       "installAll": "Zainstaluj wszystko",
-      "installLibraryDependencies": "Install library dependencies",
+      "installLibraryDependencies": "Zainstaluj zależności bibliotek",
       "installMissingDependencies": "Czy chcesz zainstalować wszystkie brakujące zależności?",
       "installOneMissingDependency": "Czy chcesz zainstalować brakującą zależność?",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "Zainstaluj bez zależności",
       "installedSuccessfully": "Pomyślnie zainstalowano bibliotekę {0}:{1}",
       "libraryAlreadyExists": "Biblioteka już istnieje. Czy chcesz ją nadpisać?",
       "manageLibraries": "Zarządzaj bibliotekami...",
@@ -346,7 +346,7 @@
       "unableToConnectToWebSocket": "Nie można połączyć się z gniazdem sieciowym"
     },
     "newCloudSketch": {
-      "newSketchTitle": "Name of the new Cloud Sketch"
+      "newSketchTitle": "Nazwa nowego szkicu w chmurze"
     },
     "portProtocol": {
       "network": "Sieć",
@@ -385,7 +385,7 @@
       "invalid.editorFontSize": "Nieprawidłowy rozmiar czcionki edytora. Musi to być dodatnia liczba całkowita.",
       "invalid.sketchbook.location": "Błędna lokalizacja szkicownika: {0}",
       "invalid.theme": "Nieprawidłowy schemat.",
-      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.asyncWorkers": "Liczba procesów roboczych asynchronicznych używanych przez serwer językowy Arduino (clangd). Indeks tła również wykorzystuje tę liczbę pracowników. Minimalna wartość to 0, a maksymalna to 8. Gdy wynosi 0, serwer językowy wykorzystuje wszystkie dostępne rdzenie. Wartość domyślna to 0.",
       "language.log": "Prawda, jeśli Arduino Language Server ma generować pliki z logami do folderu ze sketchem. W przeciwnym wypadku fałsz. Fałsz jest wartością domyślną.",
       "language.realTimeDiagnostics": "Jeśli prawdziwy, serwer języka zapewnia diagnostykę w czasie rzeczywistym podczas pisania w edytorze. Domyślnie jest nieprawdziwy.",
       "manualProxy": "Konfiguracja ręczna proxy",
@@ -394,7 +394,7 @@
       },
       "network": "Sieć",
       "newSketchbookLocation": "Wybierz nową lokalizację szkicownika",
-      "noCliConfig": "Could not load the CLI configuration",
+      "noCliConfig": "Nie można załadować konfiguracji CLI",
       "noProxy": "Bez proxy",
       "proxySettings": {
         "hostname": "Nazwa Hosta",
@@ -404,7 +404,7 @@
       },
       "showVerbose": "Pokazuj informacje zwrotne podczas:",
       "sketch": {
-        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+        "inoBlueprint": "Bezwzględna ścieżka systemu plików do domyślnego pliku planu `.ino`. Jeśli określono, zawartość pliku planu będzie używana dla każdego nowego szkicu utworzonego przez IDE. Jeśli nie określono inaczej, szkice zostaną wygenerowane z domyślną zawartością Arduino. Niedostępne pliki planów są ignorowane. **Wymagane jest ponowne uruchomienie IDE**, aby to ustawienie zaczęło obowiązywać."
       },
       "sketchbook.location": "Lokalizacja szkicownika",
       "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze szkicu. Fałsz jest wartością domyślną.",

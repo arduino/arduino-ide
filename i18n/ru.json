@@ -1,52 +1,52 @@
 {
   "arduino": {
     "about": {
-      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "detail": "Версия: {0}\nДата: {1}{2}\nВерсия CLI: {3}{4} [{5}]\n\n{6}",
       "label": "О программе {0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
-      "goToIoTCloud": "Go to IoT Cloud",
-      "goToProfile": "Go to Profile",
+      "goToCloudEditor": "Перейдите в редактор облаков",
+      "goToIoTCloud": "Перейти к облаку IoT",
+      "goToProfile": "Перейти в профиль",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "Плата{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardConfigDialogTitle": "Выберите другую плату и порт",
       "boardInfo": "Информация о плате",
-      "boards": "boards",
+      "boards": "платы",
       "configDialog1": "Выберите плату и порт, если Вы хотите загрузить скетч в плату.",
       "configDialog2": "Если вы выбираете только плату, вы сможете компилировать, но не загружать свой скетч.",
       "couldNotFindPreviouslySelected": "Не удалось найти ранее выбранную плату '{0}' в установленной платформе '{1}'.Пожалуйста,  выберите плату которую хотите использовать вручную повторно. Вы хотите повторно выбрать её сейчас?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Редактирование платы и порта...",
       "getBoardInfo": "Получить информацию о подключенной плате",
       "inSketchbook": " (в альбоме).",
       "installNow": "Необходимо установить ядро «{0} {1}»  для выбранной в данный момент «{2}» платы. Вы хотите установить его сейчас?",
-      "noBoardsFound": "No boards found for \"{0}\"",
-      "noNativeSerialPort": "Native serial port, can't obtain info.",
-      "noPortsDiscovered": "No ports discovered",
-      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "noBoardsFound": "Для \"{0}\" не найдено ни одной платы.",
+      "noNativeSerialPort": "Родной последовательный порт, не удается получить информацию.",
+      "noPortsDiscovered": "Порты не обнаружены",
+      "nonSerialPort": "Порт не последовательный, не удается получить информацию.",
       "openBoardsConfig": "Выберите другую плату и порт...",
       "pleasePickBoard": "Пожалуйста, выберите плату, подключенную к выбранному вами порту.",
       "port": "Порт{0}",
-      "ports": "ports",
+      "ports": "порты",
       "programmer": "Программатор",
       "reselectLater": "Перевыбрать позже",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
-      "searchBoard": "Search board",
+      "revertBoardsConfig": "Используйте '{0}', обнаруженный на '{1}'",
+      "searchBoard": "Поиск платы",
       "selectBoard": "Выбор платы",
       "selectPortForInfo": "Пожалуйста, выберите порт в меню инструментов для получения информации с платы.",
       "showAllAvailablePorts": "Показать все доступные порты при включении",
-      "showAllPorts": "Show all ports",
+      "showAllPorts": "Показать все порты",
       "succesfullyInstalledPlatform": "Платформа установлена успешно {0}:{1}",
       "succesfullyUninstalledPlatform": "Платформа успешно удалена {0}:{1}",
-      "typeOfPorts": "{0} ports",
-      "unconfirmedBoard": "Unconfirmed board",
-      "unknownBoard": "Unknown board"
+      "typeOfPorts": "{0}порты",
+      "unconfirmedBoard": "Неподтвержденная плата",
+      "unknownBoard": "Неизвестная плата"
     },
     "boardsManager": "Менеджер плат",
     "boardsType": {
-      "arduinoCertified": "Arduino Certified"
+      "arduinoCertified": "Сертифицированный Arduino"
     },
     "bootloader": {
       "burnBootloader": "Записать Загрузчик",
@@ -74,13 +74,13 @@
       "uploadingCertificates": "Загрузка сертификатов."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
-      "installAll": "Install All",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
-      "promptUpdateLibraries": "Updates are available for some of your libraries.",
-      "updatingBoards": "Updating boards...",
-      "updatingLibraries": "Updating libraries..."
+      "checkForUpdates": "Проверьте наличие обновлений Arduino",
+      "installAll": "Установить все",
+      "noUpdates": "Последние обновления отсутствуют.",
+      "promptUpdateBoards": "Для некоторых плат доступны обновления.",
+      "promptUpdateLibraries": "Для некоторых библиотек доступны обновления.",
+      "updatingBoards": "Обновление плат...",
+      "updatingLibraries": "Обновление библиотек..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' не найдено. В вашем скетче есть строка '#include <Keyboard.h>'?",
@@ -91,11 +91,11 @@
       "cloudSketchbook": "Альбом в облаке",
       "connected": "Подключено",
       "continue": "Продолжить",
-      "donePulling": "Done pulling '{0}'.",
-      "donePushing": "Done pushing '{0}'.",
+      "donePulling": "Выполнено вытягивание '{0}'.",
+      "donePushing": "Выполнено нажатие '{0}'.",
       "embed": "Встроить:",
       "emptySketchbook": "Ваш альбом пуст",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "Перейти в облако",
       "learnMore": "Узнать больше",
       "link": "Ссылка:",
       "notYetPulled": "Не удается отправить в облако. Он еще не вытащен.",
@@ -115,7 +115,7 @@
       "remote": "Удаленный",
       "share": "Поделиться...",
       "shareSketch": "Поделиться скетчем",
-      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "showHideSketchbook": "Показать/скрыть облачный скетчбук",
       "signIn": "Войти",
       "signInToCloud": "Войдите в Arduino Cloud",
       "signOut": "Выйти",
@@ -124,85 +124,86 @@
       "visitArduinoCloud": "Посетите Arduino Cloud, чтобы создать скетчи в облаке."
     },
     "cloudSketch": {
-      "alreadyExists": "Cloud sketch '{0}' already exists.",
-      "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
-      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
-      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
-      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
-      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
-      "synchronizingSketchbook": "Synchronizing sketchbook..."
+      "alreadyExists": "Эскиз облака '{0}' уже существует.",
+      "creating": "Создание облачного эскиза '{0}'...",
+      "new": "Новый эскиз облаков",
+      "notFound": "Не удалось извлечь облачный эскиз '{0}'. Он не существует.",
+      "pulling": "Синхронизация скетчбука, вытягивание '{0}'...",
+      "pushing": "Синхронизация скетчбука, нажатие кнопки '{0}'...",
+      "renaming": "Переименование облачного эскиза из '{0}' в '{1}'...",
+      "synchronizingSketchbook": "Синхронизация скетчбука..."
     },
     "common": {
-      "all": "All",
-      "contributed": "Contributed",
+      "all": "Все",
+      "contributed": "Вклад",
       "installManually": "Установить вручную",
       "later": "Позже",
       "noBoardSelected": "Плата не выбрана",
-      "noSketchOpened": "No sketch opened",
+      "noSketchOpened": "Эскиз не открыт",
       "notConnected": "[не подключено].",
       "offlineIndicator": "Похоже, у Вас нет подключения к Интернету. Без подключения к Интернету Arduino CLI не сможет загрузить необходимые ресурсы и упадет. Подключитесь к Интернету и перезапустите приложение.",
       "oldFormat": "'{0}' использует старый формат `.pde`. Хотите сконвертировать в новый формат `.ino`?",
-      "partner": "Partner",
+      "partner": "Партнер",
       "processing": "Обработка",
-      "recommended": "Recommended",
-      "retired": "Retired",
-      "selectManually": "Select Manually",
+      "recommended": "Рекомендовано",
+      "retired": "В отставке",
+      "selectManually": "Выберите вручную",
       "selectedOn": "вкл. {0}",
       "serialMonitor": "Монитор порта",
-      "type": "Type",
+      "type": "Тип",
       "unknown": "Неизвестно",
-      "updateable": "Updatable"
+      "updateable": "Обновляемый",
+      "userAbort": "Прерывание пользователем"
     },
     "compile": {
       "error": "Ошибка компиляции: {0}"
     },
     "component": {
-      "boardsIncluded": "Boards included in this package:",
+      "boardsIncluded": "Платы, входящие в этот комплект:",
       "by": "от",
-      "clickToOpen": "Click to open in browser: {0}",
+      "clickToOpen": "Нажмите, чтобы открыть в браузере: {0}",
       "filterSearch": "Отфильтровать результаты поиска...",
       "install": "Установка",
-      "installLatest": "Install Latest",
-      "installVersion": "Install {0}",
-      "installed": "{0} installed",
+      "installLatest": "Установите последнюю версию",
+      "installVersion": "Установить {0}",
+      "installed": "{0} установлен",
       "moreInfo": "Дополнительная информация",
-      "otherVersions": "Other Versions",
+      "otherVersions": "Другие версии",
       "remove": "Удалить",
-      "title": "{0} by {1}",
+      "title": "{0} на {1}",
       "uninstall": "Удалить",
       "uninstallMsg": "Вы хотите удалить {0}?",
-      "update": "Update"
+      "update": "Обновление"
     },
     "configuration": {
       "cli": {
-        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+        "inaccessibleDirectory": "Не удалось получить доступ к местоположению скетчбука по адресу '{0}': {1}"
       }
     },
     "connectionStatus": {
-      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+      "connectionLost": "Соединение потеряно. Действия и обновления облачных эскизов будут недоступны."
     },
     "contributions": {
       "addFile": "Добавить файл...",
       "fileAdded": "Один файл добавлен в скетч.",
       "plotter": {
-        "couldNotOpen": "Couldn't open serial plotter"
+        "couldNotOpen": "Не удается открыть последовательный плоттер"
       },
       "replaceTitle": "Заменить"
     },
     "core": {
       "compilerWarnings": {
-        "all": "All",
-        "default": "Default",
-        "more": "More",
-        "none": "None"
+        "all": "Все",
+        "default": "По умолчанию",
+        "more": "Подробнее",
+        "none": "Нет"
       }
     },
     "coreContribution": {
       "copyError": "Скопировать сообщения ошибок",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "noBoardSelected": "Не выбрана плата. Пожалуйста, выберите вашу плату Arduino в меню Инструменты > Плата."
     },
-    "createCloudCopy": "Push Sketch to Cloud",
+    "createCloudCopy": "Передача эскизов в облако",
     "daemon": {
       "restart": "Перезапустить Daemon",
       "start": "Запустить Daemon",
@@ -211,16 +212,15 @@
     "debug": {
       "debugWithMessage": "Отладка - {0}",
       "debuggingNotSupported": "Отладка не поддерживается '{0}'",
-      "getDebugInfo": "Getting debug info...",
+      "getDebugInfo": "Получение отладочной информации...",
       "noPlatformInstalledFor": "Платформа не установлена для '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Оптимизировать для отладки",
-      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+      "sketchIsNotCompiled": "Скетч '{0}' должен быть проверен перед началом сеанса отладки. Пожалуйста, проверьте эскиз и начните отладку снова. Хотите ли вы проверить скетч сейчас?"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
-      "dumpBoardList": "Dump the Board List"
+      "clearBoardList": "Очистите историю списка форумов",
+      "clearBoardsConfig": "Очистить выбор платы и порта",
+      "dumpBoardList": "Выбросить список плат управления"
     },
     "dialog": {
       "dontAskAgain": "Больше не спрашивать"
@@ -235,7 +235,7 @@
       "increaseIndent": "Увеличить отступ",
       "nextError": "Следущая ошибка",
       "previousError": "Предыдущая ошибка",
-      "revealError": "Reveal Error"
+      "revealError": "Ошибка раскрытия"
     },
     "examples": {
       "builtInExamples": "Встроенные Примеры",
@@ -254,7 +254,7 @@
       "selectBoard": "Выбор платы",
       "selectVersion": "Выберите версию прошивки",
       "successfullyInstalled": "Прошивка успешно установлена.",
-      "updater": "Firmware Updater"
+      "updater": "Программа обновления прошивки"
     },
     "help": {
       "environment": "Окружение",
@@ -269,7 +269,7 @@
       "visit": "Перейти на сайт Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Проверка обновлений среды Arduino IDE",
       "closeAndInstallButton": "Закрыть и установить",
       "closeToInstallNotice": "Закройте программное обеспечение и установите обновление на вашем компьютере.",
       "downloadButton": "Скачать",
@@ -286,19 +286,19 @@
       "versionDownloaded": "Arduino IDE {0} был загружен."
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "libraryInstallFailed": "Не удалось установить библиотеку: '{0}{1}'.",
+      "platformInstallFailed": "Не удалось установить платформу: '{0}{1}'."
     },
     "library": {
       "addZip": "Добавить .ZIP библиотеку...",
       "arduinoLibraries": "Библиотеки Arduino",
       "contributedLibraries": "Сторонние библиотеки",
       "include": "Подключить библиотеку",
-      "installAll": "Install All",
-      "installLibraryDependencies": "Install library dependencies",
+      "installAll": "Установить все",
+      "installLibraryDependencies": "Установите зависимости библиотек",
       "installMissingDependencies": "Установить все недостающие зависимости?",
       "installOneMissingDependency": "Установить недостающую зависимость?",
-      "installWithoutDependencies": "Install without dependencies",
+      "installWithoutDependencies": "Установка без зависимостей",
       "installedSuccessfully": "Успешно установлена библиотека {0}:{1}",
       "libraryAlreadyExists": "Библиотека уже существует. Вы хотите ее заменить?",
       "manageLibraries": "Управление библиотеками...",
@@ -312,22 +312,22 @@
       "zipLibrary": "Библиотека"
     },
     "librarySearchProperty": {
-      "topic": "Topic"
+      "topic": "Тема"
     },
     "libraryTopic": {
-      "communication": "Communication",
-      "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
-      "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "communication": "Общение",
+      "dataProcessing": "Обработка данных",
+      "dataStorage": "Хранение данных",
+      "deviceControl": "Управление устройством",
+      "display": "Дисплей",
+      "other": "Другое",
+      "sensors": "Датчики",
+      "signalInputOutput": "Вход/выход сигнала",
+      "timing": "Время",
+      "uncategorized": "Без категории"
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Установлено"
     },
     "menu": {
       "advanced": "Расширенные",
@@ -335,22 +335,22 @@
       "tools": "Инструменты"
     },
     "monitor": {
-      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
-      "baudRate": "{0} baud",
-      "connectionFailedError": "Could not connect to {0} {1} port.",
-      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
-      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
-      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
-      "notConnectedError": "Not connected to {0} {1} port.",
+      "alreadyConnectedError": "Не удалось подключиться к {0} {1} порту. Уже подключились.",
+      "baudRate": "{0} бод",
+      "connectionFailedError": "Не удалось подключиться к {0} {1} порту.",
+      "connectionFailedErrorWithDetails": "{0} Не удалось подключиться к {1} {2} порту. ",
+      "connectionTimeout": "Таймаут. IDE не получила сообщение \"успех\" от монитора после успешного подключения к нему",
+      "missingConfigurationError": "Не удалось подключиться к {0} {1} порту. Отсутствует конфигурация монитора.",
+      "notConnectedError": "Не подключен к {0} {1} порту.",
       "unableToCloseWebSocket": "Не удалось закрыть веб-сокет.",
       "unableToConnectToWebSocket": "Не удается подключиться к веб-сокету."
     },
     "newCloudSketch": {
-      "newSketchTitle": "Name of the new Cloud Sketch"
+      "newSketchTitle": "Имя нового облачного эскиза"
     },
     "portProtocol": {
       "network": "Сеть",
-      "serial": "Serial"
+      "serial": "Серийный"
     },
     "preferences": {
       "additionalManagerURLs": "Дополнительные ссылки для Менеджера плат",
@@ -361,7 +361,7 @@
       "automatic": "Автоматика",
       "board.certificates": "Список сертификатов, которые могут быть загружены в платы",
       "browse": "Обзор",
-      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "checkForUpdate": "Получение уведомлений о доступных обновлениях для IDE, плат и библиотек. Требуется перезапуск IDE после внесения изменений. По умолчанию установлено значение true.",
       "choose": "Выбрать",
       "cli.daemonDebug": "Включить отладочное логирование вызовов gRPC в Arduino CLI. Чтобы эта настройка вступила в силу, необходим перезапуск IDE. По умолчанию оно выключено.",
       "cloud.enabled": "True, если функции синхронизации скетчей включены. По умолчанию - true.",
@@ -385,26 +385,26 @@
       "invalid.editorFontSize": "Неверный размер шрифта редактора. Это должно быть положительное целое число.",
       "invalid.sketchbook.location": "Неправильный путь к альбому со скетчами: {0}",
       "invalid.theme": "Неверная тема.",
-      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.asyncWorkers": "Количество асинхронных рабочих, используемых Arduino языковым сервером (clangd). Фоновый индекс также использует это количество рабочих. Минимальное значение - 0, максимальное - 8. Когда значение равно 0, языковой сервер использует все доступные ядра. По умолчанию значение равно 0.",
       "language.log": "True - сервер Arduino Language будет создавать файлы журнала в папке скетча. В противном случае - false. По умолчанию - false.",
       "language.realTimeDiagnostics": "Если включено, то языковой сервер проводит диагностику набранного текста в реальном времени. По умолчанию отключено.",
       "manualProxy": "Ручная настройка параметров прокси-сервера",
       "monitor": {
-        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+        "dockPanel": "Область оболочки приложения, в которой будет располагаться виджет _{0}_. Это либо \"внизу\", либо \"справа\". По умолчанию принимает значение \"{1}\"."
       },
       "network": "Сеть",
       "newSketchbookLocation": "Выбрать новое расположение для альбома со скетчами",
-      "noCliConfig": "Could not load the CLI configuration",
+      "noCliConfig": "Не удалось загрузить конфигурацию CLI",
       "noProxy": "Не использовать прокси-сервер",
       "proxySettings": {
-        "hostname": "Host name",
-        "password": "Password",
-        "port": "Port number",
-        "username": "Username"
+        "hostname": "Имя хоста",
+        "password": "Пароль",
+        "port": "Номер порта",
+        "username": "Имя пользователя"
       },
       "showVerbose": "Показывать детализированный вывод при",
       "sketch": {
-        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+        "inoBlueprint": "Абсолютный путь к файловой системе к стандартному файлу чертежей `.ino`. Если указан, содержимое файла blueprint будет использоваться для каждого нового скетча, создаваемого IDE. Если не указано, то скетчи будут создаваться с содержимым по умолчанию для Arduino. Недоступные файлы чертежей будут игнорироваться. **Для того чтобы эта настройка вступила в силу, необходимо перезапустить IDE**."
       },
       "sketchbook.location": "Путь к альбому со скетчами",
       "sketchbook.showAllFiles": "True - показывать все файлы внутри скетча. По умолчанию - false.",
@@ -415,19 +415,19 @@
       "verifyAfterUpload": "Проверять содержимое памяти платы после загрузки",
       "window.autoScale": "True, если пользовательский интерфейс автоматически масштабируется в зависимости от размера шрифта.",
       "window.zoomLevel": {
-        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+        "deprecationMessage": "Утратил актуальность. Вместо этого используйте 'window.zoomLevel'."
       }
     },
     "renameCloudSketch": {
-      "renameSketchTitle": "New name of the Cloud Sketch"
+      "renameSketchTitle": "Новое название облачного эскиза"
     },
     "replaceMsg": "Заменить имеющуюся версию {0}?",
     "selectZip": "Выберите zip-файл, содержащий библиотеку, которую вы хотите установить",
     "serial": {
       "autoscroll": "Автопрокрутка",
       "carriageReturn": "CR Возврат каретки",
-      "connecting": "Connecting to '{0}' on '{1}'...",
-      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "connecting": "Подключение к '{0}' на '{1}'...",
+      "message": "Сообщение (введите, чтобы отправить сообщение на '{0}' на '{1}')",
       "newLine": "Новая строка",
       "newLineCarriageReturn": "NL & CR",
       "noLineEndings": "Нет конца строки",
@@ -440,22 +440,22 @@
       "archiveSketch": "Архивировать скетч",
       "cantOpen": "Папка \"{0}\" уже существует. Невозможно открыть скетч.",
       "compile": "Компиляция скетча...",
-      "configureAndUpload": "Configure and Upload",
+      "configureAndUpload": "Настройка и загрузка",
       "createdArchive": "Создать архив '{0}'.",
       "doneCompiling": "Компиляция завершена.",
       "doneUploading": "Загрузка завершена.",
-      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
-      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "editInvalidSketchFolderLocationQuestion": "Не хотите ли вы попробовать сохранить эскиз в другом месте?",
+      "editInvalidSketchFolderQuestion": "Хотите попробовать сохранить эскиз под другим именем?",
       "exportBinary": "Экспортировать скомпилированный бинарный файл",
-      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
-      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
-      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
-      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
-      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "invalidCloudSketchName": "Имя должно начинаться с буквы, цифры или символа подчеркивания, за которыми следуют буквы, цифры, тире, точки и символы подчеркивания. Максимальная длина - 36 символов.",
+      "invalidSketchFolderLocationDetails": "Вы не можете сохранить эскиз в папке внутри самого себя.",
+      "invalidSketchFolderLocationMessage": "Недопустимое расположение папки с эскизами: '{0}'",
+      "invalidSketchFolderNameMessage": "Недопустимое имя папки с эскизами: '{0}'",
+      "invalidSketchName": "Имя должно начинаться с буквы, цифры или символа подчеркивания, за которыми следуют буквы, цифры, тире, точки и символы подчеркивания. Максимальная длина - 63 символа.",
       "moving": "Переместить",
       "movingMsg": "Файл «{0}» должен быть в папке с именем скетча «{1}». \nСоздать эту папку, переместить файл и продолжить?",
-      "new": "New Sketch",
-      "noTrailingPeriod": "A filename cannot end with a dot",
+      "new": "Новый эскиз",
+      "noTrailingPeriod": "Имя файла не может заканчиваться точкой",
       "openFolder": "Открыть папку",
       "openRecent": "Открыть предыдущий",
       "openSketchInNewWindow": "Открыть скетч в новом окне",
@@ -465,8 +465,8 @@
       "saveSketchAs": "Сохранить папку скетча как...",
       "showFolder": "Показать папку скетча",
       "sketch": "Скетч",
-      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
-      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchAlreadyContainsThisFileError": "В эскизе уже есть файл с именем '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Не удалось сохранить эскиз \"{0}\" как \"{1}\". {2}",
       "sketchbook": "Альбом",
       "titleLocalSketchbook": "Локальный альбом",
       "titleSketchbook": "Альбом",
@@ -478,8 +478,8 @@
       "verifyOrCompile": "Проверить/Скомпилировать"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
-      "newSketch": "New Sketch"
+      "newCloudSketch": "Новый эскиз облаков",
+      "newSketch": "Новый эскиз"
     },
     "survey": {
       "answerSurvey": "Ответить на опрос",
@@ -487,36 +487,36 @@
       "surveyMessage": "Пожалуйста, помоги нам стать лучше, пройдя этот супер-короткий опрос. Мы ценим наше сообщество и хотели бы узнать наших сторонников немного лучше!"
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
-      "deprecated": "{0} (deprecated)",
-      "hc": "Dark High Contrast",
-      "hcLight": "Light High Contrast",
-      "light": "Light",
-      "user": "{0} (user)"
+      "currentThemeNotFound": "Не удалось найти текущую выбранную тему: {0}. Arduino IDE выбрала встроенную тему, совместимую с отсутствующей.",
+      "dark": "Темный",
+      "deprecated": "{0} (устаревшее)",
+      "hc": "Темная высокая контрастность",
+      "hcLight": "Светлый Высокая контрастность",
+      "light": "Свет",
+      "user": "{0} (пользователь) "
     },
     "title": {
-      "cloud": "Cloud"
+      "cloud": "Облако"
     },
     "updateIndexes": {
-      "updateIndexes": "Update Indexes",
-      "updateLibraryIndex": "Update Library Index",
-      "updatePackageIndex": "Update Package Index"
+      "updateIndexes": "Обновление индексов",
+      "updateLibraryIndex": "Обновить библиотечный индекс",
+      "updatePackageIndex": "Обновление индекса пакетов"
     },
     "upload": {
       "error": "{0} ошибка: {1}"
     },
     "userFields": {
       "cancel": "Отмена",
-      "enterField": "Enter {0}",
+      "enterField": "Ввод {0}",
       "upload": "Загрузка"
     },
     "validateSketch": {
-      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
-      "abortFixTitle": "Invalid sketch",
-      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
-      "renameSketchFileTitle": "Invalid sketch filename",
-      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "abortFixMessage": "Эскиз все еще недействителен. Хотите устранить оставшиеся проблемы? Если нажать кнопку '{0}', откроется новый эскиз.",
+      "abortFixTitle": "Неверный эскиз",
+      "renameSketchFileMessage": "Файл эскиза '{0}' не может быть использован.{1} Вы хотите переименовать файл эскиза сейчас?",
+      "renameSketchFileTitle": "Недопустимое имя файла эскиза",
+      "renameSketchFolderMessage": "Эскиз '{0}' не может быть использован. {1} Чтобы избавиться от этого сообщения, переименуйте эскиз. Хотите ли вы переименовать эскиз сейчас?",
       "renameSketchFolderTitle": "Неверное название скетча"
     },
     "workspace": {
@@ -541,8 +541,8 @@
       "expand": "Развернуть"
     },
     "workspace": {
-      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
-      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCloudSketch": "Облачный скетч '{0}' будет навсегда удален с серверов Arduino и из локальных кэшей. Это действие необратимо. Вы хотите удалить текущий скетч?",
+      "deleteCurrentSketch": "Эскиз '{0}' будет удален навсегда. Это действие необратимо. Вы хотите удалить текущий эскиз?",
       "fileNewName": "Имя нового файла",
       "invalidExtension": "Файлы с расширением \".{0}\" не поддерживаются.",
       "newFileName": "Новое имя файла"

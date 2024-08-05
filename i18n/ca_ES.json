@@ -18,7 +18,7 @@
       "configDialog1": "Selecciona una placa i un port si vols carregar un programa.",
       "configDialog2": "Si només selecciones una placa, podràs compilar, però no carregar un programa.",
       "couldNotFindPreviouslySelected": "No s'ha trobat la placa \"{0}\" seleccionada anteriorment en la plataforma instal·lada \"{1}\". Torna a seleccionar manualment la placa que vols utilitzar. Vols tornar-la a seleccionar ara?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Selecciona placa i port...",
       "getBoardInfo": "Obtín informació de la placa",
       "inSketchbook": "(al quadern de programes)",
       "installNow": "El nucli de \"{0} {1}\" s'ha d'instal·lar en la placa \"{2}\" seleccionada actualment. Vols instal·lar-lo ara?",
@@ -32,7 +32,7 @@
       "ports": "ports",
       "programmer": "Programador",
       "reselectLater": "Torna a triar més tard",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "Fes servir  '  {0}  ' descobert a '  {1}  '",
       "searchBoard": "Busca una placa",
       "selectBoard": "Tria una placa",
       "selectPortForInfo": "Tria un port per obtenir informació de la placa.",
@@ -41,7 +41,7 @@
       "succesfullyInstalledPlatform": "Plataforma instal·lada correctament {0}:{1}",
       "succesfullyUninstalledPlatform": "Plataforma desinstal·lada correctament {0}:{1}",
       "typeOfPorts": "{0} ports",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "Placa no confirmada",
       "unknownBoard": "Placa desconeguda"
     },
     "boardsManager": "Gestor de plaques",
@@ -139,7 +139,7 @@
       "installManually": "Instal·la manualment",
       "later": "Més tard",
       "noBoardSelected": "No s'ha seleccionat cap placa",
-      "noSketchOpened": "No sketch opened",
+      "noSketchOpened": "Cap sketch obert",
       "notConnected": "[no connectat]",
       "offlineIndicator": "Sembla que estàs fora de línia. Sense connexió a Internet, és possible que l'Arduino CLI no pugui descarregar els recursos necessaris i podria provocar un mal funcionament. Connecteu-vos a Internet i reinicieu l'aplicació.",
       "oldFormat": "El \"{0}\" encara utilitza l'antic format \".pde\". Voleu canviar a la nova extensió \".ino\"?",
@@ -147,12 +147,13 @@
       "processing": "Processant",
       "recommended": "Recomanat",
       "retired": "Retirat",
-      "selectManually": "Select Manually",
+      "selectManually": "Selecciona manualment",
       "selectedOn": "sobre {0}",
       "serialMonitor": "Monitor sèrie",
       "type": "Tipus",
       "unknown": "Desconegut",
-      "updateable": "Actualitzable"
+      "updateable": "Actualitzable",
+      "userAbort": "Abortar per l'usuari"
     },
     "compile": {
       "error": "Error de compilació: {0}"
@@ -211,15 +212,14 @@
     "debug": {
       "debugWithMessage": "Depuració - {0}",
       "debuggingNotSupported": "La depuració no és compatible amb '{0}'",
-      "getDebugInfo": "Getting debug info...",
+      "getDebugInfo": "Recopilant info depuració",
       "noPlatformInstalledFor": "La plataforma no està instal·lada per a '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimitzar per a la depuració",
       "sketchIsNotCompiled": "El programa \"{0}\" s'ha de comprovar abans de començar la depuració. Per favor, verifica el programa i comença a depurar de nou. Vols verificar el programa ara?"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "clearBoardList": "Esborra historial del llistat de plaques",
+      "clearBoardsConfig": "Esborra la selecció de placa i port",
       "dumpBoardList": "Dump the Board List"
     },
     "dialog": {
@@ -254,7 +254,7 @@
       "selectBoard": "Selecciona una placa",
       "selectVersion": "Selecciona la versió de l'entorn",
       "successfullyInstalled": "L'entorn s'ha instal·lat correctament.",
-      "updater": "Firmware Updater"
+      "updater": "Actualitzador de l'entorn WiFi101 / WiFiNINA"
     },
     "help": {
       "environment": "Entorn",
@@ -286,8 +286,8 @@
       "versionDownloaded": "L'IDE d'Arduino {0} s'ha descarregat"
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "libraryInstallFailed": "Instal.lació de llibrería fallida  '{0}{1}'.",
+      "platformInstallFailed": "Instal.lació fallida de plataforma '{0}{1}'."
     },
     "library": {
       "addZip": "Afegeix llibreria .ZIP...",
@@ -465,8 +465,8 @@
       "saveSketchAs": "Desa la carpeta del programa com a...",
       "showFolder": "Mostra la carpeta del programa",
       "sketch": "Programa",
-      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
-      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchAlreadyContainsThisFileError": "L' sketch ja conté un arxiu anomenat '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "No s'ha pogut desar l' sketch  \"{0}\" com a \"{1}\". {2}",
       "sketchbook": "Quadern de programes",
       "titleLocalSketchbook": "Quadern de programes local",
       "titleSketchbook": "Quadern de programes",
@@ -490,8 +490,8 @@
       "currentThemeNotFound": "No s'ha trobat el nom seleccionat: {0}. L'IDE d'Arduino ha agafat un tema compatible amb el que falta.",
       "dark": "Fosc",
       "deprecated": "{0} (obsolet)",
-      "hc": "Dark High Contrast",
-      "hcLight": "Light High Contrast",
+      "hc": "Fosc alt contrast",
+      "hcLight": "Clar alt contrast",
       "light": "Clar",
       "user": "{0} (usuari)"
     },

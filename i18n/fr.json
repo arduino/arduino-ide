@@ -152,7 +152,8 @@
       "serialMonitor": "Moniteur série",
       "type": "Type",
       "unknown": "Inconnu",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Erreur de compilation : {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plateforme n'est pas installée pour '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimisé pour le déboggage.",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },

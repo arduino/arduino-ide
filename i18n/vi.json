@@ -18,7 +18,7 @@
       "configDialog1": "Chọn đồng thời một bo mạch và một cổng nếu bạn muốn nạp một sketch.",
       "configDialog2": "Nếu bạn chỉ chọn một bo mạch thì bạn sẽ có khả năng biên dịch, nhưng không thể nạp sketch của bạn lên.",
       "couldNotFindPreviouslySelected": "Không thể tìm thấy bo mạch '{0}' được chọn trước đó trong nền tảng '{1}' đã được cài đặt. Hãy chọn lại thủ công bo mạch mà bạn muốn dùng. Bạn có muốn chọn lại ngay?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Thiết lập Bảng và Cổng...",
       "getBoardInfo": "Lấy thông tin bo mạch",
       "inSketchbook": "(trong Sketchbook)",
       "installNow": "Nhân \"{0} {1}\" phải được cài đặt cho bo mạch \"{2}\" đang được chọn. Bạn có muốn cài đặt ngay?",
@@ -40,7 +40,7 @@
       "showAllPorts": "Hiển thị tất cả các cổng",
       "succesfullyInstalledPlatform": "Hoàn tất cài đặt nền tảng {0}:{1}",
       "succesfullyUninstalledPlatform": "Hoàn tất gỡ cài đặt nền tảng {0}:{1}",
-      "typeOfPorts": "{0} ports",
+      "typeOfPorts": "{0}Cổng",
       "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Bảng không xác định"
     },
@@ -74,7 +74,7 @@
       "uploadingCertificates": "Đang nạp các chứng chỉ."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
+      "checkForUpdates": "Kiểm tra bản cập nhật",
       "installAll": "Cài đặt tất cả",
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
@@ -83,16 +83,16 @@
       "updatingLibraries": "Đang cập nhật thư viện..."
     },
     "cli-error-parser": {
-      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "keyboardError": "Không tìm thấy 'Keyboard'. Dự án của bạn có khai báo '<Keyboard.h>' chưa?",
+      "mouseError": "Không tìm thấy 'Mouse'. Dự án của bạn có khai báo '<Mouse.h> chưa?"
     },
     "cloud": {
       "chooseSketchVisibility": "Chọn khả năng hiển thị của Sketch của bạn:",
       "cloudSketchbook": "Cloud Sketchbook",
       "connected": "Đã kết nối",
       "continue": "Tiếp tục",
-      "donePulling": "Done pulling '{0}'.",
-      "donePushing": "Done pushing '{0}'.",
+      "donePulling": "Pulling thành công{0}",
+      "donePushing": "Pushing thành công{0}",
       "embed": "Nhúng: ",
       "emptySketchbook": "Sketchbook của bạn đang trống",
       "goToCloud": "Chuyển đến đám mây",
@@ -139,7 +139,7 @@
       "installManually": "Cài thủ công",
       "later": "Để sau",
       "noBoardSelected": "Không có bo mạch được chọn",
-      "noSketchOpened": "No sketch opened",
+      "noSketchOpened": "Không có dự án nào được mở",
       "notConnected": "[Chưa được kết nối]",
       "offlineIndicator": "Bạn dường như đang ngoại tuyến. Không có kết nối mạng, Arduino CLI có thể sẽ không thể tải về những tài nguyên cần thiết và có thể sẽ gây ra sự cố. Hãy kết nối Internet và khởi động lại ứng dụng.",
       "oldFormat": "'{0}' vẫn đang sử dụng đuôi '.pde' cũ. Bạn có muốn chuyển sang đuôi '.ino' mới hơn không?",
@@ -152,7 +152,8 @@
       "serialMonitor": "Serial Monitor",
       "type": "Kiểu",
       "unknown": "Không xác định",
-      "updateable": "Có thể cập nhật"
+      "updateable": "Có thể cập nhật",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Lỗi biên dịch: {0}"
@@ -160,12 +161,12 @@
     "component": {
       "boardsIncluded": "Boards included in this package:",
       "by": "bởi",
-      "clickToOpen": "Click to open in browser: {0}",
+      "clickToOpen": "Nhấn để mở trên trình duyệt:{0}",
       "filterSearch": "Lọc kết quả tìm kiếm của bạn...",
       "install": "Cài đặt",
       "installLatest": "Cài đặt mới nhất",
-      "installVersion": "Install {0}",
-      "installed": "{0} installed",
+      "installVersion": "Cài đặt{0}",
+      "installed": "{0}Đã cài đặt",
       "moreInfo": "Thêm thông tin",
       "otherVersions": "Các phiên bản khác",
       "remove": "Loại bỏ",
@@ -193,16 +194,16 @@
     "core": {
       "compilerWarnings": {
         "all": "Tất cả",
-        "default": "Default",
+        "default": "Mặc định",
         "more": "More",
         "none": "None"
       }
     },
     "coreContribution": {
-      "copyError": "Copy error messages",
-      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+      "copyError": "Sao chép lỗi",
+      "noBoardSelected": "Không có board được chọn. Hãy vào Tools > Board để chọn board Arduino."
     },
-    "createCloudCopy": "Push Sketch to Cloud",
+    "createCloudCopy": "Đẩy dự án lên Cloud",
     "daemon": {
       "restart": "Restart Daemon",
       "start": "Start Daemon",
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Sửa lỗi không hỗ trợ bởi '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Nền tảng chưa được cài đặt cho '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Tối ưu hóa cho sửa lỗi",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -254,7 +254,7 @@
       "selectBoard": "Lựa chọn bo mạch",
       "selectVersion": "Chọn phiên bản firmware ",
       "successfullyInstalled": "Hoàn tất cài đặt firmware.",
-      "updater": "Firmware Updater"
+      "updater": "Cập nhật Frmware"
     },
     "help": {
       "environment": "Môi trường",
@@ -269,7 +269,7 @@
       "visit": "Truy cập Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Kiểm tra bản cập nhật phần mềm",
       "closeAndInstallButton": "Đóng và cài đặt",
       "closeToInstallNotice": "Đóng ứng dụng và cài đặt bản cập nhật mới nhất lên máy bạn.",
       "downloadButton": "Tải về",
@@ -286,7 +286,7 @@
       "versionDownloaded": "Arduino IDE {0} đã được tải về."
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "libraryInstallFailed": "Cài thư viện {0}{1} không thành công",
       "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
@@ -315,29 +315,29 @@
       "topic": "Topic"
     },
     "libraryTopic": {
-      "communication": "Communication",
+      "communication": "Giao tiếp",
       "dataProcessing": "Data Processing",
-      "dataStorage": "Data Storage",
-      "deviceControl": "Device Control",
-      "display": "Display",
-      "other": "Other",
-      "sensors": "Sensors",
-      "signalInputOutput": "Signal Input/Output",
+      "dataStorage": "Lưu trữ dữ liệu",
+      "deviceControl": "Điều khiển thiết bị",
+      "display": "Hiển thị",
+      "other": "Khác",
+      "sensors": "Cảm biến",
+      "signalInputOutput": "Tín hiệu vào/ra",
       "timing": "Timing",
-      "uncategorized": "Uncategorized"
+      "uncategorized": "Chưa được phân loại."
     },
     "libraryType": {
-      "installed": "Installed"
+      "installed": "Đã cài đặt"
     },
     "menu": {
-      "advanced": "Advanced",
+      "advanced": "Nâng cao",
       "sketch": "Sketch",
       "tools": "Công cụ"
     },
     "monitor": {
       "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
       "baudRate": "{0} baud",
-      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedError": "Không thể kết nối tới cổng {0}{1}.",
       "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
       "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
       "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
@@ -398,9 +398,9 @@
       "noProxy": "Không có proxy",
       "proxySettings": {
         "hostname": "Host name",
-        "password": "Password",
-        "port": "Port number",
-        "username": "Username"
+        "password": "Mật khẩu",
+        "port": "Số cổng",
+        "username": "Tài khoản"
       },
       "showVerbose": "Hiển thị đầu ra chi tiết trong khi",
       "sketch": {
@@ -419,7 +419,7 @@
       }
     },
     "renameCloudSketch": {
-      "renameSketchTitle": "New name of the Cloud Sketch"
+      "renameSketchTitle": "Tên mới cho dự án Cloud"
     },
     "replaceMsg": "Thay thế phiên bản hiện tại của {0}?",
     "selectZip": "Chọn một tệp zip chứa thư viện mà bạn muốn cài",
@@ -449,24 +449,24 @@
       "exportBinary": "Xuất tệp nhị phân đã biên dịch",
       "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
       "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
-      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
-      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchFolderLocationMessage": "Vị trí thư mục dự án {0} không hợp lệ",
+      "invalidSketchFolderNameMessage": "Tên thư mục dự án {0} không hợp lệ",
       "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
       "moving": "Chuyển",
       "movingMsg": "Tệp \"{0}\" cần phải được chứa trong thư mục sketch tên \"{1}\".\nTạo thư mục này, chuyển tệp tin vào đó, và tiếp tục?",
       "new": "Bản phác thảo mới",
-      "noTrailingPeriod": "A filename cannot end with a dot",
+      "noTrailingPeriod": "Tên file không thể kết túc bằng dấu chấm",
       "openFolder": "Mở thư mục",
       "openRecent": "Mở gần đây",
       "openSketchInNewWindow": "Mở sketch trong cửa sổ mới",
       "reservedFilename": "'{0}' is a reserved filename.",
       "saveFolderAs": "Lưu thư mục sketch như là...",
-      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketch": "Lưu dự án của bạn để mở vào lần sau.",
       "saveSketchAs": "Lưu thư mục sketch như là...",
       "showFolder": "Hiện thư mục sketch",
       "sketch": "Sketch",
       "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
-      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchAlreadyContainsThisFileMessage": "Lưu dự án \"{0}\" thành \"{1}\" không thành công.{2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Sketchbook cục bộ",
       "titleSketchbook": "Sketchbook",
@@ -489,11 +489,11 @@
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Tối",
-      "deprecated": "{0} (deprecated)",
+      "deprecated": "{0}(Không được dùng nữa)",
       "hc": "Độ tương phản tối cao",
       "hcLight": "Độ tương phản cao nhẹ",
       "light": "Sáng",
-      "user": "{0} (user)"
+      "user": "{0}(người dùng)"
     },
     "title": {
       "cloud": "Đám mây"
@@ -520,7 +520,7 @@
       "renameSketchFolderTitle": "Tên bản phác thảo không hợp lệ"
     },
     "workspace": {
-      "alreadyExists": "'{0}' already exists."
+      "alreadyExists": "'{0}'đã tồn tại."
     }
   },
   "theia": {

@@ -152,7 +152,8 @@
       "serialMonitor": "序列埠監控窗",
       "type": "類型",
       "unknown": "未知",
-      "updateable": "可更新"
+      "updateable": "可更新",
+      "userAbort": "用戶中止"
     },
     "compile": {
       "error": "編譯錯誤:{0} "
@@ -186,7 +187,7 @@
       "addFile": "加入檔案",
       "fileAdded": "一個檔案加入 Sketch",
       "plotter": {
-        "couldNotOpen": "無法開啟繪圖儀。"
+        "couldNotOpen": "無法開啟序列埠繪圖"
       },
       "replaceTitle": "取代"
     },
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "'{0}'不支援除錯。",
       "getDebugInfo": "取得除錯資訊...",
       "noPlatformInstalledFor": "平台未安裝給'{0}'",
-      "noProgrammerSelectedFor": "未選取給 '{0}' 用的燒錄器",
       "optimizeForDebugging": "除錯最佳化",
       "sketchIsNotCompiled": "Sketch '{0}' 在除錯前必須已驗證過。請先驗證 sketch 後再除錯。要現在驗證 sketch 嗎？"
     },
@@ -432,7 +432,7 @@
       "newLineCarriageReturn": "NL和CR字元",
       "noLineEndings": "沒有斷行字元",
       "notConnected": "未連上。請選擇開發板及連接埠後自動連接",
-      "openSerialPlotter": "開啟序列繪圖家",
+      "openSerialPlotter": "序列埠繪圖",
       "timestamp": "時間戳記",
       "toggleTimestamp": "切換時戳"
     },
