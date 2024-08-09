@@ -228,6 +228,14 @@ const properties: ArduinoPreferenceSchemaProperties = {
     ),
     default: 'https://api2.arduino.cc/create',
   },
+  'arduino.cloud.sharedSpaceID': {
+    type: 'string',
+    description: nls.localize(
+      'arduino/preferences/cloud.sharedSpaceId',
+      'The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.'
+    ),
+    default: '',
+  },
   'arduino.auth.clientID': {
     type: 'string',
     description: nls.localize(
@@ -329,6 +337,7 @@ export interface ArduinoConfiguration {
   'arduino.cloud.push.warn': boolean;
   'arduino.cloud.pushpublic.warn': boolean;
   'arduino.cloud.sketchSyncEndpoint': string;
+  'arduino.cloud.sharedSpaceID': string;
   'arduino.auth.clientID': string;
   'arduino.auth.domain': string;
   'arduino.auth.audience': string;

@@ -127,6 +127,9 @@ export class SketchbookTreeModel extends FileTreeModel {
         if (preferenceName === 'arduino.sketchbook.showAllFiles') {
           this.updateRoot();
         }
+        if (preferenceName === 'arduino.cloud.sharedSpaceID') {
+          this.updateRoot();
+        }
       })
     );
 
