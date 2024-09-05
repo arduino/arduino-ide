@@ -71,6 +71,7 @@ export namespace CoreError {
     Upload: 4002,
     UploadUsingProgrammer: 4003,
     BurnBootloader: 4004,
+    UploadRequiresProgrammer: 4005,
   };
   export const VerifyFailed = declareCoreError(Codes.Verify);
   export const UploadFailed = declareCoreError(Codes.Upload);
@@ -78,6 +79,10 @@ export namespace CoreError {
     Codes.UploadUsingProgrammer
   );
   export const BurnBootloaderFailed = declareCoreError(Codes.BurnBootloader);
+  export const UploadRequiresProgrammer = declareCoreError(
+    Codes.UploadRequiresProgrammer
+  );
+
   export function is(
     error: unknown
   ): error is ApplicationError<number, ErrorLocation[]> {
