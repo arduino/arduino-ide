@@ -1,4 +1,4 @@
-import type { ClientReadableStream } from '@grpc/grpc-js';
+import { type ClientReadableStream } from '@grpc/grpc-js';
 import { ApplicationError } from '@theia/core/lib/common/application-error';
 import type { CancellationToken } from '@theia/core/lib/common/cancellation';
 import { CommandService } from '@theia/core/lib/common/command';
@@ -41,6 +41,7 @@ import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_
 import {
   BurnBootloaderRequest,
   BurnBootloaderResponse,
+  ProgrammerIsRequiredForUploadError,
   UploadRequest,
   UploadResponse,
   UploadUsingProgrammerRequest,
@@ -295,12 +296,24 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               reject(UserAbortApplicationError());
               return;
             }
+
+            if (
+              ServiceError.isInstanceOf(
+                error,
+                ProgrammerIsRequiredForUploadError
+              )
+            ) {
+              reject(CoreError.UploadRequiresProgrammer());
+              return;
+            }
+
             const message = nls.localize(
               'arduino/upload/error',
               '{0} error: {1}',
               firstToUpperCase(task),
               error.details
             );
+
             this.sendResponse(error.details, OutputMessage.Severity.Error);
             reject(
               errorCtor(

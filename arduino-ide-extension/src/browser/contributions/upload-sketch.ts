@@ -127,6 +127,7 @@ export class UploadSketch extends CoreServiceContribution {
         usingProgrammer,
         verifyOptions
       );
+
       if (!uploadOptions) {
         return;
       }
@@ -137,11 +138,37 @@ export class UploadSketch extends CoreServiceContribution {
 
       const uploadResponse = await this.doWithProgress({
         progressText: nls.localize('arduino/sketch/uploading', 'Uploading...'),
-        task: (progressId, coreService, token) =>
-          coreService.upload({ ...uploadOptions, progressId }, token),
+        task: async (progressId, coreService, token) => {
+          try {
+            return await coreService.upload(
+              { ...uploadOptions, progressId },
+              token
+            );
+          } catch (err) {
+            if (err.code === 4005) {
+              const uploadWithProgrammerOptions = await this.uploadOptions(
+                true,
+                verifyOptions
+              );
+              if (uploadWithProgrammerOptions) {
+                return coreService.upload(
+                  { ...uploadWithProgrammerOptions, progressId },
+                  token
+                );
+              }
+            } else {
+              throw err;
+            }
+          }
+        },
         keepOutput: true,
         cancelable: true,
       });
+
+      if (!uploadResponse) {
+        return;
+      }
+
       // the port update is NOOP if nothing has changed
       this.boardsServiceProvider.updateConfig(uploadResponse.portAfterUpload);
 
