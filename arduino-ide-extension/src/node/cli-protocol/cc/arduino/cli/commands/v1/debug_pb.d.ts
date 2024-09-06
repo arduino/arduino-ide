@@ -41,12 +41,20 @@ export namespace DebugRequest {
 }
 
 export class DebugResponse extends jspb.Message { 
+
+    hasData(): boolean;
+    clearData(): void;
     getData(): Uint8Array | string;
     getData_asU8(): Uint8Array;
     getData_asB64(): string;
     setData(value: Uint8Array | string): DebugResponse;
-    getError(): string;
-    setError(value: string): DebugResponse;
+
+    hasResult(): boolean;
+    clearResult(): void;
+    getResult(): DebugResponse.Result | undefined;
+    setResult(value?: DebugResponse.Result): DebugResponse;
+
+    getMessageCase(): DebugResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): DebugResponse.AsObject;
@@ -61,8 +69,37 @@ export class DebugResponse extends jspb.Message {
 export namespace DebugResponse {
     export type AsObject = {
         data: Uint8Array | string,
-        error: string,
+        result?: DebugResponse.Result.AsObject,
     }
+
+
+    export class Result extends jspb.Message { 
+        getError(): string;
+        setError(value: string): Result;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): Result.AsObject;
+        static toObject(includeInstance: boolean, msg: Result): Result.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: Result, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): Result;
+        static deserializeBinaryFromReader(message: Result, reader: jspb.BinaryReader): Result;
+    }
+
+    export namespace Result {
+        export type AsObject = {
+            error: string,
+        }
+    }
+
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        DATA = 1,
+        RESULT = 2,
+    }
+
 }
 
 export class IsDebugSupportedRequest extends jspb.Message { 

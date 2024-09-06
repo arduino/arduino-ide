@@ -318,10 +318,10 @@ export class PlatformRelease extends jspb.Message {
     setName(value: string): PlatformRelease;
     getVersion(): string;
     setVersion(value: string): PlatformRelease;
-    clearTypeList(): void;
-    getTypeList(): Array<string>;
-    setTypeList(value: Array<string>): PlatformRelease;
-    addType(value: string, index?: number): string;
+    clearTypesList(): void;
+    getTypesList(): Array<string>;
+    setTypesList(value: Array<string>): PlatformRelease;
+    addTypes(value: string, index?: number): string;
     getInstalled(): boolean;
     setInstalled(value: boolean): PlatformRelease;
     clearBoardsList(): void;
@@ -354,7 +354,7 @@ export namespace PlatformRelease {
     export type AsObject = {
         name: string,
         version: string,
-        typeList: Array<string>,
+        typesList: Array<string>,
         installed: boolean,
         boardsList: Array<Board.AsObject>,
         help?: HelpResources.AsObject,
@@ -416,29 +416,6 @@ export namespace Board {
     }
 }
 
-export class Profile extends jspb.Message { 
-    getName(): string;
-    setName(value: string): Profile;
-    getFqbn(): string;
-    setFqbn(value: string): Profile;
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): Profile.AsObject;
-    static toObject(includeInstance: boolean, msg: Profile): Profile.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: Profile, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): Profile;
-    static deserializeBinaryFromReader(message: Profile, reader: jspb.BinaryReader): Profile;
-}
-
-export namespace Profile {
-    export type AsObject = {
-        name: string,
-        fqbn: string,
-    }
-}
-
 export class HelpResources extends jspb.Message { 
     getOnline(): string;
     setOnline(value: string): HelpResources;
@@ -491,6 +468,8 @@ export class Sketch extends jspb.Message {
     clearDefaultProfile(): void;
     getDefaultProfile(): SketchProfile | undefined;
     setDefaultProfile(value?: SketchProfile): Sketch;
+    getDefaultProgrammer(): string;
+    setDefaultProgrammer(value: string): Sketch;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Sketch.AsObject;
@@ -514,6 +493,7 @@ export namespace Sketch {
         defaultProtocol: string,
         profilesList: Array<SketchProfile.AsObject>,
         defaultProfile?: SketchProfile.AsObject,
+        defaultProgrammer: string,
     }
 }
 
@@ -522,6 +502,8 @@ export class SketchProfile extends jspb.Message {
     setName(value: string): SketchProfile;
     getFqbn(): string;
     setFqbn(value: string): SketchProfile;
+    getProgrammer(): string;
+    setProgrammer(value: string): SketchProfile;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SketchProfile.AsObject;
@@ -537,5 +519,6 @@ export namespace SketchProfile {
     export type AsObject = {
         name: string,
         fqbn: string,
+        programmer: string,
     }
 }

@@ -128,7 +128,7 @@
   },
   "optionalDependencies": {
     "grpc-tools": "^1.12.4",
-    "protoc": "^1.0.4"
+    "@pingghost/protoc": "^1.0.2"
   },
   "mocha": {
     "require": [
@@ -170,7 +170,7 @@
   ],
   "arduino": {
     "arduino-cli": {
-      "version": "0.36.0-rc.1"
+      "version": "1.0.4"
     },
     "arduino-fwuploader": {
       "version": "2.4.1"
@@ -179,7 +179,7 @@
       "version": {
         "owner": "arduino",
         "repo": "arduino-language-server",
-        "commitish": "91c2ba8"
+        "commitish": "05ec308"
       }
     },
     "clangd": {

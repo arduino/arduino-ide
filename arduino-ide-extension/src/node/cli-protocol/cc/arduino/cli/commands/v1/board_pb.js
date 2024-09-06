@@ -3387,7 +3387,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setFqbn = function(v
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.repeatedFields_ = [1];
+proto.cc.arduino.cli.commands.v1.BoardListResponse.repeatedFields_ = [1,2];
 
 
 
@@ -3421,7 +3421,8 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.toObject = function
 proto.cc.arduino.cli.commands.v1.BoardListResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     portsList: jspb.Message.toObjectList(msg.getPortsList(),
-    proto.cc.arduino.cli.commands.v1.DetectedPort.toObject, includeInstance)
+    proto.cc.arduino.cli.commands.v1.DetectedPort.toObject, includeInstance),
+    warningsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -3463,6 +3464,10 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinaryFromReader =
       reader.readMessage(value,proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader);
       msg.addPorts(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addWarnings(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3498,6 +3503,13 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.serializeBinaryToWriter = fun
       1,
       f,
       proto.cc.arduino.cli.commands.v1.DetectedPort.serializeBinaryToWriter
+    );
+  }
+  f = message.getWarningsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      2,
+      f
     );
   }
 };
@@ -3538,6 +3550,43 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.addPorts = function
  */
 proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.clearPortsList = function() {
   return this.setPortsList([]);
+};
+
+
+/**
+ * repeated string warnings = 2;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.getWarningsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.setWarningsList = function(value) {
+  return jspb.Message.setField(this, 2, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.addWarnings = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.clearWarningsList = function() {
+  return this.setWarningsList([]);
 };
 
 

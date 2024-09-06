@@ -1899,6 +1899,19 @@
     "@phosphor/signaling" "^1.3.1"
     "@phosphor/virtualdom" "^1.2.0"
 
+"@pingghost/protoc@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@pingghost/protoc/-/protoc-1.0.2.tgz#68436fe6df7b700149dfb2b9a6a9db3b66fe758a"
+  integrity sha512-7ndq6JmrfcRfr6wIxdrjBqAipsrWwldFL5TQRmJXgpGrRi1yU6vKWID6Z4cs96iK+3yLIoUON11fE5CThNBrXA==
+  dependencies:
+    glob "^7.2.3"
+    mkdirp "^0.5.6"
+    node-fetch "^3.2.10"
+    rimraf "^3.0.2"
+    unzipper "^0.10.11"
+    uuid "^9.0.0"
+    vinyl "^2.2.1"
+
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@pkgjs/parseargs/-/parseargs-0.11.0.tgz#a77ea742fab25775145434eb1d2328cf5013ac33"
@@ -11099,19 +11112,6 @@ protobufjs@^7.2.3, protobufjs@^7.2.4:
     "@protobufjs/utf8" "^1.1.0"
     "@types/node" ">=13.7.0"
     long "^5.0.0"
-
-protoc@^1.0.4:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/protoc/-/protoc-1.1.3.tgz#d9857ec2a43a683af8263032d519ce7ba0b7d99e"
-  integrity sha512-Vy4OBxCcF0W38YrZZRFix659gFu8ujIxVDP1SUBK9ELzyeMSBe8m8tYyYlX1PI5j9gse9hWu4c4nzQaHesAf8Q==
-  dependencies:
-    glob "^7.2.3"
-    mkdirp "^0.5.6"
-    node-fetch "^3.2.10"
-    rimraf "^3.0.2"
-    unzipper "^0.10.11"
-    uuid "^9.0.0"
-    vinyl "^2.2.1"
 
 protocols@^2.0.0, protocols@^2.0.1:
   version "2.0.1"
