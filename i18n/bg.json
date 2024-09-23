@@ -152,7 +152,8 @@
       "serialMonitor": "Сериен Монитор",
       "type": "Type",
       "unknown": "Неизвестно",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Грешка при компилация: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Отстраняването на грешки не се поддържа от „{0}“",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Платформата не е инсталирана за „{0}“",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Оптимизиране за отстраняване на грешки",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "True е, ако потребителите трябва да бъдат предупредени, преди да се изтегли скица от облака. По подразбиране е true.",
       "cloud.push.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде пусната скица в облака. По подразбиране е true.",
       "cloud.pushpublic.warn": "True, ако потребителите трябва да бъдат предупредени, преди да бъде изпратена публична скица в облака. По подразбиране е true.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "Крайната точка, използвана за изпращане и изтегляне на скици от бекенда. По подразбиране той сочи към Arduino Cloud API.",
       "compile": "компилиране",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",

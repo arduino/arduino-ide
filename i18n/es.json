@@ -152,7 +152,8 @@
       "serialMonitor": "Monitor Serie",
       "type": "Tipo",
       "unknown": "Desconocido",
-      "updateable": "Actualizable"
+      "updateable": "Actualizable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Error de compilación: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimizar para depuración",
       "sketchIsNotCompiled": "El sketch '{0}' debe ser verificado antes de iniciar una sesión de depuración. Por favor, verifique el sketch e inicia la depuración nuevamente. ¿Deseas verificar el sketch ahora?"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "Verdadero si se debe advertir a los usuarios antes de sacar un boceto de la nube. El valor predeterminado es verdadero.",
       "cloud.push.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto a la nube. El valor predeterminado es verdadero.",
       "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
       "compile": "Compliar",
       "compile.experimental": "True si el IDE debe manejar multiples errores del compilador. False por defecto",

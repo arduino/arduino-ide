@@ -152,7 +152,8 @@
       "serialMonitor": "序列埠監控窗",
       "type": "類型",
       "unknown": "未知",
-      "updateable": "可更新"
+      "updateable": "可更新",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "編譯錯誤:{0} "
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "'{0}' 不支援除錯功能。",
       "getDebugInfo": "取得除錯資訊...",
       "noPlatformInstalledFor": "平台未安裝給'{0}'",
-      "noProgrammerSelectedFor": "未選取給 '{0}' 用的燒錄器",
       "optimizeForDebugging": "除錯最佳化",
       "sketchIsNotCompiled": "Sketch '{0}' 在除錯前必須已驗證過。請先驗證 sketch 後再除錯。要現在驗證 sketch 嗎？"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "讀取雲端 sketch 前會警告使用者。預設: 開啟。",
       "cloud.push.warn": "推送雲端 sketch 前會警告使用者。預設: 開啟。",
       "cloud.pushpublic.warn": "推送公開的 sketch 到雲端前會警告使用者。預設: 開啟。",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "用來從後台讀取或推送 sketch 的端點。預設: Arduino 雲 API。",
       "compile": "編譯",
       "compile.experimental": "IDE 處理多個編譯器錯誤。 預設: 關閉",

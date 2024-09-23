@@ -152,7 +152,8 @@
       "serialMonitor": "Moniteur série",
       "type": "Type",
       "unknown": "Inconnu",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Erreur de compilation : {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plateforme n'est pas installée pour '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimisé pour le déboggage.",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "Vrai si les utilisateurs devrait être averti avant de pull un croquis sur le cloud. Par défaut, la valeur est vrai.",
       "cloud.push.warn": "Vrai, si les utilisateurs devrait être averti avant de push un croquis sur le cloud. Par défaut, la valeur est vrai.",
       "cloud.pushpublic.warn": "Vrai si les utilisateurs devrait être avertit avant de publier un croquis public sur le cloud. Vrai par défaut.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "L'endpoint est utilisé pour pousser et tirer des croquis à partir du backend. Par défault, il pointe vers l'Arduino Cloud API.",
       "compile": "compiler",
       "compile.experimental": "Vrai si l'IDE doit gérer les multiples erreurs du compilateur. Faux par défaut",

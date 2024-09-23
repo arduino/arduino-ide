@@ -2,7 +2,7 @@
   "arduino": {
     "about": {
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
-      "label": "Haqqında {0}"
+      "label": "About {0}"
     },
     "account": {
       "goToCloudEditor": "Go to Cloud Editor",
@@ -30,8 +30,8 @@
       "pleasePickBoard": "Please pick a board connected to the port you have selected.",
       "port": "Port{0}",
       "ports": "ports",
-      "programmer": "Proqramlayıcı",
-      "reselectLater": "Daha Sonra Yenidən Seç",
+      "programmer": "Programmer",
+      "reselectLater": "Reselect later",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Select Board",
@@ -39,7 +39,7 @@
       "showAllAvailablePorts": "Shows all available ports when enabled",
       "showAllPorts": "Show all ports",
       "succesfullyInstalledPlatform": "Successfully installed platform {0}:{1}",
-      "succesfullyUninstalledPlatform": "Uğurla Silindi Platforma {0}:{1}",
+      "succesfullyUninstalledPlatform": "Successfully uninstalled platform {0}:{1}",
       "typeOfPorts": "{0} ports",
       "unconfirmedBoard": "Unconfirmed board",
       "unknownBoard": "Unknown board"
@@ -57,14 +57,14 @@
       "error": "Error while burning the bootloader: {0}"
     },
     "certificate": {
-      "addNew": "Yenisini Əlavə Et",
+      "addNew": "Add New",
       "addURL": "Add URL to fetch SSL certificate",
       "boardAtPort": "{0} at {1}",
-      "certificatesUploaded": "Sertifikatlar Yükləndi",
-      "enterURL": "URL daxil edin",
+      "certificatesUploaded": "Certificates uploaded.",
+      "enterURL": "Enter URL",
       "noSupportedBoardConnected": "No supported board connected",
       "openContext": "Open context",
-      "remove": "Sil",
+      "remove": "Remove",
       "selectBoard": "Select a board...",
       "selectCertificateToUpload": "1. Select certificate to upload",
       "selectDestinationBoardToUpload": "2. Select destination board and upload certificate",
@@ -89,8 +89,8 @@
     "cloud": {
       "chooseSketchVisibility": "Choose visibility of your Sketch:",
       "cloudSketchbook": "Cloud Sketchbook",
-      "connected": "Əlaqə Yaradıldı",
-      "continue": "Davam Et",
+      "connected": "Connected",
+      "continue": "Continue",
       "donePulling": "Done pulling '{0}'.",
       "donePushing": "Done pushing '{0}'.",
       "embed": "Embed:",
@@ -99,12 +99,12 @@
       "learnMore": "Learn more",
       "link": "Link:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
-      "offline": "Offlayn",
+      "offline": "Offline",
       "openInCloudEditor": "Open in Cloud Editor",
-      "options": "Seçimlər",
-      "privateVisibility": "Şəxsi:Sadəcə Siz Bu Koda Baxa Bilərsiniz",
-      "profilePicture": "Profil Şəkli",
-      "publicVisibility": "İctimai:Linki Olan Hər Kəs Bu Koda Baxa Bilər",
+      "options": "Options...",
+      "privateVisibility": "Private. Only you can view the Sketch.",
+      "profilePicture": "Profile picture",
+      "publicVisibility": "Public. Anyone with the link can view the Sketch.",
       "pull": "Pull",
       "pullFirst": "You have to pull first to be able to push to the Cloud.",
       "pullSketch": "Pull Sketch",
@@ -116,9 +116,9 @@
       "share": "Share...",
       "shareSketch": "Share Sketch",
       "showHideSketchbook": "Show/Hide Cloud Sketchbook",
-      "signIn": "Giriş Edin",
-      "signInToCloud": "Ardunio Cloud'a Giriş Edin",
-      "signOut": "Çıxış Edin",
+      "signIn": "SIGN IN",
+      "signInToCloud": "Sign in to Arduino Cloud",
+      "signOut": "Sign Out",
       "sync": "Sync",
       "syncEditSketches": "Sync and edit your Arduino Cloud Sketches",
       "visitArduinoCloud": "Visit Arduino Cloud to create Cloud Sketches."
@@ -136,7 +136,7 @@
     "common": {
       "all": "All",
       "contributed": "Contributed",
-      "installManually": "Əl ilə yüklə",
+      "installManually": "Install Manually",
       "later": "Later",
       "noBoardSelected": "No board selected",
       "noSketchOpened": "No sketch opened",
@@ -151,7 +151,7 @@
       "selectedOn": "on {0}",
       "serialMonitor": "Serial Monitor",
       "type": "Type",
-      "unknown": "Bilnməyən",
+      "unknown": "Unknown",
       "updateable": "Updatable",
       "userAbort": "User abort"
     },
@@ -163,15 +163,15 @@
       "by": "by",
       "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Filter your search...",
-      "install": "Yüklə",
+      "install": "Install",
       "installLatest": "Install Latest",
       "installVersion": "Install {0}",
       "installed": "{0} installed",
       "moreInfo": "More info",
       "otherVersions": "Other Versions",
-      "remove": "Sil",
+      "remove": "Remove",
       "title": "{0} by {1}",
-      "uninstall": "Sil",
+      "uninstall": "Uninstall",
       "uninstallMsg": "Do you want to uninstall {0}?",
       "update": "Update"
     },
@@ -184,12 +184,12 @@
       "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
     },
     "contributions": {
-      "addFile": "Fayl Əlavə Et",
+      "addFile": "Add File",
       "fileAdded": "One file added to the sketch.",
       "plotter": {
         "couldNotOpen": "Couldn't open serial plotter"
       },
-      "replaceTitle": "Yükləmə Uğursuz.Yenidən Sınayın"
+      "replaceTitle": "Replace"
     },
     "core": {
       "compilerWarnings": {
@@ -223,10 +223,10 @@
       "dumpBoardList": "Dump the Board List"
     },
     "dialog": {
-      "dontAskAgain": "Yenidən Soruşma"
+      "dontAskAgain": "Don't ask again"
     },
     "editor": {
-      "autoFormat": "Avto Format",
+      "autoFormat": "Auto Format",
       "commentUncomment": "Comment/Uncomment",
       "copyForForum": "Copy for Forum (Markdown)",
       "decreaseFontSize": "Decrease Font Size",
@@ -238,17 +238,17 @@
       "revealError": "Reveal Error"
     },
     "examples": {
-      "builtInExamples": "Əvvəlcəcədən Yüklənmmiş Nümunələr",
+      "builtInExamples": "Built-in examples",
       "couldNotInitializeExamples": "Could not initialize built-in examples.",
       "customLibrary": "Examples from Custom Libraries",
       "for": "Examples for {0}",
       "forAny": "Examples for any board",
-      "menu": "Nümunələr"
+      "menu": "Examples"
     },
     "firmware": {
       "checkUpdates": "Check Updates",
       "failedInstall": "Installation failed. Please try again.",
-      "install": "Yüklə",
+      "install": "Install",
       "installingFirmware": "Installing firmware.",
       "overwriteSketch": "Installation will overwrite the Sketch on the board.",
       "selectBoard": "Select Board",
@@ -258,19 +258,19 @@
     },
     "help": {
       "environment": "Environment",
-      "faq": "Tez-Tez Verilən Suallar",
+      "faq": "Frequently Asked Questions",
       "findInReference": "Find in Reference",
       "gettingStarted": "Getting Started",
-      "keyword": "Açar söz Yazın",
+      "keyword": "Type a keyword",
       "privacyPolicy": "Privacy Policy",
       "reference": "Reference",
       "search": "Search on Arduino.cc",
       "troubleshooting": "Troubleshooting",
-      "visit": "Ardunio cc-yi Ziyarət Edin"
+      "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Check for Arduino IDE Updates",
-      "closeAndInstallButton": "Bağla Və Yüklə",
+      "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "downloadButton": "Download",
       "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
@@ -280,8 +280,8 @@
       "ideUpdaterDialog": "Software Update",
       "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
       "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
-      "notNowButton": "İndi Yox",
-      "skipVersionButton": "Versiyanı Keç",
+      "notNowButton": "Not now",
+      "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
       "versionDownloaded": "Arduino IDE {0} has been downloaded."
     },
@@ -290,18 +290,18 @@
       "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
     "library": {
-      "addZip": ".ZİP Kitabxana Daxil Edin",
-      "arduinoLibraries": "Ardunio Kitabxanalar",
+      "addZip": "Add .ZIP Library...",
+      "arduinoLibraries": "Arduino libraries",
       "contributedLibraries": "Contributed libraries",
-      "include": "Kitabxana Daxil Edin",
+      "include": "Include Library",
       "installAll": "Install All",
       "installLibraryDependencies": "Install library dependencies",
       "installMissingDependencies": "Would you like to install all the missing dependencies?",
       "installOneMissingDependency": "Would you like to install the missing dependency?",
       "installWithoutDependencies": "Install without dependencies",
-      "installedSuccessfully": "Kitabxana Uğurla Yükləndi {0}:{1}",
+      "installedSuccessfully": "Successfully installed library {0}:{1}",
       "libraryAlreadyExists": "A library already exists. Do you want to overwrite it?",
-      "manageLibraries": "Kitabxanaları İdarə Et",
+      "manageLibraries": "Manage Libraries...",
       "namedLibraryAlreadyExists": "A library folder named {0} already exists. Do you want to overwrite it?",
       "needsMultipleDependencies": "The library <b>{0}:{1}</b> needs some other dependencies currently not installed:",
       "needsOneDependency": "The library <b>{0}:{1}</b> needs another dependency currently not installed:",
@@ -309,7 +309,7 @@
       "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
       "title": "Library Manager",
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
-      "zipLibrary": "Kitabxana"
+      "zipLibrary": "Library"
     },
     "librarySearchProperty": {
       "topic": "Topic"
@@ -362,7 +362,7 @@
       "board.certificates": "List of certificates that can be uploaded to boards",
       "browse": "Browse",
       "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
-      "choose": "Seçin",
+      "choose": "Choose",
       "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
       "cloud.enabled": "True if the sketch sync functions are enabled. Defaults to true.",
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
@@ -530,8 +530,8 @@
       "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
-      "offline": "Offlayn",
-      "offlineText": "Offlayn",
+      "offline": "Offline",
+      "offlineText": "Offline",
       "quitTitle": "Are you sure you want to quit?"
     },
     "editor": {
@@ -539,7 +539,7 @@
     },
     "messages": {
       "collapse": "Collapse",
-      "expand": "Genişləndir"
+      "expand": "Expand"
     },
     "workspace": {
       "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
