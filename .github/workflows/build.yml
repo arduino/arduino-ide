@@ -99,7 +99,7 @@ env:
           name: Linux_X86-64_app_image
     - config:
         name: macOS x86
-        runs-on: macos-latest
+        runs-on: macos-13
         container: |
           null
         # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
