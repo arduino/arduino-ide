@@ -152,7 +152,8 @@
       "serialMonitor": "Serieko monitorea",
       "type": "Type",
       "unknown": "Ezezaguna",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Konpilazio-errorea: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Ez dauka arazketarako euskarririk: '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Plataforma ez dago instalatuta honentzat: '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimizatu arazketarako",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeitik kargatu aurretik. Lehenetsia egia da.",
       "cloud.push.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeian gorde aurretik. Lehenetsia egia da.",
       "cloud.pushpublic.warn": "Egia bada erabiltzaileek abisua jasoko dute programa publiko bat hodeian gorde aurretik. Lehenetsia egia da.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "Zerbitzari batean programak gorde eta kargatzeko amaiera-puntua. Lehenetsia Arduino Cloud API da.",
       "compile": "konpilazioa",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",

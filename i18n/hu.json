@@ -152,7 +152,8 @@
       "serialMonitor": "Soros monitor",
       "type": "Type",
       "unknown": "ismeretlen",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Összeállítási hiba: {0} "
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja ",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "A platform nincs telepítve a következőhöz: „{0}” ",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimalizálás hibakereséséhez",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből letöltése  előtt. Alapértelmezés szerint: kipipálva.",
       "cloud.push.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből való letöltése előtt. Alapértelmezés: kipipálva. ",
       "cloud.pushpublic.warn": "Kipipálva: figyelmeztetés megjelenítése a nyilvános vázlat/sketch felhőbe küldése előtt. Alapértelmezés szerint: kipipálva.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "A végpont/endpoint a vázlatok/sketch-ek háttéből történő letöltésére illetve  publikálására szolgál. Alapértelmezés szerint az Arduino Cloud API-ra mutat. ",
       "compile": "fordítás",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",

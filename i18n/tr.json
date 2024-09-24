@@ -152,7 +152,8 @@
       "serialMonitor": "Seri Port Ekranı",
       "type": "Tür",
       "unknown": "Bilinmeyen",
-      "updateable": "Güncellenebilir"
+      "updateable": "Güncellenebilir",
+      "userAbort": "Kullanıcı iptali"
     },
     "compile": {
       "error": "Derleme hatası: {0}"
@@ -213,7 +214,6 @@
       "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",
       "getDebugInfo": "Hata ayıklama bilgisi alınıyor...",
       "noPlatformInstalledFor": "'{0}' için platform kurulmadı",
-      "noProgrammerSelectedFor": "'{0}' için programlayıcı seçilmedi",
       "optimizeForDebugging": "Debug için Optimize et",
       "sketchIsNotCompiled": "Hata ayıklama -debug- oturumuna başlamadan önce '{0}' eskizi doğrulanmalıdır. Lütfen eskizi doğrulayın ve hata ayıklamayı yeniden başlatın. Eskizi şimdi doğrulamak ister misiniz?"
     },
@@ -368,6 +368,7 @@
       "cloud.pull.warn": "Kullanıcılar bir bulut eskizini çekmeden önce uyarılacaksa açın. Varsayılan: Açık.",
       "cloud.push.warn": "Kullanıcılar bir bulut eskizini göndermeden önce uyarılacaksa açın. Varsayılan: Açık.",
       "cloud.pushpublic.warn": "Kullanıcılar buluta herkese açık bir eskiz yüklemeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.sharedSpaceId": "Eskiz defterinin yükleneceği paylaşılan Arduino Cloud alanı ID'si. Boş bırakılırsa özel alanınız seçilir.",
       "cloud.sketchSyncEndpoint": "Ana yapıdan eskizler çekmek veya göndermek için son nokta kullanılır. Varsayılan: Arduino Cloud API.",
       "compile": "derle",
       "compile.experimental": "IDE'nin birden fazla derleme hatasını kontrol etmesini istiyorsanız açın. Varsayılan olarak kapalı.",
