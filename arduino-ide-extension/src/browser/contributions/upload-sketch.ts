@@ -104,6 +104,7 @@ export class UploadSketch extends CoreServiceContribution {
     }
 
     try {
+      const autoVerify = this.preferences['arduino.upload.autoVerify'];
       // toggle the toolbar button and menu item state.
       // uploadInProgress will be set to false whether the upload fails or not
       this.uploadInProgress = true;
@@ -116,7 +117,7 @@ export class UploadSketch extends CoreServiceContribution {
           'arduino-verify-sketch',
           <VerifySketchParams>{
             exportBinaries: false,
-            silent: true,
+            mode: autoVerify ? 'auto' : 'dry-run',
           }
         );
       if (!verifyOptions) {

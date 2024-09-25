@@ -137,6 +137,18 @@ const properties: ArduinoPreferenceSchemaProperties = {
   'arduino.upload.verify': {
     type: 'boolean',
     default: false,
+    description: nls.localize(
+      'arduino/preferences/upload.verify',
+      'After upload, verify that the contents of the memory on the board match the uploaded binary.'
+    ),
+  },
+  'arduino.upload.autoVerify': {
+    type: 'boolean',
+    default: true,
+    description: nls.localize(
+      'arduino/preferences/upload.autoVerify',
+      "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing."
+    ),
   },
   'arduino.window.autoScale': {
     type: 'boolean',
@@ -327,6 +339,7 @@ export interface ArduinoConfiguration {
   'arduino.compile.warnings': CompilerWarnings;
   'arduino.upload.verbose': boolean;
   'arduino.upload.verify': boolean;
+  'arduino.upload.autoVerify': boolean;
   'arduino.window.autoScale': boolean;
   'arduino.ide.updateChannel': UpdateChannel;
   'arduino.ide.updateBaseUrl': string;
