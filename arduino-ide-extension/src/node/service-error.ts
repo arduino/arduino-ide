@@ -6,7 +6,7 @@ import { ProgrammerIsRequiredForUploadError } from './cli-protocol/cc/arduino/cl
 type ProtoError = typeof ProgrammerIsRequiredForUploadError;
 const protoErrorsMap = new Map<string, ProtoError>([
   [
-    'type.googleapis.com/cc.arduino.cli.commands.v1.ProgrammerIsRequiredForUploadError',
+    'cc.arduino.cli.commands.v1.ProgrammerIsRequiredForUploadError',
     ProgrammerIsRequiredForUploadError,
   ],
   // handle other cli defined errors here
@@ -22,30 +22,33 @@ export namespace ServiceError {
     return arg instanceof Error && isStatusObject(arg);
   }
 
-  export function isInstanceOf(arg: unknown, type: unknown): boolean {
+  export function isInstanceOf<ProtoError>(
+    arg: unknown,
+    type: new (...args: unknown[]) => ProtoError
+  ): arg is ProtoError {
     if (!isStatusObject(arg)) {
       return false;
     }
 
-    const bin = arg.metadata.get('grpc-status-details-bin')[0];
+    try {
+      const bin = arg.metadata.get('grpc-status-details-bin')[0];
+      const uint8Array =
+        typeof bin === 'string'
+          ? stringToUint8Array(bin)
+          : new Uint8Array(bin.buffer, bin.byteOffset, bin.byteLength);
 
-    const uint8Array =
-      typeof bin === 'string'
-        ? stringToUint8Array(bin)
-        : new Uint8Array(bin.buffer, bin.byteOffset, bin.byteLength);
+      const errors = Status.deserializeBinary(uint8Array)
+        .getDetailsList()
+        .map((details) => {
+          const typeName = details.getTypeName();
+          const ErrorType = protoErrorsMap.get(typeName);
+          return ErrorType?.deserializeBinary(details.getValue_asU8());
+        });
 
-    const errors = Status.deserializeBinary(uint8Array)
-      .getDetailsList()
-      .map((details) => {
-        const typeUrl = details.getTypeUrl();
-        const ErrorType = protoErrorsMap.get(typeUrl);
-        return ErrorType?.deserializeBinary(details.getValue_asU8());
-      });
-
-    return !!errors.find((error) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return error && error instanceof <any>type;
-    });
+      return !!errors.find((error) => error && error instanceof type);
+    } catch {
+      return false;
+    }
   }
 
   function isStatusObject(arg: unknown): arg is StatusObject {
