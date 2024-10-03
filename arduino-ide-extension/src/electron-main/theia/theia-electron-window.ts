@@ -8,7 +8,7 @@ import { ElectronArduinoRenderer } from '../electron-arduino';
 @injectable()
 export class TheiaElectronWindow extends DefaultTheiaElectronWindow {
   protected override reload(args?: unknown): void {
-    this.handleStopRequest(() => {
+    this.handleStopRequest(async () => {
       this.applicationState = 'init';
       if (hasStartupTasks(args)) {
         const { webContents } = this._window;

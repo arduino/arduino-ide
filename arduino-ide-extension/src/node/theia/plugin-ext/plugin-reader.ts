@@ -83,7 +83,9 @@ const cortexDebugMapper: PluginContributionMapper = (
   }
   for (const _debugger of contribution.debuggers ?? []) {
     if (_debugger.type === 'cortex-debug') {
-      for (const attributes of _debugger.configurationAttributes ?? []) {
+      for (const attributes of Object.values(
+        _debugger.configurationAttributes ?? {}
+      )) {
         if (attributes.properties) {
           // Patch the cortex-debug debug config schema to allow the in-house `configId`.
           attributes.properties['configId'] = {

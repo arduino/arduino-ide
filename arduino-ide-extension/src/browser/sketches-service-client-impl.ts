@@ -9,7 +9,7 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { Sketch, SketchesService } from '../common/protocol';
 import { ConfigServiceClient } from './config/config-service-client';
 import {
@@ -74,6 +74,7 @@ export class SketchesServiceClientImpl
     const sketchDirUri = this.configService.tryGetSketchDirUri();
     this.watchSketchbookDir(sketchDirUri);
     const refreshCurrentSketch = async () => {
+      await this.workspaceService.ready;
       const currentSketch = await this.loadCurrentSketch();
       const ideTempFolderUri = await this.getIdeTempFolderUriForSketch(
         currentSketch

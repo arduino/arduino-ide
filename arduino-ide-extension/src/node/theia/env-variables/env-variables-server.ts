@@ -5,7 +5,7 @@ import {
 import { isWindows } from '@theia/core/lib/common/os';
 import URI from '@theia/core/lib/common/uri';
 import { BackendApplicationConfigProvider } from '@theia/core/lib/node/backend-application-config-provider';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import {
   inject,
   injectable,

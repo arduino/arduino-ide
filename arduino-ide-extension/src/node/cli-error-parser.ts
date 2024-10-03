@@ -1,6 +1,6 @@
 import { notEmpty } from '@theia/core/lib/common/objects';
 import { nls } from '@theia/core/lib/common/nls';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import {
   Range,
   Position,
