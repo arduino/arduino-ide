@@ -368,7 +368,7 @@
       "cloud.pull.warn": "讀取雲端 sketch 前會警告使用者。預設: 開啟。",
       "cloud.push.warn": "推送雲端 sketch 前會警告使用者。預設: 開啟。",
       "cloud.pushpublic.warn": "推送公開的 sketch 到雲端前會警告使用者。預設: 開啟。",
-      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
+      "cloud.sharedSpaceId": "用來載入 sketchbook 的 Arduino 雲共享空間帳號。如留白，只會使用您的私人空間。",
       "cloud.sketchSyncEndpoint": "用來從後台讀取或推送 sketch 的端點。預設: Arduino 雲 API。",
       "compile": "編譯",
       "compile.experimental": "IDE 處理多個編譯器錯誤。 預設: 關閉",

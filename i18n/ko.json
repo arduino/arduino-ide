@@ -13,7 +13,7 @@
     "board": {
       "board": "보드{0}",
       "boardConfigDialogTitle": "보드 및 포트 선택",
-      "boardInfo": "보드정보",
+      "boardInfo": "보드 정보",
       "boards": "boards",
       "configDialog1": "스케치를 업로드할 보드 및 포트를 선택",
       "configDialog2": "보드를 선택하면 컴파일은 가능하지만, 스케치를 업로드 할 수 없습니다.",
