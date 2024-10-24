@@ -15,23 +15,35 @@ import {
 } from './contribution';
 import { CoreErrorHandler } from './core-error-handler';
 
+export type VerifySketchMode =
+  /**
+   * When the user explicitly triggers the verify command from the primary UI: menu, toolbar, or keybinding. The UI shows the output, updates the toolbar items state, etc.
+   */
+  | 'explicit'
+  /**
+   * When the verify phase automatically runs as part of the upload but there is no UI indication of the command: the toolbar items do not update.
+   */
+  | 'auto'
+  /**
+   * The verify does not run. There is no UI indication of the command. For example, when the user decides to disable the auto verify (`'arduino.upload.autoVerify'`) to skips the code recompilation phase.
+   */
+  | 'dry-run';
+
 export interface VerifySketchParams {
   /**
    * Same as `CoreService.Options.Compile#exportBinaries`
    */
   readonly exportBinaries?: boolean;
   /**
-   * If `true`, there won't be any UI indication of the verify command in the toolbar. It's `false` by default.
+   * The mode specifying how verify should run. It's `'explicit'` by default.
    */
-  readonly silent?: boolean;
+  readonly mode?: VerifySketchMode;
 }
 
 /**
- *  - `"idle"` when neither verify, nor upload is running,
- *  - `"explicit-verify"` when only verify is running triggered by the user, and
- *  - `"automatic-verify"` is when the automatic verify phase is running as part of an upload triggered by the user.
+ *  - `"idle"` when neither verify, nor upload is running
  */
-type VerifyProgress = 'idle' | 'explicit-verify' | 'automatic-verify';
+type VerifyProgress = 'idle' | VerifySketchMode;
 
 @injectable()
 export class VerifySketch extends CoreServiceContribution {
@@ -54,10 +66,10 @@ export class VerifySketch extends CoreServiceContribution {
     registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
       isVisible: (widget) =>
         ArduinoToolbar.is(widget) && widget.side === 'left',
-      isEnabled: () => this.verifyProgress !== 'explicit-verify',
+      isEnabled: () => this.verifyProgress !== 'explicit',
       // toggled only when verify is running, but not toggled when automatic verify is running before the upload
       // https://github.com/arduino/arduino-ide/pull/1750#pullrequestreview-1214762975
-      isToggled: () => this.verifyProgress === 'explicit-verify',
+      isToggled: () => this.verifyProgress === 'explicit',
       execute: () =>
         registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id),
     });
@@ -113,17 +125,20 @@ export class VerifySketch extends CoreServiceContribution {
     }
 
     try {
-      this.verifyProgress = params?.silent
-        ? 'automatic-verify'
-        : 'explicit-verify';
+      this.verifyProgress = params?.mode ?? 'explicit';
       this.onDidChangeEmitter.fire();
       this.menuManager.update();
       this.clearVisibleNotification();
       this.coreErrorHandler.reset();
+      const dryRun = this.verifyProgress === 'dry-run';
 
       const options = await this.options(params?.exportBinaries);
       if (!options) {
         return undefined;
+      }
+
+      if (dryRun) {
+        return options;
       }
 
       await this.doWithProgress({
