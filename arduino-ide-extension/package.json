@@ -39,6 +39,7 @@
     "@theia/outline-view": "1.41.0",
     "@theia/output": "1.41.0",
     "@theia/plugin-ext": "1.41.0",
+    "@theia/plugin-ext-vscode": "1.41.0",
     "@theia/preferences": "1.41.0",
     "@theia/scm": "1.41.0",
     "@theia/search-in-workspace": "1.41.0",
