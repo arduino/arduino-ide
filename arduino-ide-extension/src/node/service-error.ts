@@ -21,6 +21,12 @@ export namespace ServiceError {
     return is(arg) && arg.code === 1; // https://grpc.github.io/grpc/core/md_doc_statuscodes.html
   }
 
+  export function isInvalidArgument(
+    arg: unknown
+  ): arg is ServiceError & { code: StatusCode.INVALID_ARGUMENT } {
+    return is(arg) && arg.code === 3; // https://grpc.github.io/grpc/core/md_doc_statuscodes.html
+  }
+
   export function is(arg: unknown): arg is ServiceError {
     return arg instanceof Error && isStatusObject(arg);
   }
