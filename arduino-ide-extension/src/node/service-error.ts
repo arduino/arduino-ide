@@ -1,6 +1,7 @@
 import { Metadata, StatusObject } from '@grpc/grpc-js';
 import { Status } from './cli-protocol/google/rpc/status_pb';
 import { stringToUint8Array } from '../common/utils';
+import { Status as StatusCode } from '@grpc/grpc-js/build/src/constants';
 import { ProgrammerIsRequiredForUploadError } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
 
 type ProtoError = typeof ProgrammerIsRequiredForUploadError;
@@ -14,7 +15,9 @@ const protoErrorsMap = new Map<string, ProtoError>([
 
 export type ServiceError = StatusObject & Error;
 export namespace ServiceError {
-  export function isCancel(arg: unknown): arg is ServiceError & { code: 1 } {
+  export function isCancel(
+    arg: unknown
+  ): arg is ServiceError & { code: StatusCode.CANCELLED } {
     return is(arg) && arg.code === 1; // https://grpc.github.io/grpc/core/md_doc_statuscodes.html
   }
 
