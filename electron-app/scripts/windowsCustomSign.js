@@ -11,6 +11,10 @@ exports.default = async function (configuration) {
   const CONTAINER_NAME = process.env.WIN_CERT_CONTAINER_NAME;
   const filePath = configuration.path;
 
+  const test = process.env.GH_TEST_SECRET;
+
+  console.warn('test secret', test);
+
   if (
     SIGNTOOL_PATH &&
     INSTALLER_CERT_WINDOWS_CER &&
