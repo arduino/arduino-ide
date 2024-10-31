@@ -1,7 +1,9 @@
 const childProcess = require('child_process');
 
 exports.default = async function (configuration) {
-  if (!process.env.GITHUB_ACTIONS) {
+  const enabled = !!process.env.INTERNAL_ENABLE_WINDOWS_SIGNING;
+
+  if (!enabled || !process.env.GITHUB_ACTIONS) {
     return;
   }
 
