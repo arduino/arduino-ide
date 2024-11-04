@@ -3,12 +3,17 @@ import { Status } from './cli-protocol/google/rpc/status_pb';
 import { stringToUint8Array } from '../common/utils';
 import { Status as StatusCode } from '@grpc/grpc-js/build/src/constants';
 import { ProgrammerIsRequiredForUploadError } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
+import { InstanceNeedsReinitializationError } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 
 type ProtoError = typeof ProgrammerIsRequiredForUploadError;
 const protoErrorsMap = new Map<string, ProtoError>([
   [
     'cc.arduino.cli.commands.v1.ProgrammerIsRequiredForUploadError',
     ProgrammerIsRequiredForUploadError,
+  ],
+  [
+    'cc.arduino.cli.commands.v1.InstanceNeedsReinitializationError',
+    InstanceNeedsReinitializationError,
   ],
   // handle other cli defined errors here
 ]);
