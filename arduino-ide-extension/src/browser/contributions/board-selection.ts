@@ -20,6 +20,7 @@ import {
 } from '../../common/protocol';
 import type { BoardList } from '../../common/protocol/board-list';
 import { BoardsListWidget } from '../boards/boards-list-widget';
+import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import {
   ArduinoMenus,
@@ -39,6 +40,8 @@ export class BoardSelection extends SketchContribution {
   private readonly menuModelRegistry: MenuModelRegistry;
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
+  @inject(BoardsDataStore)
+  private readonly boardsDataStore: BoardsDataStore;
   @inject(BoardsService)
   private readonly boardsService: BoardsService;
   @inject(BoardsServiceProvider)
@@ -72,6 +75,29 @@ SN: ${SN}
           detail,
           buttons: [nls.localize('vscode/issueMainService/ok', 'OK')],
         });
+      },
+    });
+
+    registry.registerCommand(BoardSelection.Commands.RELOAD_BOARD_DATA, {
+      execute: async () => {
+        const selectedFqbn =
+          this.boardsServiceProvider.boardList.boardsConfig.selectedBoard?.fqbn;
+        let message: string;
+
+        if (selectedFqbn) {
+          await this.boardsDataStore.reloadBoardData(selectedFqbn);
+          message = nls.localize(
+            'arduino/board/boardDataReloaded',
+            'Board data reloaded.'
+          );
+        } else {
+          message = nls.localize(
+            'arduino/board/selectBoardToReload',
+            'Please select a board first.'
+          );
+        }
+
+        this.messageService.info(message, { timeout: 2000 });
       },
     });
   }
@@ -148,6 +174,21 @@ SN: ${SN}
     this.toDisposeBeforeMenuRebuild.push(
       Disposable.create(() =>
         unregisterSubmenu(portsSubmenuPath, this.menuModelRegistry)
+      )
+    );
+
+    const reloadBoardData = {
+      commandId: BoardSelection.Commands.RELOAD_BOARD_DATA.id,
+      label: nls.localize('arduino/board/reloadBoardData', 'Reload Board Data'),
+      order: '102',
+    };
+    this.menuModelRegistry.registerMenuAction(
+      ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
+      reloadBoardData
+    );
+    this.toDisposeBeforeMenuRebuild.push(
+      Disposable.create(() =>
+        this.menuModelRegistry.unregisterMenuAction(reloadBoardData)
       )
     );
 
@@ -361,5 +402,8 @@ SN: ${SN}
 export namespace BoardSelection {
   export namespace Commands {
     export const GET_BOARD_INFO: Command = { id: 'arduino-get-board-info' };
+    export const RELOAD_BOARD_DATA: Command = {
+      id: 'arduino-reload-board-data',
+    };
   }
 }
