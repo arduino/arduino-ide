@@ -1,44 +1,72 @@
-// import { OpenerService } from '@theia/core/lib/browser';
+import { LabelIcon } from '@theia/core/lib/browser/label-parser';
+import { OpenerService, open } from '@theia/core/lib/browser/opener-service';
+import { codicon } from '@theia/core/lib/browser/widgets/widget';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { /*inject,*/ injectable } from '@theia/core/shared/inversify';
+import { URI } from '@theia/core/lib/common/uri';
+import { inject, injectable } from '@theia/core/shared/inversify';
 import React from '@theia/core/shared/react';
+import { URI as CodeUri } from '@theia/core/shared/vscode-uri';
 import { TreeViewWidget as TheiaTreeViewWidget } from '@theia/plugin-ext/lib/main/browser/view/tree-view-widget';
+
+// Copied back from https://github.com/eclipse-theia/theia/pull/14391
+// Remove the patching when Arduino uses Eclipse Theia >1.55.0
+// https://github.com/eclipse-theia/theia/blob/8d3c5a11af65448b6700bedd096f8d68f0675541/packages/core/src/browser/tree/tree-view-welcome-widget.tsx#L37-L54
+// https://github.com/eclipse-theia/theia/blob/8d3c5a11af65448b6700bedd096f8d68f0675541/packages/core/src/browser/tree/tree-view-welcome-widget.tsx#L146-L298
+
+interface ViewWelcome {
+  readonly view: string;
+  readonly content: string;
+  readonly when?: string;
+  readonly enablement?: string;
+  readonly order: number;
+}
+
+export interface IItem {
+  readonly welcomeInfo: ViewWelcome;
+  visible: boolean;
+}
+
+export interface ILink {
+  readonly label: string;
+  readonly href: string;
+  readonly title?: string;
+}
+
+type LinkedTextItem = string | ILink;
 
 @injectable()
 export class TreeViewWidget extends TheiaTreeViewWidget {
-  // @inject(OpenerService)
-  // private readonly openerService: OpenerService;
+  @inject(OpenerService)
+  private readonly openerService: OpenerService;
+
   private readonly toDisposeBeforeUpdateViewWelcomeNodes =
     new DisposableCollection();
 
-  // The actual rewrite of the viewsWelcome rendering aligned to VS Code to fix https://github.com/eclipse-theia/theia/issues/14309
-  // Based on https://github.com/microsoft/vscode/blob/56b535f40900080fac8202c77914c5ce49fa4aae/src/vs/workbench/browser/parts/views/viewPane.ts#L228-L299
   protected override updateViewWelcomeNodes(): void {
-    this.toDisposeBeforeUpdateViewWelcomeNodes.dispose();
-    const viewWelcomes = this.visibleItems.sort((a, b) => a.order - b.order);
     this.viewWelcomeNodes = [];
-    const allEnablementKeys: Set<string>[] = [];
-    // the plugin-view-registry will push the changes when there is a change in the when context
-    // this listener is to update the view when the `enablement` of the viewWelcomes changes
+    this.toDisposeBeforeUpdateViewWelcomeNodes.dispose();
+    const items = this.visibleItems.sort((a, b) => a.order - b.order);
+
+    const enablementKeys: Set<string>[] = [];
+    // the plugin-view-registry will push the changes when there is a change in the `when` prop  which controls the visibility
+    // this listener is to update the enablement of the components in the view welcome
     this.toDisposeBeforeUpdateViewWelcomeNodes.push(
-      this.contextKeyService.onDidChange((event) => {
-        if (allEnablementKeys.some((keys) => event.affects(keys))) {
+      this.contextService.onDidChange((event) => {
+        if (enablementKeys.some((keys) => event.affects(keys))) {
           this.updateViewWelcomeNodes();
           this.update();
         }
       })
     );
-    // TODO: support `renderSecondaryButtons` prop from VS Code?
-    for (const viewWelcome of viewWelcomes) {
-      const { content } = viewWelcome;
-      const enablement = isEnablementAware(viewWelcome)
-        ? viewWelcome.enablement
+    // Note: VS Code does not support the `renderSecondaryButtons` prop in welcome content either.
+    for (const item of items) {
+      const { content } = item;
+      const enablement = isEnablementAware(item) ? item.enablement : undefined;
+      const itemEnablementKeys = enablement
+        ? this.contextService.parseKeys(enablement)
         : undefined;
-      const enablementKeys = enablement
-        ? this.contextKeyService.parseKeys(enablement)
-        : undefined;
-      if (enablementKeys) {
-        allEnablementKeys.push(enablementKeys);
+      if (itemEnablementKeys) {
+        enablementKeys.push(itemEnablementKeys);
       }
       const lines = content.split('\n');
 
@@ -49,61 +77,48 @@ export class TreeViewWidget extends TheiaTreeViewWidget {
           continue;
         }
 
-        const linkedText = parseLinkedText(line);
+        const linkedTextItems = this.parseLinkedText_patch14309(line);
 
         if (
-          linkedText.nodes.length === 1 &&
-          typeof linkedText.nodes[0] !== 'string'
+          linkedTextItems.length === 1 &&
+          typeof linkedTextItems[0] !== 'string'
         ) {
-          const node = linkedText.nodes[0];
+          const node = linkedTextItems[0];
           this.viewWelcomeNodes.push(
-            this.renderButtonNode(
+            this.renderButtonNode_patch14309(
               node,
               this.viewWelcomeNodes.length,
               enablement
             )
           );
         } else {
-          const paragraphNodes: React.ReactNode[] = [];
-          for (const node of linkedText.nodes) {
-            if (typeof node === 'string') {
-              paragraphNodes.push(
-                this.renderTextNode(node, this.viewWelcomeNodes.length)
-              );
-            } else {
-              paragraphNodes.push(
-                this.renderCommandLinkNode(
-                  node,
-                  this.viewWelcomeNodes.length,
-                  enablement
-                )
-              );
-            }
-          }
-          if (paragraphNodes.length) {
-            this.viewWelcomeNodes.push(
-              <p key={`p-${this.viewWelcomeNodes.length}`}>
-                {...paragraphNodes}
-              </p>
-            );
-          }
+          const renderNode = (item: LinkedTextItem, index: number) =>
+            typeof item == 'string'
+              ? this.renderTextNode_patch14309(item, index)
+              : this.renderLinkNode_patch14309(item, index, enablement);
+
+          this.viewWelcomeNodes.push(
+            <p key={`p-${this.viewWelcomeNodes.length}`}>
+              {...linkedTextItems.flatMap(renderNode)}
+            </p>
+          );
         }
       }
     }
   }
 
-  protected override renderButtonNode(
+  private renderButtonNode_patch14309(
     node: ILink,
     lineKey: string | number,
-    enablement: string | undefined = undefined
+    enablement: string | undefined
   ): React.ReactNode {
     return (
       <div key={`line-${lineKey}`} className="theia-WelcomeViewButtonWrapper">
         <button
           title={node.title}
           className="theia-button theia-WelcomeViewButton"
-          disabled={!this.isEnabled(enablement)}
-          onClick={(e) => this.open(e, node)}
+          disabled={!this.isEnabledClick_patch14309(enablement)}
+          onClick={(e) => this.openLinkOrCommand_patch14309(e, node.href)}
         >
           {node.label}
         </button>
@@ -111,61 +126,109 @@ export class TreeViewWidget extends TheiaTreeViewWidget {
     );
   }
 
-  protected override renderCommandLinkNode(
+  private renderTextNode_patch14309(
+    node: string,
+    textKey: string | number
+  ): React.ReactNode {
+    return (
+      <span key={`text-${textKey}`}>
+        {this.labelParser
+          .parse(node)
+          .map((segment, index) =>
+            LabelIcon.is(segment) ? (
+              <span key={index} className={codicon(segment.name)} />
+            ) : (
+              <span key={index}>{segment}</span>
+            )
+          )}
+      </span>
+    );
+  }
+
+  private renderLinkNode_patch14309(
     node: ILink,
     linkKey: string | number,
-    enablement: string | undefined = undefined
+    enablement: string | undefined
   ): React.ReactNode {
     return (
       <a
         key={`link-${linkKey}`}
-        className={this.getLinkClassName(node.href, enablement)}
-        title={node.title ?? ''}
-        onClick={(e) => this.open(e, node)}
+        className={this.getLinkClassName_patch14309(node.href, enablement)}
+        title={node.title || ''}
+        onClick={(e) => this.openLinkOrCommand_patch14309(e, node.href)}
       >
         {node.label}
       </a>
     );
   }
 
-  protected override renderTextNode(
-    node: string,
-    textKey: string | number
-  ): React.ReactNode {
-    return <span key={`text-${textKey}`}>{node}</span>;
-  }
-
-  protected override getLinkClassName(
+  private getLinkClassName_patch14309(
     href: string,
-    enablement: string | undefined = undefined
+    enablement: string | undefined
   ): string {
     const classNames = ['theia-WelcomeViewCommandLink'];
     // Only command-backed links can be disabled. All other, https:, file: remain enabled
-    if (href.startsWith('command:') && !this.isEnabled(enablement)) {
+    if (
+      href.startsWith('command:') &&
+      !this.isEnabledClick_patch14309(enablement)
+    ) {
       classNames.push('disabled');
     }
     return classNames.join(' ');
   }
 
-  private open(event: React.MouseEvent, node: ILink): void {
-    event.preventDefault();
-    if (node.href.startsWith('command:')) {
-      const commandId = node.href.substring('commands:'.length - 1);
-      this.commands.executeCommand(commandId);
-    } else if (node.href.startsWith('file:')) {
-      // TODO: check what Code does
-    } else if (node.href.startsWith('https:')) {
-      this.windowService.openNewWindow(node.href, { external: true });
-    }
+  private isEnabledClick_patch14309(enablement: string | undefined): boolean {
+    return typeof enablement === 'string'
+      ? this.contextService.match(enablement)
+      : true;
   }
 
-  /**
-   * @param enablement [when context](https://code.visualstudio.com/api/references/when-clause-contexts) expression string
-   */
-  private isEnabled(enablement: string | undefined): boolean {
-    return typeof enablement === 'string'
-      ? this.contextKeyService.match(enablement)
-      : true;
+  private openLinkOrCommand_patch14309 = (
+    event: React.MouseEvent,
+    value: string
+  ): void => {
+    event.stopPropagation();
+
+    if (value.startsWith('command:')) {
+      const command = value.replace('command:', '');
+      this.commands.executeCommand(command);
+    } else if (value.startsWith('file:')) {
+      const uri = value.replace('file:', '');
+      open(this.openerService, new URI(CodeUri.file(uri).toString()));
+    } else {
+      this.windowService.openNewWindow(value, { external: true });
+    }
+  };
+
+  private parseLinkedText_patch14309(text: string): LinkedTextItem[] {
+    const result: LinkedTextItem[] = [];
+
+    const linkRegex =
+      /\[([^\]]+)\]\(((?:https?:\/\/|command:|file:)[^\)\s]+)(?: (["'])(.+?)(\3))?\)/gi;
+    let index = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = linkRegex.exec(text))) {
+      if (match.index - index > 0) {
+        result.push(text.substring(index, match.index));
+      }
+
+      const [, label, href, , title] = match;
+
+      if (title) {
+        result.push({ label, href, title });
+      } else {
+        result.push({ label, href });
+      }
+
+      index = match.index + match[0].length;
+    }
+
+    if (index < text.length) {
+      result.push(text.substring(index));
+    }
+
+    return result;
   }
 }
 
@@ -175,54 +238,4 @@ interface EnablementAware {
 
 function isEnablementAware(arg: unknown): arg is EnablementAware {
   return !!arg && typeof arg === 'object' && 'enablement' in arg;
-}
-
-// https://github.com/microsoft/vscode/blob/56b535f40900080fac8202c77914c5ce49fa4aae/src/vs/base/common/linkedText.ts#L8-L56
-export interface ILink {
-  readonly label: string;
-  readonly href: string;
-  readonly title?: string;
-}
-
-export type LinkedTextNode = string | ILink;
-
-export class LinkedText {
-  constructor(readonly nodes: LinkedTextNode[]) {}
-  toString(): string {
-    return this.nodes
-      .map((node) => (typeof node === 'string' ? node : node.label))
-      .join('');
-  }
-}
-
-const LINK_REGEX =
-  /\[([^\]]+)\]\(((?:https?:\/\/|command:|file:)[^\)\s]+)(?: (["'])(.+?)(\3))?\)/gi;
-
-export function parseLinkedText(text: string): LinkedText {
-  const result: LinkedTextNode[] = [];
-
-  let index = 0;
-  let match: RegExpExecArray | null;
-
-  while ((match = LINK_REGEX.exec(text))) {
-    if (match.index - index > 0) {
-      result.push(text.substring(index, match.index));
-    }
-
-    const [, label, href, , title] = match;
-
-    if (title) {
-      result.push({ label, href, title });
-    } else {
-      result.push({ label, href });
-    }
-
-    index = match.index + match[0].length;
-  }
-
-  if (index < text.length) {
-    result.push(text.substring(index));
-  }
-
-  return new LinkedText(result);
 }
