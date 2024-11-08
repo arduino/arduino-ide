@@ -73,7 +73,7 @@
     "fast-safe-stringify": "^2.1.1",
     "filename-reserved-regex": "^2.0.0",
     "fqbn": "^1.0.5",
-    "glob": "^7.1.6",
+    "glob": "10.4.4",
     "google-protobuf": "^3.20.1",
     "hash.js": "^1.1.7",
     "is-online": "^10.0.0",
@@ -127,8 +127,8 @@
     "rimraf": "^2.6.1"
   },
   "optionalDependencies": {
-    "grpc-tools": "^1.12.4",
-    "@pingghost/protoc": "^1.0.2"
+    "@pingghost/protoc": "^1.0.2",
+    "grpc-tools": "^1.12.4"
   },
   "mocha": {
     "require": [

@@ -5,7 +5,7 @@
   const path = require('node:path');
   const { mkdirSync, promises: fs, rmSync } = require('node:fs');
   const { exec } = require('./utils');
-  const glob = require('glob');
+  const { glob } = require('glob');
   const { SemVer, gte, valid: validSemVer } = require('semver');
   // Use a node-protoc fork until apple arm32 is supported
   // https://github.com/YePpHa/node-protoc/pull/10
@@ -147,16 +147,14 @@
   rmSync(out, { recursive: true, maxRetries: 5, force: true });
   mkdirSync(out, { recursive: true });
 
-  const protos = await new Promise((resolve) =>
-    glob('**/*.proto', { cwd: rpc }, (error, matches) => {
-      if (error) {
-        console.log(error.stack ?? error.message);
-        resolve([]);
-        return;
-      }
-      resolve(matches.map((filename) => path.join(rpc, filename)));
-    })
-  );
+  let protos = [];
+  try {
+    const matches = await glob('**/*.proto', { cwd: rpc });
+    protos = matches.map((filename) => path.join(rpc, filename));
+  } catch (error) {
+    console.log(error.stack ?? error.message);
+  }
+
   if (!protos || protos.length === 0) {
     console.log(`Could not find any .proto files under ${rpc}.`);
     process.exit(1);
