@@ -286,6 +286,8 @@ jobs:
       SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
       WIN_CERT_PASSWORD: ${{ secrets.INSTALLER_CERT_WINDOWS_PASSWORD }}
       WIN_CERT_CONTAINER_NAME: ${{ secrets.INSTALLER_CERT_WINDOWS_CONTAINER }}
+      WIN_SIGNING_ENABLED: ${{ !github.event.pull_request.head.repo.fork }}
+
     strategy:
       matrix:
         config: ${{ fromJson(needs.select-targets.outputs.build-matrix) }}

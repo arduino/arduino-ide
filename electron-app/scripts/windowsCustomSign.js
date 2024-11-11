@@ -1,7 +1,10 @@
 const childProcess = require('child_process');
 
 exports.default = async function (configuration) {
-  if (!process.env.GITHUB_ACTIONS) {
+  if (
+    !process.env.GITHUB_ACTIONS ||
+    process.env.WIN_SIGNING_ENABLED !== 'true'
+  ) {
     return;
   }
 
