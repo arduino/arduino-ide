@@ -127,6 +127,10 @@ env:
           name: macOS_arm64_dmg
         - path: '*macOS_arm64.zip'
           name: macOS_arm64_zip
+  PAID_RUNNER_BUILD_DATA: |
+    # This system was implemented to allow selective use of paid GitHub-hosted runners, due to the Apple Silicon runner
+    # incurring a charge at that time. Free Apple Silicon runners are now available so the configuration was moved to
+    # `BASE_BUILD_DATA`, but the system was left in place for future use.
 
 jobs:
   run-determination:
