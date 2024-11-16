@@ -378,7 +378,7 @@ jobs:
           CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
           CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
           CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
-        working-directory: ${{ runner.os == 'Windows' && matrix.config.working-directory || './' }}
+        working-directory: ${{ matrix.config.working-directory || './' }}
         run: |
           # See: https://www.electron.build/code-signing
           if [ $CAN_SIGN = false ] || [ $IS_WINDOWS_CONFIG = true ]; then
@@ -408,7 +408,7 @@ jobs:
         if: >
           needs.select-targets.outputs.merge-channel-files == 'true' &&
           matrix.config.mergeable-channel-file == 'true'
-        working-directory: ${{ runner.os == 'Windows' && matrix.config.working-directory || './' }}
+        working-directory: ${{ matrix.config.working-directory || './' }}
         run: |
           staged_channel_files_path="${{ runner.temp }}/staged-channel-files"
           mkdir "$staged_channel_files_path"
@@ -428,13 +428,13 @@ jobs:
         with:
           if-no-files-found: error
           name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
-          path: ${{ runner.os == 'Windows' && matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.STAGED_CHANNEL_FILES_PATH) || env.STAGED_CHANNEL_FILES_PATH }}
+          path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.STAGED_CHANNEL_FILES_PATH) || env.STAGED_CHANNEL_FILES_PATH }}
 
       - name: Upload [GitHub Actions]
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ runner.os == 'Windows' && matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.BUILD_ARTIFACTS_PATH) || env.BUILD_ARTIFACTS_PATH }}
+          path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.BUILD_ARTIFACTS_PATH) || env.BUILD_ARTIFACTS_PATH }}
 
       - name: Manual Clean up for self-hosted runners
         if: runner.os == 'Windows' && matrix.config.working-directory
