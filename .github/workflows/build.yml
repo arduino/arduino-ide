@@ -288,8 +288,8 @@ jobs:
       # We are hardcoding the path for signtool because is not present on the windows PATH env var by default.
       # Keep in mind that this path could change when upgrading to a new runner version
       SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
-      WIN_CERT_PASSWORD: ${{ secrets.INSTALLER_CERT_WINDOWS_PASSWORD }}
-      WIN_CERT_CONTAINER_NAME: ${{ secrets.INSTALLER_CERT_WINDOWS_CONTAINER }}
+      WIN_CERT_PASSWORD: ${{ secrets[matrix.config.certificate-password-secret] }}
+      WIN_CERT_CONTAINER_NAME: ${{ secrets[matrix.config.certificate-container] }}
       WIN_SIGNING_ENABLED: ${{ !github.event.pull_request.head.repo.fork }}
 
     strategy:
