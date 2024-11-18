@@ -385,7 +385,7 @@ jobs:
           fi
 
           npx node-gyp install
-          yarn install --immutable
+          yarn install
 
           yarn --cwd arduino-ide-extension build
           yarn --cwd electron-app rebuild
