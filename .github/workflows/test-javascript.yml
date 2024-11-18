@@ -1,0 +1,134 @@
+name: Test JavaScript
+
+env:
+  # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
+  GO_VERSION: '1.21'
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: 18.17
+
+on:
+  push:
+    paths:
+      - ".github/workflows/test-javascript.ya?ml"
+      - "**/.mocharc.js"
+      - "**/.mocharc.jsonc?"
+      - "**/.mocharc.ya?ml"
+      - "**/package.json"
+      - "**/package-lock.json"
+      - "**/yarn.lock"
+      - "tests/testdata/**"
+      - "**/tsconfig.json"
+      - "**.[jt]sx?"
+  pull_request:
+    paths:
+      - ".github/workflows/test-javascript.ya?ml"
+      - "**/.mocharc.js"
+      - "**/.mocharc.jsonc?"
+      - "**/.mocharc.ya?ml"
+      - "**/package.json"
+      - "**/package-lock.json"
+      - "**/yarn.lock"
+      - "tests/testdata/**"
+      - "**/tsconfig.json"
+      - "**.[jt]sx?"
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  run-determination:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      result: ${{ steps.determination.outputs.result }}
+    steps:
+      - name: Determine if the rest of the workflow should run
+        id: determination
+        run: |
+          RELEASE_BRANCH_REGEX="refs/heads/[0-9]+.[0-9]+.x"
+          # The `create` event trigger doesn't support `branches` filters, so it's necessary to use Bash instead.
+          if [[
+            "${{ github.event_name }}" != "create" ||
+            "${{ github.ref }}" =~ $RELEASE_BRANCH_REGEX
+          ]]; then
+            # Run the other jobs.
+            RESULT="true"
+          else
+            # There is no need to run the other jobs.
+            RESULT="false"
+          fi
+
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
+  test:
+    name: test (${{ matrix.project.path }}, ${{ matrix.operating-system }})
+    needs: run-determination
+    if: needs.run-determination.outputs.result == 'true'
+    runs-on: ${{ matrix.operating-system }}
+    defaults:
+      run:
+        shell: bash
+    permissions:
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - path: .
+        operating-system:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: yarn
+          node-version: ${{ env.NODE_VERSION }}
+
+      # See: https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#prerequisites
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.x'
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Taskfile
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.x
+
+      - name: Install npm package dependencies
+        env:
+          # Avoid failure of @vscode/ripgrep installation due to GitHub API rate limiting:
+          # https://github.com/microsoft/vscode-ripgrep#github-api-limit-note
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          yarn install
+
+      - name: Compile TypeScript
+        run: |
+          yarn \
+            --cwd arduino-ide-extension \
+            build
+
+      - name: Run tests
+        env:
+          # These secrets are optional. Dependent tests will be skipped if not available.
+          CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
+          CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
+          CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
+        run: |
+          yarn test
+          yarn \
+            --cwd arduino-ide-extension \
+            test:slow
