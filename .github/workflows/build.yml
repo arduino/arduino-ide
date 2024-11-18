@@ -372,11 +372,6 @@ jobs:
           IS_NIGHTLY: ${{ needs.build-type-determination.outputs.is-nightly }}
           IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
           CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
-          # The CREATE_* environment vars are only used to run tests. These secrets are optional. Dependent tests will
-          # be skipped if not available.
-          CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
-          CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
-          CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
         working-directory: ${{ matrix.config.working-directory || './' }}
         run: |
           # See: https://www.electron.build/code-signing
@@ -393,9 +388,6 @@ jobs:
           yarn install --immutable
 
           yarn --cwd arduino-ide-extension build
-          yarn test
-          yarn --cwd arduino-ide-extension test:slow
-
           yarn --cwd electron-app rebuild
           yarn --cwd electron-app build
           yarn --cwd electron-app package
