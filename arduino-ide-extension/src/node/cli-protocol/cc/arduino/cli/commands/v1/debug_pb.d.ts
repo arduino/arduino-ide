@@ -119,6 +119,10 @@ export class IsDebugSupportedRequest extends jspb.Message {
     setInterpreter(value: string): IsDebugSupportedRequest;
     getProgrammer(): string;
     setProgrammer(value: string): IsDebugSupportedRequest;
+    clearDebugPropertiesList(): void;
+    getDebugPropertiesList(): Array<string>;
+    setDebugPropertiesList(value: Array<string>): IsDebugSupportedRequest;
+    addDebugProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): IsDebugSupportedRequest.AsObject;
@@ -137,6 +141,7 @@ export namespace IsDebugSupportedRequest {
         port?: cc_arduino_cli_commands_v1_port_pb.Port.AsObject,
         interpreter: string,
         programmer: string,
+        debugPropertiesList: Array<string>,
     }
 }
 
@@ -184,6 +189,10 @@ export class GetDebugConfigRequest extends jspb.Message {
     setImportDir(value: string): GetDebugConfigRequest;
     getProgrammer(): string;
     setProgrammer(value: string): GetDebugConfigRequest;
+    clearDebugPropertiesList(): void;
+    getDebugPropertiesList(): Array<string>;
+    setDebugPropertiesList(value: Array<string>): GetDebugConfigRequest;
+    addDebugProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): GetDebugConfigRequest.AsObject;
@@ -204,6 +213,7 @@ export namespace GetDebugConfigRequest {
         interpreter: string,
         importDir: string,
         programmer: string,
+        debugPropertiesList: Array<string>,
     }
 }
 

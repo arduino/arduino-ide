@@ -668,47 +668,43 @@ export class SketchesServiceImpl
     );
   }
 
-  async tempBuildPath(sketch: Sketch): Promise<string[]> {
+  async getBuildPath(sketch: Sketch): Promise<string[]> {
     const sketchPath = FileUri.fsPath(sketch.uri);
-    const { tempDirRealpath } = this.isTempSketch;
-    const tempBuildPaths = [
-      this.tempBuildPathMD5Hash(tempDirRealpath, sketchPath),
-    ];
+
+    let basePath: string;
+    try {
+      basePath = userCacheDir();
+    } catch {
+      // Fallback to /tmp
+      const { tempDirRealpath } = this.isTempSketch;
+      basePath = tempDirRealpath;
+    }
+    const buildPaths = [this.buildPathMD5Hash(basePath, sketchPath)];
 
     // If on Windows, provide both the upper and the lowercase drive letter MD5 hashes. All together four paths are expected:
     // One of them should match if the sketch is not yet compiled.
     // https://github.com/arduino/arduino-ide/pull/1809#discussion_r1071031040
-    if (isWindows && Win32DriveRegex.test(tempDirRealpath)) {
+    if (isWindows && Win32DriveRegex.test(basePath)) {
       const toggleFirstCharCasing = (s: string) =>
         startsWithUpperCase(s) ? firstToLowerCase(s) : firstToUpperCase(s);
-      const otherCaseTempDirRealPath = toggleFirstCharCasing(tempDirRealpath);
-      tempBuildPaths.push(
-        this.tempBuildPathMD5Hash(otherCaseTempDirRealPath, sketchPath)
-      );
+      const otherCaseDirRealPath = toggleFirstCharCasing(basePath);
+      buildPaths.push(this.buildPathMD5Hash(otherCaseDirRealPath, sketchPath));
       if (Win32DriveRegex.test(sketchPath)) {
         const otherCaseSketchPath = toggleFirstCharCasing(sketchPath);
-        tempBuildPaths.push(
-          this.tempBuildPathMD5Hash(tempDirRealpath, otherCaseSketchPath),
-          this.tempBuildPathMD5Hash(
-            otherCaseTempDirRealPath,
-            otherCaseSketchPath
-          )
+        buildPaths.push(
+          this.buildPathMD5Hash(basePath, otherCaseSketchPath),
+          this.buildPathMD5Hash(otherCaseDirRealPath, otherCaseSketchPath)
         );
       }
     }
-    return tempBuildPaths;
+    return buildPaths;
   }
 
-  private tempBuildPathMD5Hash(tempFolderPath: string, path: string): string {
-    return join(
-      tempFolderPath,
-      'arduino',
-      'sketches',
-      this.tempBuildFolderMD5Hash(path)
-    );
+  private buildPathMD5Hash(basePath: string, path: string): string {
+    return join(basePath, 'arduino', 'sketches', this.buildFolderMD5Hash(path));
   }
 
-  private tempBuildFolderMD5Hash(path: string): string {
+  private buildFolderMD5Hash(path: string): string {
     return crypto.createHash('md5').update(path).digest('hex').toUpperCase();
   }
 
@@ -983,4 +979,37 @@ export async function discoverSketches(
   }
 
   return prune(container);
+}
+
+/**
+ * Replica of Go `os.UserCacheDir()`.
+ * https://github.com/golang/go/blob/777f43ab27bde4c662cd0a663f807f74f3fbab0f/src/os/file.go#L477
+ */
+export function userCacheDir(): string {
+  let dir: string | undefined;
+  const platform = os.platform();
+
+  switch (platform) {
+    case 'darwin': {
+      dir = path.join(os.homedir(), '/Library/Caches');
+      break;
+    }
+    case 'win32': {
+      dir = process.env.LocalAppData || undefined;
+      if (!dir) {
+        throw new Error('%LocalAppData% is not defined');
+      }
+      break;
+    }
+    default: {
+      dir = process.env.XDG_CACHE_HOME || undefined;
+      if (!dir) {
+        dir = path.join(os.homedir() + '/.cache');
+      } else if (!path.isAbsolute(dir)) {
+        throw new Error('path in $XDG_CACHE_HOME is relative');
+      }
+    }
+  }
+
+  return dir;
 }

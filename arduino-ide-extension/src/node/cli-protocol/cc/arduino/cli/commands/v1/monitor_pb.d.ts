@@ -24,8 +24,8 @@ export class MonitorRequest extends jspb.Message {
 
     hasUpdatedConfiguration(): boolean;
     clearUpdatedConfiguration(): void;
-    getUpdatedConfiguration(): MonitorPortConfiguration | undefined;
-    setUpdatedConfiguration(value?: MonitorPortConfiguration): MonitorRequest;
+    getUpdatedConfiguration(): cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration | undefined;
+    setUpdatedConfiguration(value?: cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration): MonitorRequest;
 
     hasClose(): boolean;
     clearClose(): void;
@@ -48,7 +48,7 @@ export namespace MonitorRequest {
     export type AsObject = {
         openRequest?: MonitorPortOpenRequest.AsObject,
         txData: Uint8Array | string,
-        updatedConfiguration?: MonitorPortConfiguration.AsObject,
+        updatedConfiguration?: cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration.AsObject,
         close: boolean,
     }
 
@@ -78,8 +78,8 @@ export class MonitorPortOpenRequest extends jspb.Message {
 
     hasPortConfiguration(): boolean;
     clearPortConfiguration(): void;
-    getPortConfiguration(): MonitorPortConfiguration | undefined;
-    setPortConfiguration(value?: MonitorPortConfiguration): MonitorPortOpenRequest;
+    getPortConfiguration(): cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration | undefined;
+    setPortConfiguration(value?: cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration): MonitorPortOpenRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): MonitorPortOpenRequest.AsObject;
@@ -96,29 +96,7 @@ export namespace MonitorPortOpenRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         port?: cc_arduino_cli_commands_v1_port_pb.Port.AsObject,
         fqbn: string,
-        portConfiguration?: MonitorPortConfiguration.AsObject,
-    }
-}
-
-export class MonitorPortConfiguration extends jspb.Message { 
-    clearSettingsList(): void;
-    getSettingsList(): Array<MonitorPortSetting>;
-    setSettingsList(value: Array<MonitorPortSetting>): MonitorPortConfiguration;
-    addSettings(value?: MonitorPortSetting, index?: number): MonitorPortSetting;
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): MonitorPortConfiguration.AsObject;
-    static toObject(includeInstance: boolean, msg: MonitorPortConfiguration): MonitorPortConfiguration.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: MonitorPortConfiguration, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): MonitorPortConfiguration;
-    static deserializeBinaryFromReader(message: MonitorPortConfiguration, reader: jspb.BinaryReader): MonitorPortConfiguration;
-}
-
-export namespace MonitorPortConfiguration {
-    export type AsObject = {
-        settingsList: Array<MonitorPortSetting.AsObject>,
+        portConfiguration?: cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration.AsObject,
     }
 }
 
@@ -138,8 +116,8 @@ export class MonitorResponse extends jspb.Message {
 
     hasAppliedSettings(): boolean;
     clearAppliedSettings(): void;
-    getAppliedSettings(): MonitorPortConfiguration | undefined;
-    setAppliedSettings(value?: MonitorPortConfiguration): MonitorResponse;
+    getAppliedSettings(): cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration | undefined;
+    setAppliedSettings(value?: cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration): MonitorResponse;
 
     hasSuccess(): boolean;
     clearSuccess(): void;
@@ -162,7 +140,7 @@ export namespace MonitorResponse {
     export type AsObject = {
         error: string,
         rxData: Uint8Array | string,
-        appliedSettings?: MonitorPortConfiguration.AsObject,
+        appliedSettings?: cc_arduino_cli_commands_v1_common_pb.MonitorPortConfiguration.AsObject,
         success: boolean,
     }
 
@@ -174,29 +152,6 @@ export namespace MonitorResponse {
         SUCCESS = 4,
     }
 
-}
-
-export class MonitorPortSetting extends jspb.Message { 
-    getSettingId(): string;
-    setSettingId(value: string): MonitorPortSetting;
-    getValue(): string;
-    setValue(value: string): MonitorPortSetting;
-
-    serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): MonitorPortSetting.AsObject;
-    static toObject(includeInstance: boolean, msg: MonitorPortSetting): MonitorPortSetting.AsObject;
-    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: MonitorPortSetting, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): MonitorPortSetting;
-    static deserializeBinaryFromReader(message: MonitorPortSetting, reader: jspb.BinaryReader): MonitorPortSetting;
-}
-
-export namespace MonitorPortSetting {
-    export type AsObject = {
-        settingId: string,
-        value: string,
-    }
 }
 
 export class EnumerateMonitorPortSettingsRequest extends jspb.Message { 

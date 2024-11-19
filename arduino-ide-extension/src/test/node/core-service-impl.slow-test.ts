@@ -61,7 +61,7 @@ describe('core-service-impl', () => {
       expect('buildOutputUri' in arg).to.be.true;
       expect(arg.buildOutputUri).to.be.not.undefined;
 
-      const tempBuildPaths = await sketchesService.tempBuildPath(sketch);
+      const tempBuildPaths = await sketchesService.getBuildPath(sketch);
       if (isWindows) {
         expect(tempBuildPaths.length).to.be.greaterThan(1);
       } else {

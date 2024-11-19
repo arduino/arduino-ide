@@ -52,7 +52,7 @@ goog.exportSymbol('proto.cc.arduino.cli.commands.v1.UserField', null, global);
  * @constructor
  */
 proto.cc.arduino.cli.commands.v1.UploadRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.UploadRequest.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.UploadRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -136,7 +136,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -178,7 +178,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -315,6 +315,13 @@ if (goog.DEBUG && !COMPILED) {
   proto.cc.arduino.cli.commands.v1.SupportedUserFieldsResponse.displayName = 'proto.cc.arduino.cli.commands.v1.SupportedUserFieldsResponse';
 }
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.cc.arduino.cli.commands.v1.UploadRequest.repeatedFields_ = [12];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -356,7 +363,8 @@ proto.cc.arduino.cli.commands.v1.UploadRequest.toObject = function(includeInstan
     importDir: jspb.Message.getFieldWithDefault(msg, 8, ""),
     programmer: jspb.Message.getFieldWithDefault(msg, 9, ""),
     dryRun: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
-    userFieldsMap: (f = msg.getUserFieldsMap()) ? f.toObject(includeInstance, undefined) : []
+    userFieldsMap: (f = msg.getUserFieldsMap()) ? f.toObject(includeInstance, undefined) : [],
+    uploadPropertiesList: (f = jspb.Message.getRepeatedField(msg, 12)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -440,6 +448,10 @@ proto.cc.arduino.cli.commands.v1.UploadRequest.deserializeBinaryFromReader = fun
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
+      break;
+    case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addUploadProperties(value);
       break;
     default:
       reader.skipField();
@@ -545,6 +557,13 @@ proto.cc.arduino.cli.commands.v1.UploadRequest.serializeBinaryToWriter = functio
   f = message.getUserFieldsMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(11, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getUploadPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      12,
+      f
+    );
   }
 };
 
@@ -787,6 +806,43 @@ proto.cc.arduino.cli.commands.v1.UploadRequest.prototype.getUserFieldsMap = func
 proto.cc.arduino.cli.commands.v1.UploadRequest.prototype.clearUserFieldsMap = function() {
   this.getUserFieldsMap().clear();
   return this;};
+
+
+/**
+ * repeated string upload_properties = 12;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.UploadRequest.prototype.getUploadPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 12));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.UploadRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UploadRequest.prototype.setUploadPropertiesList = function(value) {
+  return jspb.Message.setField(this, 12, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.UploadRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UploadRequest.prototype.addUploadProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 12, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.UploadRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UploadRequest.prototype.clearUploadPropertiesList = function() {
+  return this.setUploadPropertiesList([]);
+};
 
 
 
@@ -1364,6 +1420,13 @@ proto.cc.arduino.cli.commands.v1.ProgrammerIsRequiredForUploadError.serializeBin
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.repeatedFields_ = [12];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1405,7 +1468,8 @@ proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.toObject = functio
     importDir: jspb.Message.getFieldWithDefault(msg, 8, ""),
     programmer: jspb.Message.getFieldWithDefault(msg, 9, ""),
     dryRun: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
-    userFieldsMap: (f = msg.getUserFieldsMap()) ? f.toObject(includeInstance, undefined) : []
+    userFieldsMap: (f = msg.getUserFieldsMap()) ? f.toObject(includeInstance, undefined) : [],
+    uploadPropertiesList: (f = jspb.Message.getRepeatedField(msg, 12)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1489,6 +1553,10 @@ proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.deserializeBinaryF
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
+      break;
+    case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addUploadProperties(value);
       break;
     default:
       reader.skipField();
@@ -1594,6 +1662,13 @@ proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.serializeBinaryToW
   f = message.getUserFieldsMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(11, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getUploadPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      12,
+      f
+    );
   }
 };
 
@@ -1836,6 +1911,43 @@ proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.prototype.getUserF
 proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.prototype.clearUserFieldsMap = function() {
   this.getUserFieldsMap().clear();
   return this;};
+
+
+/**
+ * repeated string upload_properties = 12;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.prototype.getUploadPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 12));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.prototype.setUploadPropertiesList = function(value) {
+  return jspb.Message.setField(this, 12, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.prototype.addUploadProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 12, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerRequest.prototype.clearUploadPropertiesList = function() {
+  return this.setUploadPropertiesList([]);
+};
 
 
 
@@ -2109,6 +2221,13 @@ proto.cc.arduino.cli.commands.v1.UploadUsingProgrammerResponse.prototype.hasErrS
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.repeatedFields_ = [12];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -2147,7 +2266,8 @@ proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.toObject = function(inclu
     verify: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     programmer: jspb.Message.getFieldWithDefault(msg, 6, ""),
     dryRun: jspb.Message.getBooleanFieldWithDefault(msg, 7, false),
-    userFieldsMap: (f = msg.getUserFieldsMap()) ? f.toObject(includeInstance, undefined) : []
+    userFieldsMap: (f = msg.getUserFieldsMap()) ? f.toObject(includeInstance, undefined) : [],
+    uploadPropertiesList: (f = jspb.Message.getRepeatedField(msg, 12)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2219,6 +2339,10 @@ proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.deserializeBinaryFromRead
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
+      break;
+    case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addUploadProperties(value);
       break;
     default:
       reader.skipField();
@@ -2303,6 +2427,13 @@ proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.serializeBinaryToWriter =
   f = message.getUserFieldsMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(11, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getUploadPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      12,
+      f
+    );
   }
 };
 
@@ -2491,6 +2622,43 @@ proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.prototype.getUserFieldsMa
 proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.prototype.clearUserFieldsMap = function() {
   this.getUserFieldsMap().clear();
   return this;};
+
+
+/**
+ * repeated string upload_properties = 12;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.prototype.getUploadPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 12));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.prototype.setUploadPropertiesList = function(value) {
+  return jspb.Message.setField(this, 12, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.prototype.addUploadProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 12, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BurnBootloaderRequest.prototype.clearUploadPropertiesList = function() {
+  return this.setUploadPropertiesList([]);
+};
 
 
 

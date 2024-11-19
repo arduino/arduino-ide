@@ -19,16 +19,16 @@
 //
 'use strict';
 var cc_arduino_cli_commands_v1_commands_pb = require('../../../../../cc/arduino/cli/commands/v1/commands_pb.js');
-var google_rpc_status_pb = require('../../../../../google/rpc/status_pb.js');
-var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cli/commands/v1/common_pb.js');
 var cc_arduino_cli_commands_v1_board_pb = require('../../../../../cc/arduino/cli/commands/v1/board_pb.js');
+var cc_arduino_cli_commands_v1_common_pb = require('../../../../../cc/arduino/cli/commands/v1/common_pb.js');
 var cc_arduino_cli_commands_v1_compile_pb = require('../../../../../cc/arduino/cli/commands/v1/compile_pb.js');
 var cc_arduino_cli_commands_v1_core_pb = require('../../../../../cc/arduino/cli/commands/v1/core_pb.js');
 var cc_arduino_cli_commands_v1_debug_pb = require('../../../../../cc/arduino/cli/commands/v1/debug_pb.js');
-var cc_arduino_cli_commands_v1_monitor_pb = require('../../../../../cc/arduino/cli/commands/v1/monitor_pb.js');
-var cc_arduino_cli_commands_v1_upload_pb = require('../../../../../cc/arduino/cli/commands/v1/upload_pb.js');
 var cc_arduino_cli_commands_v1_lib_pb = require('../../../../../cc/arduino/cli/commands/v1/lib_pb.js');
+var cc_arduino_cli_commands_v1_monitor_pb = require('../../../../../cc/arduino/cli/commands/v1/monitor_pb.js');
 var cc_arduino_cli_commands_v1_settings_pb = require('../../../../../cc/arduino/cli/commands/v1/settings_pb.js');
+var cc_arduino_cli_commands_v1_upload_pb = require('../../../../../cc/arduino/cli/commands/v1/upload_pb.js');
+var google_rpc_status_pb = require('../../../../../google/rpc/status_pb.js');
 
 function serialize_cc_arduino_cli_commands_v1_ArchiveSketchRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_commands_pb.ArchiveSketchRequest)) {
@@ -1109,9 +1109,9 @@ function deserialize_cc_arduino_cli_commands_v1_ZipLibraryInstallResponse(buffer
 }
 
 
-// The main Arduino Platform service API
+// The main Arduino Platform service API.
 var ArduinoCoreServiceService = exports['cc.arduino.cli.commands.v1.ArduinoCoreService'] = {
-  // Create a new Arduino Core instance
+  // Create a new Arduino Core instance.
 create: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Create',
     requestStream: false,
@@ -1124,7 +1124,7 @@ create: {
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_CreateResponse,
   },
   // Initializes an existing Arduino Core instance by loading platforms and
-// libraries
+// libraries.
 init: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Init',
     requestStream: false,
@@ -1136,7 +1136,7 @@ init: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_InitResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_InitResponse,
   },
-  // Destroy an instance of the Arduino Core Service
+  // Destroy an instance of the Arduino Core Service.
 destroy: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Destroy',
     requestStream: false,
@@ -1148,7 +1148,7 @@ destroy: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_DestroyResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_DestroyResponse,
   },
-  // Update package index of the Arduino Core Service
+  // Update package index of the Arduino Core Service.
 updateIndex: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/UpdateIndex',
     requestStream: false,
@@ -1160,7 +1160,7 @@ updateIndex: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_UpdateIndexResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_UpdateIndexResponse,
   },
-  // Update libraries index
+  // Update libraries index.
 updateLibrariesIndex: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/UpdateLibrariesIndex',
     requestStream: false,
@@ -1184,7 +1184,7 @@ version: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_VersionResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_VersionResponse,
   },
-  // Create a new Sketch
+  // Create a new Sketch.
 newSketch: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/NewSketch',
     requestStream: false,
@@ -1196,7 +1196,7 @@ newSketch: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_NewSketchResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_NewSketchResponse,
   },
-  // Returns all files composing a Sketch
+  // Returns all files composing a Sketch.
 loadSketch: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/LoadSketch',
     requestStream: false,
@@ -1208,7 +1208,7 @@ loadSketch: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_LoadSketchResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_LoadSketchResponse,
   },
-  // Creates a zip file containing all files of specified Sketch
+  // Creates a zip file containing all files of specified Sketch.
 archiveSketch: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/ArchiveSketch',
     requestStream: false,
@@ -1234,10 +1234,7 @@ setSketchDefaults: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_SetSketchDefaultsResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_SetSketchDefaultsResponse,
   },
-  // BOARD COMMANDS
-// --------------
-//
-// Requests details about a board
+  // Requests details about a board.
 boardDetails: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardDetails',
     requestStream: false,
@@ -1469,7 +1466,7 @@ libraryUpgrade: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_LibraryUpgradeResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryUpgradeResponse,
   },
-  // Install a library from a Zip File
+  // Install a library from a Zip File.
 zipLibraryInstall: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/ZipLibraryInstall',
     requestStream: false,
@@ -1481,7 +1478,7 @@ zipLibraryInstall: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_ZipLibraryInstallResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_ZipLibraryInstallResponse,
   },
-  // Download and install a library from a git url
+  // Download and install a library from a git url.
 gitLibraryInstall: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/GitLibraryInstall',
     requestStream: false,
@@ -1554,7 +1551,7 @@ libraryList: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_LibraryListResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_LibraryListResponse,
   },
-  // Open a monitor connection to a board port
+  // Open a monitor connection to a board port.
 monitor: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/Monitor',
     requestStream: true,
@@ -1566,7 +1563,7 @@ monitor: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_MonitorResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_MonitorResponse,
   },
-  // Returns the parameters that can be set in the MonitorRequest calls
+  // Returns the parameters that can be set in the MonitorRequest calls.
 enumerateMonitorPortSettings: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/EnumerateMonitorPortSettings',
     requestStream: false,
@@ -1638,7 +1635,7 @@ cleanDownloadCacheDirectory: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_CleanDownloadCacheDirectoryResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_CleanDownloadCacheDirectoryResponse,
   },
-  // Writes the settings currently stored in memory in a YAML file
+  // Writes the settings currently stored in memory in a YAML file.
 configurationSave: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/ConfigurationSave',
     requestStream: false,
@@ -1650,7 +1647,7 @@ configurationSave: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_ConfigurationSaveResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_ConfigurationSaveResponse,
   },
-  // Read the settings from a YAML file
+  // Read the settings from a YAML file.
 configurationOpen: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/ConfigurationOpen',
     requestStream: false,
@@ -1662,7 +1659,8 @@ configurationOpen: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_ConfigurationOpenResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_ConfigurationOpenResponse,
   },
-  configurationGet: {
+  // Get the current configuration.
+configurationGet: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/ConfigurationGet',
     requestStream: false,
     responseStream: false,
@@ -1673,7 +1671,7 @@ configurationOpen: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_ConfigurationGetResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_ConfigurationGetResponse,
   },
-  // Enumerate all the keys/values pairs available in the configuration
+  // Enumerate all the keys/values pairs available in the configuration.
 settingsEnumerate: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/SettingsEnumerate',
     requestStream: false,
@@ -1685,7 +1683,7 @@ settingsEnumerate: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_SettingsEnumerateResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_SettingsEnumerateResponse,
   },
-  // Get a single configuration value
+  // Get a single configuration value.
 settingsGetValue: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/SettingsGetValue',
     requestStream: false,
@@ -1697,7 +1695,7 @@ settingsGetValue: {
     responseSerialize: serialize_cc_arduino_cli_commands_v1_SettingsGetValueResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_SettingsGetValueResponse,
   },
-  // Set a single configuration value
+  // Set a single configuration value.
 settingsSetValue: {
     path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/SettingsSetValue',
     requestStream: false,
