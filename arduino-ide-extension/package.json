@@ -13,7 +13,7 @@
     "download-ls": "node ./scripts/download-ls.js",
     "download-examples": "node ./scripts/download-examples.js",
     "generate-protocol": "node ./scripts/generate-protocol.js",
-    "lint": "eslint",
+    "lint": "eslint .",
     "prebuild": "rimraf lib",
     "build": "tsc",
     "build:dev": "yarn build",
