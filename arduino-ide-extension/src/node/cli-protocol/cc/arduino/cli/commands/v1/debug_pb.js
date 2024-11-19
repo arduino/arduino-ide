@@ -111,7 +111,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -153,7 +153,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -841,6 +841,13 @@ proto.cc.arduino.cli.commands.v1.DebugResponse.prototype.hasResult = function() 
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.repeatedFields_ = [6];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -876,7 +883,8 @@ proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.toObject = function(inc
     fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
     port: (f = msg.getPort()) && cc_arduino_cli_commands_v1_port_pb.Port.toObject(includeInstance, f),
     interpreter: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    programmer: jspb.Message.getFieldWithDefault(msg, 5, "")
+    programmer: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    debugPropertiesList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -934,6 +942,10 @@ proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.deserializeBinaryFromRe
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setProgrammer(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addDebugProperties(value);
       break;
     default:
       reader.skipField();
@@ -998,6 +1010,13 @@ proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.serializeBinaryToWriter
   if (f.length > 0) {
     writer.writeString(
       5,
+      f
+    );
+  }
+  f = message.getDebugPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      6,
       f
     );
   }
@@ -1129,6 +1148,43 @@ proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.prototype.getProgrammer
  */
 proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.prototype.setProgrammer = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * repeated string debug_properties = 6;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.prototype.getDebugPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 6));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.prototype.setDebugPropertiesList = function(value) {
+  return jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.prototype.addDebugProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.IsDebugSupportedRequest.prototype.clearDebugPropertiesList = function() {
+  return this.setDebugPropertiesList([]);
 };
 
 
@@ -1293,6 +1349,13 @@ proto.cc.arduino.cli.commands.v1.IsDebugSupportedResponse.prototype.setDebugFqbn
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.repeatedFields_ = [10];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1330,7 +1393,8 @@ proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.toObject = function(inclu
     port: (f = msg.getPort()) && cc_arduino_cli_commands_v1_port_pb.Port.toObject(includeInstance, f),
     interpreter: jspb.Message.getFieldWithDefault(msg, 5, ""),
     importDir: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    programmer: jspb.Message.getFieldWithDefault(msg, 9, "")
+    programmer: jspb.Message.getFieldWithDefault(msg, 9, ""),
+    debugPropertiesList: (f = jspb.Message.getRepeatedField(msg, 10)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -1396,6 +1460,10 @@ proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.deserializeBinaryFromRead
     case 9:
       var value = /** @type {string} */ (reader.readString());
       msg.setProgrammer(value);
+      break;
+    case 10:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addDebugProperties(value);
       break;
     default:
       reader.skipField();
@@ -1474,6 +1542,13 @@ proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.serializeBinaryToWriter =
   if (f.length > 0) {
     writer.writeString(
       9,
+      f
+    );
+  }
+  f = message.getDebugPropertiesList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      10,
       f
     );
   }
@@ -1641,6 +1716,43 @@ proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.prototype.getProgrammer =
  */
 proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.prototype.setProgrammer = function(value) {
   return jspb.Message.setProto3StringField(this, 9, value);
+};
+
+
+/**
+ * repeated string debug_properties = 10;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.prototype.getDebugPropertiesList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 10));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.prototype.setDebugPropertiesList = function(value) {
+  return jspb.Message.setField(this, 10, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.prototype.addDebugProperties = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 10, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest} returns this
+ */
+proto.cc.arduino.cli.commands.v1.GetDebugConfigRequest.prototype.clearDebugPropertiesList = function() {
+  return this.setDebugPropertiesList([]);
 };
 
 

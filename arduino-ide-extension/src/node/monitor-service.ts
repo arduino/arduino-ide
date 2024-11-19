@@ -22,9 +22,7 @@ import {
 import {
   EnumerateMonitorPortSettingsRequest,
   EnumerateMonitorPortSettingsResponse,
-  MonitorPortConfiguration,
   MonitorPortOpenRequest,
-  MonitorPortSetting,
   MonitorRequest,
   MonitorResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
@@ -39,6 +37,10 @@ import {
 } from '@theia/core/lib/common/promise-util';
 import { MonitorServiceFactoryOptions } from './monitor-service-factory';
 import { ServiceError } from './service-error';
+import {
+  MonitorPortConfiguration,
+  MonitorPortSetting,
+} from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 
 export const MonitorServiceName = 'monitor-service';
 type DuplexHandlerKeys =

@@ -141,13 +141,14 @@ export interface SketchesService {
   /**
    * This is the JS/TS re-implementation of [`GenBuildPath`](https://github.com/arduino/arduino-cli/blob/c0d4e4407d80aabad81142693513b3306759cfa6/arduino/sketch/sketch.go#L296-L306) of the CLI.
    * Pass in a sketch and get the build temporary folder filesystem path calculated from the main sketch file location. Can be multiple ones. This method does not check the existence of the sketch.
+   * Since CLI v1.1.0 the default sketch folder is the os user cache dir. See https://github.com/arduino/arduino-cli/pull/2673/commits/d2ffeb06ca6360a211d5aa7ddd11505212ffb1b9
    *
    * The case sensitivity of the drive letter on Windows matters when the CLI calculates the MD5 hash of the temporary build folder.
    * IDE2 does not know and does not want to rely on how the CLI treats the paths: with lowercase or uppercase drive letters.
    * Hence, IDE2 has to provide multiple build paths on Windows. This hack will be obsolete when the CLI can provide error codes:
    * https://github.com/arduino/arduino-cli/issues/1762.
    */
-  tempBuildPath(sketch: SketchRef): Promise<string[]>;
+  getBuildPath(sketch: SketchRef): Promise<string[]>;
 }
 
 export interface SketchRef {

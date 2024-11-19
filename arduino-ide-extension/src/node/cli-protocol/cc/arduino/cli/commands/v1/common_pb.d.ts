@@ -471,6 +471,11 @@ export class Sketch extends jspb.Message {
     getDefaultProgrammer(): string;
     setDefaultProgrammer(value: string): Sketch;
 
+    hasDefaultPortConfig(): boolean;
+    clearDefaultPortConfig(): void;
+    getDefaultPortConfig(): MonitorPortConfiguration | undefined;
+    setDefaultPortConfig(value?: MonitorPortConfiguration): Sketch;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Sketch.AsObject;
     static toObject(includeInstance: boolean, msg: Sketch): Sketch.AsObject;
@@ -494,6 +499,52 @@ export namespace Sketch {
         profilesList: Array<SketchProfile.AsObject>,
         defaultProfile?: SketchProfile.AsObject,
         defaultProgrammer: string,
+        defaultPortConfig?: MonitorPortConfiguration.AsObject,
+    }
+}
+
+export class MonitorPortConfiguration extends jspb.Message { 
+    clearSettingsList(): void;
+    getSettingsList(): Array<MonitorPortSetting>;
+    setSettingsList(value: Array<MonitorPortSetting>): MonitorPortConfiguration;
+    addSettings(value?: MonitorPortSetting, index?: number): MonitorPortSetting;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MonitorPortConfiguration.AsObject;
+    static toObject(includeInstance: boolean, msg: MonitorPortConfiguration): MonitorPortConfiguration.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MonitorPortConfiguration, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MonitorPortConfiguration;
+    static deserializeBinaryFromReader(message: MonitorPortConfiguration, reader: jspb.BinaryReader): MonitorPortConfiguration;
+}
+
+export namespace MonitorPortConfiguration {
+    export type AsObject = {
+        settingsList: Array<MonitorPortSetting.AsObject>,
+    }
+}
+
+export class MonitorPortSetting extends jspb.Message { 
+    getSettingId(): string;
+    setSettingId(value: string): MonitorPortSetting;
+    getValue(): string;
+    setValue(value: string): MonitorPortSetting;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): MonitorPortSetting.AsObject;
+    static toObject(includeInstance: boolean, msg: MonitorPortSetting): MonitorPortSetting.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: MonitorPortSetting, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): MonitorPortSetting;
+    static deserializeBinaryFromReader(message: MonitorPortSetting, reader: jspb.BinaryReader): MonitorPortSetting;
+}
+
+export namespace MonitorPortSetting {
+    export type AsObject = {
+        settingId: string,
+        value: string,
     }
 }
 
@@ -504,6 +555,15 @@ export class SketchProfile extends jspb.Message {
     setFqbn(value: string): SketchProfile;
     getProgrammer(): string;
     setProgrammer(value: string): SketchProfile;
+    getPort(): string;
+    setPort(value: string): SketchProfile;
+
+    hasPortConfig(): boolean;
+    clearPortConfig(): void;
+    getPortConfig(): MonitorPortConfiguration | undefined;
+    setPortConfig(value?: MonitorPortConfiguration): SketchProfile;
+    getProtocol(): string;
+    setProtocol(value: string): SketchProfile;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SketchProfile.AsObject;
@@ -520,5 +580,8 @@ export namespace SketchProfile {
         name: string,
         fqbn: string,
         programmer: string,
+        port: string,
+        portConfig?: MonitorPortConfiguration.AsObject,
+        protocol: string,
     }
 }
