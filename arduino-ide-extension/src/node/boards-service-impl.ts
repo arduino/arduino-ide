@@ -73,7 +73,11 @@ export class BoardsServiceImpl
 
   async getBoardDetails(options: {
     fqbn: string;
+    forceRefresh?: boolean;
   }): Promise<BoardDetails | undefined> {
+    if (options.forceRefresh) {
+      await this.refresh();
+    }
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const { fqbn } = options;
