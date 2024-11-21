@@ -48,9 +48,9 @@ env:
   GO_VERSION: '1.21'
   # See: https://github.com/actions/setup-node/#readme
   NODE_VERSION: '18.17'
-  JOB_TRANSFER_ARTIFACT: build-artifacts
+  JOB_TRANSFER_ARTIFACT_PREFIX: build-artifacts-
   CHANGELOG_ARTIFACTS: changelog
-  STAGED_CHANNEL_FILES_ARTIFACT: staged-channel-files
+  STAGED_CHANNEL_FILE_ARTIFACT_PREFIX: staged-channel-file-
   BASE_BUILD_DATA: |
     - config:
         # Human identifier for the job.
@@ -68,6 +68,8 @@ env:
         certificate-extension: pfx
         # Container for windows cert signing
         certificate-container: INSTALLER_CERT_WINDOWS_CONTAINER
+        # Arbitrary identifier used to give the workflow artifact uploaded by each "build" matrix job a unique name.
+        job-transfer-artifact-suffix: Windows_64bit
         # Quoting on the value is required here to allow the same comparison expression syntax to be used for this
         # and the companion needs.select-targets.outputs.merge-channel-files property (output values always have string
         # type).
@@ -91,6 +93,7 @@ env:
           {
             \"image\": \"ghcr.io/arduino/arduino-ide/linux:main\"
           }
+        job-transfer-artifact-suffix: Linux_64bit
         mergeable-channel-file: 'false'
       artifacts:
         - path: '*Linux_64bit.zip'
@@ -107,6 +110,7 @@ env:
         certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
         certificate-password-secret: KEYCHAIN_PASSWORD
         certificate-extension: p12
+        job-transfer-artifact-suffix: macOS_64bit
         mergeable-channel-file: 'true'
       artifacts:
         - path: '*macOS_64bit.dmg'
@@ -121,6 +125,7 @@ env:
         certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
         certificate-password-secret: KEYCHAIN_PASSWORD
         certificate-extension: p12
+        job-transfer-artifact-suffix: macOS_arm64
         mergeable-channel-file: 'true'
       artifacts:
         - path: '*macOS_arm64.dmg'
@@ -233,7 +238,7 @@ jobs:
               ) | \
               yq \
                 --output-format json \
-                '[.[].artifacts.[]]'
+                'map(.artifacts[] + (.config | pick(["job-transfer-artifact-suffix"])))'
             )"
 
             # The build matrix produces two macOS jobs (x86 and ARM) so the "channel update info files"
@@ -252,7 +257,7 @@ jobs:
               echo "${{ env.BASE_BUILD_DATA }}" | \
               yq \
                 --output-format json \
-                '[.[].artifacts.[]]'
+                'map(.artifacts[] + (.config | pick(["job-transfer-artifact-suffix"])))'
             )"
 
             merge_channel_files="false"
@@ -417,13 +422,13 @@ jobs:
           matrix.config.mergeable-channel-file == 'true'
         with:
           if-no-files-found: error
-          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          name: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}${{ matrix.config.job-transfer-artifact-suffix }}
           path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.STAGED_CHANNEL_FILES_PATH) || env.STAGED_CHANNEL_FILES_PATH }}
 
-      - name: Upload [GitHub Actions]
+      - name: Upload builds to job transfer artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.config.job-transfer-artifact-suffix }}
           path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.BUILD_ARTIFACTS_PATH) || env.BUILD_ARTIFACTS_PATH }}
 
       - name: Manual Clean up for self-hosted runners
@@ -449,16 +454,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download staged-for-merge channel files artifact
+      - name: Download staged-for-merge channel file artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          merge-multiple: true
           path: ${{ env.CHANNEL_FILES_PATH }}
+          pattern: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}*
 
-      - name: Remove no longer needed artifact
+      - name: Remove no longer needed artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
-          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          name: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}*
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -488,11 +494,11 @@ jobs:
               --channel "${{ needs.build-type-determination.outputs.channel-name }}" \
               --input "${{ env.CHANNEL_FILES_PATH }}"
 
-      - name: Upload merged channel files to job transfer artifact
+      - name: Upload merged channel files job transfer artifact
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}channel-files
           path: ${{ env.CHANNEL_FILES_PATH }}
 
   artifacts:
@@ -503,22 +509,25 @@ jobs:
     if: always() && needs.build.result != 'skipped'
     runs-on: ubuntu-latest
 
+    env:
+      BUILD_ARTIFACTS_FOLDER: build-artifacts
+
     strategy:
       matrix:
         artifact: ${{ fromJson(needs.select-targets.outputs.artifact-matrix) }}
 
     steps:
-      - name: Download job transfer artifact
+      - name: Download job transfer artifact that contains ${{ matrix.artifact.name }} tester build
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.artifact.job-transfer-artifact-suffix }}
+          path: ${{ env.BUILD_ARTIFACTS_FOLDER }}
 
       - name: Upload tester build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact.name }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
+          path: ${{ env.BUILD_ARTIFACTS_FOLDER }}/${{ matrix.artifact.path }}
 
   changelog:
     needs:
@@ -561,11 +570,11 @@ jobs:
 
           echo "$BODY" > CHANGELOG.txt
 
-      - name: Upload Changelog [GitHub Actions]
+      - name: Upload changelog job transfer artifact
         if: needs.build-type-determination.outputs.is-nightly == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}changelog
           path: CHANGELOG.txt
 
   publish:
@@ -584,18 +593,23 @@ jobs:
       needs.build-type-determination.outputs.publish-to-s3 == 'true' &&
       needs.build-type-determination.outputs.is-nightly == 'true'
     runs-on: ubuntu-latest
+
+    env:
+      ARTIFACTS_FOLDER: build-artifacts
+
     steps:
-      - name: Download [GitHub Actions]
+      - name: Download all job transfer artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          merge-multiple: true
+          path: ${{ env.ARTIFACTS_FOLDER }}
+          pattern: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*
 
       - name: Publish Nightly [S3]
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
-          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_SOURCE: '${{ env.ARTIFACTS_FOLDER }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.ARTIFACTS_FOLDER }}/'
           PLUGIN_TARGET: '/arduino-ide/nightly'
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -616,12 +630,17 @@ jobs:
       needs.changelog.result == 'success' &&
       needs.build-type-determination.outputs.is-release == 'true'
     runs-on: ubuntu-latest
+
+    env:
+      ARTIFACTS_FOLDER: build-artifacts
+
     steps:
-      - name: Download [GitHub Actions]
+      - name: Download all job transfer artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          merge-multiple: true
+          path: ${{ env.ARTIFACTS_FOLDER }}
+          pattern: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*
 
       - name: Get Tag
         id: tag_name
@@ -633,7 +652,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
-          file: ${{ env.JOB_TRANSFER_ARTIFACT }}/*
+          file: ${{ env.ARTIFACTS_FOLDER }}/*
           tag: ${{ github.ref }}
           file_glob: true
           body: ${{ needs.changelog.outputs.BODY }}
@@ -642,8 +661,8 @@ jobs:
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
-          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_SOURCE: '${{ env.ARTIFACTS_FOLDER }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.ARTIFACTS_FOLDER }}/'
           PLUGIN_TARGET: '/arduino-ide'
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -661,7 +680,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Remove unneeded job transfer artifact
+      - name: Remove unneeded job transfer artifacts
         uses: geekyeggo/delete-artifact@v5
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*
