@@ -8,7 +8,7 @@ import type { Mutable } from '@theia/core/lib/common/types';
 import URI from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable, named } from '@theia/core/shared/inversify';
-import glob from 'glob';
+import { glob } from 'glob';
 import crypto from 'node:crypto';
 import {
   CopyOptions,
@@ -853,13 +853,13 @@ export async function discoverSketches(
   container: Mutable<SketchContainer>,
   logger?: ILogger
 ): Promise<SketchContainer> {
-  const pathToAllSketchFiles = await globSketches(
+  const pathToAllSketchFiles = await glob(
     '/!(libraries|hardware)/**/*.{ino,pde}',
-    root
+    { root }
   );
   // if no match try to glob the sketchbook as a sketch folder
   if (!pathToAllSketchFiles.length) {
-    pathToAllSketchFiles.push(...(await globSketches('/*.{ino,pde}', root)));
+    pathToAllSketchFiles.push(...(await glob('/*.{ino,pde}', { root })));
   }
 
   // Sort by path length to filter out nested sketches, such as the `Nested_folder` inside the `Folder` sketch.
@@ -873,7 +873,14 @@ export async function discoverSketches(
   //    +--Nested_folder
   //       |
   //       +--Nested_folder.ino
-  pathToAllSketchFiles.sort((left, right) => left.length - right.length);
+  pathToAllSketchFiles.sort((left, right) => {
+    if (left.length === right.length) {
+      // Sort alphabetically for tests consistency
+      return left.localeCompare(right);
+    }
+    return left.length - right.length;
+  });
+
   const getOrCreateChildContainer = (
     container: SketchContainer,
     segments: string[]
@@ -974,17 +981,6 @@ export async function discoverSketches(
       uri: FileUri.create(path.dirname(pathToSketchFile)).toString(),
     });
   }
-  return prune(container);
-}
 
-async function globSketches(pattern: string, root: string): Promise<string[]> {
-  return new Promise<string[]>((resolve, reject) => {
-    glob(pattern, { root }, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(results);
-      }
-    });
-  });
+  return prune(container);
 }
