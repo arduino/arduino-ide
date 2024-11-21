@@ -36,6 +36,7 @@ import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
   CompileRequest,
   CompileResponse,
+  InstanceNeedsReinitializationError,
 } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
@@ -89,48 +90,84 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compileSummaryHandler
     );
     const toDisposeOnFinally = new DisposableCollection(handler);
+
     return new Promise<void>((resolve, reject) => {
-      const call = client.compile(request);
-      if (cancellationToken) {
-        toDisposeOnFinally.push(
-          cancellationToken.onCancellationRequested(() => call.cancel())
+      let hasRetried = false;
+
+      const handleUnexpectedError = (error: Error) => {
+        console.error(
+          'Unexpected error occurred while compiling the sketch.',
+          error
         );
-      }
-      call
-        .on('data', handler.onData)
-        .on('error', (error) => {
-          if (!ServiceError.is(error)) {
-            console.error(
-              'Unexpected error occurred while compiling the sketch.',
-              error
-            );
-            reject(error);
-            return;
-          }
-          if (ServiceError.isCancel(error)) {
-            console.log(userAbort);
-            reject(UserAbortApplicationError());
-            return;
-          }
-          const compilerErrors = tryParseError({
-            content: handler.content,
-            sketch: options.sketch,
-          });
-          const message = nls.localize(
-            'arduino/compile/error',
-            'Compilation error: {0}',
-            compilerErrors
-              .map(({ message }) => message)
-              .filter(notEmpty)
-              .shift() ?? error.details
+        reject(error);
+      };
+
+      const handleCancellationError = () => {
+        console.log(userAbort);
+        reject(UserAbortApplicationError());
+      };
+
+      const handleInstanceNeedsReinitializationError = async (
+        error: ServiceError & InstanceNeedsReinitializationError
+      ) => {
+        if (hasRetried) {
+          // If error persists, send the error message to the output
+          return parseAndSendErrorResponse(error);
+        }
+
+        hasRetried = true;
+        await this.refresh();
+        return startCompileStream();
+      };
+
+      const parseAndSendErrorResponse = (error: ServiceError) => {
+        const compilerErrors = tryParseError({
+          content: handler.content,
+          sketch: options.sketch,
+        });
+        const message = nls.localize(
+          'arduino/compile/error',
+          'Compilation error: {0}',
+          compilerErrors
+            .map(({ message }) => message)
+            .filter(notEmpty)
+            .shift() ?? error.details
+        );
+        this.sendResponse(
+          error.details + '\n\n' + message,
+          OutputMessage.Severity.Error
+        );
+        reject(CoreError.VerifyFailed(message, compilerErrors));
+      };
+
+      const handleError = async (error: Error) => {
+        if (!ServiceError.is(error)) return handleUnexpectedError(error);
+        if (ServiceError.isCancel(error)) return handleCancellationError();
+
+        if (
+          ServiceError.isInstanceOf(error, InstanceNeedsReinitializationError)
+        ) {
+          return await handleInstanceNeedsReinitializationError(error);
+        }
+
+        parseAndSendErrorResponse(error);
+      };
+
+      const startCompileStream = () => {
+        const call = client.compile(request);
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
           );
-          this.sendResponse(
-            error.details + '\n\n' + message,
-            OutputMessage.Severity.Error
-          );
-          reject(CoreError.VerifyFailed(message, compilerErrors));
-        })
-        .on('end', resolve);
+        }
+
+        call
+          .on('data', handler.onData)
+          .on('error', handleError)
+          .on('end', resolve);
+      };
+
+      startCompileStream();
     }).finally(() => {
       toDisposeOnFinally.dispose();
       if (!isCompileSummary(compileSummary)) {
