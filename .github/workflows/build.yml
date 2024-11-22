@@ -411,7 +411,7 @@ jobs:
           echo "STAGED_CHANNEL_FILES_PATH=$staged_channel_files_path" >> "$GITHUB_ENV"
 
       - name: Upload staged-for-merge channel file artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: >
           needs.select-targets.outputs.merge-channel-files == 'true' &&
           matrix.config.mergeable-channel-file == 'true'
@@ -421,7 +421,7 @@ jobs:
           path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.STAGED_CHANNEL_FILES_PATH) || env.STAGED_CHANNEL_FILES_PATH }}
 
       - name: Upload [GitHub Actions]
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.BUILD_ARTIFACTS_PATH) || env.BUILD_ARTIFACTS_PATH }}
@@ -489,7 +489,7 @@ jobs:
               --input "${{ env.CHANNEL_FILES_PATH }}"
 
       - name: Upload merged channel files to job transfer artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
@@ -515,7 +515,7 @@ jobs:
           path: ${{ env.JOB_TRANSFER_ARTIFACT }}
 
       - name: Upload tester build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact.name }}
           path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
@@ -563,7 +563,7 @@ jobs:
 
       - name: Upload Changelog [GitHub Actions]
         if: needs.build-type-determination.outputs.is-nightly == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT }}
           path: CHANGELOG.txt
