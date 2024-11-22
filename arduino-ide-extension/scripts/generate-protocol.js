@@ -3,10 +3,12 @@
 (async () => {
   const os = require('node:os');
   const path = require('node:path');
-  const { mkdirSync, promises: fs, rmSync } = require('node:fs');
+  const decompress = require('decompress');
+  const unzip = require('decompress-unzip');
+  const { mkdirSync, promises: fs, rmSync, existsSync } = require('node:fs');
   const { exec } = require('./utils');
   const { glob } = require('glob');
-  const { SemVer, gte, valid: validSemVer, gt } = require('semver');
+  const { SemVer, gte, valid: validSemVer, eq } = require('semver');
   // Use a node-protoc fork until apple arm32 is supported
   // https://github.com/YePpHa/node-protoc/pull/10
   const protoc = path.dirname(require('@pingghost/protoc/protoc'));
@@ -90,152 +92,198 @@
     }
   */
   const versionObject = JSON.parse(versionJson);
-  const version = versionObject.VersionString;
 
-  // Clone the repository and check out the tagged version
-  // Return folder with proto files
-  async function getProtoPath(forceCliVersion) {
-    const repository = await fs.mkdtemp(path.join(os.tmpdir(), 'arduino-cli-'));
+  async function globProtos(folder, pattern = '**/*.proto') {
+    let protos = [];
+    try {
+      const matches = await glob(pattern, { cwd: folder });
+      protos = matches.map((filename) => path.join(folder, filename));
+    } catch (error) {
+      console.log(error.stack ?? error.message);
+    }
+    return protos;
+  }
+
+  async function getProtosFromRepo(
+    commitish = '',
+    version = '',
+    owner = 'arduino',
+    repo = 'arduino-cli'
+  ) {
+    const repoFolder = await fs.mkdtemp(path.join(os.tmpdir(), 'arduino-cli-'));
 
     const url = `https://github.com/${owner}/${repo}.git`;
     console.log(`>>> Cloning repository from '${url}'...`);
-    exec('git', ['clone', url, repository], { logStdout: true });
+    exec('git', ['clone', url, repoFolder], { logStdout: true });
     console.log(`<<< Repository cloned.`);
 
-    let cliVersion = forceCliVersion || version;
-    if (validSemVer(cliVersion)) {
+    if (validSemVer(version)) {
+      let versionTag = version;
       // https://github.com/arduino/arduino-cli/pull/2374
       if (
         gte(new SemVer(version, { loose: true }), new SemVer('0.35.0-rc.1'))
       ) {
-        cliVersion = `v${cliVersion}`;
+        versionTag = `v${version}`;
       }
-      console.log(`>>> Checking out tagged version: '${cliVersion}'...`);
-      exec('git', ['-C', repository, 'fetch', '--all', '--tags'], {
+      console.log(`>>> Checking out tagged version: '${versionTag}'...`);
+      exec('git', ['-C', repoFolder, 'fetch', '--all', '--tags'], {
         logStdout: true,
       });
       exec(
         'git',
-        ['-C', repository, 'checkout', `tags/${cliVersion}`, '-b', cliVersion],
+        ['-C', repoFolder, 'checkout', `tags/${versionTag}`, '-b', versionTag],
         { logStdout: true }
       );
-      console.log(`<<< Checked out tagged version: '${cliVersion}'.`);
-    } else if (forceCliVersion) {
-      console.log(`WARN: invalid semver: '${forceCliVersion}'.`);
-      // If the forced version is invalid, do not proceed with fallbacks.
-      return undefined;
+      console.log(`<<< Checked out tagged version: '${versionTag}'.`);
     } else if (commitish) {
-      console.log(
-        `>>> Checking out commitish from 'package.json': '${commitish}'...`
-      );
-      exec('git', ['-C', repository, 'checkout', commitish], {
+      console.log(`>>> Checking out commitish: '${commitish}'...`);
+      exec('git', ['-C', repoFolder, 'checkout', commitish], {
         logStdout: true,
       });
-      console.log(
-        `<<< Checked out commitish from 'package.json': '${commitish}'.`
-      );
-    } else if (versionObject.Commit) {
-      console.log(
-        `>>> Checking out commitish from the CLI: '${versionObject.Commit}'...`
-      );
-      exec('git', ['-C', repository, 'checkout', versionObject.Commit], {
-        logStdout: true,
-      });
-      console.log(
-        `<<< Checked out commitish from the CLI: '${versionObject.Commit}'.`
-      );
+      console.log(`<<< Checked out commitish: '${commitish}'.`);
     } else {
       console.log(
         `WARN: no 'git checkout'. Generating from the HEAD revision.`
       );
     }
 
-    return path.join(repository, 'rpc');
+    const rpcFolder = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'arduino-cli-rpc')
+    );
+
+    // Copy the the repository rpc folder so we can remove the repository
+    await fs.cp(path.join(repoFolder, 'rpc'), path.join(rpcFolder), {
+      recursive: true,
+    });
+    rmSync(repoFolder, { recursive: true, maxRetries: 5, force: true });
+
+    // Patch for https://github.com/arduino/arduino-cli/issues/2755
+    // Google proto files are removed from source since v1.1.0
+    if (!existsSync(path.join(rpcFolder, 'google'))) {
+      // Include packaged google proto files from v1.1.1
+      // See https://github.com/arduino/arduino-cli/pull/2761
+      console.log(`>>> Missing google proto files. Including from v1.1.1...`);
+      const v111ProtoFolder = await getProtosFromZip('1.1.1');
+
+      // Create an return a folder name google in rpcFolder
+      const googleFolder = path.join(rpcFolder, 'google');
+      await fs.cp(path.join(v111ProtoFolder, 'google'), googleFolder, {
+        recursive: true,
+      });
+      console.log(`<<< Included google proto files from v1.1.1.`);
+    }
+
+    return rpcFolder;
   }
 
-  const protoPath = await getProtoPath();
+  async function getProtosFromZip(version) {
+    if (!version) {
+      console.log(`Could not download proto files: CLI version not provided.`);
+      process.exit(1);
+    }
+    console.log(`>>> Downloading proto files from zip for ${version}.`);
 
-  if (!protoPath) {
-    console.log(`Could not find the proto files folder.`);
+    const url = `https://downloads.arduino.cc/arduino-cli/arduino-cli_${version}_proto.zip`;
+    const protos = await fs.mkdtemp(
+      path.join(os.tmpdir(), 'arduino-cli-proto')
+    );
+
+    const { default: download } = await import('@xhmikosr/downloader');
+    /** @type {import('node:buffer').Buffer} */
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const data = await download(url);
+
+    await decompress(data, protos, {
+      plugins: [unzip()],
+      filter: (file) => file.path.endsWith('.proto'),
+    });
+
+    console.log(
+      `<<< Finished downloading and extracting proto files for ${version}.`
+    );
+
+    return protos;
+  }
+
+  let protosFolder;
+
+  if (commitish) {
+    protosFolder = await getProtosFromRepo(commitish, undefined, owner, repo);
+  } else if (
+    versionObject.VersionString &&
+    validSemVer(versionObject.VersionString)
+  ) {
+    const version = versionObject.VersionString;
+    // v1.1.0 does not contains google proto files in zip
+    // See https://github.com/arduino/arduino-cli/issues/2755
+    const isV110 = eq(new SemVer(version, { loose: true }), '1.1.0');
+    protosFolder = isV110
+      ? await getProtosFromRepo(undefined, version)
+      : await getProtosFromZip(version);
+  } else if (versionObject.Commit) {
+    protosFolder = await getProtosFromRepo(versionObject.Commit);
+  }
+
+  if (!protosFolder) {
+    console.log(`Could not get proto files: missing commitish or version.`);
+    process.exit(1);
+  }
+
+  const protos = await globProtos(protosFolder);
+
+  if (!protos || protos.length === 0) {
+    rmSync(protosFolder, { recursive: true, maxRetries: 5, force: true });
+    console.log(`Could not find any .proto files under ${protosFolder}.`);
     process.exit(1);
   }
 
   console.log('>>> Generating TS/JS API from:');
-  exec('git', ['-C', protoPath, 'rev-parse', '--abbrev-ref', 'HEAD'], {
-    logStdout: true,
-  });
 
   const out = path.join(__dirname, '..', 'src', 'node', 'cli-protocol');
   // Must wipe the gen output folder. Otherwise, dangling service implementation remain in IDE2 code,
   // although it has been removed from the proto file.
   // For example, https://github.com/arduino/arduino-cli/commit/50a8bf5c3e61d5b661ccfcd6a055e82eeb510859.
-  rmSync(out, { recursive: true, maxRetries: 5, force: true });
+  // rmSync(out, { recursive: true, maxRetries: 5, force: true });
   mkdirSync(out, { recursive: true });
 
-  if (gt(new SemVer(version, { loose: true }), new SemVer('1.0.4'))) {
-    // Patch for https://github.com/arduino/arduino-cli/issues/2755
-    // Credit https://github.com/dankeboy36/ardunno-cli-gen/pull/9/commits/64a5ac89aae605249261c8ceff7255655ecfafca
-    // Download the 1.0.4 version and use the missing google/rpc/status.proto file.
-    console.log('<<< Generating missing google proto files');
-    const v104ProtoPath = await getProtoPath('1.0.4');
-    if (!v104ProtoPath) {
-      console.log(`Could not find the proto files folder for version 1.0.4.`);
-      process.exit(1);
-    }
-    await fs.cp(
-      path.join(v104ProtoPath, 'google'),
-      path.join(protoPath, 'google'),
-      {
-        recursive: true,
-      }
-    );
-    console.log(`>>> Generated missing google file`);
-  }
-
-  let protos = [];
   try {
-    const matches = await glob('**/*.proto', { cwd: protoPath });
-    protos = matches.map((filename) => path.join(protoPath, filename));
+    // Generate JS code from the `.proto` files.
+    exec(
+      'grpc_tools_node_protoc',
+      [
+        `--js_out=import_style=commonjs,binary:${out}`,
+        `--grpc_out=generate_package_definition:${out}`,
+        '-I',
+        protosFolder,
+        ...protos,
+      ],
+      { logStdout: true }
+    );
+
+    // Generate the `.d.ts` files for JS.
+    exec(
+      path.join(protoc, `protoc${platform === 'win32' ? '.exe' : ''}`),
+      [
+        `--plugin=protoc-gen-ts=${path.resolve(
+          __dirname,
+          '..',
+          'node_modules',
+          '.bin',
+          `protoc-gen-ts${platform === 'win32' ? '.cmd' : ''}`
+        )}`,
+        `--ts_out=generate_package_definition:${out}`,
+        '-I',
+        protosFolder,
+        ...protos,
+      ],
+      { logStdout: true }
+    );
   } catch (error) {
-    console.log(error.stack ?? error.message);
+    console.log(error);
+  } finally {
+    rmSync(protosFolder, { recursive: true, maxRetries: 5, force: true });
   }
-
-  if (!protos || protos.length === 0) {
-    console.log(`Could not find any .proto files under ${protoPath}.`);
-    process.exit(1);
-  }
-
-  // Generate JS code from the `.proto` files.
-  exec(
-    'grpc_tools_node_protoc',
-    [
-      `--js_out=import_style=commonjs,binary:${out}`,
-      `--grpc_out=generate_package_definition:${out}`,
-      '-I',
-      protoPath,
-      ...protos,
-    ],
-    { logStdout: true }
-  );
-
-  // Generate the `.d.ts` files for JS.
-  exec(
-    path.join(protoc, `protoc${platform === 'win32' ? '.exe' : ''}`),
-    [
-      `--plugin=protoc-gen-ts=${path.resolve(
-        __dirname,
-        '..',
-        'node_modules',
-        '.bin',
-        `protoc-gen-ts${platform === 'win32' ? '.cmd' : ''}`
-      )}`,
-      `--ts_out=generate_package_definition:${out}`,
-      '-I',
-      protoPath,
-      ...protos,
-    ],
-    { logStdout: true }
-  );
 
   console.log('<<< Generation was successful.');
 })();
