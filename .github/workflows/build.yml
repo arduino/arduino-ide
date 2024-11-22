@@ -48,6 +48,7 @@ env:
   GO_VERSION: '1.21'
   # See: https://github.com/actions/setup-node/#readme
   NODE_VERSION: '18.17'
+  YARN_VERSION: '1.22'
   JOB_TRANSFER_ARTIFACT_PREFIX: build-artifacts-
   CHANGELOG_ARTIFACTS: changelog
   STAGED_CHANNEL_FILE_ARTIFACT_PREFIX: staged-channel-file-
@@ -316,21 +317,26 @@ jobs:
           if not exist "${{ matrix.config.working-directory }}" mklink /d "${{ matrix.config.working-directory }}" "C:\actions-runner\_work\arduino-ide\arduino-ide"
 
       - name: Checkout
-        if: fromJSON(matrix.config.container) == null
         uses: actions/checkout@v4
 
-      - name: Checkout
-        # actions/checkout@v4 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container) != null
-        uses: actions/checkout@v3
 
       - name: Install Node.js
-        if: fromJSON(matrix.config.container) == null && runner.name != 'WINDOWS-SIGN-PC'
+        if: runner.name != 'WINDOWS-SIGN-PC'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
-          cache: 'yarn'
+          # Yarn is a prerequisite for the action's cache feature, so caching should be disabled when running in the
+          # container where Yarn is not pre-installed.
+          cache: ${{ fromJSON(matrix.config.container) == null && 'yarn' || null }}
+
+      - name: Install Yarn
+        if: runner.name != 'WINDOWS-SIGN-PC'
+        run: |
+          npm \
+            install \
+              --global \
+              "yarn@${{ env.YARN_VERSION }}"
 
       - name: Install Python 3.x
         if: fromJSON(matrix.config.container) == null && runner.name != 'WINDOWS-SIGN-PC'
@@ -339,29 +345,14 @@ jobs:
           python-version: '3.11.x'
 
       - name: Install Go
-        if: fromJSON(matrix.config.container) == null && runner.name != 'WINDOWS-SIGN-PC'
+        if: runner.name != 'WINDOWS-SIGN-PC'
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Install Go
-        # actions/setup-go@v5 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container) != null && runner.name != 'WINDOWS-SIGN-PC'
-        uses: actions/setup-go@v4
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
       - name: Install Taskfile
-        if: fromJSON(matrix.config.container) == null && runner.name != 'WINDOWS-SIGN-PC'
+        if: runner.name != 'WINDOWS-SIGN-PC'
         uses: arduino/setup-task@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          version: 3.x
-
-      - name: Install Taskfile
-        # actions/setup-task@v2 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container) != null && runner.name != 'WINDOWS-SIGN-PC'
-        uses: arduino/setup-task@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
