@@ -165,6 +165,50 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
     goToDownloadPageButton.focus();
   }
 
+  private appendDonateFooter() {
+    const footer = document.createElement('div');
+    footer.classList.add('ide-updater-dialog--footer');
+    const footerContent = document.createElement('div');
+    footerContent.classList.add('ide-updater-dialog--footer-content');
+    footer.appendChild(footerContent);
+
+    const footerLink = document.createElement('a');
+    footerLink.innerText = nls.localize(
+      'arduino/ide-updater/donateLinkText',
+      'donate to support us'
+    );
+    footerLink.classList.add('ide-updater-dialog--footer-link');
+    footerLink.onclick = () =>
+      this.openExternal('https://www.arduino.cc/en/donate');
+
+    const footerLinkIcon = document.createElement('span');
+    footerLinkIcon.title = nls.localize(
+      'arduino/ide-updater/donateLinkIconTitle',
+      'open donation page'
+    );
+    footerLinkIcon.classList.add('ide-updater-dialog--footer-link-icon');
+    footerLink.appendChild(footerLinkIcon);
+
+    const placeholderKey = '%%link%%';
+    const footerText = nls.localize(
+      'arduino/ide-updater/donateText',
+      'Open source is love, {0}',
+      placeholderKey
+    );
+    const placeholder = footerText.indexOf(placeholderKey);
+    if (placeholder !== -1) {
+      const parts = footerText.split(placeholderKey);
+      footerContent.appendChild(document.createTextNode(parts[0]));
+      footerContent.appendChild(footerLink);
+      footerContent.appendChild(document.createTextNode(parts[1]));
+    } else {
+      footerContent.appendChild(document.createTextNode(footerText));
+      footerContent.appendChild(footerLink);
+    }
+
+    this.controlPanel.insertAdjacentElement('afterend', footer);
+  }
+
   private openDownloadPage(): void {
     this.openExternal('https://www.arduino.cc/en/software');
     this.close();
@@ -187,6 +231,7 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
       downloadStarted: true,
     });
     this.clearButtons();
+    this.appendDonateFooter();
     this.updater.downloadUpdate();
   }
 
