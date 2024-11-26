@@ -387,6 +387,10 @@ import {
 import { TreeViewDecoratorService } from '@theia/plugin-ext/lib/main/browser/view/tree-view-decorator-service';
 import { PLUGIN_VIEW_DATA_FACTORY_ID } from '@theia/plugin-ext/lib/main/browser/view/plugin-view-registry';
 import { TreeViewWidget } from './theia/plugin-ext/tree-view-widget';
+import {
+  VersionWelcomeDialog,
+  VersionWelcomeDialogProps,
+} from './dialogs/version-welcome-dialog';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -1012,6 +1016,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(IDEUpdaterDialog).toSelf().inSingletonScope();
   bind(IDEUpdaterDialogProps).toConstantValue({
     title: 'IDEUpdater',
+  });
+
+  bind(VersionWelcomeDialog).toSelf().inSingletonScope();
+  bind(VersionWelcomeDialogProps).toConstantValue({
+    title: 'VersionWelcomeDialog',
   });
 
   bind(UserFieldsDialog).toSelf().inSingletonScope();
