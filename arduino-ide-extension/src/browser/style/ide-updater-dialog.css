@@ -34,6 +34,44 @@
     min-width: 0;
 }
 
+.ide-updater-dialog--content--child--footer {
+    margin: 16px 0px 16px 0px;
+}
+
+.ide-updater-dialog--content--child--footer-with-controls {
+    margin: -16px 0px 16px 0px;
+}
+
+.ide-updater-dialog--content--child--footer > span,
+.ide-updater-dialog--content--child--footer-with-controls > span {
+    float: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.donate-link {
+    margin-left: 6px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: var(--theia-textLink-foreground);
+    font-weight: 500;
+}
+
+.donate-link:hover {
+    color: var(--theia-textLink-foreground);
+    cursor: pointer;
+}
+
+.donate-link-icon {
+    -webkit-mask: url(../icons/link-open-icon.svg) center no-repeat;
+    background-color: var(--theia-textLink-foreground);
+    height: 24px;
+    width: 24px;
+    cursor: pointer;
+}
+
 .ide-updater-dialog .changelog {
     color: var(--theia-editor-foreground);
     background-color: var(--theia-editor-background);

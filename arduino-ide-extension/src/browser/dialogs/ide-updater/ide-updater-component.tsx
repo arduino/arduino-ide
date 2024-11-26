@@ -4,6 +4,7 @@ import React from '@theia/core/shared/react';
 import type { Options } from 'react-markdown';
 import { ProgressInfo, UpdateInfo } from '../../../common/protocol/ide-updater';
 import ProgressBar from '../../components/ProgressBar';
+import { createPortal } from '@theia/core/shared/react-dom';
 
 const ReactMarkdown = React.lazy<React.ComponentType<Options>>(
   // @ts-expect-error see above
@@ -21,6 +22,8 @@ export interface IDEUpdaterComponentProps {
   updateInfo: UpdateInfo;
   updateProgress: UpdateProgress;
   openExternal: (url: string) => undefined;
+  hasControls: boolean;
+  controlPanel: HTMLDivElement;
 }
 
 export const IDEUpdaterComponent = ({
@@ -32,6 +35,8 @@ export const IDEUpdaterComponent = ({
     error,
   },
   openExternal,
+  hasControls,
+  controlPanel,
 }: IDEUpdaterComponentProps): React.ReactElement => {
   const { version, releaseNotes } = updateInfo;
   const [changelog, setChangelog] = React.useState<string>('');
@@ -139,17 +144,60 @@ export const IDEUpdaterComponent = ({
     </div>
   );
 
+  const DonateFooter = (
+    <div
+      className={
+        hasControls
+          ? 'ide-updater-dialog--content--child--footer-with-controls'
+          : 'ide-updater-dialog--content--child--footer'
+      }
+    >
+      <hr />
+      <span>
+        {nls.localize(
+          'arduino/ide-updater/donate-preface',
+          'Open source is love, '
+        )}
+        <a
+          className="donate-link"
+          onClick={() => openExternal('https://www.arduino.cc/en/donate/')}
+        >
+          {nls.localize(
+            'arduino/ide-updater/donate-link-text',
+            'donate to support us'
+          )}
+          <div
+            className="donate-link-icon"
+            title={nls.localize(
+              'arduino/ide-updater/donate-link-text',
+              'donate to support us'
+            )}
+          />
+        </a>
+      </span>
+    </div>
+  );
+
+  const DonateFooterToRender =
+    hasControls && controlPanel.parentElement
+      ? createPortal(DonateFooter, controlPanel.parentElement)
+      : DonateFooter;
+
+  const isPreDownload = !error && !downloadFinished && !downloadStarted;
   return (
     <div className="ide-updater-dialog--content">
-      {!!error ? (
-        <GoToDownloadPage />
-      ) : downloadFinished ? (
-        <DownloadCompleted />
-      ) : downloadStarted ? (
-        <DownloadStarted />
-      ) : (
-        <PreDownload />
-      )}
+      <div>
+        {!!error ? (
+          <GoToDownloadPage />
+        ) : downloadFinished ? (
+          <DownloadCompleted />
+        ) : downloadStarted ? (
+          <DownloadStarted />
+        ) : (
+          <PreDownload />
+        )}
+        {isPreDownload ? null : DonateFooterToRender}
+      </div>
     </div>
   );
 };

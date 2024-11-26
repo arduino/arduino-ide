@@ -286,7 +286,9 @@
       "notNowButton": "Not now",
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
-      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+      "versionDownloaded": "Arduino IDE {0} has been downloaded.",
+      "donate-prefix": "Open source is love,",
+      "donate-link-text": "donate to support us"
     },
     "installable": {
       "libraryInstallFailed": "Failed to install library: '{0}{1}'.",

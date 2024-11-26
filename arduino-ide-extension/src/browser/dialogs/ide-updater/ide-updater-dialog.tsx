@@ -69,12 +69,17 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
   }
 
   protected render(): React.ReactNode {
+    const hasControls = !!this.controlPanel.firstChild;
+    const controlPanel = this.controlPanel;
+
     return (
       this.updateInfo && (
         <IDEUpdaterComponent
           updateInfo={this.updateInfo}
           updateProgress={this.updateProgress}
           openExternal={this.openExternal}
+          hasControls={hasControls}
+          controlPanel={controlPanel}
         />
       )
     );
