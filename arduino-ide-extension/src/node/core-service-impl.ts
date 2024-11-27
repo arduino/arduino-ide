@@ -78,6 +78,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     options: CoreService.Options.Compile,
     cancellationToken?: CancellationToken
   ): Promise<void> {
+    console.log('CORE IS COMPILING!!!');
+
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const request = this.compileRequest(options, instance);
