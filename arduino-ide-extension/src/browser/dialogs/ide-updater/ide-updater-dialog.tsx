@@ -17,6 +17,7 @@ import {
 } from '../../../common/protocol/ide-updater';
 import { LocalStorageService } from '@theia/core/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
+import { sanitize } from 'dompurify';
 
 @injectable()
 export class IDEUpdaterDialogProps extends DialogProps {}
@@ -173,9 +174,8 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
     footer.appendChild(footerContent);
 
     const footerLink = document.createElement('a');
-    footerLink.innerText = nls.localize(
-      'arduino/ide-updater/donateLinkText',
-      'donate to support us'
+    footerLink.innerText = sanitize(
+      nls.localize('arduino/ide-updater/donateLinkText', 'donate to support us')
     );
     footerLink.classList.add('ide-updater-dialog--footer-link');
     footerLink.onclick = () =>
@@ -190,10 +190,12 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
     footerLink.appendChild(footerLinkIcon);
 
     const placeholderKey = '%%link%%';
-    const footerText = nls.localize(
-      'arduino/ide-updater/donateText',
-      'Open source is love, {0}',
-      placeholderKey
+    const footerText = sanitize(
+      nls.localize(
+        'arduino/ide-updater/donateText',
+        'Open source is love, {0}',
+        placeholderKey
+      )
     );
     const placeholder = footerText.indexOf(placeholderKey);
     if (placeholder !== -1) {
