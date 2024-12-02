@@ -6,6 +6,7 @@ import { nls } from '@theia/core';
 import { DialogProps } from '@theia/core/lib/browser';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { AppService } from '../app-service';
+import { sanitize } from 'dompurify';
 
 @injectable()
 export class VersionWelcomeDialogProps extends DialogProps {}
@@ -87,10 +88,12 @@ export class VersionWelcomeDialog extends ReactDialog<void> {
     const { appVersion } = appInfo;
 
     if (appVersion) {
-      this.titleNode.innerHTML = nls.localize(
-        'arduino/versionWelcome/titleWithVersion',
-        'Welcome to the new Arduino IDE {0}!',
-        appVersion
+      this.titleNode.innerText = sanitize(
+        nls.localize(
+          'arduino/versionWelcome/titleWithVersion',
+          'Welcome to the new Arduino IDE {0}!',
+          appVersion
+        )
       );
     }
   }
