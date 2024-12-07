@@ -25,6 +25,14 @@ export namespace SketchbookCommands {
     'arduino/sketch/openFolder'
   );
 
+  export const NEW_FOLDER = Command.toLocalizedCommand(
+    {
+      id: 'arduino-sketchbook--new-folder',
+      label: 'New Folder',
+    },
+    'arduino/sketch/newFolder'
+  );
+
   export const OPEN_SKETCHBOOK_CONTEXT_MENU: Command = {
     id: 'arduino-sketchbook--open-sketch-context-menu',
     iconClass: 'sketchbook-tree__opts',
