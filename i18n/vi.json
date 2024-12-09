@@ -275,6 +275,9 @@
       "checkForUpdates": "Kiểm tra bản cập nhật phần mềm",
       "closeAndInstallButton": "Đóng và cài đặt",
       "closeToInstallNotice": "Đóng ứng dụng và cài đặt bản cập nhật mới nhất lên máy bạn.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Tải về",
       "downloadingNotice": "Đang tải về bản mới nhất của Arduino IDE.",
       "errorCheckingForUpdates": "Có lỗi xảy ra trong quá trình kiểm tra cập nhật Arduino IDE.\n{0}",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "Tên tệp phác thảo không hợp lệ",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Tên bản phác thảo không hợp lệ"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'đã tồn tại."
