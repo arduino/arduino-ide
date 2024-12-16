@@ -275,6 +275,9 @@
       "checkForUpdates": "檢查 Arduino IDE 更新",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉本程式後安裝更新。",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "下載",
       "downloadingNotice": "正在下載最新版本的Arduino IDE。",
       "errorCheckingForUpdates": "檢查 Arduino IDE 更新時發生錯誤。\n{0}",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "無效的 sketch 檔名",
       "renameSketchFolderMessage": "Sketch '{0}' 無法被使用。 {1} 要擺脫這則訊息，請更改 sketch 檔名。要現在更改檔名嗎？",
       "renameSketchFolderTitle": "無效的 sketch 檔名"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'已存在。"
