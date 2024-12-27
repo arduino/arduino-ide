@@ -1,0 +1,236 @@
+{
+  "private": true,
+  "name": "electron-app",
+  "version": "3.6.0",
+  "license": "AGPL-3.0-or-later",
+  "main": "./src-gen/backend/electron-main.js",
+  "dependencies": {
+    "@theia/core": "1.41.0",
+    "@theia/debug": "1.41.0",
+    "@theia/editor": "1.41.0",
+    "@theia/electron": "1.41.0",
+    "@theia/filesystem": "1.41.0",
+    "@theia/keymaps": "1.41.0",
+    "@theia/messages": "1.41.0",
+    "@theia/monaco": "1.41.0",
+    "@theia/navigator": "1.41.0",
+    "@theia/plugin-ext": "1.41.0",
+    "@theia/plugin-ext-vscode": "1.41.0",
+    "@theia/preferences": "1.41.0",
+    "@theia/terminal": "1.41.0",
+    "@theia/workspace": "1.41.0",
+    "arduino-ide-extension": "3.6.0",
+    "node-pty": "*",
+    "nsfw": "*",
+    "native-keymap": "*",
+    "find-git-repositories": "*",
+    "drivelist": "*",
+    "keytar": "*",
+    "ssh2": "*",
+    "cpu-features": "*"
+  },
+  "devDependencies": {
+    "@theia/cli": "1.41.0",
+    "7zip-min": "^1.4.4",
+    "chmodr": "^1.2.0",
+    "compression-webpack-plugin": "^9.0.0",
+    "copy-webpack-plugin": "^8.1.1",
+    "dateformat": "^5.0.3",
+    "electron": "^27.0.3",
+    "electron-builder": "^24.6.4",
+    "electron-notarize": "^1.1.1",
+    "execa": "^7.1.1",
+    "file-type": "^18.5.0",
+    "glob": "^10.3.3",
+    "is-ci": "^2.0.0",
+    "resolve-package-path": "^4.0.3",
+    "rimraf": "^2.6.1",
+    "semver": "^7.3.2",
+    "temp": "^0.9.1",
+    "yaml": "^1.10.2"
+  },
+  "scripts": {
+    "prepare": "theia download:plugins",
+    "prebuild": "rimraf lib",
+    "build": "theia build",
+    "prebuild:dev": "yarn prebuild",
+    "build:dev": "theia build --config webpack.dev.js --mode development",
+    "test": "mocha \"./test/**/*.test.js\"",
+    "start": "theia start --plugins=local-dir:../plugins",
+    "watch": "theia build --config webpack.dev.js --mode development --watch",
+    "prepackage": "rimraf dist",
+    "package": "node ./scripts/package.js",
+    "postpackage": "node ./scripts/post-package.js",
+    "rebuild": "theia rebuild:browser --cacheRoot ../.. && theia rebuild:electron --cacheRoot ../.."
+  },
+  "theia": {
+    "target": "electron",
+    "frontend": {
+      "config": {
+        "applicationName": "零知实验室",
+        "defaultTheme": {
+          "light": "arduino-theme",
+          "dark": "arduino-theme-dark"
+        },
+        "defaultIconTheme": "none",
+        "validatePreferencesSchema": false,
+        "preferences": {
+          "window.title": "${rootName}${activeEditorShort}${appName}",
+          "files.autoSave": "afterDelay",
+          "editor.minimap.enabled": false,
+          "editor.tabSize": 2,
+          "editor.scrollBeyondLastLine": false,
+          "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": false
+          },
+          "editor.maxTokenizationLineLength": 500,
+          "editor.bracketPairColorization.enabled": false,
+          "breadcrumbs.enabled": false,
+          "workbench.tree.renderIndentGuides": "none",
+          "explorer.compactFolders": false
+        }
+      }
+    },
+    "backend": {
+      "config": {
+        "configDirName": ".lingzhiIDE",
+        "singleInstance": true
+      }
+    },
+    "generator": {
+      "config": {
+        "preloadTemplate": "./resources/preload.html"
+      }
+    }
+  },
+  "author": "零知实验室",
+  "description": "零知实验室",
+  "build": {
+    "appId": "cc.lingzhilab.IDE2",
+    "productName": "零知开源开发工具",
+    "asar": false,
+    "detectUpdateChannel": false,
+    "generateUpdatesFilesForAllChannels": true,
+    "npmRebuild": false,
+    "directories": {
+      "buildResources": "resources"
+    },
+    "fileAssociations": [
+      {
+        "ext": "ino",
+        "role": "Editor"
+      }
+    ],
+    "files": [
+      "lingzhi-electron-main.js",
+      "src-gen",
+      "lib",
+      "frontend/icon",
+      "resources/icons/512x512.png",
+      "!**node_modules/**"
+    ],
+    "extraResources": [
+      {
+        "from": "plugins",
+        "to": "app/plugins"
+      }
+    ],
+    "win": {
+      "target": [
+        "msi",
+        "nsis",
+        "zip"
+      ]
+    },
+    "mac": {
+      "darkModeSupport": true,
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist",
+      "target": {
+        "target": "default"
+      }
+    },
+    "linux": {
+      "target": [
+        "zip",
+        "AppImage"
+      ],
+      "category": "Development",
+      "icon": "resources/icons"
+    },
+    "msi": {
+      "runAfterFinish": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerHeaderIcon": "resources/icon.ico",
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico",
+      "installerSidebar": "resources/installerSidebar.bmp",
+      "uninstallerSidebar": "resources/installerSidebar.bmp",
+      "allowToChangeInstallationDirectory": true,
+      "license": "resources/eula.txt"
+    },
+    "dmg": {
+      "icon": "resources/icon.icns",
+      "iconSize": 128,
+      "contents": [
+        {
+          "x": 380,
+          "y": 240,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 122,
+          "y": 240,
+          "type": "file"
+        }
+      ]
+    },
+    "afterSign": "scripts/notarize.js",
+    "publish": [
+      {
+        "provider": "s3",
+        "bucket": "arduino-downloads-prod-beagle",
+        "path": "arduino-ide/nightly"
+      }
+    ]
+  },
+  "theiaPluginsDir": "plugins",
+  "theiaPlugins": {
+    "vscode-builtin-cpp": "https://open-vsx.org/api/vscode/cpp/1.52.1/file/vscode.cpp-1.52.1.vsix",
+    "vscode-arduino-api": "https://github.com/dankeboy36/vscode-arduino-api/releases/download/0.1.2/vscode-arduino-api-0.1.2.vsix",
+    "vscode-arduino-tools": "https://downloads.arduino.cc/vscode-arduino-tools/vscode-arduino-tools-0.1.3.vsix",
+    "vscode-builtin-json": "https://open-vsx.org/api/vscode/json/1.46.1/file/vscode.json-1.46.1.vsix",
+    "vscode-builtin-json-language-features": "https://open-vsx.org/api/vscode/json-language-features/1.46.1/file/vscode.json-language-features-1.46.1.vsix",
+    "cortex-debug": "https://downloads.arduino.cc/marus25.cortex-debug/marus25.cortex-debug-1.5.1.vsix",
+    "vscode-language-pack-bg": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-bg/1.48.3/file/MS-CEINTL.vscode-language-pack-bg-1.48.3.vsix",
+    "vscode-language-pack-cs": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-cs/1.80.0/file/MS-CEINTL.vscode-language-pack-cs-1.80.0.vsix",
+    "vscode-language-pack-de": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-de/1.80.0/file/MS-CEINTL.vscode-language-pack-de-1.80.0.vsix",
+    "vscode-language-pack-es": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-es/1.80.0/file/MS-CEINTL.vscode-language-pack-es-1.80.0.vsix",
+    "vscode-language-pack-fr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-fr/1.80.0/file/MS-CEINTL.vscode-language-pack-fr-1.80.0.vsix",
+    "vscode-language-pack-hu": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-hu/1.48.3/file/MS-CEINTL.vscode-language-pack-hu-1.48.3.vsix",
+    "vscode-language-pack-it": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-it/1.80.0/file/MS-CEINTL.vscode-language-pack-it-1.80.0.vsix",
+    "vscode-language-pack-ja": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ja/1.80.0/file/MS-CEINTL.vscode-language-pack-ja-1.80.0.vsix",
+    "vscode-language-pack-ko": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ko/1.80.0/file/MS-CEINTL.vscode-language-pack-ko-1.80.0.vsix",
+    "vscode-language-pack-nl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-nl/1.48.3/file/MS-CEINTL.vscode-language-pack-nl-1.48.3.vsix",
+    "vscode-language-pack-pl": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-pl/1.80.0/file/MS-CEINTL.vscode-language-pack-pl-1.80.0.vsix",
+    "vscode-language-pack-pt-BR": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-pt-BR/1.80.0/file/MS-CEINTL.vscode-language-pack-pt-BR-1.80.0.vsix",
+    "vscode-language-pack-ru": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-ru/1.80.0/file/MS-CEINTL.vscode-language-pack-ru-1.80.0.vsix",
+    "vscode-language-pack-tr": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-tr/1.80.0/file/MS-CEINTL.vscode-language-pack-tr-1.80.0.vsix",
+    "vscode-language-pack-uk": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-uk/1.48.3/file/MS-CEINTL.vscode-language-pack-uk-1.48.3.vsix",
+    "vscode-language-pack-zh-hans": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hans/1.80.0/file/MS-CEINTL.vscode-language-pack-zh-hans-1.80.0.vsix",
+    "vscode-language-pack-zh-hant": "https://open-vsx.org/api/MS-CEINTL/vscode-language-pack-zh-hant/1.80.0/file/MS-CEINTL.vscode-language-pack-zh-hant-1.80.0.vsix"
+  },
+  "mocha": {
+    "reporter": "spec",
+    "colors": true,
+    "watch-extensions": "js",
+    "timeout": 10000
+  }
+}

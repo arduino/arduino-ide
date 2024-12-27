@@ -1,0 +1,111 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4670712 */
+  src: url('iconfont.woff2?t=1732934507548') format('woff2'),
+       url('iconfont.woff?t=1732934507548') format('woff'),
+       url('iconfont.ttf?t=1732934507548') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.lingzhi-document:before {
+  content: "\e61c";
+}
+
+.lingzhi-right:before {
+  content: "\e619";
+}
+
+.lingzhi-below:before {
+  content: "\e618";
+}
+
+.lingzhi-a-24gf-ellipsisVertical:before {
+  content: "\e616";
+}
+
+.lingzhi-chanpinfenlei-kaifaban:before {
+  content: "\e615";
+}
+
+.lingzhi-openProject:before {
+  content: "\e614";
+}
+
+.lingzhi-xinjianxiangmu:before {
+  content: "\e613";
+}
+
+.lingzhi-technical-support:before {
+  content: "\e612";
+}
+
+.lingzhi-shopping-cart:before {
+  content: "\e610";
+}
+
+.lingzhi-course:before {
+  content: "\e60f";
+}
+
+.lingzhi-example_propub:before {
+  content: "\e60e";
+}
+
+.lingzhi-tiaoshi:before {
+  content: "\e60d";
+}
+
+.lingzhi-account:before {
+  content: "\e60c";
+}
+
+.lingzhi-Search:before {
+  content: "\e60a";
+}
+
+.lingzhi-circuitcomposer:before {
+  content: "\e60b";
+}
+
+.lingzhi-blockedit:before {
+  content: "\e609";
+}
+
+.lingzhi-debug-left:before {
+  content: "\e607";
+}
+
+.lingzhi-upload-home:before {
+  content: "\e606";
+}
+
+.lingzhi-connect-left:before {
+  content: "\e608";
+}
+
+.lingzhi-build-ok:before {
+  content: "\e603";
+}
+
+.lingzhi-build-error:before {
+  content: "\e604";
+}
+
+.lingzhi-upload:before {
+  content: "\e605";
+}
+
+.lingzhi-libmager:before {
+  content: "\e602";
+}
+
+.lingzhi-coding-left:before {
+  content: "\e601";
+}
+

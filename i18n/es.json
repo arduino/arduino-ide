@@ -1,0 +1,551 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "Acerca de {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Ir al Perfil",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Placa{0}",
+      "boardConfigDialogTitle": "Seleccionar Otra Placa y Puerto",
+      "boardInfo": "Información de la placa",
+      "boards": "Placas",
+      "configDialog1": "Selecciona tanto una placa como un puerto si quieres cargar un sketch.",
+      "configDialog2": "Si seleccionas solo una placa podrás compilar, pero no cargar tu sketch.",
+      "couldNotFindPreviouslySelected": "No se ha podido encontrar la placa previamente seleccionada '{0}' en la plataforma instalada '{1}'. Por favor, vuelve a seleccionar manualmente la placa que quieres utilizar. ¿Quieres volver a seleccionarla ahora?",
+      "editBoardsConfig": "Edit Board and Port...",
+      "getBoardInfo": "Obtener información de la placa",
+      "inSketchbook": " (en el Sketchbook)",
+      "installNow": "Hay que instalar el núcleo \"{0} {1} \" para la placa \"{2}\" actualmente seleccionada. ¿Quieres instalarlo ahora?",
+      "noBoardsFound": "No se han encotrado placas para \"{0}\"",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "No se ha descubierto ningún puerto",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "openBoardsConfig": "Seleccione otra placa y puerto...",
+      "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
+      "port": "Puerto {0}",
+      "ports": "puertos",
+      "programmer": "Programador",
+      "reselectLater": "Vuelve a seleccionar más tarde",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "Buscar placa",
+      "selectBoard": "Seleccionar Placa",
+      "selectPortForInfo": "Por favor, seleccione un puerto para obtener información sobre la placa.",
+      "showAllAvailablePorts": "Muestra todos los puertos disponibles cuando está activado",
+      "showAllPorts": "Mostrar todos los puertos",
+      "succesfullyInstalledPlatform": "Plataforma {0}:{1} instalada correctamente",
+      "succesfullyUninstalledPlatform": "Plataforma {0}:{1} desinstalada correctamente",
+      "typeOfPorts": "{0} puertos",
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "Placa desconocida"
+    },
+    "boardsManager": "Gestor de placas",
+    "boardsType": {
+      "arduinoCertified": "Certificado Arduino"
+    },
+    "bootloader": {
+      "burnBootloader": "Grabar Bootloader",
+      "burningBootloader": "Grabando bootloader...",
+      "doneBurningBootloader": "Finalizada la grabación del bootloader."
+    },
+    "burnBootloader": {
+      "error": "Error al grabar el bootloader: {0}"
+    },
+    "certificate": {
+      "addNew": "Añadir nuevo",
+      "addURL": "Añadir URL para obtener el certificado SSL",
+      "boardAtPort": "{0} en {1}",
+      "certificatesUploaded": "Certificados cargados.",
+      "enterURL": "Introduce la URL",
+      "noSupportedBoardConnected": "No hay ninguna placa compatible conectada",
+      "openContext": "Contexto abierto",
+      "remove": "Eliminar",
+      "selectBoard": "Selecciona una placa...",
+      "selectCertificateToUpload": "1. Seleccione el certificado que desea cargar",
+      "selectDestinationBoardToUpload": "2. Seleccione la placa de destino y cargue el certificado",
+      "upload": "Cargar",
+      "uploadFailed": "Carga fallida. Por favor, inténtalo de nuevo.",
+      "uploadRootCertificates": "Cargar certificados raíz SSL",
+      "uploadingCertificates": "Cargando certificados."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Comprobar Actualizaciones para Arduino",
+      "installAll": "Instalar todo",
+      "noUpdates": "No se han encontrado actualizaciones recientes disponibles",
+      "promptUpdateBoards": "Actualizaciones disponibles para alguna de tus placas",
+      "promptUpdateLibraries": "Actualizaciones disponibles para algunas de tus librerías",
+      "updatingBoards": "Actualizando placas...",
+      "updatingLibraries": "Actualizando librerías..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Elige la visibilidad de tu Sketch:",
+      "cloudSketchbook": "Libro de bocetos en la nube",
+      "connected": "Conectado",
+      "continue": "Continuar",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "Incrustado:",
+      "emptySketchbook": "Tu Sketchbook está vacío",
+      "goToCloud": "Ir al Cloud",
+      "learnMore": "Aprender más",
+      "link": "Enlace:",
+      "notYetPulled": "No se puede cargar a las nube. Todavía no ha sido descargado",
+      "offline": "Desconectado",
+      "openInCloudEditor": "Abrir en editor web",
+      "options": "Opciones...",
+      "privateVisibility": "Privado: Solo tú puedes ver el código.",
+      "profilePicture": "Foto de perfil",
+      "publicVisibility": "Público: Cualquiera con el enlace puede ver el código.",
+      "pull": "Descargar",
+      "pullFirst": "Tiene que descargarlo primero, para poder cargarlo en la nube",
+      "pullSketch": "Descargar boceto",
+      "pullSketchMsg": "Descarga finalizada",
+      "push": "Cargar",
+      "pushSketch": "Pulsa para listar las URLs de la tarjetas no oficiales",
+      "pushSketchMsg": "Este es un Sketch público. Antes de enviarlo, asegúrate de que cualquier información sensible está definida en los archivos arduino_secrets.h. Puedes hacer que un Sketch sea privado desde el panel Compartir.",
+      "remote": "Remoto",
+      "share": "Compartir...",
+      "shareSketch": "Compartir Sketch",
+      "showHideSketchbook": "Mostrar/Ocultar Sketchbook Remoto",
+      "signIn": "Iniciar sesión",
+      "signInToCloud": "Iniciar sesión en Arduino Cloud",
+      "signOut": "Cerrar sesión",
+      "sync": "Sincronizar",
+      "syncEditSketches": "Sincroniza y edita tus Arduino Cloud Sketches",
+      "visitArduinoCloud": "Visita Arduino Cloud para crear Cloud Sketches. "
+    },
+    "cloudSketch": {
+      "alreadyExists": "El sketch remoto '{0}' ya existe.",
+      "creating": "Creando sketch remoto '{0}'...",
+      "new": "Nuevo Sketch en la Nube",
+      "notFound": "No se pudieron obtener los cambios del sketch remoto '{0}'. No existe.",
+      "pulling": "Sincronizando sketchbook, extrayendo '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renombrando el sketch remoto de '{0}' a '{1}'...",
+      "synchronizingSketchbook": "Sincronizando carpeta..."
+    },
+    "common": {
+      "all": "Todo",
+      "contributed": "Contribuido",
+      "installManually": "Instalar manualmente",
+      "later": "Más tarde",
+      "noBoardSelected": "Ninguna placa seleccionada.",
+      "noSketchOpened": "No sketch opened",
+      "notConnected": "[no conectado]",
+      "offlineIndicator": "Al parecer no estás en línea. Sin una conexión a internet, el CLI de Arduino no podrá descargar los recursos necesarios, lo cual puede ocasionar fallos. Por favor, conecte a internet y reinicie la aplicación.",
+      "oldFormat": "La página '{0}' sigue utilizando el formato antiguo `.pde`. ¿Quieres cambiar a la nueva extensión `.ino`?",
+      "partner": "Socio",
+      "processing": "Procesando",
+      "recommended": "Recomendado",
+      "retired": "Retirado",
+      "selectManually": "Select Manually",
+      "selectedOn": "en {0}",
+      "serialMonitor": "Monitor Serie",
+      "type": "Tipo",
+      "unknown": "Desconocido",
+      "updateable": "Actualizable"
+    },
+    "compile": {
+      "error": "Error de compilación: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Placas incluidas en este paquete:",
+      "by": "de",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "Filtre su búsqueda...",
+      "install": "Instalar",
+      "installLatest": "Install Latest",
+      "installVersion": "Instalar {0}",
+      "installed": "{0}instalado",
+      "moreInfo": "Más información",
+      "otherVersions": "Otras versiones",
+      "remove": "Eliminar",
+      "title": "{0} by {1}",
+      "uninstall": "Desinstalar",
+      "uninstallMsg": "¿Quieres desinstalar {0}?",
+      "update": "Actualizar"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Conexión perdida. Las acciones y actualizaciones de los sketchs remotos no estarán disponibles."
+    },
+    "contributions": {
+      "addFile": "Añadir fichero...",
+      "fileAdded": "Un archivo añadido al sketch.",
+      "plotter": {
+        "couldNotOpen": "No se puede abrir el plotter serial"
+      },
+      "replaceTitle": "Reemplazar"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Todo",
+        "default": "Predeterminado",
+        "more": "Más",
+        "none": "Niguno"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Copiar mensajes de error",
+      "noBoardSelected": "Ninguna placa seleccionada. Por favor selecciona una placa Arduino en el menú Herramientas > Placas"
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Reiniciar Daemon",
+      "start": "Iniciar Daemon",
+      "stop": "Parar Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Debug - {0}",
+      "debuggingNotSupported": "La depuración no está soportada por '{0}'",
+      "getDebugInfo": "Getting debug info...",
+      "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
+      "optimizeForDebugging": "Optimizar para depuración",
+      "sketchIsNotCompiled": "El sketch '{0}' debe ser verificado antes de iniciar una sesión de depuración. Por favor, verifique el sketch e inicia la depuración nuevamente. ¿Deseas verificar el sketch ahora?"
+    },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
+    "dialog": {
+      "dontAskAgain": "No volver a preguntar"
+    },
+    "editor": {
+      "autoFormat": "Auto Formato",
+      "commentUncomment": "Comentar / Descomentar",
+      "copyForForum": "Copiar al Foro (Markdown)",
+      "decreaseFontSize": "Reducir Tamaño de Fuente",
+      "decreaseIndent": "Disminuir sangría",
+      "increaseFontSize": "Aumentar tamaño de fuente",
+      "increaseIndent": "Aumentar sangría",
+      "nextError": "Siguiente Error",
+      "previousError": "Error Anterior",
+      "revealError": "Revelar Error"
+    },
+    "examples": {
+      "builtInExamples": "Ejemplos Construidos",
+      "couldNotInitializeExamples": "No se han podido inicializar los ejemplos integrados.",
+      "customLibrary": "Ejemplos de bibliotecas personalizadas",
+      "for": "Ejemplos para {0}",
+      "forAny": "Ejemplos para cualquier placa",
+      "menu": "Ejemplos"
+    },
+    "firmware": {
+      "checkUpdates": "Comprobar actualizaciones",
+      "failedInstall": "Instalación fallida, Por favor, inténtalo de nuevo.",
+      "install": "Instalar",
+      "installingFirmware": "Instalando el firmware.",
+      "overwriteSketch": "La instalación sobrescribirá el Sketch de la placa.",
+      "selectBoard": "Seleccionar Placa",
+      "selectVersion": "Seleccionar la versión del firmware",
+      "successfullyInstalled": "Firmware instalado correctamente.",
+      "updater": "Firmware Updater"
+    },
+    "help": {
+      "environment": "Entorno de desarrollo (IDE)",
+      "faq": "Preguntas frecuentes",
+      "findInReference": "Buscar en la referencia",
+      "gettingStarted": "Primeros pasos",
+      "keyword": "Escribe una palabra clave",
+      "privacyPolicy": "Política de privacidad",
+      "reference": "Referencia",
+      "search": "Buscar en lingzhilab.com",
+      "troubleshooting": "Resolución de problemas",
+      "visit": "Visitar lingzhilab.com"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Comprobar actualizaciones para Arduino IDE",
+      "closeAndInstallButton": "Cerrar e instalar",
+      "closeToInstallNotice": "Cierra el programa e instala la actualización en tu máquina.",
+      "downloadButton": "Descargar",
+      "downloadingNotice": "Descargando la última versión del Arduino IDE.",
+      "errorCheckingForUpdates": "Error al comprobar las actualizaciones del IDE de Arduino.\n{0}",
+      "goToDownloadButton": "Actualización de Software",
+      "goToDownloadPage": "Una nueva versión del Arduino IDE está disponible, pero no es posible descargarla e instalarla automáticamente. Por favor, diríjase a la página de descarga y descargue la última versión desde allí.",
+      "ideUpdaterDialog": "Actualización de Software",
+      "newVersionAvailable": "Una nueva versión del Arduino IDE ({0}) está disponible para descargar.",
+      "noUpdatesAvailable": "No hay actualizaciones recientes disponibles para el Arduino IDE",
+      "notNowButton": "Ahora no",
+      "skipVersionButton": "Omitir versión",
+      "updateAvailable": "Actualización disponible",
+      "versionDownloaded": "Arduino IDE {0} se ha descargado."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+    },
+    "library": {
+      "addZip": "Añadir biblioteca .ZIP...",
+      "arduinoLibraries": "Bibliotecas de Arduino",
+      "contributedLibraries": "Bibliotecas aportadas",
+      "include": "Incluir biblioteca",
+      "installAll": "Instalar todo",
+      "installLibraryDependencies": "Instalar las dependencias de la biblioteca",
+      "installMissingDependencies": "¿Quieres instalar todas las dependencias faltantes?",
+      "installOneMissingDependency": "¿Quieres instalar la dependencia faltante?",
+      "installWithoutDependencies": "Instalar sin dependencias",
+      "installedSuccessfully": "Biblioteca {0}:{1} instalada correctamente",
+      "libraryAlreadyExists": "Ya existe una biblioteca. ¿Quieres sobrescribirla?",
+      "manageLibraries": "Gestionar bibliotecas...",
+      "namedLibraryAlreadyExists": "Ya existe una carpeta de la biblioteca llamada {0}. ¿Quieres sobrescribirla?",
+      "needsMultipleDependencies": "La biblioteca <b>{0}:{1}</b> necesita otras dependencias que actualmente no están instaladas:",
+      "needsOneDependency": "La biblioteca <b>{0}:{1}</b> necesita otra dependencia que actualmente no está instalada:",
+      "overwriteExistingLibrary": "¿Quieres sobrescribir la biblioteca existente?",
+      "successfullyInstalledZipLibrary": "Biblioteca instalada correctamente desde el archivo {0}",
+      "title": "Gestor de Bibliotecas",
+      "uninstalledSuccessfully": "Biblioteca {0}:{1} desinstalada correctamente",
+      "zipLibrary": "Biblioteca"
+    },
+    "librarySearchProperty": {
+      "topic": "Tema"
+    },
+    "libraryTopic": {
+      "communication": "Comunicación",
+      "dataProcessing": "Procesando datos",
+      "dataStorage": "Almacenamiento de datos",
+      "deviceControl": "Control de dispositivo",
+      "display": "Pantalla",
+      "other": "Otro",
+      "sensors": "Sensores",
+      "signalInputOutput": "Señal Entrada/Salida",
+      "timing": "Temporización",
+      "uncategorized": "Descategorizado"
+    },
+    "libraryType": {
+      "installed": "Instalado"
+    },
+    "menu": {
+      "advanced": "Avanzado",
+      "sketch": "Sketch",
+      "tools": "Herramientas"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "No se puede cerrar websocket",
+      "unableToConnectToWebSocket": "No se puede conectar al websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Nombre del nuevo Sketch Remoto"
+    },
+    "portProtocol": {
+      "network": "Red",
+      "serial": "Serie"
+    },
+    "preferences": {
+      "additionalManagerURLs": "URLs adicionales de gestor de placas",
+      "auth.audience": "El público de OAuth2.",
+      "auth.clientID": "El ID del cliente OAuth2.",
+      "auth.domain": "El dominio de OAuth2.",
+      "auth.registerUri": "URI usada para registrar un nuevo usuario",
+      "automatic": "Automático",
+      "board.certificates": "Listado de certificados que pueden ser cargados en las placas",
+      "browse": "Explorar",
+      "checkForUpdate": "Recibe notificaciones sobre actualizaciones disponibles del IDE, placas y librerías. Requiere reiniciar el IDE despues de hacer cambios. Por defecto está habilitado.",
+      "choose": "Elija",
+      "cli.daemonDebug": "Habilitar logueo de depuración de las llamadas gRPC al Arduino CLI. Requiere un reinicio del IDE para tener efecto. Deshabilitado por defecto.",
+      "cloud.enabled": "Verdadero si las funciones de sincronización del sketch están activadas. Verdadero por defecto.",
+      "cloud.pull.warn": "Verdadero si se debe advertir a los usuarios antes de sacar un boceto de la nube. El valor predeterminado es verdadero.",
+      "cloud.push.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto a la nube. El valor predeterminado es verdadero.",
+      "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
+      "cloud.sketchSyncEndpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
+      "compile": "Compliar",
+      "compile.experimental": "True si el IDE debe manejar multiples errores del compilador. False por defecto",
+      "compile.revealRange": "Ajusta cómo se revelan los errores del compilador en el editor después de una verificación/carga fallida. Valores posibles: 'auto': Desplázate verticalmente según sea necesario y revela una línea. 'centrar': Desplázate verticalmente según sea necesario y revela una línea centrada verticalmente. \"superior\": Desplázate verticalmente según sea necesario y revela una línea cerca de la parte superior de la ventana gráfica, optimizada para ver una definición de código. 'centerIfOutsideViewport': Desplázate verticalmente según sea necesario y revela una línea centrada verticalmente sólo si se encuentra fuera de la ventana gráfica. El valor por defecto es '{0}'.",
+      "compile.verbose": "Verdadero para compilación detallada. Falso por defecto",
+      "compile.warnings": "Indica a gcc qué nivel de advertencia usar. Por defecto es \"Ninguno\"",
+      "compilerWarnings": "alertas de compilación",
+      "editorFontSize": "Tamaño de letra del editor",
+      "editorQuickSuggestions": "Sugerencias rápidas del editor",
+      "enterAdditionalURLs": "Introduzca otras URLs, una por fila",
+      "files.inside.sketches": "Ver los ficheros dentro de los bocetos",
+      "ide.updateBaseUrl": "La URL base desde la que descargar las actualizaciones. El valor predeterminado es 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Canal de publicación desde el que se actualiza. 'stable' es la versión estable, 'nightly' es la última versión de desarrollo.",
+      "interfaceScale": "Escala de la interfaz",
+      "invalid.editorFontSize": "Tamaño de fuente del editor no válido. Debe ser un número entero positivo.",
+      "invalid.sketchbook.location": "Ruta del sketchbook no válida: {0}",
+      "invalid.theme": "Tema no válido.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.log": "Verdadero si el Servidor de Lenguaje Arduino debe generar archivos de registro en la carpeta del sketch. En caso contrario, falso. Por defecto es falso.",
+      "language.realTimeDiagnostics": "Si está habilitado, el lenguaje proveerá diagnoticos en tiepo real meintras se teclea en el editor. Deshabilitado por defecto.",
+      "manualProxy": "Configuración manual del proxy",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
+      "network": "Red",
+      "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "Sin Proxy",
+      "proxySettings": {
+        "hostname": "nombre del host",
+        "password": "Contraseña",
+        "port": "Numero del puerto",
+        "username": "Nombre de usuario"
+      },
+      "showVerbose": "Mostrar salida verbosa durante",
+      "sketch": {
+        "inoBlueprint": "Ruta absoluta del sistema de archivos al archivo blueprint `.ino` por defecto. Si se especifica, el contenido del archivo blueprint se utilizará para cada nuevo sketch creado por el IDE. Los sketches se generarán con el contenido por defecto de Arduino si no se especifica. Los archivos blueprint no accesibles son ignorados. **Se necesita reiniciar el IDE** para que este ajuste surta efecto."
+      },
+      "sketchbook.location": "Ruta del Sketchbook",
+      "sketchbook.showAllFiles": "Verdadero para mostrar todos los archivos de bocetos dentro del boceto. Por defecto es falso.",
+      "survey.notification": "Verdadero si usuarios deberían ser notificados cuando una encuesta esté disponible. Verdadero es predeterminado.",
+      "unofficialBoardSupport": "Pulsa para listar las URLs de las tarjetas no oficiales",
+      "upload": "Carga",
+      "upload.verbose": "Verdadero para una salida verbosa de la carga. Falso por defecto.",
+      "verifyAfterUpload": "Verificar el código después de cargarlo",
+      "window.autoScale": "Verdadero si la interfaz de usuario se escala automáticamente con el tamaño de la fuente.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "Nuevo nombre del Sketch Remoto"
+    },
+    "replaceMsg": "¿Sustituir la versión existente de {0}?",
+    "selectZip": "Seleccione un archivo zip que contenga la biblioteca que deseas añadir",
+    "serial": {
+      "autoscroll": "Autoscroll",
+      "carriageReturn": "Retorno de carro",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Mensaje (Intro para mandar el mensaje de '{0}' a '{1}')",
+      "newLine": "Nueva línea",
+      "newLineCarriageReturn": "Ambos NL & CR",
+      "noLineEndings": "Sin ajuste de línea",
+      "notConnected": "No conectado. Selecciona una placa y un puerto para conectarte automáticamente.",
+      "openSerialPlotter": "Plotter Serie",
+      "timestamp": "Marca de tiempo",
+      "toggleTimestamp": "Alternar la marca de tiempo"
+    },
+    "sketch": {
+      "archiveSketch": "Archivo de programa",
+      "cantOpen": "Ya existe una carpeta con el nombre \"{0}\". No se puede abrir.",
+      "compile": "Compilando proyecto...",
+      "configureAndUpload": "Configura y Subir",
+      "createdArchive": "Archivo '{0}' creado.",
+      "doneCompiling": "Compilación completada.",
+      "doneUploading": "Carga completada.",
+      "editInvalidSketchFolderLocationQuestion": "¿Quieres intentar guardar el código en una ubicación diferente?",
+      "editInvalidSketchFolderQuestion": "¿Quieres intentar guardar el código con un nombre diferente?",
+      "exportBinary": "Exportar binario compilado",
+      "invalidCloudSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 36.",
+      "invalidSketchFolderLocationDetails": "No puedes guardar un sketch dentro de una carpeta dentro de sí misma.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 63.",
+      "moving": "Moviendo",
+      "movingMsg": "El archivo \"{0}\" tiene que estar dentro de una carpeta de bocetos llamada \"{1}\".\n¿Crear esta carpeta, mover el archivo y continuar?",
+      "new": "New Sketch",
+      "noTrailingPeriod": "El nombre del archivo no puede terminar con un punto.",
+      "openFolder": "Abrir carpeta",
+      "openRecent": "Abierto recientemente",
+      "openSketchInNewWindow": "Abrir Sketch en una ventana nueva",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "Guardar carpeta de sketch como...",
+      "saveSketch": "Guarde su sketch para abirlo más tarde.",
+      "saveSketchAs": "Guardar carpeta de sketch como...",
+      "showFolder": "Mostrar carpeta de Sketch",
+      "sketch": "Sketch",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchbook": "Sketchbook",
+      "titleLocalSketchbook": "Sketchbook Local",
+      "titleSketchbook": "Sketchbook",
+      "upload": "Cargar",
+      "uploadUsingProgrammer": "Cargar usando el programador",
+      "uploading": "Actualizando...",
+      "userFieldsNotFoundError": "No se pueden encontrar campos de usuario para la placa conectada",
+      "verify": "Verificar",
+      "verifyOrCompile": "Verificar/Compilar"
+    },
+    "sketchbook": {
+      "newCloudSketch": "Nuevo Sketch en la Nube",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "Completar encuesta",
+      "dismissSurvey": "No volver a mostrar",
+      "surveyMessage": "Por favor ayudenos mejorar completando esta breve encuesta. Valoramos nuestra comunidad y nos gustaría conocer algo mejor a los que nos apoyan."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Actualizar indices",
+      "updateLibraryIndex": "Actualizar Indice de librerías",
+      "updatePackageIndex": "Actualizar índice de paquete"
+    },
+    "upload": {
+      "error": "{0} error: {1}"
+    },
+    "userFields": {
+      "cancel": "Cancelar",
+      "enterField": "Introduce {0}",
+      "upload": "Cargar"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' ya existe."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "No se puede conectar al backend.",
+      "cannotConnectDaemon": "No se puede conectar con el demonio del CLI.",
+      "couldNotSave": "No se ha podido guardar el sketch. Por favor, copia tu trabajo no guardado en tu editor de texto favorito y reinicia el IDE.",
+      "daemonOffline": "Demonio del CLI fuera de línea",
+      "offline": "Desconectado",
+      "offlineText": "Desconectado",
+      "quitTitle": "Seguro que quiere salir ?"
+    },
+    "editor": {
+      "unsavedTitle": "Sin guardar – {0}"
+    },
+    "messages": {
+      "collapse": "Contraer",
+      "expand": "Expandir"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "El código '{0}' será permanentemente eliminado. Esta acción es irreversible. ¿Quieres eliminar el código actual?",
+      "fileNewName": "Nombre del nuevo archivo",
+      "invalidExtension": "\".{0}\" no es una extensión válida",
+      "newFileName": "Nuevo nombre para el archivo"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+/* Naive way of hiding the debug widget when the debug functionality is disabled https://github.com/arduino/arduino-ide/issues/14 */
+.theia-debug-container .debug-toolbar.hidden,
+.theia-debug-container .theia-session-container.hidden {
+    visibility: hidden;
+}
+
+.theia-debug-container .status-message {
+    font-family: "Open Sans";
+    font-style: normal;
+    font-size: 12px;
+
+    padding: 10px;
+}

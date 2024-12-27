@@ -1,0 +1,7 @@
+#theia-statusBar .area .element.arduino-selected-port {
+    margin-left: 0px;
+}
+
+#theia-statusBar .area .element.arduino-selected-board > *:last-child {
+    margin-right: 0px;
+}

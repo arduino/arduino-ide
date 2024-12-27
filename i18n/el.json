@@ -1,0 +1,551 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Έκδοση:{0}\nΗμερομηνία:{1}{2}\nCLI Έκδοση:{3}\n\n{4}",
+      "label": "Σχετικά με {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Μεταβείτε στο Cloud Editor",
+      "goToIoTCloud": "Μεταβείτε στο IoT Cloud",
+      "goToProfile": "Πήγαινε στο προφίλ",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Πλακέτα{0}",
+      "boardConfigDialogTitle": "Επιλέξτε Άλλη Πλακέτα & Θύρα",
+      "boardInfo": "Πληροφορίες Πλακέτας",
+      "boards": "Πίνακες - Πλακέτες",
+      "configDialog1": "Επίλεξε και Πλακέτα και Θύρα αν θέλεις να ανεβάσεις ένα σχέδιο.",
+      "configDialog2": "Αν επιλέξεις μονο Πλακέτα θα μπορείς να κάνεις μόνο μεταγγλώτιση, αλλά οχι να ανεβάσεις το σχέδιο.",
+      "couldNotFindPreviouslySelected": "Δεν έγινε εντοπισμός της προηγουμένως επιλεγμένης πλακέτας '{0}' στην εγκατεστημένη πλατφόρμα '{1}'. Παρακαλώ επίλεξε πάλι χειροκίνητα την πλακέτα που θέλεις να χρησιμοποιήσεις. Θέλεις να την επιλέξεις τώρα;",
+      "editBoardsConfig": "Πλακέτα και θύρα...",
+      "getBoardInfo": "Εμφάνιση Πληροφοριών Πλακέτας",
+      "inSketchbook": "(στα Σχέδια)",
+      "installNow": "Ο πυρήνας \"{0} {1}\" πρέπει να εγκατασταθεί για την επιλεγμένη πλακέτα {2}. Θέλεις να την εγκαταστήσεις τώρα;",
+      "noBoardsFound": "Δεν βρέθηκαν πλακέτες για  \" {0}\"",
+      "noNativeSerialPort": "Δεν είναι δυνατή η λήψη πληροφοριών μέσω της ενσωματωμένης σειριακής θύρας",
+      "noPortsDiscovered": "Δεν βρέθηκαν Θύρες",
+      "nonSerialPort": "Μη σειριακή θύρα, δεν είναι δυνατή η λήψη πληροφοριών.",
+      "openBoardsConfig": "Επιλογή διαφορετικής πλακέτας και θύρας...",
+      "pleasePickBoard": "Πσρακαλώ επίλεξε μια πλακέτα που συνδέθηκε στην θύρα που έχεις επιλέξει.",
+      "port": "Θύρα{0}",
+      "ports": "Θύρες",
+      "programmer": "Προγραμματιστής",
+      "reselectLater": "Επιλογή αργότερα",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "Αναζήτηση πλακέτας",
+      "selectBoard": "Επιλογή Πλακέτας",
+      "selectPortForInfo": "Παρακαλώ επίλεξε μια θύρα για εμφάνιση πληροφοριών πλακέτας.",
+      "showAllAvailablePorts": "Εμφανίζει όλες τις διαθέσιμες θύρες όταν είναι ενεργοποιημένο.",
+      "showAllPorts": "Εμφάνιση όλων των θυρών",
+      "succesfullyInstalledPlatform": "Επιτυχής εγκατάσταση πλατφόρμας {0}:{1}",
+      "succesfullyUninstalledPlatform": "Επιτυχής απεγκατάσταση πλατφόρμας {0}:{1}",
+      "typeOfPorts": "{0}Θύρες",
+      "unconfirmedBoard": "Μη επιβεβαιωμένη πλακέτα",
+      "unknownBoard": "Άγνωστη πλακέτα"
+    },
+    "boardsManager": "Διαχειριστής Πλακετών",
+    "boardsType": {
+      "arduinoCertified": "Πιστοποίηση Arduino"
+    },
+    "bootloader": {
+      "burnBootloader": "Εγγραφή Bootloader",
+      "burningBootloader": "Εγγραφή bootloader...",
+      "doneBurningBootloader": "Ολοκληρώθηκε η εγγραφή του bootloader."
+    },
+    "burnBootloader": {
+      "error": "Σφάλμα κατά την εγγραφή του bootloader:{0}"
+    },
+    "certificate": {
+      "addNew": "Προσθήκη Νέου",
+      "addURL": "Προσθήκη διεύθυνσης URL για λήψη πιστοποιητικού SSL",
+      "boardAtPort": "{0} στο {1}",
+      "certificatesUploaded": "Τα πιστοποιητικά φορτώθηκαν.",
+      "enterURL": "Εισαγάγετε τη διεύθυνση URL",
+      "noSupportedBoardConnected": "Δεν έχει συνδεθεί υποστηριζόμενη πλακέτα",
+      "openContext": "Ανοιχτό πλαίσιο",
+      "remove": "Αφαίρεση",
+      "selectBoard": "Επιλογή Πλακέτας",
+      "selectCertificateToUpload": "1. Επιλέξτε πιστοποιητικό για φόρτωση",
+      "selectDestinationBoardToUpload": "2. Επιλέξτε πλακέτα προορισμού και φορτώστε το πιστοποιητικό",
+      "upload": "Ανέβασμα",
+      "uploadFailed": "Η φόρτωση απέτυχε. Παρακαλώ προσπαθήστε ξανά.",
+      "uploadRootCertificates": "Φορτώστε τα πιστοποιητικά SSL Root",
+      "uploadingCertificates": "Ανέβασμα πιστοποιητικών."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Ελέγξτε το Arduino για ενημερώσεις ",
+      "installAll": "Εγκατάσταση όλων",
+      "noUpdates": "Δεν υπάρχουν διαθέσιμες πρόσφατες ενημερώσεις.",
+      "promptUpdateBoards": "Διατίθενται ενημερώσεις για ορισμένες από τις πλακέτες",
+      "promptUpdateLibraries": "Υπάρχουν διαθέσιμες ενημερώσεις για ορισμένες από τις βιβλιοθήκες σας.",
+      "updatingBoards": "Ενημέρωση πλακετών...",
+      "updatingLibraries": "Ενημέρωση βιβλιοθηκών..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "Το \"πληκτρολόγιο\" δεν βρέθηκε. Το σχέδιό σας περιλαμβάνει τη γραμμή '#include <Keyboard.h>';",
+      "mouseError": "Το 'Ποντίκι' δεν βρέθηκε. Περιλαμβάνει το σχέδιό σας τη γραμμή '#include <Mouse.h>'; "
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Επίλεξε την ορατότητα του Σχεδίου σου:",
+      "cloudSketchbook": "Σχέδια Cloud",
+      "connected": "Συνδέθηκε",
+      "continue": "Συνέχεια",
+      "donePulling": "Τελείωσε το κατέβασμα '{0}'.",
+      "donePushing": "Τελείωσε το ανέβασμα '{0}'.",
+      "embed": "Ενσωμάτωση:",
+      "emptySketchbook": "Τα Σχέδια σου είναι άδεια.",
+      "goToCloud": "Μεταβείτε στο Cloud",
+      "learnMore": "Μάθε περισσότερα",
+      "link": "Σύνδεσμος:",
+      "notYetPulled": "Δεν είναι δυνατή η προώθηση στο Cloud. Δεν έχει κατέβει ακόμα.",
+      "offline": "Εκτός Σύνδεσης",
+      "openInCloudEditor": "Άνοιγμα σε Συντάκτη Cloud",
+      "options": "Επιλογές...",
+      "privateVisibility": "Ιδιωτικό. Μόνο εσύ μπορείς να δεις το Σχέδιο.",
+      "profilePicture": "Εικόνα προφίλ",
+      "publicVisibility": "Δημόσιο. Οποιόσδηποτε με το σύνδεσμο μπορεί να δει το Σχέδιο.",
+      "pull": "Τραβήξτε",
+      "pullFirst": "Πρώτα πρέπει να τραβήξετε για να μπορέσετε να το ανεβάσετε στο Cloud.",
+      "pullSketch": "Τραβήξτε το σχέδιο",
+      "pullSketchMsg": "Αν τραβήξετε αυτό το Σχέδιο από το Cloud, θα αντικατασταθεί η τοπική του έκδοση. Είσαι σίγουρος ότι θέλεις να συνεχίσεις;",
+      "push": "Push",
+      "pushSketch": "Push Sketch",
+      "pushSketchMsg": "Αυτό είναι ένα Δημόσιο Σχέδιο. Βεβαιωθείτε ότι οποιεσδήποτε ευαίσθητες πληροφορίες έχουν οριστεί στο φάκελο arduino_secrets.h. Μπορείτε να κάνετε ένα Σχέδιο ιδιωτικό από τον πίνακα Κοινή χρήση.",
+      "remote": "Απομακρυνσμένο",
+      "share": "Κοινοποίηση...",
+      "shareSketch": "Κοινοποίηση Σχεδίου",
+      "showHideSketchbook": "Εμφάνιση/Απόκρυψη του βιβλίου σχεδίων του Cloud",
+      "signIn": "ΣΥΥΝΔΕΣΗ",
+      "signInToCloud": "Σύνδεση στο Arduino Cloud",
+      "signOut": "Αποσύνδεση",
+      "sync": "Συγχρονισμός",
+      "syncEditSketches": "Συγχρονισμός και τροποποίηση των Arduino Cloud Σχεδίων σου.",
+      "visitArduinoCloud": "Επισκέψου το Arduino Cloud για δημιουργία Σχεδίων Cloud."
+    },
+    "cloudSketch": {
+      "alreadyExists": "Υπάρχει ήδη το σχέδιο '{0}' στο Cloud ",
+      "creating": "Δημιουργία σχεδίου στο cloud '{0}'...",
+      "new": "Νέο σχέδιο Cloud ",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Μετονομασία σχεδίου cloud από '{0}' σε '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "Όλα",
+      "contributed": "Contributed",
+      "installManually": "Χειροκίνητη Εγκατάσταση",
+      "later": "Αργότερα",
+      "noBoardSelected": "Δεν έχει επιλεχθεί πλακέτα",
+      "noSketchOpened": "No sketch opened",
+      "notConnected": "[μη συνδεμένο]",
+      "offlineIndicator": "Φαίνεται πως είστε εκτός σύνδεσης. Χωρίς σύνδεση στο Internet, το Arduino CLI ίσως να μη μπορεί να κάνει λήψη των απαιτούμενων πόρων και να υπάρξει δυσλειτουργία. Παρακαλώ συνδεθείτε στο Internet και επανεκκινήστε την εφαρμογή.",
+      "oldFormat": "Το '{0}' χρησιμοποιεί ακόμα το παλιό '.pde' στυλ. Θέλετε να αλλάξετε στην νέα κατάληξη '.ino';",
+      "partner": "Partner",
+      "processing": "Επεξεργασία",
+      "recommended": "Recommended",
+      "retired": "Παλιό ",
+      "selectManually": "Επιλέξτε Χειροκίνητα",
+      "selectedOn": "στο {0}",
+      "serialMonitor": "Παρακολούθηση Σειριακής",
+      "type": "Τύπος",
+      "unknown": "Άγνωστο",
+      "updateable": "Με δυνατότητα ενημέρωσης"
+    },
+    "compile": {
+      "error": "Σφάλμα μεταγλώττισης: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Πλακέτες που περιλαμβάνονται σε αυτό το πακέτο:",
+      "by": "από",
+      "clickToOpen": "Κάντε κλικ για να ανοίξετε στο πρόγραμμα περιήγησης:{0}",
+      "filterSearch": "Φιλτράρετε την αναζήτησή σας...",
+      "install": "Εγκατάσταση",
+      "installLatest": "Εγκαταστήστε το πιο πρόσφατο",
+      "installVersion": "Εγκατάσταση {0}",
+      "installed": "{0} εγκατεστημένο",
+      "moreInfo": "Περισσότερες πληροφορίες",
+      "otherVersions": "Άλλες Εκδόσεις",
+      "remove": "Αφαίρεση",
+      "title": "{0} με {1}",
+      "uninstall": "Απεγκατάσταση",
+      "uninstallMsg": "Θέλετε να απεγκαταστήσετε το {0};",
+      "update": "Αναβάθμιση"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Δεν ήταν δυνατή η πρόσβαση στη θέση του βιβλίου σχεδίων στο '{0}':{1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Η σύνδεση χάθηκε. Οι ενέργειες και οι ενημερώσεις σχεδίων στο cloud δεν θα είναι διαθέσιμες."
+    },
+    "contributions": {
+      "addFile": "Προσθήκη αρχείου",
+      "fileAdded": "Ένα αρχείο προστέθηκε στον κώδικα.",
+      "plotter": {
+        "couldNotOpen": "Δεν ήταν δυνατό το άνοιγμα του σειριακού plotter"
+      },
+      "replaceTitle": "Αντικατάσταση"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Όλα ",
+        "default": "Προκαθορισμένο",
+        "more": "Περισσότερα ",
+        "none": "Κανένας"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Αντιγραφή μηνυμάτων σφάλματος",
+      "noBoardSelected": "Δεν έχει επιλεγεί πίνακας. Επιλέξτε την πλακέτα Arduino από το μενού Εργαλεία > Πίνακας"
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Επανεκκινήστε το Daemon",
+      "start": "Ξεκινήστε το Daemon",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Αποσφαλμάτωση - {0}",
+      "debuggingNotSupported": "Δεν υποστιρίζεται αποσφαλμάτωση από '{0}'",
+      "getDebugInfo": "Getting debug info...",
+      "noPlatformInstalledFor": "Δεν έχει εγκατασταθεί πλατφόρμα για '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
+      "optimizeForDebugging": "Βελτιστοποίηση για Αποσφαλμάτωση",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Διαγράψτε την επιλογή πλακέτας και θύρας",
+      "dumpBoardList": "Dump the Board List"
+    },
+    "dialog": {
+      "dontAskAgain": "Μην με ξαναρωτήσεις"
+    },
+    "editor": {
+      "autoFormat": "Αυτόματο Format",
+      "commentUncomment": "Σχόλιο/Μη σχολιασμός",
+      "copyForForum": "Αντιγραφή για φόρουμ (Markdown)",
+      "decreaseFontSize": "Μειώστε το μέγεθος γραμματοσειράς",
+      "decreaseIndent": "Μείωση εσοχής",
+      "increaseFontSize": "Αυξήστε το μέγεθος γραμματοσειράς",
+      "increaseIndent": "Αύξηση εσοχής",
+      "nextError": "Επόμενο Σφάλμα",
+      "previousError": "Προηγούμενο Σφάλμα",
+      "revealError": "Αποκάλυψη σφάλματος"
+    },
+    "examples": {
+      "builtInExamples": "Ενσωματωμένα παραδείγματα",
+      "couldNotInitializeExamples": "Δεν ήταν δυνατή η προετοιμασία των ενσωματωμένων παραδειγμάτων.",
+      "customLibrary": "Παραδείγματα από τις προσαρμοσμένες βιβλιοθήκες",
+      "for": "Παραδείγματα για {0}",
+      "forAny": "Παραδείγματα για οποιαδήποτε πλακέτα",
+      "menu": "Παραδείγματα"
+    },
+    "firmware": {
+      "checkUpdates": "Ελέγξτε τις ενημερώσεις",
+      "failedInstall": "Η εγκατάσταση απέτυχε. Παρακαλώ προσπαθήστε ξανά.",
+      "install": "Εγκατάσταση",
+      "installingFirmware": "Εγκατάσταση λογισμικού.",
+      "overwriteSketch": "Installation will overwrite the Sketch on the board.",
+      "selectBoard": "Επιλογή Πλακέτας",
+      "selectVersion": "Επιλέξτε έκδοση λογισμικού",
+      "successfullyInstalled": "Το λογισμικό εγκαταστάθηκε με επιτυχία.",
+      "updater": "Ενημέρωση λογισμικού"
+    },
+    "help": {
+      "environment": "Περιβάλλον",
+      "faq": "Συχνές Ερωτήσεις",
+      "findInReference": "Βρείτε στην Αναφορά",
+      "gettingStarted": "Ξεκινώντας",
+      "keyword": "Πληκτρολογήστε μια λέξη-κλειδί",
+      "privacyPolicy": "Πολιτική Απορρήτου",
+      "reference": "Reference",
+      "search": "Αναζήτηση στο lingzhilab.com",
+      "troubleshooting": "Αντιμετώπιση προβλημάτων",
+      "visit": "Επίσκεψη lingzhilab.com"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Ελέγξτε για νέες ενημερώσεις Arduino IDE",
+      "closeAndInstallButton": "Κλείσιμο και εγκατάσταση",
+      "closeToInstallNotice": "Κλείστε το πρόγραμμα και εγκαταστήστε την ενημέρωση στον υπολογιστή σας.",
+      "downloadButton": "Κατεβάστε",
+      "downloadingNotice": "Λήψη της πιο πρόσφατης έκδοσης του Arduino IDE.",
+      "errorCheckingForUpdates": "Σφάλμα κατά τον έλεγχο για ενημερώσεις του Arduino IDE.\n{0}",
+      "goToDownloadButton": "Μετάβαση στη λήψη",
+      "goToDownloadPage": "Υπάρχει διαθέσιμη ενημέρωση για το Arduino IDE, αλλά δεν μπορούμε να το κατεβάσουμε και να το εγκαταστήσουμε αυτόματα. Μεταβείτε στη σελίδα λήψης και κατεβάστε την πιο πρόσφατη έκδοση από εκεί. ",
+      "ideUpdaterDialog": "Software Update",
+      "newVersionAvailable": "Μια νέα έκδοση του Arduino IDE ({0}) είναι διαθέσιμη για λήψη.",
+      "noUpdatesAvailable": "Δεν υπάρχουν διαθέσιμες πρόσφατες ενημερώσεις για το Arduino IDE",
+      "notNowButton": "Όχι τώρα",
+      "skipVersionButton": "Παράλειψη έκδοσης",
+      "updateAvailable": "Διαθέσιμη ενημέρωση",
+      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+    },
+    "library": {
+      "addZip": "Προσθέστε μια βιβλιοθήκη μορφής .ZIP",
+      "arduinoLibraries": "Βιβλιοθήκες Arduino",
+      "contributedLibraries": "Συνεισφορά βιβλιοθηκών",
+      "include": "Συμπεριλάβετε βιβλιοθήκη",
+      "installAll": "Εγκατάσταση όλων",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "Would you like to install all the missing dependencies?",
+      "installOneMissingDependency": "Would you like to install the missing dependency?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "Επιτυχής εγκατάσταση Βιβλιοθήκης {0} :{1} ",
+      "libraryAlreadyExists": "Μια βιβλιοθήκη υπάρχει ήδη. Θέλετε να την αντικαταστήσετε;",
+      "manageLibraries": "Διαχείριση βιβλιοθηκών...",
+      "namedLibraryAlreadyExists": "Μια βιβλιοθήκη με όνομα {0} υπάρχει ήδη. Θέλετε να γίνει αντικατάσταση;",
+      "needsMultipleDependencies": "Η βιβλιοθήκη <b>{0}:{1}</b> χρειάζεται κάποιες άλλες εξαρτήσεις που δεν είναι εγκατεστημένες αυτήν τη στιγμή:",
+      "needsOneDependency": "Η βιβλιοθήκη <b>{0}:{1} </b>χρειάζεται μια άλλη εξάρτηση που δεν έχει εγκατασταθεί αυτήν τη στιγμή:",
+      "overwriteExistingLibrary": "Θέλετε να αντικαταστήσετε αυτή τη βιβλιοθήκη;",
+      "successfullyInstalledZipLibrary": "Επιτυχής εγκατάσταση βιβλιοθήκης απο το αρχείο {0}",
+      "title": "Διαχειριστής βιβλιοθηκών",
+      "uninstalledSuccessfully": " Επιτυχής απεγκατάστασης Βιβλιοθήκης {0}:{1}",
+      "zipLibrary": "Διαχειριστής βιβλιοθήκης"
+    },
+    "librarySearchProperty": {
+      "topic": "Θέμα"
+    },
+    "libraryTopic": {
+      "communication": "Επικοινωνία ",
+      "dataProcessing": "Επεξεργασία δεδομένων",
+      "dataStorage": "Αποθήκευση δεδομένων",
+      "deviceControl": "Έλεγχος συσκευής",
+      "display": "Display",
+      "other": "Άλλα",
+      "sensors": "Αισθητήρες",
+      "signalInputOutput": "Είσοδος/Έξοδος Σήματος",
+      "timing": "Συγχρονισμός",
+      "uncategorized": "Χωρίς κατηγοριοποίηση"
+    },
+    "libraryType": {
+      "installed": "Εγκατεστημένο"
+    },
+    "menu": {
+      "advanced": "Προχωρημένος",
+      "sketch": "Σχέδιο",
+      "tools": "Εργαλεία"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Δεν ήταν δυνατή η σύνδεση στη θύρα{0}{1}. Είστε ήδη συνδεδεμένος.",
+      "baudRate": "{0}baud",
+      "connectionFailedError": "Δεν ήταν δυνατή η σύνδεση στη θύρα {0}{1}.",
+      "connectionFailedErrorWithDetails": "{0}Δεν ήταν δυνατή η σύνδεση στη θύρα.{1}{2}",
+      "connectionTimeout": "Τέλος χρόνου. Το IDE δεν έχει λάβει το μήνυμα «επιτυχίας» από την οθόνη μετά την επιτυχή σύνδεση σε αυτό",
+      "missingConfigurationError": "Δεν ήταν δυνατή η σύνδεση στη θύρα{0} {1}. Λείπει η διαμόρφωση της οθόνης.",
+      "notConnectedError": "Δεν είναι συνδεδεμένο στη θύρα {0} {1}.",
+      "unableToCloseWebSocket": "Δεν είναι δυνατό να κλείσει η διαδικτυακή πρίζα",
+      "unableToConnectToWebSocket": "Δεν είναι δυνατή η σύνδεση με την διαδικτυακή πρίζα"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Όνομα του νέου Cloud Σχεδίου"
+    },
+    "portProtocol": {
+      "network": "Δίκτυο",
+      "serial": "Σειριακός"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Πρόσθετοι Σύνδεσμοι Διαχειριστή Πλακετών",
+      "auth.audience": "The OAuth2 audience.",
+      "auth.clientID": "The OAuth2 client ID.",
+      "auth.domain": "The OAuth2 domain.",
+      "auth.registerUri": "Αυτό το URI χρησιμοποιήθηκε για την εγγραφή ενός νέου χρήστη.",
+      "automatic": "Αυτόματο",
+      "board.certificates": "Λίστα πιστοποιητικών που μπορούν να ανέβουν σε πλακέτες",
+      "browse": "Περιήγηση",
+      "checkForUpdate": "Λάβετε ειδοποιήσεις σχετικά με τις διαθέσιμες ενημερώσεις για το IDE, τις πλακέτες και τις βιβλιοθήκες. Απαιτεί επανεκκίνηση του IDE μετά την αλλαγή. Είναι αλήθεια από προεπιλογή.",
+      "choose": "Επιλογή",
+      "cli.daemonDebug": "Ενεργοποίηση καταγραφής εντοπισμού σφαλμάτων των κλήσεων gRPC προς το Arduino CLI. Απαιτείται επανεκκίνηση του IDE για να εφαρμοστεί αυτή η ρύθμιση. Είναι ψευδές από προεπιλογή.",
+      "cloud.enabled": "Αληθές αν οι λειτουγίες συγχονισμού σχεδίου είναι ενεργοποιημένες. Προεπιλογή ως αληθές.",
+      "cloud.pull.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν τραβηχτεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές.",
+      "cloud.push.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
+      "cloud.pushpublic.warn": "Αληθές αν οι χρήστες πρέπει προειδοποιηθούν πριν σπρωχθεί ενα δημόσιο σχέδιο σύννεφου. Προεπιλογή ως αληθές. ",
+      "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
+      "compile": "μεταγλώττιση",
+      "compile.experimental": "Σωστό αν το IDE πρέπει να χειρίζεται πολλαπλά σφάλματα μεταγλωττιστή. Λάθος από προεπιλογή",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "Αληθές για λεπτομερή έξοδο μεταγλώττισης. Ψευδές απο προεπιλογή.",
+      "compile.warnings": "Λέει στο gcc ποιο επίπεδο προειδοποίησης να χρησιμοποιήσει. Είναι 'None' απο προεπιλογή",
+      "compilerWarnings": "Προειδοποιήσεις μεταγγλωτιστή",
+      "editorFontSize": "Μέγεθος γραμματοσειράς Συντάκτη",
+      "editorQuickSuggestions": "Επιμελιτής γρήγορων προτάσεων",
+      "enterAdditionalURLs": "Τοποθετήστε πρόσθετους Συνδέσμους, ένα σε κάθε σειρά",
+      "files.inside.sketches": "Εμφάνιση αρχείων μέσα σε Σχέδια",
+      "ide.updateBaseUrl": "Η βασική διεύθυνση URL από την οποία μπορείτε να πραγματοποιήσετε λήψη ενημερώσεων. Οι προεπιλογές είναι \"https://downloads.arduino.cc/arduino-ide\"",
+      "ide.updateChannel": "Κυκλοφόρησε το κανάλι για να ενημέρωση. Το \"stable\" είναι η σταθερή έκδοση, το \"nightly\" είναι η τελευταία έκδοση ανάπτυξης.",
+      "interfaceScale": "Κλίμακα διεπαφής",
+      "invalid.editorFontSize": "Μη-έγκυρο μέγεθος γραμματοσειράς συντάκτη. Πρέπει να είναι θετικός ακέραιος.",
+      "invalid.sketchbook.location": "Μη-έγκυρη τοποθεσία σχεδίων: {0}",
+      "invalid.theme": "Μη-έγκυρο θέμα.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.log": "Σωστό εάν ο διακομιστής γλώσσας Arduino πρέπει να δημιουργήσει αρχεία καταγραφής στο φάκελο σκίτσου. Διαφορετικά, ψευδής. Είναι ψευδές από προεπιλογή.",
+      "language.realTimeDiagnostics": "Εάν ισχύει, ο διακομιστής γλώσσας παρέχει διαγνωστικά σε πραγματικό χρόνο όταν πληκτρολογείτε στον επεξεργαστή. Είναι ψευδές από προεπιλογή.",
+      "manualProxy": "Μη αυτόματη διαμόρφωση proxy διακομιστή μεσολάβησης",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
+      "network": "Δίκτυο",
+      "newSketchbookLocation": "Επιλογή νέας τοποθεσίας σχεδίων",
+      "noCliConfig": "Δεν ήταν δυνατή η φόρτωση της ρύθμισης παραμέτρων CLI",
+      "noProxy": "Χωρίς πληρεξούσιο",
+      "proxySettings": {
+        "hostname": "Όνομα κεντρικού υπολογιστή",
+        "password": "Κωδικός πρόσβασης",
+        "port": "Αριθμός θύρας",
+        "username": "Όνομα χρήστη"
+      },
+      "showVerbose": "Εμφάνιση λεπτομερούς εξόδου κατά τη διάρκεια",
+      "sketch": {
+        "inoBlueprint": "Απόλυτη διαδρομή συστήματος αρχείων στο προεπιλεγμένο αρχείο σχεδιαγράμματος `.ino`. Εάν έχει καθοριστεί, το περιεχόμενο του αρχείου σχεδιαγράμματος θα χρησιμοποιείται για κάθε νέο σκίτσο που δημιουργείται από το IDE. Τα σκίτσα θα δημιουργηθούν με το προεπιλεγμένο περιεχόμενο Arduino εάν δεν καθοριστεί. Τα μη προσβάσιμα αρχεία σχεδιαγράμματος αγνοούνται. **Απαιτείται επανεκκίνηση του IDE** για να τεθεί σε ισχύ αυτή η ρύθμιση."
+      },
+      "sketchbook.location": "Τοποθεσία σχεδίων",
+      "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
+      "survey.notification": "Σωστό εάν οι χρήστες πρέπει να ειδοποιούνται εάν υπάρχει διαθέσιμη έρευνα. Αληθές από προεπιλογή.",
+      "unofficialBoardSupport": "Κλικ για λίστα Συνδέσμων ανεπίσημης υποστήριξης πλακετών",
+      "upload": "ανέβασμα",
+      "upload.verbose": "Αληθές για λεπτομερή έξοδο ανεβάσματος. Ψευδές απο προεπιλογή.",
+      "verifyAfterUpload": "Επιβεβαίωση κώδικα μετά το ανέβασμα",
+      "window.autoScale": "Αληθές αν η διεπαφή χρήστη κλιμακλωνεται αυτόματα μαζί με το μέγεθος γραμματοσειράς.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Καταργήθηκε. Χρησιμοποιήστε αντί αυτού το 'window.zoomLevel'."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "Νέο όνομα του Cloud Σχεδίου"
+    },
+    "replaceMsg": "Αντικατάσταση της υπάρχουσας έκδοσης του {0};",
+    "selectZip": "Επιλέξτε ένα αρχείο zip που περιέχει τη βιβλιοθήκη που θέλετε να προσθέσετε",
+    "serial": {
+      "autoscroll": "Αυτόματη κύλιση",
+      "carriageReturn": "Μεταφορά Επιστροφή",
+      "connecting": "Σύνδεση από '{0}' στο '{1}'...",
+      "message": "Μήνυμα (Εισαγάγετε για να στείλετε μήνυμα από '{0}' στο '{1}')",
+      "newLine": "Νέα γραμμή",
+      "newLineCarriageReturn": "Και τα δύο NL και CR",
+      "noLineEndings": "Χωρίς τέλος γραμμής",
+      "notConnected": "Μη συνδεδεμένο. Επιλέξτε μια πλακέτα και μια θύρα για αυτόματη σύνδεση.",
+      "openSerialPlotter": "Σειριακός Plotter",
+      "timestamp": "Χρονική Σήμανση ",
+      "toggleTimestamp": "Εναλλαγή Χρονική Σήμανσης"
+    },
+    "sketch": {
+      "archiveSketch": "Αρχείο Σχεδίου",
+      "cantOpen": "Ένας φάκελος με το όνομα \"{0}\" υπάρχει ήδη. Δεν είναι δυνατό το άνοιγμα του σχεδίου.",
+      "compile": "Σύνταξη σχεδίου...",
+      "configureAndUpload": "Διαμόρφωση και φόρτωση",
+      "createdArchive": "Δημιουργήθηκε το αρχείο '{0}'.",
+      "doneCompiling": "Ολοκληρώθηκε η δημιουργία.",
+      "doneUploading": "Ολοκλήρωση ανεβάσματος",
+      "editInvalidSketchFolderLocationQuestion": "Θέλετε να δοκιμάσετε να αποθηκεύσετε το σχεδιο σε διαφορετική τοποθεσία;",
+      "editInvalidSketchFolderQuestion": "Θέλετε να δοκιμάσετε να αποθηκεύσετε το σχέδιο με διαφορετικό όνομα;",
+      "exportBinary": "Εξαγωγή μεταγλωττισμένου δυαδικού αρχείου",
+      "invalidCloudSketchName": "Το όνομα πρέπει να ξεκινά με γράμμα, αριθμό ή κάτω παύλα, ακολουθούμενα από γράμματα, αριθμούς, παύλες, τελείες και κάτω παύλες. Το μέγιστο μήκος είναι 36 χαρακτήρες.",
+      "invalidSketchFolderLocationDetails": "Δεν μπορείτε να αποθηκεύσετε ένα σχέδιο σε έναν φάκελο που βρίσκεται μέσα του.",
+      "invalidSketchFolderLocationMessage": "Μη έγκυρη θέση φακέλου σχεδίου: '{0}'",
+      "invalidSketchFolderNameMessage": "Μη έγκυρο όνομα φακέλου σχεδίου: '{0}'",
+      "invalidSketchName": "Το όνομα πρέπει να ξεκινά με γράμμα, αριθμό ή κάτω παύλα, ακολουθούμενα από γράμματα, αριθμούς, παύλες, τελείες και κάτω παύλες. Το μέγιστο μήκος είναι 63 χαρακτήρες.",
+      "moving": "Μετακίνηση",
+      "movingMsg": "Το αρχείο \"{0}\" πρέπει να βρίσκεται μέσα σε έναν φάκελο σχεδίου με το όνομα \"{1}\". \nΔημιουργία φακέλου, μεταφορά του αρχείου και συνέχεια;",
+      "new": "Νέο Σχέδιο ",
+      "noTrailingPeriod": "Ένα όνομα αρχείου δεν μπορεί να τελειώνει με τελεία",
+      "openFolder": "Άνοιγμα φακέλου",
+      "openRecent": "Άνοιγμα πρόσφατου",
+      "openSketchInNewWindow": "Ανοίξτε το Σχέδιο σε νέο παράθυρο",
+      "reservedFilename": "Το '{0}' είναι δεσμευμένο όνομα αρχείου.",
+      "saveFolderAs": "Αποθήκευση φακέλου σχεδίου ως ...",
+      "saveSketch": "Αποθηκεύστε το σχεδιό σας για να το ανοίξετε ξανά αργότερα.",
+      "saveSketchAs": "Αποθήκευση φακέλου σχεδίου ως...",
+      "showFolder": "Εμφάνιση φακέλου σχεδίου",
+      "sketch": "Σχέδιο",
+      "sketchAlreadyContainsThisFileError": "Αυτό το σχέδιο περιέχει ήδη ένα αρχείο με το όνομα '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Αποτυχία αποθήκευσης του σχεδίου \"{0}\" ως \"{1}\".{2}",
+      "sketchbook": "Άλμπουμ",
+      "titleLocalSketchbook": "Τοπικό Σχέδιο",
+      "titleSketchbook": "Άλμπουμ ",
+      "upload": "Ανέβασμα",
+      "uploadUsingProgrammer": "Ανέβασμα μέσω προγραμματιστή",
+      "uploading": "Φότρωση....",
+      "userFieldsNotFoundError": "Δεν είναι δυνατή η εύρεση των πεδίων χρήστη για την συνδεδεμένη πλακέτα",
+      "verify": "Επαλήθευση",
+      "verifyOrCompile": "Επικύρωση"
+    },
+    "sketchbook": {
+      "newCloudSketch": "Νέο σχέδιο Cloud ",
+      "newSketch": "Νέο Σχέδιο"
+    },
+    "survey": {
+      "answerSurvey": "Απάντηση στην έρευνα",
+      "dismissSurvey": "Να μην εμφανιστεί ξανά",
+      "surveyMessage": "Βοηθήστε μας να βελτιωθούμε απαντώντας σε αυτήν την εξαιρετικά σύντομη έρευνα. Εκτιμούμε την κοινότητά μας και θα θέλαμε να γνωρίσουμε λίγο καλύτερα τους υποστηρικτές μας."
+    },
+    "theme": {
+      "currentThemeNotFound": "Δεν ήταν δυνατή η εύρεση του τρέχοντος επιλεγμένου θέματος:{0} . Το Arduino IDE έχει επιλέξει ένα ενσωματωμένο θέμα συμβατό με αυτό που λείπει.",
+      "dark": "Σκοτεινό",
+      "deprecated": "{0}(καταργήθηκε)",
+      "hc": "Σκούρο Υψηλής Αντίθεσης",
+      "hcLight": "Φωτεινό Υψηλής Αντίθεσης",
+      "light": "Φωτεινό",
+      "user": "{0} (χρήστης)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Ενημέρωση ευρετηρίων",
+      "updateLibraryIndex": "Ενημέρωση ευρετηρίου βιβλιοθήκης",
+      "updatePackageIndex": "Ενημέρωση Ευρετηρίου Πακέτων"
+    },
+    "upload": {
+      "error": "{0} σφάλμα: {1}"
+    },
+    "userFields": {
+      "cancel": "Ακύρωση",
+      "enterField": "Enter Εισαγωγή {0}",
+      "upload": "Ανέβασμα"
+    },
+    "validateSketch": {
+      "abortFixMessage": "Το σκίτσο εξακολουθεί να είναι άκυρο. Θέλετε να διορθώσετε τα προβλήματα που απομένουν; Κάνοντας κλικ στο '{0}', θα ανοίξει ένα νέο σχέδιο.",
+      "abortFixTitle": "Μη έγκυρο σχέδιο",
+      "renameSketchFileMessage": "Το αρχείο σχεδίου '{0}' δεν μπορεί να χρησιμοποιηθεί. {1}Θέλετε να μετονομάσετε το αρχείο του σχεδίου τώρα;",
+      "renameSketchFileTitle": "Μη έγκυρο όνομα αρχείου σχεδίου",
+      "renameSketchFolderMessage": "Το σχέδιο '{0}' δεν μπορεί να χρησιμοποιηθεί. {1}Για να απαλλαγείτε από αυτό το μήνυμα, μετονομάστε το σχέδιο. Θέλετε να μετονομάσετε το σχέδιο τώρα;",
+      "renameSketchFolderTitle": "Μη έγκυρο όνομα σκίτσου"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' υπάρχει ήδη."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Δεν είναι δυνατή η σύνδεση στο σύστημα υποστήριξης.",
+      "cannotConnectDaemon": "Δεν είναι δυνατή η σύνδεση με το daemon CLI.",
+      "couldNotSave": "Δεν έγινε αποθήκευση του προγράμματος. Παρακαλώ αντιγράψτε ό,τι δεν έχει αποθηκευθεί στον αγαπημένο σας επεξεργαστή κειμένου, και επανεκινήστε το Ολοκληρωμένο Περιβάλλον Ανάπτυξης IDE.",
+      "daemonOffline": "CLI Daemon Εκτός σύνδεσης",
+      "offline": "Εκτός Σύνδεσης",
+      "offlineText": "Εκτός Σύνδεσης",
+      "quitTitle": "Είστε σίγουροι ότι θέλετε να αποχωρήσετε;"
+    },
+    "editor": {
+      "unsavedTitle": "Μη αποθηκευμένο –{0}"
+    },
+    "messages": {
+      "collapse": "Ελαχιστοποίηση",
+      "expand": "Επαναφορά"
+    },
+    "workspace": {
+      "deleteCloudSketch": "Το σχέδιο του cloud '{0}' θα διαγραφεί οριστικά από τους διακομιστές Arduino και τις τοπικές κρυφές μνήμες. Αυτή η ενέργεια είναι μη αναστρέψιμη. Θέλετε να διαγράψετε το τρέχον σχέδιο;",
+      "deleteCurrentSketch": "Το σχέδιο '{0}' θα διαγραφεί οριστικά. Αυτή η ενέργεια είναι μη αναστρέψιμη. Θέλετε να διαγράψετε το τρέχον σχέδιο; ",
+      "fileNewName": "Όνομα για το νεό αρχείο",
+      "invalidExtension": ". {0}δεν είναι έγκυρη επέκταση",
+      "newFileName": "Νέο όνομα για το αρχείο"
+    }
+  }
+}

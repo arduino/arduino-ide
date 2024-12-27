@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "noEmitOnError": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noImplicitOverride": true,
+    "strictNullChecks": true,
+    "experimentalDecorators": true,
+    "downlevelIteration": true,
+    "emitDecoratorMetadata": true,
+    "module": "Node16",
+    "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "target": "ES2017",
+    "outDir": "lib",
+    "lib": [
+      "ES2017",
+      "dom"
+    ],
+    "jsx": "react",
+    "sourceMap": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ],
+  "files": [
+    "../node_modules/nsfw/index.d.ts"
+  ]
+}

@@ -1,0 +1,204 @@
+/*库小部件样式*/
+
+.lingzhi-library-title {
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #a0a0a0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.lingzhi-library-main {
+    width: calc(100% - 20px);
+    margin-left: 10px;
+    height: calc(100% - 71px);
+    display: flex;
+}
+
+.lingzhi-library-title-model {
+    width: 186px;
+    height: 20px;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.lingzhi-library-title-search {
+    height: 20px;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.lingzhi-library-title-search-input {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #acacac;
+    border-radius: 3px;
+}
+
+.lingzhi-library-title-model-select {
+    width: 100%;
+    height: 23.6px;
+    border: 1px solid #acacac;
+    border-radius: 3px;
+    background-color: #f6f6f6;
+}
+
+.lingzhi-library-title-install-locally {
+    font-size: 12px;
+    width: 100px;
+    height: 23.6px;
+    border: 1px solid #acacac;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.lingzhi-main-left-state {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.lingzhi-main-left-state-select {
+    width: 80px;
+    height: 23.6px;
+    border: 1px solid #acacac;
+    border-radius: 3px;
+    background-color: #f6f6f6;
+}
+
+.lingzhi-main-left-state-refresh-button {
+    font-size: 12px;
+    width: 55px;
+    height: 23.6px;
+    border: 1px solid #acacac;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.lingzhi-main-left-list {
+    width: 100%;
+    height: calc(100% - 30px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lingzhi-main-left-information-header {
+    width: calc(100% - 10px);
+    margin-left: 10px;
+    height: 125px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.lingzhi-main-left-information-header-name {
+    width: 100%;
+    height: 20px;
+    gap: 1px;
+    display: flex;
+    align-items: center;
+}
+
+.lingzhi-main-left-information-content-describe {
+    width: calc(100% - 10px);
+    margin-left: 10px;
+    height: 65px;
+    background-color: #f5f5f6;
+    border: 1px solid #bdbdbe;
+}
+
+.lingzhi-main-left-information-content-detailed {
+    width: calc(100% - 10px);
+    margin-left: 10px;
+    height: calc(100% - 220px);
+    background-color: #ffffff;
+    overflow: auto;
+    display: flex;
+    white-space: nowrap;
+    flex-direction: column;
+}
+
+.lingzhi-main-left-list-library {
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lingzhi-main-left-list-library-text {
+    height: 98%;
+    width: calc(100% - 20px);
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #a0a0a4;
+    border-top: 2px solid #a0a0a4;
+    background-color: #ffffff;
+}
+
+.lingzhi-main-left-list-library-name {
+    width: calc(100% - 10px);
+    height: 20px;
+    white-space: nowrap;
+    margin-left: 10px;
+    margin-top: 5px;
+    user-select: none;
+}
+
+.lingzhi-main-left-list-library-version {
+    width: calc(100% - 10px);
+    height: 23px;
+    white-space: nowrap;
+    margin-left: 10px;
+    color: #a0a0a4;
+    font-size: 10px;
+    user-select: none;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 4px;
+    margin-bottom: 6px;
+}
+
+.lingzhi-main-left-list-library-version-select {
+    width: 60px;
+    height: 20px;
+    border: 1px solid #acacac;
+}
+
+.lingzhi-main-left-list-library-state {
+    width: 20px;
+    height: 98%;
+    border-top: 2px solid #a0a0a4;
+    border-bottom: 1px solid #a0a0a4;
+    display: flex;
+    flex-direction: column-reverse;
+    background-color: #ffffff;
+}
+
+.lingzhi-main-left-list-library-version-install {
+    width: 50px;
+    height: 21px;
+    font-size: 12px;
+    border: 1px solid #1dbef9;
+    border-radius: 11px;
+    white-space: nowrap;
+    background-color: #1dbef9;
+    color: #ffffff;
+}
+
+.lingzhi-main-left-list-library-version-install:hover {
+    background-color: rgba(29, 190, 249, 0.7);
+    border: 1px solid rgba(29, 190, 249, 0.7);
+}

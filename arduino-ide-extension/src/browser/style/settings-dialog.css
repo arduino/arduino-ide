@@ -1,0 +1,104 @@
+#arduino-settings-dialog-container>.dialogBlock {
+    height: 410px;
+    max-width: 740px !important;
+    width: calc(100% - 96px);
+}
+
+#arduino-settings-dialog-container>.dialogBlock>.dialogContent {
+    justify-content: flex-start;
+    overflow: auto;
+}
+
+#arduino-settings-dialog-container>.dialogBlock>.dialogControl {
+    padding: 33px 0 26px;
+}
+
+.arduino-settings-dialog .content {
+    padding: 5px;
+}
+
+.arduino-settings-dialog .flex-line {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-wrap: wrap;
+}
+
+.arduino-settings-dialog .with-margin {
+    margin-left: 5px;
+}
+
+.arduino-settings-dialog .theia-select {
+    background: var(--theia-input-background) !important;
+    height: 20px;
+    width: 58px;
+    border: 1px solid #b7b7b7;
+}
+
+.arduino-settings-dialog .column>div {
+    height: 26px;
+    vertical-align: middle;
+}
+
+.arduino-settings-dialog .column-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.arduino-settings-dialog .stretch {
+    flex: 1;
+}
+
+.arduino-settings-dialog .flex-line .theia-button.shrink {
+    min-width: unset;
+}
+
+.arduino-settings-dialog .proxy-settings {
+    margin: 5px;
+}
+
+.arduino-settings-dialog input[type="radio"] {
+    margin: 3px !important;
+}
+
+.arduino-settings-dialog .theia-input.small {
+    max-width: 50px;
+    width: 50px;
+}
+
+.additional-urls-dialog .link:hover {
+    color: var(--theia-textLink-activeForeground);
+}
+
+.arduino-settings-dialog .react-tabs__tab--selected {
+    background: var(--theia-editorWidget-background);
+    border-color: var(--theia-tab-activeBorder);
+    color: var(--theia-tab-activeForeground);
+    border-radius: 5px 5px 0 0;
+}
+
+.arduino-settings-dialog .react-tabs__tab-list {
+    border-color: var(--theia-tab-activeBorder);
+}
+
+.arduino-settings-dialog .react-tabs__tab-panel {
+    padding-bottom: 8px;
+}
+
+.arduino-settings-dialog .react-tabs__tab-list {
+    display: flex;
+    justify-content: center;
+}
+
+.additional-urls-dialog textarea {
+    resize: none;
+    white-space: nowrap;
+}
+
+.p-Widget.dialogOverlay .dialogBlock .dialogContent.additional-urls-dialog {
+    display: flex;
+    overflow: hidden;
+    padding: 0 1px;
+    margin: 0 -1px;
+}

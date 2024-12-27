@@ -1,0 +1,99 @@
+.monitor-tab-icon {
+    -webkit-mask: url("../icons/monitor-tab-icon.svg");
+    mask: url("../icons/monitor-tab-icon.svg");
+}
+
+.serial-monitor {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.serial-monitor-messages {
+    white-space: "pre";
+    font-family: monospace;
+}
+
+.serial-monitor-messages pre {
+    margin: 0px;
+}
+
+.serial-monitor .head {
+    display: flex;
+    padding: 2px 5px 5px 5px;
+    height: 27px;
+    background-color: linear-gradient(to right, #9a9a9a, #aeabab);
+    gap: 2px;
+
+}
+
+.serial-monitor .head .send {
+    display: flex;
+    flex: 1;
+}
+
+.serial-monitor .head .send>label:before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    background: var(--theia-icon-loading-warning) center center no-repeat;
+    animation: theia-spin 1.25s linear infinite;
+    width: 30px;
+    height: 30px;
+}
+
+.serial-monitor .head .send>label {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-self: baseline;
+}
+
+.serial-monitor .head .send>input,
+.serial-monitor .head .send>label>input {
+    line-height: var(--theia-content-line-height);
+    height: 25px;
+    width: 100%;
+    border: 1px solid #dddddd;
+}
+
+.serial-monitor .head .send>label>input {
+    padding-left: 30px;
+    box-sizing: border-box;
+}
+
+.serial-monitor .head .send>input:focus,
+.serial-monitor .head .send>label>input:focus {
+    border-color: var(--theia-focusBorder);
+}
+
+.serial-monitor .head .config {
+    display: flex;
+    gap: 2px;
+}
+
+.serial-monitor .head .config .select {
+    margin-left: 3px;
+}
+
+.serial-monitor .body {
+    overflow: auto;
+    flex: 1;
+    padding: 5px;
+}
+
+.p-TabBar-toolbar .item.arduino-monitor {
+    width: 24px;
+    justify-content: center;
+    font-size: medium;
+    box-sizing: border-box;
+}
+
+.p-TabBar-toolbar .item.arduino-monitor.toggled {
+    background: var(--theia-sideBarSectionHeader-background);
+    filter: contrast(80%);
+}
+
+.p-TabBar-toolbar .item .clear-all {
+    background: var(--theia-icon-clear) no-repeat;
+}

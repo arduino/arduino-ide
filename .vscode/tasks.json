@@ -1,0 +1,50 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Rebuild App",
+      "type": "shell",
+      "command": "yarn rebuild",
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/electron-app"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Watch Extension",
+      "type": "shell",
+      "command": "yarn --cwd ./arduino-ide-extension watch",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Watch App",
+      "type": "shell",
+      "command": "yarn --cwd ./electron-app watch",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new",
+        "clear": false
+      }
+    },
+    {
+      "label": "Watch All",
+      "type": "shell",
+      "dependsOn": [
+        "Watch Extension",
+        "Watch App"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

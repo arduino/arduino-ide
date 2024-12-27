@@ -1,0 +1,27 @@
+# Used by the "Sync Labels" workflow
+# See: https://github.com/Financial-Times/github-label-sync#label-config-file
+
+- name: 'topic: accessibility'
+  color: '00ffff'
+  description: Enabling the use of the software by everyone
+- name: 'topic: CLI'
+  color: '00ffff'
+  description: Related to Arduino CLI
+- name: 'topic: cloud'
+  color: '00ffff'
+  description: Related to Arduino Cloud and cloud sketches
+- name: 'topic: debugger'
+  color: '00ffff'
+  description: Related to the integrated debugger
+- name: 'topic: language server'
+  color: '00ffff'
+  description: Related to the Arduino Language Server
+- name: 'topic: serial monitor'
+  color: '00ffff'
+  description: Related to the Serial Monitor
+- name: 'topic: theia'
+  color: '00ffff'
+  description: Related to the Theia IDE framework
+- name: 'topic: theme'
+  color: '00ffff'
+  description: Related to GUI theming

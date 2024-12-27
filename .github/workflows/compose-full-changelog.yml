@@ -1,0 +1,55 @@
+name: Compose full changelog
+
+on:
+  release:
+    types:
+      - edited
+
+env:
+  CHANGELOG_ARTIFACTS: changelog
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: '18.17'
+
+jobs:
+  create-changelog:
+    if: github.repository == 'arduino/arduino-ide'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Get Tag
+        id: tag_name
+        run: |
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create full changelog
+        id: full-changelog
+        run: |
+          yarn add @octokit/rest@19.0.13 --ignore-workspace-root-check
+          mkdir "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}"
+
+          # Get the changelog file name to build
+          CHANGELOG_FILE_NAME="${{ steps.tag_name.outputs.TAG_NAME }}-$(date +%s).md"
+
+          # Create manifest file pointing to latest changelog file name
+          echo "$CHANGELOG_FILE_NAME" >> "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}/latest.txt"
+
+          # Compose changelog
+          yarn run compose-changelog "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}/$CHANGELOG_FILE_NAME"
+
+      - name: Publish Changelog [S3]
+        uses: docker://plugins/s3
+        env:
+          PLUGIN_SOURCE: '${{ env.CHANGELOG_ARTIFACTS }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.CHANGELOG_ARTIFACTS }}/'
+          PLUGIN_TARGET: '/arduino-ide/changelog'
+          PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

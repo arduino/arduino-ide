@@ -1,0 +1,551 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Versie: {0}\nDatum: {1}{2}\nCLI Versie: {3}\n\n{4}\n ",
+      "label": "Over {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Ga naar de Cloud Editor",
+      "goToIoTCloud": "Ga naar de IoT Cloud",
+      "goToProfile": "Ga naar profiel",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "Bord{0}",
+      "boardConfigDialogTitle": "Selecteer Ander Bord en Poort",
+      "boardInfo": "Bord Informatie",
+      "boards": "borden",
+      "configDialog1": "Selecteer een Bord en een Poort als je een schets wilt opladen.",
+      "configDialog2": "Als je alleen een bord kiest, kun je wel compileren, maar niet je schets opladen.",
+      "couldNotFindPreviouslySelected": "Kan het eerder geselecteerde bord '{0}' niet vinden in het geïnstalleerde platform '{1}'. Gelieve het bord, dat je wil gebruiken, manueel te selecteren. Wil je het bord nu opnieuw selecteren?",
+      "editBoardsConfig": "Bewerk Bord en Poort",
+      "getBoardInfo": "Verkrijg Bord Informatie",
+      "inSketchbook": "(in Schetsboek)",
+      "installNow": "De \"{0} {1}\" kern moet geïnstalleerd zijn voor het huidig geselecteerde \"{2}\" bord. Wil je dit nu installeren?",
+      "noBoardsFound": "Geen borden gevonden voor \"{0}\"",
+      "noNativeSerialPort": "Oorpronkelijke seriële poort, ik kan geen info verkrijgen",
+      "noPortsDiscovered": "Geen poorten gevonden",
+      "nonSerialPort": "Dit is geen seriële poort, ik kan geen info verkrijgen",
+      "openBoardsConfig": "Selecteer een ander bord en poort...",
+      "pleasePickBoard": "Gelieve een bord te kiezen dat verbonden is met poort die je geselecteerd hebt.",
+      "port": "Poort{0}",
+      "ports": "poorten",
+      "programmer": "Programmeerapparaat",
+      "reselectLater": "Later opnieuw selecteren",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "Bord zoeken",
+      "selectBoard": "Bord selecteren",
+      "selectPortForInfo": "Selecteer een poort om bord informatie te bekomen.",
+      "showAllAvailablePorts": "Toont alle beschikbare poorten indien ingeschakeld",
+      "showAllPorts": "Toon alle poorten",
+      "succesfullyInstalledPlatform": "Platform {0}:{1} succesvol geïnstalleerd",
+      "succesfullyUninstalledPlatform": "Platform {0}:{1} succesvol verwijderd",
+      "typeOfPorts": "{0} poorten",
+      "unconfirmedBoard": "Onbevestigd bord",
+      "unknownBoard": "Onbekend bord"
+    },
+    "boardsManager": "Bordbeheerder",
+    "boardsType": {
+      "arduinoCertified": "Arduino gecertificeerd"
+    },
+    "bootloader": {
+      "burnBootloader": "Bootloader branden",
+      "burningBootloader": "Bootloader aan het branden",
+      "doneBurningBootloader": "Klaar met het branden van de bootloader."
+    },
+    "burnBootloader": {
+      "error": "Fout bij het branden van de bootloader: {0}"
+    },
+    "certificate": {
+      "addNew": "Nieuw toevoegen",
+      "addURL": "URL toevoegen om SSL-certificaat op te halen",
+      "boardAtPort": "{0} bij {1}",
+      "certificatesUploaded": "Certificaten geüpload.",
+      "enterURL": "URL invoeren",
+      "noSupportedBoardConnected": "Geen ondersteund bord verbonden",
+      "openContext": "Context openen",
+      "remove": "Verwijder",
+      "selectBoard": "Selecteer een bord...",
+      "selectCertificateToUpload": "1. Selecteer certificaat om te uploaden",
+      "selectDestinationBoardToUpload": "2. Selecteer bestemming bord en upload certificaat",
+      "upload": "Uploaden",
+      "uploadFailed": "Uploaden mislukt. Probeer het opnieuw.",
+      "uploadRootCertificates": "SSL-rootcertificaten uploaden",
+      "uploadingCertificates": "Certificaten uploaden."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Controleren op Arduino-updates",
+      "installAll": "Alles installeren",
+      "noUpdates": "Er zijn geen recente updates beschikbaar.",
+      "promptUpdateBoards": "Voor sommige van je borden zijn updates beschikbaar.",
+      "promptUpdateLibraries": "Voor sommige van je bibliotheken zijn updates beschikbaar.",
+      "updatingBoards": "Borden bijwerken...",
+      "updatingLibraries": "Bibliotheken bijwerken..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' niet gevonden. Bevat je schets de regel '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' niet gevonden. Bevat je schets de regel '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Kies de zichtbaarheid van je Sketch:",
+      "cloudSketchbook": "Cloud Schetsboek",
+      "connected": "Verbonden",
+      "continue": "Doorgaan",
+      "donePulling": "Klaar met ophalen van '{0}'.",
+      "donePushing": "Klaar met opladen van '{0}'.",
+      "embed": "Integreren:",
+      "emptySketchbook": "Je schetsboek is leeg",
+      "goToCloud": "Ga naar de Cloud",
+      "learnMore": "Leer meer",
+      "link": "Koppeling:",
+      "notYetPulled": "Kan niet naar de Cloud opladen. Het is nog niet opgehaald.",
+      "offline": "Offline",
+      "openInCloudEditor": "Openen in Cloud Editor",
+      "options": "Opties...",
+      "privateVisibility": "Privaat. Alleen jij kunt de schets bekijken.",
+      "profilePicture": "Profiel afbeelding",
+      "publicVisibility": "Openbaar. Iedereen met de link kan de Sketch bekijken.",
+      "pull": "Ophalen",
+      "pullFirst": "Je moet eerst ophalen voordat je kan opladen naar de Cloud.",
+      "pullSketch": "Schets ophalen",
+      "pullSketchMsg": "Ophalen van deze schets uit de cloud zal de lokale versie overschrijven. Weet je zeker dat je door wilt gaan?",
+      "push": "Opladen",
+      "pushSketch": "Schets opladen",
+      "pushSketchMsg": "Dit is een openbare schets. Wees er zeker van dat eender welke gevoelige informatie in arduino_secrets.h bestanden gedefinieerd is voordat u ze oplaadt. Je kan een schets privé maken vanuit het deelvenster Delen.",
+      "remote": "Op Afstand",
+      "share": "Delen...",
+      "shareSketch": "Schets Delen",
+      "showHideSketchbook": "Toon / Verberg het Cloud Schetsboek",
+      "signIn": "AANMELDEN",
+      "signInToCloud": "Aanmelden bij Arduino Cloud",
+      "signOut": "Afmelden",
+      "sync": "Sync",
+      "syncEditSketches": "Synchroniseer en bewerk je Arduino Cloud Schetsen",
+      "visitArduinoCloud": "Bezoek Arduino Cloud om Cloud Schetsen te maken."
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' bestaat al",
+      "creating": "cloud sketch '{0}'  maken...",
+      "new": "Nieuwe Cloud Sketch",
+      "notFound": "Kan Cloud schets '{0}' niet ophalen, Het bestaat niet.",
+      "pulling": "Schetsboek synchroniseren, ophalen van '{0}'...",
+      "pushing": "Schetsboek synchroniseren, opladen van '{0}'...",
+      "renaming": "Cloud schets hernoemen van '{0}' naar '{1}' ...",
+      "synchronizingSketchbook": "Schetsboek synchroniseren..."
+    },
+    "common": {
+      "all": "Alle",
+      "contributed": "Bijgedragen",
+      "installManually": "Handmatig installeren",
+      "later": "Later",
+      "noBoardSelected": "Geen bord geselecteerd",
+      "noSketchOpened": "No sketch opened",
+      "notConnected": "[niet verbonden]",
+      "offlineIndicator": "Je lijkt offline te zijn. Zonder een internetverbinding kan de Arduino CLI mogelijk niet de vereiste bronnen downloaden en dit kan storingen veroorzaken. Maak verbinding met het internet en herstart de applicatie. ",
+      "oldFormat": "De '{0}' gebruikt nog steeds het oude '.pde' formaat. Wil je overstappen naar de nieuwe `.ino` extensie?",
+      "partner": "Partner",
+      "processing": "Verwerken",
+      "recommended": "Aanbevolen",
+      "retired": "Stopgezet",
+      "selectManually": "Select Manually",
+      "selectedOn": "aan {0}",
+      "serialMonitor": "Seriële Monitor",
+      "type": "Type",
+      "unknown": "Onbekend",
+      "updateable": "Bijwerkbaar"
+    },
+    "compile": {
+      "error": "Compilatiefout: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Borden in dit pakket:",
+      "by": "door",
+      "clickToOpen": "Klip om te openen in browser: {0}",
+      "filterSearch": "Filter je zoekopdracht...",
+      "install": "Installeren",
+      "installLatest": "Meest recente installeren",
+      "installVersion": "Installeer {0}",
+      "installed": "{0}geïnstalleerd",
+      "moreInfo": "Meer informatie",
+      "otherVersions": "Andere versies",
+      "remove": "Verwijderer",
+      "title": "{0} bij {1}",
+      "uninstall": "Verwijderen",
+      "uninstallMsg": "Wil je {0} verwijderen?",
+      "update": "Bijwerken"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Geen toegang tot schetsboek locatie in '{0}': {1} "
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Verbinding verbroken. Acties en updates voor Cloud schetsen zijn niet beschikbaar."
+    },
+    "contributions": {
+      "addFile": "Bestand Toevoegen",
+      "fileAdded": "Één bestand toegevoegd aan de schets.",
+      "plotter": {
+        "couldNotOpen": "Kon de seriële plotter niet openen"
+      },
+      "replaceTitle": "Vervangen"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Alle",
+        "default": "Standaard",
+        "more": "Meer",
+        "none": "Geen"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Foutmeldingen kopiëren",
+      "noBoardSelected": "Geen bord geselecteerd. Selecteer je Arduino-bord in het menu Extra > Bord."
+    },
+    "createCloudCopy": "Schets opladen naar de Cloud.",
+    "daemon": {
+      "restart": "Daemon opnieuw starten",
+      "start": "Daemon starten",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Foutopsporing - {0}",
+      "debuggingNotSupported": "Foutopsporing wordt niet ondersteund door '{0}'",
+      "getDebugInfo": "Getting debug info...",
+      "noPlatformInstalledFor": "Platform is niet geïnstalleerd voor '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
+      "optimizeForDebugging": "Optimaliseren voor foutopsporing",
+      "sketchIsNotCompiled": "Schets  '{0}' moet geverifieerd worden voordat de foutopsporing kan beginnen. Verifieer aub de schets opnieuw en herstart foutopsporing. Wil je de schets nu opnieuw verifiëren?"
+    },
+    "developer": {
+      "clearBoardList": "Bordenlijst-geschiedenis wissen",
+      "clearBoardsConfig": "Bord en poort selectie wissen",
+      "dumpBoardList": "Bordenlijst dumpen"
+    },
+    "dialog": {
+      "dontAskAgain": "Niet meer vragen"
+    },
+    "editor": {
+      "autoFormat": "Automatisch formaat",
+      "commentUncomment": "Opmerking/Opmerking ongedaan maken",
+      "copyForForum": "Kopiëren voor Forum (Markdown)",
+      "decreaseFontSize": "Lettergrootte verkleinen",
+      "decreaseIndent": "Inspringing verkleinen",
+      "increaseFontSize": "Lettergrootte vergroten",
+      "increaseIndent": "Inspringing vergroten",
+      "nextError": "Volgende Fout",
+      "previousError": "Vorige Fout",
+      "revealError": "Onthul fout"
+    },
+    "examples": {
+      "builtInExamples": "Ingebouwde voorbeelden",
+      "couldNotInitializeExamples": "Kan ingebouwde voorbeelden niet initialiseren.",
+      "customLibrary": "Voorbeelden uit Aangepaste Bibliotheken",
+      "for": "Voorbeelden voor {0}",
+      "forAny": "Voorbeelden voor elk bord",
+      "menu": "Voorbeelden"
+    },
+    "firmware": {
+      "checkUpdates": "Zoek naar Updates",
+      "failedInstall": "Installatie mislukt. Probeer het opnieuw.",
+      "install": "Installeren",
+      "installingFirmware": "Firmware installeren.",
+      "overwriteSketch": "Installatie zal de Schets op het bord overschrijven.",
+      "selectBoard": "Selecteer Bord",
+      "selectVersion": "Selecteer firmware versie",
+      "successfullyInstalled": "Firmware succesvol geïnstalleerd.",
+      "updater": "Firmware Updater"
+    },
+    "help": {
+      "environment": "Omgeving",
+      "faq": "Veel Gestelde Vragen",
+      "findInReference": "Zoeken in Naslagwerk",
+      "gettingStarted": "Aan de Slag",
+      "keyword": "Typ een trefwoord",
+      "privacyPolicy": "Privacybeleid",
+      "reference": "Naslagwerk",
+      "search": "Zoek op Arduino.cc",
+      "troubleshooting": "Probleem oplossen",
+      "visit": "Bezoek lingzhilab.com"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Controleren op Arduino IDE-updates",
+      "closeAndInstallButton": "Sluiten en installeren",
+      "closeToInstallNotice": "Sluit de software en installeer de update op je machine.",
+      "downloadButton": "Download",
+      "downloadingNotice": "Download de nieuwste versie van de Arduino IDE.",
+      "errorCheckingForUpdates": "Fout bij het controleren op Arduino IDE updates.\n{0}",
+      "goToDownloadButton": "Ga naar Download",
+      "goToDownloadPage": "Er is een update voor de Arduino IDE beschikbaar, maar we zijn niet in staat om die automatisch te downloaden en te installeren. Ga naar de download pagina en download de nieuwste versie vanaf daar.",
+      "ideUpdaterDialog": "Software bijwerken",
+      "newVersionAvailable": "Een nieuwe versie van Arduino IDE ({0}) is beschikbaar om te downloaden.",
+      "noUpdatesAvailable": "Er zijn geen recente updates beschikbaar voor de Arduino IDE",
+      "notNowButton": "Niet nu",
+      "skipVersionButton": "Versie overslaan",
+      "updateAvailable": "Update beschikbaar",
+      "versionDownloaded": "Arduino IDE {0} is gedownload."
+    },
+    "installable": {
+      "libraryInstallFailed": "Installeren van bibliotheek mislukt: '{0} {1}'.",
+      "platformInstallFailed": "Installeren van platform mislukt: '{0} {1}'."
+    },
+    "library": {
+      "addZip": ".ZIP-bibliotheek toevoegen...",
+      "arduinoLibraries": "Arduino Bibliotheken",
+      "contributedLibraries": "Bijgedragen bibliotheken",
+      "include": "Bibliotheek Gebruiken",
+      "installAll": "Alles installeren",
+      "installLibraryDependencies": "Installeer de bibliotheek afhankelijkheden",
+      "installMissingDependencies": "Wil je al de ontbrekende afhankelijkheden installeren?",
+      "installOneMissingDependency": "Wil je de ontbrekende afhankelijkheid installeren?",
+      "installWithoutDependencies": "Installeer zonder afhankelijkheden",
+      "installedSuccessfully": "Bibliotheek {0}:{1} succesvol geïnstalleerd",
+      "libraryAlreadyExists": "Er bestaat al een bibliotheek. Wil je het overschrijven? ",
+      "manageLibraries": "Bibliotheken Beheren...",
+      "namedLibraryAlreadyExists": "Er bestaat al een bibliotheekmap met de naam {0}. Wil je het overschrijven?",
+      "needsMultipleDependencies": "De bibliotheek <b>{0}:{1}</b> heeft enkele andere afhankelijkheden nodig die momenteel niet zijn geïnstalleerd: ",
+      "needsOneDependency": "De bibliotheek <b>{0}:{1}</b> heeft een andere afhankelijkheid nodig die momenteel niet is geïnstalleerd:",
+      "overwriteExistingLibrary": "Wil je de bestaande bibliotheek overschrijven?",
+      "successfullyInstalledZipLibrary": "Succesvol bibliotheek uit {0} archief geïnstalleerd",
+      "title": "Bibliotheken beheerder",
+      "uninstalledSuccessfully": "Bibliotheek {0}:{1} succesvol verwijdert",
+      "zipLibrary": "Bibliotheek"
+    },
+    "librarySearchProperty": {
+      "topic": "Onderwerp"
+    },
+    "libraryTopic": {
+      "communication": "Communicatie",
+      "dataProcessing": "Gegevensverwerking",
+      "dataStorage": "Gegevensopslag",
+      "deviceControl": "Apparaatcontrole",
+      "display": "Toon",
+      "other": "Andere",
+      "sensors": "Sensoren",
+      "signalInputOutput": "Signaalingang/uitgang",
+      "timing": "Timing",
+      "uncategorized": "Geen categorie"
+    },
+    "libraryType": {
+      "installed": "Geïnstalleerd"
+    },
+    "menu": {
+      "advanced": "Geavanceerd",
+      "sketch": "Schets",
+      "tools": "Hulpmiddelen"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Kan niet verbinden met {0} {1} poort. Reeds verbonden.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Kan niet verbinden met {0} {1} poort.",
+      "connectionFailedErrorWithDetails": "{0} Kan niet verbinden met {1} {2} poort.",
+      "connectionTimeout": "Time-out. De IDE heeft het 'succes'-bericht niet ontvangen van de monitor nadat er succesvol verbinding mee is gemaakt",
+      "missingConfigurationError": "Kon geen verbinding maken met de {0} {1} poort. De monitorconfiguratie ontbreekt.",
+      "notConnectedError": "Niet verbonden met {0}{1}poort.",
+      "unableToCloseWebSocket": "Kan websocket niet sluiten",
+      "unableToConnectToWebSocket": "Kan geen verbinding maken met websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Naam van de nieuwe Cloud schets"
+    },
+    "portProtocol": {
+      "network": "Netwerk",
+      "serial": "Seriëel"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Bijkomende Borden Beheerder URL's",
+      "auth.audience": "Het OAuth2 publiek.",
+      "auth.clientID": "De OAuth2 cliënt ID.",
+      "auth.domain": "Het OAuth2 Domein.",
+      "auth.registerUri": "De URI die is gebruikt om een nieuwe gebruiker te registreren.",
+      "automatic": "Automatisch",
+      "board.certificates": "Lijst met certificaten die kunnen worden geüpload naar borden",
+      "browse": "Bladeren",
+      "checkForUpdate": "Meldingen ontvangen van beschikbare updates voor de IDE, borden en bibliotheken. Vereist een IDE herstart na wijziging. Standaard waar.",
+      "choose": "Kies",
+      "cli.daemonDebug": "Schakel debug logging van de gRPC aanroepen naar de Arduino CLI in. Een herstart van de IDE is nodig om deze instelling in werking te laten treden. Standaard Onwaar.",
+      "cloud.enabled": "Waar als de schets synchronisatie functies zijn ingeschakeld. Standaard ingesteld op waar.",
+      "cloud.pull.warn": "Waar als de gebruiker verwittigd moet worden voordat een Cloud schets opgehaald wordt. Standaard ingesteld op waar. ",
+      "cloud.push.warn": "Waar als de gebruiker verwittigd moet worden voordat een Cloud schets opgeladen wordt. Standaard ingesteld op waar. ",
+      "cloud.pushpublic.warn": "Waar als de gebruiker verwittigd moet worden voordat een publieke Cloud schets opgeladen wordt. Standaard ingesteld op waar. ",
+      "cloud.sketchSyncEndpoint": "Het eindpunt dat gebruikt wordt voor het opladen of ophalen van schetsen van een backend. Standaard verwijst het naar Arduino Cloud API.",
+      "compile": "compileren",
+      "compile.experimental": "Waar als de IDE meerdere compileer fouten moet afhandelen. Standaard is het Onwaar",
+      "compile.revealRange": "Regelt hoe compileer fouten in de editor getoond worden na een mislukte verificatie/upload. Mogelijke waarden: 'auto': Scroll verticaal als dat nodig is en onthul een regel. 'centreren': Scroll verticaal als nodig en onthul een verticaal gecentreerde lijn. 'top': Scroll verticaal als nodig en onthul een lijn dicht bij de bovenkant van het kijkvenster, geoptimaliseerd voor het bekijken van een code-definitie. 'centerIfOutsideViewport': Scroll verticaal als nodig en onthul een verticaal gecentreerde lijn alleen als ze buiten het kijkvenster ligt. De standaardwaarde is '{0}'.",
+      "compile.verbose": "Waar voor uitgebreide compileer uitvoer. Standaard onwaar",
+      "compile.warnings": "Vertelt gcc welk waarschuwingsniveau moet worden gebruikt. Standaard 'Geen'",
+      "compilerWarnings": "Compiler waarschuwingen",
+      "editorFontSize": "Lettergrootte van editor",
+      "editorQuickSuggestions": "Snelle suggesties in editor",
+      "enterAdditionalURLs": "Voer extra URL's in, één per rij",
+      "files.inside.sketches": "Toon bestanden in Schetsen",
+      "ide.updateBaseUrl": "De basis URL waar updates van gedownload moeten worden. Wordt standaard ingesteld op 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Release kanaal om bijgewerkte versies van te krijgen. 'stable' is de stabiele release, 'nightly' is de laatste ontwikkel build.",
+      "interfaceScale": "Interface schaal",
+      "invalid.editorFontSize": "Ongeldige lettergrootte voor editor. Het moet een positief geheel getal zijn.",
+      "invalid.sketchbook.location": "Ongeldige schetsboek locatie: {0}",
+      "invalid.theme": "Ongeldig Thema.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.log": "Waar als de Arduino Taal Server log bestanden moet genereren in de schets map. Anders onwaar. Standaard ingesteld op onwaar.",
+      "language.realTimeDiagnostics": "Indien waar, geeft de taalserver real-time diagnostiek tijdens het typen in de editor. Standaard is dit onwaar.",
+      "manualProxy": "Manuele proxy configuratie",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
+      "network": "Netwerk",
+      "newSketchbookLocation": "Selecteer een nieuwe schetsboeklocatie.",
+      "noCliConfig": "De Cloud kon de CLI configuratie niet laden",
+      "noProxy": "Geen proxy",
+      "proxySettings": {
+        "hostname": "Naam van de host",
+        "password": "Wachtwoord",
+        "port": "Poortnummer",
+        "username": "Gebruikersnaam"
+      },
+      "showVerbose": "Uitgebreide uitvoer weergeven tijdens",
+      "sketch": {
+        "inoBlueprint": "Absoluut pad naar het standaard  `.ino` systeem blauwdrukbestand. Indien opgegeven, zal de inhoud van het systeem blauwdrukbestand gebruikt worden voor elke nieuwe schets gemaakt met behulp van de IDE. De schetsen zullen gegenereerd worden met de standaard Arduino inhoud indien niet opgegeven.  Ontoegangelijke blauwdrukbestanden worden genegeerd. **Een herstart van de IDE is nodig** om deze instelling te activeren."
+      },
+      "sketchbook.location": "Schetsboek locatie",
+      "sketchbook.showAllFiles": "Waar om al de schets bestanden in de schets weer te geven. Standaard ingesteld op onwaar.",
+      "survey.notification": "Waar als gebruikers een melding moeten krijgen als er een enquête beschikbaar is. Standaard is dit waar.",
+      "unofficialBoardSupport": "Klik voor een lijst met onofficiële borden ondersteuning URL's",
+      "upload": "uploaden",
+      "upload.verbose": "Waar voor uitgebreide uploaduitvoer. Standaard onwaar.",
+      "verifyAfterUpload": "Verifieer de code na het uploaden",
+      "window.autoScale": "Waar als de gebruikersinterface automatisch wordt geschaald met de lettergrootte.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Niet langer valide. Gebruik 'window.zoomLevel' in plaats daarvan."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "Nieuwe naam van de Cloud schets"
+    },
+    "replaceMsg": "De bestaande versie van {0} vervangen?",
+    "selectZip": "Selecteer een zip-bestand met de bibliotheek die je wil toevoegen",
+    "serial": {
+      "autoscroll": "Automatisch scrollen",
+      "carriageReturn": "Carriage Return",
+      "connecting": "Verbinding maken met '{0}' op '{1}'...",
+      "message": "Bericht (Enter om het bericht naar  '{0}' op '{1}' te zenden)",
+      "newLine": "Nieuwe Regel",
+      "newLineCarriageReturn": "Zowel NL & CR",
+      "noLineEndings": "Geen RegelEinde",
+      "notConnected": "Niet verbonden. Kies een bord en een poort om automatisch te verbinden.",
+      "openSerialPlotter": "Seriële plotter",
+      "timestamp": "Tijdstempel",
+      "toggleTimestamp": "Tijdstempel omschakelen"
+    },
+    "sketch": {
+      "archiveSketch": "Archiveer Schets",
+      "cantOpen": "Er bestaat al een map met de naam \"{0}\". Kan schets niet openen.",
+      "compile": "Sketch compileren...",
+      "configureAndUpload": "Configureer en upload",
+      "createdArchive": "Archief '{0}' gemaakt.",
+      "doneCompiling": "Klaar met compileren.",
+      "doneUploading": "Klaar met uploaden.",
+      "editInvalidSketchFolderLocationQuestion": "Wil je proberen om de schets op een andere locatie op te slaan?",
+      "editInvalidSketchFolderQuestion": "Wil je proberen om de schets onder een andere naam op te slaan?",
+      "exportBinary": "Gecompileerd binair bestand exporteren",
+      "invalidCloudSketchName": "De naam moet beginnen met een letter, nummer of underscore, gevolgd door letters, nummers, streepjes, punten en underscores. De maximale lengte is 36 karakters.",
+      "invalidSketchFolderLocationDetails": "Je kunt de schets niet opslaan in een map in de eigen map",
+      "invalidSketchFolderLocationMessage": "Foute locatie van de schets map:  '{0}'",
+      "invalidSketchFolderNameMessage": "Ongeldige schets mapnaam: '{0}'",
+      "invalidSketchName": "De naam moet beginnen met een letter, nummer of underscore, gevolgd door letters, nummers, streepjes, punten en underscores. De maximale lengte is 63 karakters.",
+      "moving": "Verplaatsten",
+      "movingMsg": "Het bestand \"{0}\" moet binnen een schetsmap met de naam \"{1}\" staan.\nMaak deze map, verplaats het bestand, en ga verder?",
+      "new": "Nieuwe schets",
+      "noTrailingPeriod": "Een bestandsnaam kan niet met een punt eindigen",
+      "openFolder": "Map Openen",
+      "openRecent": "Recentelijk geopend",
+      "openSketchInNewWindow": "Schets openen in nieuw venster",
+      "reservedFilename": "'{0}' is een gereserveerde bestandsnaam.",
+      "saveFolderAs": "Sla de schets map op als...",
+      "saveSketch": "Bewaar je schets om het later weer te openen.",
+      "saveSketchAs": "Sla de schetsmap op als...",
+      "showFolder": "Schetsmap tonen",
+      "sketch": "Schets",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchbook": "Schetsboek",
+      "titleLocalSketchbook": "Lokaal schetsboek",
+      "titleSketchbook": "Schetsboek",
+      "upload": "Uploaden",
+      "uploadUsingProgrammer": "Uploaden met behulp van Programmeerapparaat",
+      "uploading": "Uploaden...",
+      "userFieldsNotFoundError": "Kan gebruiker velden van verbonden bord niet vinden",
+      "verify": "Verifiëren",
+      "verifyOrCompile": "Verifiëren/Compileren"
+    },
+    "sketchbook": {
+      "newCloudSketch": "Nieuwe Cloud Sketch",
+      "newSketch": "Nieuwe schets"
+    },
+    "survey": {
+      "answerSurvey": "Antwoord enquête",
+      "dismissSurvey": "Niet meer tonen",
+      "surveyMessage": "Help ons alsjeblieft te verbeteren door deze super korte enquête te beantwoorden. We waarderen onze gemeenschap en willen onze supporters graag wat beter leren kennen."
+    },
+    "theme": {
+      "currentThemeNotFound": "Kan het huidig geselecteerde thema niet vinden: {0}. Arduino IDE heeft een ingebouwd thema gekozen dat compatibel is met het ontbrekende.",
+      "dark": "Donker",
+      "deprecated": "{0} (verouderd)",
+      "hc": "Donker hoog contrast",
+      "hcLight": "Licht hoog contrast",
+      "light": "Licht",
+      "user": "{0} (gebruiker)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Indexen bijwerken",
+      "updateLibraryIndex": "Bibliotheek index bijwerken",
+      "updatePackageIndex": "Index van het pakket bijwerken"
+    },
+    "upload": {
+      "error": "{0} fout: {1}"
+    },
+    "userFields": {
+      "cancel": "Annuleer",
+      "enterField": "Ga naar {0}",
+      "upload": "Uploaden"
+    },
+    "validateSketch": {
+      "abortFixMessage": "De schets is nog steeds niet correct. Wil je de problemen oplossen? Door op '{0}' te klikken, zal een nieuwe  schets worden geopend.",
+      "abortFixTitle": "Incorrecte schets",
+      "renameSketchFileMessage": "De schetsnaam '{0}' kan niet gebruikt worden. {1} Wil je de schets nu hernoemen?",
+      "renameSketchFileTitle": "Ongeldige bestandsnaam van de schets",
+      "renameSketchFolderMessage": "De schets '{0}' kan niet gebruikt worden. {1} Om van deze melding af  te komen, hernoem de schets. Wil je de schets nu hernoemen?",
+      "renameSketchFolderTitle": "Ongeldige schetsnaam"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' bestaat al."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Kan geen verbinding maken met het backend.",
+      "cannotConnectDaemon": "Kan geen verbinding maken met de CLI daemon.",
+      "couldNotSave": "Kan de schets niet opslaan. Kopieer uw niet-opgeslagen werk naar uw favoriete teksteditor en herstart de IDE. ",
+      "daemonOffline": "CLI Daemon Offline",
+      "offline": "Offline",
+      "offlineText": "Offline",
+      "quitTitle": "Weet je zeker dat je wilt stoppen?"
+    },
+    "editor": {
+      "unsavedTitle": "Niet opgeslagen – {0}"
+    },
+    "messages": {
+      "collapse": "Samenvouwen",
+      "expand": "Uitvouwen"
+    },
+    "workspace": {
+      "deleteCloudSketch": "De Cloud schets '{0}' zal permanent verwijderd worden van de Arduino servers en van de locale caches. Deze actie is onomkeerbaar. Wil je de huidige schets verwijderen?",
+      "deleteCurrentSketch": "De schets '{0}' zal permanent verwijderd worden. Deze actie is onomkeerbaar. Wil je de huidige schets verwijderen?",
+      "fileNewName": "Naam voor nieuw bestand",
+      "invalidExtension": ".{0} is geen geldige extensie",
+      "newFileName": "Nieuwe naam voor bestand"
+    }
+  }
+}

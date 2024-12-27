@@ -1,0 +1,551 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Версія: {0}\nДата: {1}{2}\nВерсія CLI: {3}\n\n{4}",
+      "label": "Про  {0}"
+    },
+    "account": {
+      "goToCloudEditor": "Перейти в Хмарний Редактор",
+      "goToIoTCloud": "Перейти в IoT Хмару",
+      "goToProfile": "Перейти в Профіль",
+      "menuTitle": "Arduino Хмара"
+    },
+    "board": {
+      "board": "Плата {0}",
+      "boardConfigDialogTitle": "Оберіть іншу плату або  порт",
+      "boardInfo": "Інформація про плату",
+      "boards": "плати",
+      "configDialog1": "Оберіть плату та порт якщо бажаєте завантажити скетч",
+      "configDialog2": "Якщо вибрати лише плату, ви зможете скомпілювати, але не завантажити свій ескіз.",
+      "couldNotFindPreviouslySelected": "Не вдалося знайти раніше обрану плату '{0}' на встановленій платформі '{1}'. Будь ласка, вручну оберіть плату, яку хочете використовувати. Бажаєте повторно вибрати її зараз?",
+      "editBoardsConfig": "Змінити Плату та Порт...",
+      "getBoardInfo": "Отримати інформацію про плату",
+      "inSketchbook": "(у книзі скетчів)",
+      "installNow": "Для обраної плати \"{2}\", має бути встановлено ядро \"{0} {1}\". Хочете встановити його зараз?",
+      "noBoardsFound": "Для \"{0}\" не знайдено плат",
+      "noNativeSerialPort": "Послідовний порт, не може отримати інформацію.",
+      "noPortsDiscovered": "Порти не знайдено",
+      "nonSerialPort": "Не-послідовний порт, не може отримати інформацію.",
+      "openBoardsConfig": "Оберіть іншу плату або порт",
+      "pleasePickBoard": "Будь ласка, оберіть підключену плату до порта, який ви вибрали.",
+      "port": "Порт{0}",
+      "ports": "порти",
+      "programmer": "Програматор",
+      "reselectLater": "Переобрати пізніше",
+      "revertBoardsConfig": "Використовувати '{0}' знайдену на '{1}'",
+      "searchBoard": "Шукати плату",
+      "selectBoard": "Оберіть плату",
+      "selectPortForInfo": "Оберіть порт для оновлення інформації про плату.",
+      "showAllAvailablePorts": "Відображати усі доступні порти коли увімкнено",
+      "showAllPorts": "Показати всі порти",
+      "succesfullyInstalledPlatform": "Успішно встановлено платформу {0}:{1}",
+      "succesfullyUninstalledPlatform": "Успішно видалено платформу {0}:{1}",
+      "typeOfPorts": "{0} порти",
+      "unconfirmedBoard": "Неперевірена плата",
+      "unknownBoard": "Невідома плата"
+    },
+    "boardsManager": "Менеджер плат",
+    "boardsType": {
+      "arduinoCertified": "Сертифіковано Arduino"
+    },
+    "bootloader": {
+      "burnBootloader": "Записати загрузчик",
+      "burningBootloader": "Завантаження загрузчика...",
+      "doneBurningBootloader": "Завантажено загрузчика завершено."
+    },
+    "burnBootloader": {
+      "error": "Помилка при завантаженні загрузчика: {0}"
+    },
+    "certificate": {
+      "addNew": "Додати Новий",
+      "addURL": "Додайте URL для отримання SSL сертифікату",
+      "boardAtPort": "{0} в {1}",
+      "certificatesUploaded": "Сертифікат завантажено.",
+      "enterURL": "Введіть URL",
+      "noSupportedBoardConnected": "Підключена плата, що не підтримується",
+      "openContext": "Відкрити контекст",
+      "remove": "Видалити ",
+      "selectBoard": "Оберіть плату ...",
+      "selectCertificateToUpload": "1. Оберіть сертифікат для завантаження",
+      "selectDestinationBoardToUpload": "2. Обрати плату та завантажити сертифікат",
+      "upload": "Завантажити",
+      "uploadFailed": "Невдале завантаження. Спробуйте знову.",
+      "uploadRootCertificates": "Завантажити кореневі сертифікати SSL",
+      "uploadingCertificates": "Завантаження сертифікатів."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Перевірити оновлення Arduino",
+      "installAll": "Встановити все",
+      "noUpdates": "Нема доступних оновлень.",
+      "promptUpdateBoards": "Доступні оновлення для плат.",
+      "promptUpdateLibraries": "Доступні оновлення бібліотек.",
+      "updatingBoards": "Оновлення плат...",
+      "updatingLibraries": "Оновлення бібліотек..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Клавіатура' не знайдено. Чи містить скетч рядок '#include <Keyboard.h>'?",
+      "mouseError": "'Миша' не знайдено. Чи містить скетч рядок '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Виберіть видимість вашого скетчу:",
+      "cloudSketchbook": "Хмарна Книга Скетчів",
+      "connected": "Під'єднано",
+      "continue": "Продовжити",
+      "donePulling": "Отримано '{0}'.",
+      "donePushing": "Відправлено '{0}'.",
+      "embed": "Вбудовано:",
+      "emptySketchbook": "Ваша книга скетчів пуста",
+      "goToCloud": "Перейти в Хмару",
+      "learnMore": "Дізнатися більше",
+      "link": "Посилання:",
+      "notYetPulled": "Не можливо відправити у Хмару. Ще не отримано.",
+      "offline": "Відключено",
+      "openInCloudEditor": "Відкрити у Хмарному Редакторі",
+      "options": "Опції...",
+      "privateVisibility": "Приватно. Тільки ви можете бачити скетч. ",
+      "profilePicture": "Зображення профіля",
+      "publicVisibility": "Публічно. Будь-хто за посиланням, може бачити скетч.",
+      "pull": "Отримати",
+      "pullFirst": "Спочатку треба отримати, щоб мати мажливість надсилати в Хмару.",
+      "pullSketch": "Отримати скетч",
+      "pullSketchMsg": "Отримання цього скетчу з Хмари, призведе до заміщення локальної версії. Бажаєте продовжити?",
+      "push": "Надіслати",
+      "pushSketch": "Надіслати скетч",
+      "pushSketchMsg": "Це публічний скетч. Перед надсиланням переконайтеся, що він не містить конфіденційну інформацію у файлі arduino_secrets.h. Ви можете зробити скетч приватним на панелі «Поділитися».",
+      "remote": "Пульт",
+      "share": "Поділитися...",
+      "shareSketch": "Поділитися скетчем",
+      "showHideSketchbook": "Показати/Сховати Хмарну книгу скетчів",
+      "signIn": "Вхід",
+      "signInToCloud": "Вхід в Хмару Arduino",
+      "signOut": "Вихід",
+      "sync": "Синхронізувати",
+      "syncEditSketches": "Синхроніхувати та редагувати скетчі в Хмарі Arduino",
+      "visitArduinoCloud": "Перейти в Хмару Arduino, щоб створити хмарні скетчі"
+    },
+    "cloudSketch": {
+      "alreadyExists": "Хмарний скетч '{0}' вже існує.",
+      "creating": "Створення хмарного скетчу '{0}'...",
+      "new": "Новий хмарний скетч",
+      "notFound": "Не можливо підтягнути хмарний скетч '{0}'. Він не існує.",
+      "pulling": "Синхронізація книги скетчів, отримання '{0}'...",
+      "pushing": "Синхронізація книги скетчів, надсилання '{0}'...",
+      "renaming": "Перейменування хмарного скетча з '{0}' на '{1}'...",
+      "synchronizingSketchbook": "Синхронізація книги скетчів"
+    },
+    "common": {
+      "all": "Всі",
+      "contributed": "Внесено",
+      "installManually": "Встановити вручну",
+      "later": "Пізніше",
+      "noBoardSelected": "Не обрана плата",
+      "noSketchOpened": "No sketch opened",
+      "notConnected": "[не підключено]",
+      "offlineIndicator": "Здається, ви відключені від мережі. Без підключення до Інтернету Arduino CLI не може завантажити необхідні ресурси. Підключіться до Інтернету та перезапустіть програму.",
+      "oldFormat": "'{0}' досі використовує старий формат `.pde`. Бажаєте перейти на нове розширення `.ino` ?",
+      "partner": "Партнер",
+      "processing": "Обробляється",
+      "recommended": "Рекомендовано",
+      "retired": "Застаріло",
+      "selectManually": "Select Manually",
+      "selectedOn": "на {0}",
+      "serialMonitor": "Монітор порту",
+      "type": "Тіп",
+      "unknown": "Невідомо",
+      "updateable": "Можливість оновлення"
+    },
+    "compile": {
+      "error": "Помилка компілятора: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Плати в цьому пакунку:",
+      "by": "за",
+      "clickToOpen": "Натисніть, щоб відкрити браузер: {0}",
+      "filterSearch": "Фільтри пошуку...",
+      "install": "Встановити",
+      "installLatest": "Встановити новіші",
+      "installVersion": "Встановити {0}",
+      "installed": "{0} встановлено",
+      "moreInfo": "Більше інформації ",
+      "otherVersions": "Інші Версії",
+      "remove": "Видалити ",
+      "title": "{0} з {1}",
+      "uninstall": "Видалити",
+      "uninstallMsg": "Бажаєте видалити {0}?",
+      "update": "Оновити"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Відсутній доступ до книги скетчів на  '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "З'єднання розірване. Дії та оновлення з хмарним скетчем неможливі."
+    },
+    "contributions": {
+      "addFile": "Додати Файл",
+      "fileAdded": "Один файл додано до скетчу.",
+      "plotter": {
+        "couldNotOpen": "Неможливо відкрити плотер"
+      },
+      "replaceTitle": "Замінити "
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "Все",
+        "default": "По замовчуванню",
+        "more": "Більше",
+        "none": "Немає"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Скопіювати помилку",
+      "noBoardSelected": "Плата не вибрана. Будь ласка, виберіть свою плату Arduino в меню Інструменти > Плата."
+    },
+    "createCloudCopy": "Надіслати скетч в Хмару",
+    "daemon": {
+      "restart": "Перезапуск служби",
+      "start": "Запуск служби",
+      "stop": "Спинення служби"
+    },
+    "debug": {
+      "debugWithMessage": "Налагодження - {0}",
+      "debuggingNotSupported": "Налагодження не підтримується з '{0}'",
+      "getDebugInfo": "Getting debug info...",
+      "noPlatformInstalledFor": "Не встановлення платформа для  '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
+      "optimizeForDebugging": "Оптимізація для налагодження",
+      "sketchIsNotCompiled": "Скетч'{0}' повинен бути перевірений до початку налагодження. Будь ласка, перевірте скетч та запустіть налагодження знову. Бажаєте перевірити скетч зараз?"
+    },
+    "developer": {
+      "clearBoardList": "Очистити список історії плат",
+      "clearBoardsConfig": "Очистити вибір Плат та Портів",
+      "dumpBoardList": "Дамп списку плат"
+    },
+    "dialog": {
+      "dontAskAgain": "Не питати знову"
+    },
+    "editor": {
+      "autoFormat": "Автоформат",
+      "commentUncomment": "Закоментувати/Розкоментувати",
+      "copyForForum": "Копіювати для форуму (Markdown)",
+      "decreaseFontSize": "Збільшити розмір шрифта",
+      "decreaseIndent": "Зменшити відступ",
+      "increaseFontSize": "Зменшити розмір шрифта",
+      "increaseIndent": "Збільшити відступ",
+      "nextError": "Наступна помилка",
+      "previousError": "Попередня помилка",
+      "revealError": "Розгорнути помилку"
+    },
+    "examples": {
+      "builtInExamples": "Вбудовані приклади",
+      "couldNotInitializeExamples": "Помилка ініціалізації вбудованих прикладів",
+      "customLibrary": "Приклади з Користувацьких бібліотек",
+      "for": "Приклади для {0}",
+      "forAny": "Приклади для будь-якої плати",
+      "menu": "Приклади"
+    },
+    "firmware": {
+      "checkUpdates": "Перевірити Оновлення",
+      "failedInstall": "Помилка при встановленні. Спробуйте знову.",
+      "install": "Встановити",
+      "installingFirmware": "Встановлення прошивки.",
+      "overwriteSketch": "Встановлення замінить скетч в платі.",
+      "selectBoard": "Оберіть плату",
+      "selectVersion": "Оберіть версію прошивки",
+      "successfullyInstalled": "Прошивку успішно встановлено.",
+      "updater": "Оновлювач прошивки"
+    },
+    "help": {
+      "environment": "Оточення",
+      "faq": "Часті питання",
+      "findInReference": "Знайти в описі",
+      "gettingStarted": "Розпочнемо",
+      "keyword": "Введіть кодове слово",
+      "privacyPolicy": "Політика безпеки",
+      "reference": "Посилання",
+      "search": "Шукати на lingzhilab.com",
+      "troubleshooting": "Вирішення проблем",
+      "visit": "Відвідати lingzhilab.com"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Перевірка оновлень Arduino IDE",
+      "closeAndInstallButton": "Закрити та Встановити",
+      "closeToInstallNotice": "Закрийте програму та встановіть оновлення.",
+      "downloadButton": "Завантажити",
+      "downloadingNotice": "Завантажити останню версію Arduino IDE.",
+      "errorCheckingForUpdates": "Помилка під час перевірки оновлень Arduino IDE {0}",
+      "goToDownloadButton": "Перейти до завантаження ",
+      "goToDownloadPage": "Знайдено оновлення Arduino IDE, але його не вдається завантажити та встановити автоматично. Будь ласка, перейдіть на сторінку завантажень.",
+      "ideUpdaterDialog": "Оновлення ПЗ",
+      "newVersionAvailable": "Нова версія Arduino IDE ({0}) доступна для завантаження.",
+      "noUpdatesAvailable": "Нема доступних оновлень для Arduino IDE",
+      "notNowButton": "Не зараз",
+      "skipVersionButton": "Пропустити Версію",
+      "updateAvailable": "Доступне оновлення",
+      "versionDownloaded": "Arduino IDE {0} було завантажено"
+    },
+    "installable": {
+      "libraryInstallFailed": "Помилка при встановленні бібліотеки: '{0}{1}'.",
+      "platformInstallFailed": "Помилка при встановленні платформи: '{0}{1}'."
+    },
+    "library": {
+      "addZip": "Додати .ZIP бібліотеку...",
+      "arduinoLibraries": "Бібліотеки Arduino",
+      "contributedLibraries": "Додані бібліотеки",
+      "include": "Включити бібліотеку",
+      "installAll": "Встановити все",
+      "installLibraryDependencies": "Встановлення залежностей бібліотеки",
+      "installMissingDependencies": "Ви бажаєте встановити всі залежності для бібліотеки?",
+      "installOneMissingDependency": "Ви бажаєте встановити залежності, яких не вистачає?",
+      "installWithoutDependencies": "Встановити без залажностей",
+      "installedSuccessfully": "Бібліотеку успішно встановлено {0}:{1}",
+      "libraryAlreadyExists": "Бібліотеку вже зареєєстровано. Бажаєте її заміниити?",
+      "manageLibraries": "Керування бібліотеками...",
+      "namedLibraryAlreadyExists": "Тека бібліотеки з назвою {0} вже існує. Бажаєте перезаписати її?",
+      "needsMultipleDependencies": "Бібліотека <b>{0}:{1}</b> вимагає наступні залежності, які не встановлені:",
+      "needsOneDependency": "Ббліотека <b>{0}:{1}</b> вимагає інші залежності, які ще не встановлені:",
+      "overwriteExistingLibrary": "Бажаєте замінити існуючу бібліотеку?",
+      "successfullyInstalledZipLibrary": "Бібліотека успішно встановлена з {0} архіву",
+      "title": "Менеджер бібліотек",
+      "uninstalledSuccessfully": "Бібліотеку успішно видалено {0}:{1}",
+      "zipLibrary": "Бібліотеки "
+    },
+    "librarySearchProperty": {
+      "topic": "Тема"
+    },
+    "libraryTopic": {
+      "communication": "Спілкування",
+      "dataProcessing": "Обробка даних",
+      "dataStorage": "Сховище даних",
+      "deviceControl": "Керування пристроєм",
+      "display": "Дісплей",
+      "other": "Інше",
+      "sensors": "Сенсори",
+      "signalInputOutput": "Сигнал Вхід/Вихід",
+      "timing": "Період часу",
+      "uncategorized": "Без категорії"
+    },
+    "libraryType": {
+      "installed": "Встановлено "
+    },
+    "menu": {
+      "advanced": "Додатково",
+      "sketch": "Скетч",
+      "tools": "Інструменти"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Не можливо підключитися до {0} {1} порту. Він вже зайнятий.",
+      "baudRate": "{0} бод",
+      "connectionFailedError": "Не можливо підключитися до {0} {1} порту.",
+      "connectionFailedErrorWithDetails": "{0} Не можливо підключитися до {1} {2} порту.",
+      "connectionTimeout": "Таймаут. IDE не отримало повідомлення 'Про успіх' від монітора після підключення до нього.",
+      "missingConfigurationError": "Не можливо підключитися до {0} {1} порту. Невизначені параметри монітору.",
+      "notConnectedError": "Відсутнє підключення до {0} {1} порту.",
+      "unableToCloseWebSocket": "Неможливо закрити websocket",
+      "unableToConnectToWebSocket": "Неможливо підключитися до websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Ім'я нового хмарного скетча"
+    },
+    "portProtocol": {
+      "network": "Мережа",
+      "serial": "Послідовний"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Додаткові URL-адреси менеджера плат",
+      "auth.audience": "Спільнота OAuth2",
+      "auth.clientID": "Ідентифікатор клієнта OAuth2",
+      "auth.domain": "Домен OAuth2",
+      "auth.registerUri": "URI для реєстрації нового користувача",
+      "automatic": "Автоматично",
+      "board.certificates": "Перелік сертифікатів, які можуть бути завантажені на плату",
+      "browse": "Підбір",
+      "checkForUpdate": "Отримання сповіщень про доступні оновлення для IDE, плат та бібліотек. Потрібне перезапуск програми після зміни. \"Так\" за замовчуванням. ",
+      "choose": "Вибір",
+      "cli.daemonDebug": "Увімкніть журнал налагодження викликів gRPC до Arduino CLI. Щоб цей параметр набув чинності, потрібно перезапустити IDE. \"Ні\" за замовчуванням.",
+      "cloud.enabled": "\"Так\", якщо синхронізація скетча доступна. \"Так\" за замовчуванням. ",
+      "cloud.pull.warn": "\"Так\", якщо треба попередження перед отриманням хмарного скетчу. \"Так\" за замовчуванням. ",
+      "cloud.push.warn": "\"Так\", якщо треба попередження перед надсиланням хмарного скетчу. \"Так\" за замовчуванням.",
+      "cloud.pushpublic.warn": "\"Так\", якщо треба попередження перед надсиланням публічного скетча в хмару. \"Так\" за замовчуванням.",
+      "cloud.sketchSyncEndpoint": "Призначення для надсилання та отримання скетчів з серверної частини. За замовчуванням вказує на API хмари Arduino.",
+      "compile": "компіляція",
+      "compile.experimental": "\"Так\", якщо IDE може отримати декілька помилок компілятора. \"Ні\" за замовчуванням",
+      "compile.revealRange": "Спосіб відображення помилок компілятора в редакторі після невдалої перевірки/завантаження. Можливі значення: 'auto': Прокручує вертикально та розгортає рядок. 'center': Прокручує вертикально та разгортає рядок по центру. 'top': Прокручує вертикально та розгортає з розташованням ближче до верхньої частини вікна перегляду,  'centerIfOutsideViewport': Прокручує вертикально та розгортає рядок, центруючи вертикально, лише якщо він виходить за межі вікна перегляду. Значення за замовчуванням '{0}'.",
+      "compile.verbose": "\"Так\" для розширенного виводу компілятора. \"Ні\" за замовчуванням",
+      "compile.warnings": "Вказує gcc, який рівень попередження використовувати. За замовчуванням встановлено \"None\".",
+      "compilerWarnings": "Застереження компілятора",
+      "editorFontSize": "Розмір шрифта редактора",
+      "editorQuickSuggestions": "Швидкі підказки редактора",
+      "enterAdditionalURLs": "Введіть додаткові URL-адреси, по одній для кожного рядка",
+      "files.inside.sketches": "Відображати файли в середені скетчів",
+      "ide.updateBaseUrl": "Основна URL-адреса, з якої можна завантажити оновлення. За замовчуванням \"https://downloads.arduino.cc/arduino-ide\"",
+      "ide.updateChannel": "Вибір канала оновлень. 'Стабільні' - для стабільних релізів, 'Нічні' - найновіші збірки.",
+      "interfaceScale": "Масштаб інтерфейсу",
+      "invalid.editorFontSize": "Хибний розмір шрифта редактора. Значення повинно бути цілим числом.",
+      "invalid.sketchbook.location": "Хибний шлях до книги скетчів: {0}",
+      "invalid.theme": "Недійсна тема.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.log": "\"Так\", якщо треба генерувати log-файли журналу в папці скетча. В іншому випадку \"Ні\". За замовчуванням це \"Ні\". ",
+      "language.realTimeDiagnostics": "Якщо \"Так\", перевірка синтаксису відбувається в режимі реального часу. Під час введення тексту в редакторі. Знчення замовчуванням  - \"Ні\".",
+      "manualProxy": "Налаштування проксі вручну",
+      "monitor": {
+        "dockPanel": "Розташування віджетів _{0}_ . Можливі варіанти - \"Внизу\" або \"Справа\". Зазамовчуванням це \"{1}\"."
+      },
+      "network": "Мережа",
+      "newSketchbookLocation": "Оберіть новий шлях до книги скетчів",
+      "noCliConfig": "Неможливо прочитати конфігурацію клієнта CLI",
+      "noProxy": "Нема проксі",
+      "proxySettings": {
+        "hostname": "Ім'я хоста",
+        "password": "Пароль",
+        "port": "Номер порту",
+        "username": "Ім'я користувача"
+      },
+      "showVerbose": "Показувати докладний вивід протягом",
+      "sketch": {
+        "inoBlueprint": "Абсолютний шлях файлової системи до шаблону проекта `.ino`. Якщо значення вказане, він буде використовуватися кожен раз при створенні новго скетча. Якщо значення пусте,  скетчі будуть згенеровані Arduino в форматі за замовчуванням. Недоступні файли ігноруються. **Потрібно перезапустити IDE**, щоб цей параметр набув чинності."
+      },
+      "sketchbook.location": "Шлях до книги скетчів",
+      "sketchbook.showAllFiles": "\"Так\" для відображення усіх файлів скетчу в середені скетчу. \"Ні\" за замовчуванням.",
+      "survey.notification": "\"Так\", якщо треба повідомляти про доступні опитування користувачів. \"Так\" за замовчуванням.",
+      "unofficialBoardSupport": "Клацніть, щоб переглянути список неофіційних форумів підтримки",
+      "upload": "завантажити",
+      "upload.verbose": "\"Так\" для докладного виводу процесу завантаження. \"Ні\" за замовчуванням.",
+      "verifyAfterUpload": "Перевіряти код після завантаження",
+      "window.autoScale": "\"Так\", якщо інтерфейс користувача автоматично масштабується відповідно до розміру шрифту.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Застаріле. Натомість використовуйте 'window.zoomLevel'."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "Нове ім'я для хмарного скетча"
+    },
+    "replaceMsg": "Замінити існуючу версію на {0}?",
+    "selectZip": "Оберіть zip-файл що містить бібліотеку, яку треба додати",
+    "serial": {
+      "autoscroll": "Автопрокручування",
+      "carriageReturn": "Повернення коретки",
+      "connecting": "Підключення до '{0}' на '{1}'...",
+      "message": "Повідомлення (Введіть повідомлення для відправки до '{0}' на '{1}')",
+      "newLine": "Новий рядок",
+      "newLineCarriageReturn": "Обидва \"Новий рядок\" та \"Повернення коретки\"",
+      "noLineEndings": "Без закінчення рядка",
+      "notConnected": "Не підключено. Оберіть плату та порт для автоматичного підключення.",
+      "openSerialPlotter": "Послідовний плотер",
+      "timestamp": "Мітка часу",
+      "toggleTimestamp": "Перемкнути мітку часу"
+    },
+    "sketch": {
+      "archiveSketch": "Архів скетчів",
+      "cantOpen": "Папка з ім'ям \"{0}\" вже існує. Неможливо відкрити скетч.",
+      "compile": "Компіляція скетча...",
+      "configureAndUpload": "Налаштувати та завантажити",
+      "createdArchive": "Створення архіву '{0}'.",
+      "doneCompiling": "Компіляцію завершено",
+      "doneUploading": "Завантаження завершено.",
+      "editInvalidSketchFolderLocationQuestion": "Бажаєте спробувати зберегти скетч в іншому місці?",
+      "editInvalidSketchFolderQuestion": "Бажаєте спробувати зберегти скетч під іншою назвою?",
+      "exportBinary": "Експортувати скомпільований двійковий файл",
+      "invalidCloudSketchName": "Ім’я має починатися з літери, цифри або підкреслення, за якими слідують літери, цифри, тире, крапки та підкреслення. Максимальна довжина – 36 символів.",
+      "invalidSketchFolderLocationDetails": "Не можна зберегти скетч у папці всередині самого себе.",
+      "invalidSketchFolderLocationMessage": "Недійсний шлях папки скетча: '{0}'",
+      "invalidSketchFolderNameMessage": "Хибна назва папки скетча: '{0}'",
+      "invalidSketchName": "Ім’я має починатися з літери, цифри або підкреслення, за якими слідують літери, цифри, тире, крапки та підкреслення. Максимальна довжина – 63 символи.",
+      "moving": "Пересування",
+      "movingMsg": "Файл \"{0}\" має бути в середені папки з ім'ям \"{1}\".\nСтворити папку, пересунути туди файл та продовжити?",
+      "new": "Новий скетч",
+      "noTrailingPeriod": "Ім'я файла не може закінчуватися крапкою",
+      "openFolder": "Відкрити папку",
+      "openRecent": "Відкрити останній",
+      "openSketchInNewWindow": "Відкрити скетч у новому вікні",
+      "reservedFilename": "'{0}' це зарезервоване ім'я файла",
+      "saveFolderAs": "Зберігти папку скетча як...",
+      "saveSketch": "Збережіть свій скетч, щоб відкрити його пізніше.",
+      "saveSketchAs": "Зберігти папку скетча як...",
+      "showFolder": "Показати папку скетча",
+      "sketch": "Скетч",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchbook": "Книга скетчів",
+      "titleLocalSketchbook": "Локальна книга скетчів",
+      "titleSketchbook": "Книга скетчів",
+      "upload": "Завантажити",
+      "uploadUsingProgrammer": "Завантажити за допомогою програматора",
+      "uploading": "Завантаження..",
+      "userFieldsNotFoundError": "Не вдається знайти поля користувача для підключеної плати",
+      "verify": "Перевірити ",
+      "verifyOrCompile": "Перевірка/Компіляція"
+    },
+    "sketchbook": {
+      "newCloudSketch": "Новий хмарний скетч",
+      "newSketch": "Новий скетч"
+    },
+    "survey": {
+      "answerSurvey": "Відповідь на опитування",
+      "dismissSurvey": "Більше не показувати",
+      "surveyMessage": "Будь ласка, допоможіть нам покращитися, відповівши на це надкоротке опитування. Ми цінуємо нашу спільноту і хочемо ближче познайомитися з нашими прихильниками."
+    },
+    "theme": {
+      "currentThemeNotFound": "Не вдалося знайти поточну вибрану тему: {0}. Arduino IDE вибрала вбудовану тему, сумісну з відсутньою.",
+      "dark": "Темна",
+      "deprecated": "{0} (застарілий)",
+      "hc": "Темна. Високий контраст",
+      "hcLight": "Світла. Високий контарст",
+      "light": "Світла",
+      "user": "{0} (користувач)"
+    },
+    "title": {
+      "cloud": "Хмара"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Оновлення індексів",
+      "updateLibraryIndex": "Оновлення індексів бібліотек",
+      "updatePackageIndex": "Оновлення індексів пакунків"
+    },
+    "upload": {
+      "error": "{0} помилка: {1}"
+    },
+    "userFields": {
+      "cancel": "Відміна ",
+      "enterField": "Ввід{0}",
+      "upload": "Завантажити"
+    },
+    "validateSketch": {
+      "abortFixMessage": "Скетч досі містить помилки. Бажаєте виправити помилки? Натиснувши '{0}', буде відкрито новий скетч.",
+      "abortFixTitle": "Неправильний скетч",
+      "renameSketchFileMessage": "Файл скетча '{0}' не може бути використаний. {1} Бажаєте перейменувати файл зараз?",
+      "renameSketchFileTitle": "Помилка в імені файла скетча ",
+      "renameSketchFolderMessage": "Скетч '{0}' не може бути використаний. {1} Щоб позбутися цього повідомлення, перейменуйте скетч. Бажаєте перейменувати скетч зараз?",
+      "renameSketchFolderTitle": "Помилка в назві скетча"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' вже існує."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Неможливо підключитися до серверної частини.",
+      "cannotConnectDaemon": "Неможливо підключитися до CLI-служби",
+      "couldNotSave": "Не вдалося зберегти скетч. Скопіюйте незбережену роботу у свій улюблений текстовий редактор і перезапустіть IDE.",
+      "daemonOffline": "CLI-служба вимкнена",
+      "offline": "Відключено",
+      "offlineText": "Відключено",
+      "quitTitle": "Ви впевнені що хочети вийти?"
+    },
+    "editor": {
+      "unsavedTitle": "Незбережений – {0}"
+    },
+    "messages": {
+      "collapse": "Згорнути ",
+      "expand": "Розгорнути "
+    },
+    "workspace": {
+      "deleteCloudSketch": "Хмарний скетч '{0}' буде назавжди видалено з серверів Arduino та локальних кешів. Ця дія незворотна. Ви бажаєте видалити поточний скетч?",
+      "deleteCurrentSketch": "Скетч '{0}' буде остаточно видалено. Ця дія незворотна. Ви бажаєте видалити поточний скетч?",
+      "fileNewName": "Ім'я для нового файлу",
+      "invalidExtension": ".{0} це хибне розширення",
+      "newFileName": "Нове ім'я файлу"
+    }
+  }
+}

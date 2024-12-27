@@ -1,0 +1,551 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "label": "{0}ri buruz"
+    },
+    "account": {
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "{0} plaka",
+      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardInfo": "Plakaren informazioa",
+      "boards": "boards",
+      "configDialog1": "Hautatu plaka bat eta ataka bat programa bat kargatu nahi baduzu.",
+      "configDialog2": "Plaka bakarrik hautatzen baduzu, programa konpilatu ahal izango duzu, baina ez kargatu.",
+      "couldNotFindPreviouslySelected": "Ezin izan da aurkitu aurrez hautatutako '{0}' plaka instalatutako '{1}' plataforman. Hautatu berriz eskuz erabili nahi duzun plaka. Orain berriz hautatu nahi duzu?",
+      "editBoardsConfig": "Edit Board and Port...",
+      "getBoardInfo": "Eskuratu plakaren informazioa",
+      "inSketchbook": "(programa bilduman)",
+      "installNow": "\"{0} {1}\" nukleoa instalatu behar da unean hautatutako \"{2}\" plakarentzat. Orain instalatu nahi duzu?",
+      "noBoardsFound": "No boards found for \"{0}\"",
+      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noPortsDiscovered": "No ports discovered",
+      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "openBoardsConfig": "Hautatu beste plaka eta ataka bat...",
+      "pleasePickBoard": "Aukeratu hautatu duzun atakara konektatutako plaka bat.",
+      "port": "{0} ataka",
+      "ports": "ports",
+      "programmer": "Programatzailea",
+      "reselectLater": "Hautatu berriz geroago",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "Search board",
+      "selectBoard": "Hautatu plaka",
+      "selectPortForInfo": "Hautatu ataka bat plakaren informazioa eskuratzeko.",
+      "showAllAvailablePorts": "Gaituta dagoenean erabilgarri dauden ataka guztiak erakusten ditu",
+      "showAllPorts": "Show all ports",
+      "succesfullyInstalledPlatform": "{0}:{1} plataforma behar bezala instalatu da",
+      "succesfullyUninstalledPlatform": "{0}:{1} plataforma behar bezala desinstalatu da",
+      "typeOfPorts": "{0} ports",
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "Unknown board"
+    },
+    "boardsManager": "Plaka kudeatzailea",
+    "boardsType": {
+      "arduinoCertified": "Arduino Certified"
+    },
+    "bootloader": {
+      "burnBootloader": "Kargatu abiarazte-kudeatzailea",
+      "burningBootloader": "Burning bootloader...",
+      "doneBurningBootloader": "Abiarazte-kudeatzailearen karga burutu da."
+    },
+    "burnBootloader": {
+      "error": "Errorea abiarazte-kudeatzailea kargatzean: {0}"
+    },
+    "certificate": {
+      "addNew": "Gehitu berria",
+      "addURL": "Gehitu URLa SSL ziurtagiria eskuratzeko",
+      "boardAtPort": "{0} hemen: {1}",
+      "certificatesUploaded": "Ziurtagiriak kargatuta.",
+      "enterURL": "Idatzi URLa",
+      "noSupportedBoardConnected": "Ez dago euskarridun plakarik konektatuta",
+      "openContext": "Ireki testuingurua",
+      "remove": "Kendu",
+      "selectBoard": "Hautatu plaka bat...",
+      "selectCertificateToUpload": "1. Hautatu ziurtagiria kargatzeko",
+      "selectDestinationBoardToUpload": "2. Hautatu helburuko plaka eta kargatu ziurtagiria",
+      "upload": "Kargatu",
+      "uploadFailed": "Kargak huts egin du. Mesedez saiatu berriro.",
+      "uploadRootCertificates": "Kargatu SSL erro-ziurtagiriak",
+      "uploadingCertificates": "Ziurtagiriak kargatzen."
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Check for Arduino Updates",
+      "installAll": "Install All",
+      "noUpdates": "There are no recent updates available.",
+      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "promptUpdateLibraries": "Updates are available for some of your libraries.",
+      "updatingBoards": "Updating boards...",
+      "updatingLibraries": "Updating libraries..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard' not found. Does your sketch include the line '#include <Keyboard.h>'?",
+      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "Aukeratu zure programaren ikusgaitasuna:",
+      "cloudSketchbook": "Hodeiko programa bilduma",
+      "connected": "Konektatuta",
+      "continue": "Jarraitu",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "Kapsulatu:",
+      "emptySketchbook": "Zure programa bilduma hutsik dago",
+      "goToCloud": "Go to Cloud",
+      "learnMore": "Ikasi gehiago",
+      "link": "Esteka:",
+      "notYetPulled": "Ezin da Hodeian gorde. Ez da Hodeitik kargatu oraindik.",
+      "offline": "Lineaz kanpo",
+      "openInCloudEditor": "Ireki hodeiko editorean",
+      "options": "Aukerak...",
+      "privateVisibility": "Pribatua. Zuk soilik ikus dezakezu programa.",
+      "profilePicture": "Profileko irudia",
+      "publicVisibility": "Publikoa. Esteka duen edozeinek ikus dezake programa.",
+      "pull": "Ekarri hodeitik",
+      "pullFirst": "Lehenengo Hodeitik kargatu behar duzu, gero Hodeian gorde ahal izateko.",
+      "pullSketch": "Gorde hodeian",
+      "pullSketchMsg": "Programa hau Hodeitik kargatzeak bertsio lokala gainidatziko du. Ziur zaude jarraitu nahi duzula?",
+      "push": "Gorde hodeian",
+      "pushSketch": "Kargatu hodeitik",
+      "pushSketchMsg": "Hau programa publiko bat da. Hodeian gorde aurretik, ziurtatu isilpeko informazioa arduino_secrets.h fitxategietan definituta dagoela. Programa pribatu bihurtu dezakezu Partekatu paneletik.",
+      "remote": "Urrunekoa",
+      "share": "Partekatu...",
+      "shareSketch": "Partekatu programa",
+      "showHideSketchbook": "Show/Hide Cloud Sketchbook",
+      "signIn": "HASI SAIOA",
+      "signInToCloud": "Hasi saioa Arduino Cloud-en",
+      "signOut": "Amaitu saioa",
+      "sync": "Sync",
+      "syncEditSketches": "Sinkronizatu eta editatu zure Arduino Cloud-eko programak",
+      "visitArduinoCloud": "Bisitatu Arduino Cloud hodeiko programak sortzeko."
+    },
+    "cloudSketch": {
+      "alreadyExists": "Cloud sketch '{0}' already exists.",
+      "creating": "Creating cloud sketch '{0}'...",
+      "new": "New Cloud Sketch",
+      "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
+      "pulling": "Synchronizing sketchbook, pulling '{0}'...",
+      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "renaming": "Renaming cloud sketch from '{0}' to '{1}'...",
+      "synchronizingSketchbook": "Synchronizing sketchbook..."
+    },
+    "common": {
+      "all": "All",
+      "contributed": "Contributed",
+      "installManually": "Instalatu eskuz",
+      "later": "Gero",
+      "noBoardSelected": "Plakarik ez da hautatu",
+      "noSketchOpened": "No sketch opened",
+      "notConnected": "[konektatu gabe]",
+      "offlineIndicator": "Deskonektatuta zaudela dirudi. Interneterako konexiorik gabe, baliteke Arduino CLI ez izatea gai beharrezko baliabideak deskargatzeko, eta funtzionamendu txarra eragin lezake. Mesedez, konektatu Internetera eta berrabiarazi aplikazioa.",
+      "oldFormat": "'{0}' programak `.pde` formatu zaharra erabiltzen du oraindik. `.ino` luzapen berrira aldatu nahi duzu?",
+      "partner": "Partner",
+      "processing": "Prozesatzen",
+      "recommended": "Recommended",
+      "retired": "Retired",
+      "selectManually": "Select Manually",
+      "selectedOn": "Non: {0}",
+      "serialMonitor": "Serieko monitorea",
+      "type": "Type",
+      "unknown": "Ezezaguna",
+      "updateable": "Updatable"
+    },
+    "compile": {
+      "error": "Konpilazio-errorea: {0}"
+    },
+    "component": {
+      "boardsIncluded": "Boards included in this package:",
+      "by": "Egilea:",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "Iragazi zure bilaketa...",
+      "install": "Instalatu",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "Informazio gehiago",
+      "otherVersions": "Other Versions",
+      "remove": "Kendu",
+      "title": "{0} by {1}",
+      "uninstall": "Desinstalatu",
+      "uninstallMsg": "{0} desinstalatu nahi duzu?",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "Gehitu fitxategia",
+      "fileAdded": "Fitxategi bat gehitu da programara.",
+      "plotter": {
+        "couldNotOpen": "Couldn't open serial plotter"
+      },
+      "replaceTitle": "Ordezkatu"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "All",
+        "default": "Default",
+        "more": "More",
+        "none": "None"
+      }
+    },
+    "coreContribution": {
+      "copyError": "Copy error messages",
+      "noBoardSelected": "No board selected. Please select your Arduino board from the Tools > Board menu."
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Restart Daemon",
+      "start": "Start Daemon",
+      "stop": "Stop Daemon"
+    },
+    "debug": {
+      "debugWithMessage": "Araztu - {0}",
+      "debuggingNotSupported": "Ez dauka arazketarako euskarririk: '{0}'",
+      "getDebugInfo": "Getting debug info...",
+      "noPlatformInstalledFor": "Plataforma ez dago instalatuta honentzat: '{0}'",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
+      "optimizeForDebugging": "Optimizatu arazketarako",
+      "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
+    },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
+    "dialog": {
+      "dontAskAgain": "Ez galdetu berriro"
+    },
+    "editor": {
+      "autoFormat": "Formatu automatikoa",
+      "commentUncomment": "Iruzkindu/Desiruzkindu",
+      "copyForForum": "Kopiatu fororako (Markdown)",
+      "decreaseFontSize": "Txikiagotu letra-tamaina",
+      "decreaseIndent": "Txikiagotu koska",
+      "increaseFontSize": "Handitu letra-tamaina",
+      "increaseIndent": "Handitu koska",
+      "nextError": "Next Error",
+      "previousError": "Previous Error",
+      "revealError": "Reveal Error"
+    },
+    "examples": {
+      "builtInExamples": "Integratutako adibideak",
+      "couldNotInitializeExamples": "Ezin izan dira hasieratu integratutako adibideak.",
+      "customLibrary": "Liburutegi pertsonalizatuetako adibideak",
+      "for": "Honen adibideak: {0}",
+      "forAny": "Edozein plakarentzako adibideak",
+      "menu": "Adibideak"
+    },
+    "firmware": {
+      "checkUpdates": "Egiaztatu eguneratzeak",
+      "failedInstall": "Instalazioak huts egin du. Mesedez saiatu berriro.",
+      "install": "Instalatu",
+      "installingFirmware": "Firmwarea instalatzen.",
+      "overwriteSketch": "Instalazioak plakako programa gainidatziko du.",
+      "selectBoard": "Hautatu plaka",
+      "selectVersion": "Hautatu firmware bertsioa",
+      "successfullyInstalled": "Firmwarea behar bezala instalatu da.",
+      "updater": "Firmware Updater"
+    },
+    "help": {
+      "environment": "Ingurunea",
+      "faq": "Maiz egindako galderak",
+      "findInReference": "Bilatu erreferentzian",
+      "gettingStarted": "Erabiltzen hasi",
+      "keyword": "Idatzi gako-hitz bat",
+      "privacyPolicy": "Pribatutasun politika",
+      "reference": "Erreferentzia",
+      "search": "Bilatu lingzhilab.com-n",
+      "troubleshooting": "Arazoak konpontzen",
+      "visit": "Bisitatu lingzhilab.com"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Check for Arduino IDE Updates",
+      "closeAndInstallButton": "Itxi eta instalatu",
+      "closeToInstallNotice": "Itxi softwarea eta instalatu eguneratzea zure makinan.",
+      "downloadButton": "Software eguneratzea",
+      "downloadingNotice": "Arduino IDEren azken bertsioa deskargatzen",
+      "errorCheckingForUpdates": "Errorea Arduino IDE eguneraketak egiaztatzean.\n{0}",
+      "goToDownloadButton": "Joan Deskargak orrira",
+      "goToDownloadPage": "Arduino IDErentzako eguneraketa bat eskuragarri dago, baina ezin dugu automatikoki deskargatu eta instalatu. Mesedez joan deskargen orrira eta deskargatu azken bertsioa bertatik.",
+      "ideUpdaterDialog": "Software eguneratzea",
+      "newVersionAvailable": "Arduino IDEren bertsio berri bat ({0}) eskuragarri dago deskargatzeko.",
+      "noUpdatesAvailable": "Ez dago eguneraketa berririk eskuragarri Arduino IDErentzat",
+      "notNowButton": "Orain ez",
+      "skipVersionButton": "Saltatu bertsioa",
+      "updateAvailable": "Eguneratzea eskuragarri",
+      "versionDownloaded": "Arduino IDE {0} deskargatu da."
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+    },
+    "library": {
+      "addZip": "Gehitu .ZIP liburutegia...",
+      "arduinoLibraries": "Arduino liburutegiak",
+      "contributedLibraries": "Hirugarrengoen liburutegiak",
+      "include": "Hartu barne liburutegia",
+      "installAll": "Install All",
+      "installLibraryDependencies": "Install library dependencies",
+      "installMissingDependencies": "Falta diren mendekotasun guztiak instalatu nahi dituzu?",
+      "installOneMissingDependency": "Falta den mendekotasuna instalatu nahi duzu?",
+      "installWithoutDependencies": "Install without dependencies",
+      "installedSuccessfully": "{0}:{1} liburutegia behar bezala instalatu da",
+      "libraryAlreadyExists": "Liburutegi bat badago dagoeneko. Gainidatzi nahi duzu?",
+      "manageLibraries": "Kudeatu liburutegiak...",
+      "namedLibraryAlreadyExists": "{0} izeneko liburutegi-karpeta bat badago dagoeneko. Gainidatzi nahi duzu?",
+      "needsMultipleDependencies": "<b>{0}:{1}</b> liburutegiak instalatu gabeko beste mendekotasun batzuk behar ditu:",
+      "needsOneDependency": "<b>{0}:{1}</b> liburutegiak instalatu gabeko beste mendekotasun bat behar du:",
+      "overwriteExistingLibrary": "Lehendik dagoen liburutegia gainidatzi nahi duzu?",
+      "successfullyInstalledZipLibrary": "Liburutegia behar bezala instalatu da {0} artxibotik",
+      "title": "Liburutegi kudeatzailea",
+      "uninstalledSuccessfully": "{0}:{1} liburutegia behar bezala desinstalatu da",
+      "zipLibrary": "Liburutegia"
+    },
+    "librarySearchProperty": {
+      "topic": "Topic"
+    },
+    "libraryTopic": {
+      "communication": "Communication",
+      "dataProcessing": "Data Processing",
+      "dataStorage": "Data Storage",
+      "deviceControl": "Device Control",
+      "display": "Display",
+      "other": "Other",
+      "sensors": "Sensors",
+      "signalInputOutput": "Signal Input/Output",
+      "timing": "Timing",
+      "uncategorized": "Uncategorized"
+    },
+    "libraryType": {
+      "installed": "Installed"
+    },
+    "menu": {
+      "advanced": "Advanced",
+      "sketch": "Programa",
+      "tools": "Tresnak"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "Unable to close websocket",
+      "unableToConnectToWebSocket": "Unable to connect to websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "Name of the new Cloud Sketch"
+    },
+    "portProtocol": {
+      "network": "Sarea",
+      "serial": "Serial"
+    },
+    "preferences": {
+      "additionalManagerURLs": "Plaka kudeatzaile gehigarrien URLak:",
+      "auth.audience": "OAuth2 audientzia.",
+      "auth.clientID": "OAuth2 bezeroaren IDa",
+      "auth.domain": "OAuth2 domeinua.",
+      "auth.registerUri": "Erabiltzaile berri bat erregistratzeko erabilitako URIa.",
+      "automatic": "Automatikoa",
+      "board.certificates": "Plaketara kargatu daitezkeen ziurtagirien zerrenda",
+      "browse": "Arakatu",
+      "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
+      "choose": "Aukeratu",
+      "cli.daemonDebug": "Enable debug logging of the gRPC calls to the Arduino CLI. A restart of the IDE is needed for this setting to take effect. It's false by default.",
+      "cloud.enabled": "Egia programaren sinkronizazio-funtzioak gaituta badaude. Lehenetsia egia da.",
+      "cloud.pull.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeitik kargatu aurretik. Lehenetsia egia da.",
+      "cloud.push.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeian gorde aurretik. Lehenetsia egia da.",
+      "cloud.pushpublic.warn": "Egia bada erabiltzaileek abisua jasoko dute programa publiko bat hodeian gorde aurretik. Lehenetsia egia da.",
+      "cloud.sketchSyncEndpoint": "Zerbitzari batean programak gorde eta kargatzeko amaiera-puntua. Lehenetsia Arduino Cloud API da.",
+      "compile": "konpilazioa",
+      "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
+      "compile.revealRange": "Adjusts how compiler errors are revealed in the editor after a failed verify/upload. Possible values: 'auto': Scroll vertically as necessary and reveal a line. 'center': Scroll vertically as necessary and reveal a line centered vertically. 'top': Scroll vertically as necessary and reveal a line close to the top of the viewport, optimized for viewing a code definition. 'centerIfOutsideViewport': Scroll vertically as necessary and reveal a line centered vertically only if it lies outside the viewport. The default value is '{0}'.",
+      "compile.verbose": "Egia konpilazioaren irteera xehatua izateko. Lehenetsia Gezurra.",
+      "compile.warnings": "gcc-ri ze abisu maila erabili esaten dio. 'None' da lehenetsia",
+      "compilerWarnings": "Konpiladorearen abisuak",
+      "editorFontSize": "Editorearen letra-tamaina",
+      "editorQuickSuggestions": "Editorearen iradokizun azkarrak",
+      "enterAdditionalURLs": "Sartu URL gehigarriak, bat errenkadako",
+      "files.inside.sketches": "Erakutsi fitxategiak programen barruan",
+      "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateChannel": "Eguneratzea ze argitalpen kanaletik hartu behar den. 'stable' argitalpen egonkorra da, 'nightly' garapeneko azken eraikitzea.",
+      "interfaceScale": "Interfazearen eskala",
+      "invalid.editorFontSize": "Editorearen letra-tamaina baliogabea. Osoko zenbaki positibo bat izan behar du.",
+      "invalid.sketchbook.location": "Programa bildumaren kokaleku baliogabea: {0}",
+      "invalid.theme": "Itxura baliogabea.",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.log": "Egia Arduino Language Server-ek egunkari-fitxategiak sortu behar baditu programaren karpetan. Bestela, gezurra. Lehenetsia gezurra da.",
+      "language.realTimeDiagnostics": "If true, the language server provides real-time diagnostics when typing in the editor. It's false by default.",
+      "manualProxy": "Proxyaren eskuzko konfigurazioa",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
+      "network": "Sarea",
+      "newSketchbookLocation": "Hautatu programa bilduma berriaren kokalekua",
+      "noCliConfig": "Could not load the CLI configuration",
+      "noProxy": "Proxyrik ez",
+      "proxySettings": {
+        "hostname": "Host name",
+        "password": "Password",
+        "port": "Port number",
+        "username": "Username"
+      },
+      "showVerbose": "Erakutsi irteera xehatua honetan zehar:",
+      "sketch": {
+        "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
+      },
+      "sketchbook.location": "Programa bildumaren kokalekua",
+      "sketchbook.showAllFiles": "Egia programaren barruko programa-fitxategi guztiak erakusteko. Lehenetsia gezurra da.",
+      "survey.notification": "True if users should be notified if a survey is available. True by default.",
+      "unofficialBoardSupport": "Egin klik ofizialak ez diren plaken laguntza-URL zerrenda ikusteko",
+      "upload": "karga",
+      "upload.verbose": "Egia kargaren irteera xehatua izateko. Lehenetsia Gezurra.",
+      "verifyAfterUpload": "Egiaztatu kodea kargatu ondoren",
+      "window.autoScale": "Egia erabiltzaile interfazea letra-tamainarekin automatikoki eskalatzen bada.",
+      "window.zoomLevel": {
+        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "New name of the Cloud Sketch"
+    },
+    "replaceMsg": "Lehendik dagoen {0} bertsioa ordezkatu?",
+    "selectZip": "Hautatu gehitu nahi duzun liburutegia daukan zip fitxategia",
+    "serial": {
+      "autoscroll": "Korritze automatikoa",
+      "carriageReturn": "Orga-itzulera",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "Message (Enter to send message to '{0}' on '{1}')",
+      "newLine": "Lerro berria",
+      "newLineCarriageReturn": "NL & CR biak",
+      "noLineEndings": "Lerro amaierarik ez",
+      "notConnected": "Ez dago konektatuta. Hautatu plaka eta ataka automatikoki konektatzeko.",
+      "openSerialPlotter": "Serial Plotter",
+      "timestamp": "Denbora-zigilua",
+      "toggleTimestamp": "Txandakatu denbora-zigilua"
+    },
+    "sketch": {
+      "archiveSketch": "Artxibatu programa",
+      "cantOpen": "\"{0}\" izeneko karpeta badago dagoeneko. Ezin da programa ireki.",
+      "compile": "Compiling sketch...",
+      "configureAndUpload": "Configure and Upload",
+      "createdArchive": "'{0}' artxiboa sortu da.",
+      "doneCompiling": "Konpilazioa burutu da.",
+      "doneUploading": "Karga burutu da.",
+      "editInvalidSketchFolderLocationQuestion": "Do you want to try saving the sketch to a different location?",
+      "editInvalidSketchFolderQuestion": "Do you want to try saving the sketch with a different name?",
+      "exportBinary": "Esportatu konpilatutako bitarra",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "You cannot save a sketch into a folder inside itself.",
+      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
+      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "Lekuz aldatzen",
+      "movingMsg": "\"{0}\" fitxategiak \"{1}\" izeneko programa-karpetaren barruan egon behar du.\nSortu karpeta, eraman fitxategia bertara eta jarraitu?",
+      "new": "New Sketch",
+      "noTrailingPeriod": "A filename cannot end with a dot",
+      "openFolder": "Ireki karpeta",
+      "openRecent": "Ireki azkenaldikoa",
+      "openSketchInNewWindow": "Ireki programa leiho berrian",
+      "reservedFilename": "'{0}' is a reserved filename.",
+      "saveFolderAs": "Gorde programen karpeta honela...",
+      "saveSketch": "Save your sketch to open it again later.",
+      "saveSketchAs": "Gorde programen karpeta honela...",
+      "showFolder": "Erakutsi programen karpeta",
+      "sketch": "Programa",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchbook": "Programa bilduma",
+      "titleLocalSketchbook": "Programa bilduma lokala",
+      "titleSketchbook": "Programa bilduma",
+      "upload": "Kargatu",
+      "uploadUsingProgrammer": "Kargatu programatzailea erabiliz",
+      "uploading": "Uploading...",
+      "userFieldsNotFoundError": "Ezin dira erabiltzaile eremuak aurkitu konektatutako plakarentzat",
+      "verify": "Egiaztatu",
+      "verifyOrCompile": "Egiaztatu/Konpilatu"
+    },
+    "sketchbook": {
+      "newCloudSketch": "New Cloud Sketch",
+      "newSketch": "New Sketch"
+    },
+    "survey": {
+      "answerSurvey": "Answer survey",
+      "dismissSurvey": "Don't show again",
+      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "Update Indexes",
+      "updateLibraryIndex": "Update Library Index",
+      "updatePackageIndex": "Update Package Index"
+    },
+    "upload": {
+      "error": "{0} errorea: {1}"
+    },
+    "userFields": {
+      "cancel": "Utzi",
+      "enterField": "Enter {0}",
+      "upload": "Kargatu"
+    },
+    "validateSketch": {
+      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixTitle": "Invalid sketch",
+      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' already exists."
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "Ezin izan da atzeko aldera konektatu.",
+      "cannotConnectDaemon": "Ezin izan da CLI daemon-era konektatu.",
+      "couldNotSave": "Ezin izan da programa gorde. Kopiatu gorde gabeko zure lana zure testu-editore gogokoenera eta berrabiarazi IDEa.",
+      "daemonOffline": "CLI daemon-a lineaz kanpo",
+      "offline": "Lineaz kanpo",
+      "offlineText": "Lineaz kanpo",
+      "quitTitle": "Are you sure you want to quit?"
+    },
+    "editor": {
+      "unsavedTitle": "Gorde gabe – {0}"
+    },
+    "messages": {
+      "collapse": "Tolestu",
+      "expand": "Zabaldu"
+    },
+    "workspace": {
+      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
+      "fileNewName": "Fitxategi berriaren izena",
+      "invalidExtension": "{0} ez da baliozko luzapen bat.",
+      "newFileName": "Fitxategiaren izen berria"
+    }
+  }
+}

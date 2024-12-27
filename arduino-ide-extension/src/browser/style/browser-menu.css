@@ -1,0 +1,15 @@
+#theia-top-panel {
+    min-height: 64px;
+    flex-direction: column;
+}
+
+#theia-top-panel .p-TabBar-toolbar {
+    justify-content: flex-end;
+    margin: 0;
+    padding-left: 10px;
+    width: 100%;
+}
+
+.p-MenuBar-item.p-mod-active {
+    color: var(--theia-menubar-selectionForeground);
+}

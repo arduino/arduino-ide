@@ -1,0 +1,551 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "バージョン：{0}\n日付：{1}{2}\nCLIバージョン：{3}\n\n{4}",
+      "label": "{0}について"
+    },
+    "account": {
+      "goToCloudEditor": "クラウドエディターへ移動",
+      "goToIoTCloud": "IoTクラウドへ移動",
+      "goToProfile": "プロファイルへ移動",
+      "menuTitle": "Arduinoクラウド"
+    },
+    "board": {
+      "board": "ボード{0}",
+      "boardConfigDialogTitle": "他のボードとポートを選択",
+      "boardInfo": "ボード情報",
+      "boards": "ボード",
+      "configDialog1": "スケッチを書き込みたい場合には、ボードとポートの両方を選択してください。",
+      "configDialog2": "ボードのみを選択した場合、コンパイルはできますが、スケッチの書き込みはできません。",
+      "couldNotFindPreviouslySelected": "インストールされているプラットフォーム'{1}'で、以前に選択したボード'{0}'が見つかりませんでした。使用したいボードを手動で選択し直してください。今すぐ選択し直しますか？",
+      "editBoardsConfig": "Edit Board and Port...",
+      "getBoardInfo": "ボード情報を取得",
+      "inSketchbook": "（スケッチブック内）",
+      "installNow": "現在選択されているボード\"{2}\"用にコア\"{0} {1}\"をインストールする必要があります。今すぐインストールしますか？",
+      "noBoardsFound": "\"{0}\"のボードが見つかりませんでした",
+      "noNativeSerialPort": "ネイティブのシリアルポートで、情報を取得できません。",
+      "noPortsDiscovered": "ポートが見つかりませんでした",
+      "nonSerialPort": "シリアルポートではないため、情報を取得できません。",
+      "openBoardsConfig": "他のボードとポートを選択…",
+      "pleasePickBoard": "選択したポートに接続されているボードを選んでください。",
+      "port": "ポート{0}",
+      "ports": "ポート",
+      "programmer": "書き込み装置",
+      "reselectLater": "後で選択しなおす",
+      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "searchBoard": "ボードを検索",
+      "selectBoard": "ボードを選択",
+      "selectPortForInfo": "ボード情報を得るには、ポートを選択してください。",
+      "showAllAvailablePorts": "有効な場合、利用可能なすべてのポートを表示",
+      "showAllPorts": "全てのポートを表示",
+      "succesfullyInstalledPlatform": "プラットフォーム{0}:{1}のインストールに成功しました",
+      "succesfullyUninstalledPlatform": "プラットフォーム{0}:{1}のアンインストールに成功しました",
+      "typeOfPorts": "{0}ポート",
+      "unconfirmedBoard": "Unconfirmed board",
+      "unknownBoard": "未知のボード"
+    },
+    "boardsManager": "ボードマネージャ",
+    "boardsType": {
+      "arduinoCertified": "Arduino認定"
+    },
+    "bootloader": {
+      "burnBootloader": "ブートローダを書き込む",
+      "burningBootloader": "ブートローダを書き込み中…",
+      "doneBurningBootloader": "ブートローダの書き込みが完了しました。"
+    },
+    "burnBootloader": {
+      "error": "ブートローダの書き込み中にエラーが発生しました: {0}"
+    },
+    "certificate": {
+      "addNew": "新規追加",
+      "addURL": "SSL証明書を取得するためのURLを追加",
+      "boardAtPort": "{1}の{0}",
+      "certificatesUploaded": "証明書を書き込みました。",
+      "enterURL": "URLを入力",
+      "noSupportedBoardConnected": "対応するボードが接続されていません",
+      "openContext": "コンテキストを開く",
+      "remove": "削除",
+      "selectBoard": "ボードを選択…",
+      "selectCertificateToUpload": "1. 書き込む証明書を選択",
+      "selectDestinationBoardToUpload": "2. 目的のボードを選択して証明書を書き込む",
+      "upload": "マイコンボードに書き込む",
+      "uploadFailed": "書き込みに失敗しました。もう一度試してください。",
+      "uploadRootCertificates": "SSLルート証明書を書き込み",
+      "uploadingCertificates": "証明書を書き込み中。"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "Arduinoのアップデートを確認",
+      "installAll": "全てをインストール",
+      "noUpdates": "最近のアップデートはありません。",
+      "promptUpdateBoards": "一部のボードにアップデートがあります。",
+      "promptUpdateLibraries": "一部のライブラリにアップデートがあります。",
+      "updatingBoards": "ボードをアップデート中…",
+      "updatingLibraries": "ライブラリをアップデート中…"
+    },
+    "cli-error-parser": {
+      "keyboardError": "'Keyboard'が見つかりません。スケッチに'#include <Keyboard.h>'という行はありますか？",
+      "mouseError": "'Mouse'が見つかりません。スケッチに'#include <Mouse.h>'という行はありますか？"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "スケッチの可視性を選択:",
+      "cloudSketchbook": "クラウドスケッチブック",
+      "connected": "接続済み",
+      "continue": "続ける",
+      "donePulling": "Done pulling '{0}'.",
+      "donePushing": "Done pushing '{0}'.",
+      "embed": "埋め込み:",
+      "emptySketchbook": "スケッチブックは空です",
+      "goToCloud": "クラウドへ",
+      "learnMore": "詳細はこちら",
+      "link": "リンク:",
+      "notYetPulled": "クラウドにプッシュできません。まだプルされていません。",
+      "offline": "オフライン",
+      "openInCloudEditor": "クラウドエディターで開く",
+      "options": "オプション…",
+      "privateVisibility": "プライベート：スケッチを見られるのは自分だけです。",
+      "profilePicture": "プロフィール画像",
+      "publicVisibility": "パブリック：リンクを知ってる人は誰でもスケッチを見ることができます。",
+      "pull": "プル",
+      "pullFirst": "クラウドにプッシュできるようにするには、まずプルしなければなりません。",
+      "pullSketch": "スケッチをプルする",
+      "pullSketchMsg": "このスケッチをクラウドからプルするとローカル版が上書きされます。本当に続行しますか？",
+      "push": "プッシュ",
+      "pushSketch": "スケッチをプッシュする",
+      "pushSketchMsg": "これはパブリックなスケッチです。プッシュする前に、すべての機密情報がarduino_secrets.hファイルで定義されていることを確認してください。共有パネルでスケッチをプライベートにできます。",
+      "remote": "リモート",
+      "share": "共有...",
+      "shareSketch": "スケッチを共有",
+      "showHideSketchbook": "クラウドスケッチブックの表示・非表示",
+      "signIn": "ログイン",
+      "signInToCloud": "Arduino Cloudにログインする",
+      "signOut": "ログアウト",
+      "sync": "同期",
+      "syncEditSketches": "Arduinoクラウドスケッチの同期と編集",
+      "visitArduinoCloud": "Arduino Cloudにアクセスしてクラウドスケッチを作成する"
+    },
+    "cloudSketch": {
+      "alreadyExists": "クラウドスケッチ'{0}'は既に存在しています。",
+      "creating": "クラウドスケッチ'{0}'を作成中…",
+      "new": "新規クラウドスケッチ",
+      "notFound": "クラウドスケッチ'{0}'を取得できませんでした。存在しません。",
+      "pulling": "スケッチブックを同期中。'{0}'を取得中です…",
+      "pushing": "スケッチブックを同期中。'{0}'をプッシュ中です…",
+      "renaming": "クラウドスケッチの名前を'{0}'から'{1}'に変更中です...",
+      "synchronizingSketchbook": "スケッチブックを同期中です…"
+    },
+    "common": {
+      "all": "全て",
+      "contributed": "提供された",
+      "installManually": "手動でインストール",
+      "later": "後で",
+      "noBoardSelected": "ボード未選択",
+      "noSketchOpened": "No sketch opened",
+      "notConnected": "[未接続]",
+      "offlineIndicator": "オフラインのようです。 インターネットに接続していないと、Arduino CLIが必要なリソースをダウンロードできず、誤動作を引き起こす可能性があります。 インターネットに接続して、アプリケーションを再起動してください。",
+      "oldFormat": "'{0}'はまだ古い`.pde`形式を使用しています。新しい`.ino`拡張子に切り替えますか？",
+      "partner": "パートナー",
+      "processing": "処理中",
+      "recommended": "推奨",
+      "retired": "廃止済み",
+      "selectManually": "Select Manually",
+      "selectedOn": "{0}の",
+      "serialMonitor": "シリアルモニタ",
+      "type": "タイプ",
+      "unknown": "不明",
+      "updateable": "アップデート可能"
+    },
+    "compile": {
+      "error": "コンパイルエラー: {0}"
+    },
+    "component": {
+      "boardsIncluded": "このパッケージに含まれるボード:",
+      "by": "by",
+      "clickToOpen": "Click to open in browser: {0}",
+      "filterSearch": "検索をフィルタ…",
+      "install": "インストール",
+      "installLatest": "Install Latest",
+      "installVersion": "Install {0}",
+      "installed": "{0} installed",
+      "moreInfo": "詳細情報",
+      "otherVersions": "Other Versions",
+      "remove": "削除",
+      "title": "{0} by {1}",
+      "uninstall": "アンインストール",
+      "uninstallMsg": "{0}をアンインストールしますか？",
+      "update": "Update"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "'{0}': {1}にあるスケッチブックにアクセスできませんでした"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "Connection lost. Cloud sketch actions and updates won't be available."
+    },
+    "contributions": {
+      "addFile": "ファイルを追加...",
+      "fileAdded": "スケッチにファイルが1つ追加されました。",
+      "plotter": {
+        "couldNotOpen": "シリアルプロッタを開けませんでした"
+      },
+      "replaceTitle": "置換"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "全て",
+        "default": "デフォルト",
+        "more": "詳細",
+        "none": "なし"
+      }
+    },
+    "coreContribution": {
+      "copyError": "エラーメッセージをコピー",
+      "noBoardSelected": "ボードが選択されていません。ツール > ボードメニューからArduinoボードを選択してください。"
+    },
+    "createCloudCopy": "Push Sketch to Cloud",
+    "daemon": {
+      "restart": "Daemonを再起動",
+      "start": "Daemonを開始",
+      "stop": "Daemonを停止"
+    },
+    "debug": {
+      "debugWithMessage": "デバッグ - {0}",
+      "debuggingNotSupported": "デバッグは'{0}'ではサポートされていません。",
+      "getDebugInfo": "Getting debug info...",
+      "noPlatformInstalledFor": "'{0}'用にプラットフォームがインストールされていません。",
+      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
+      "optimizeForDebugging": "デバッグに最適化",
+      "sketchIsNotCompiled": "デバッグセッションを開始する前に、スケッチ'{0}'を検証する必要があります。スケッチを検証してから、もう一度デバッグを開始してください。今すぐスケッチを検証しますか？"
+    },
+    "developer": {
+      "clearBoardList": "Clear the Board List History",
+      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "dumpBoardList": "Dump the Board List"
+    },
+    "dialog": {
+      "dontAskAgain": "次回から表示しない"
+    },
+    "editor": {
+      "autoFormat": "自動整形",
+      "commentUncomment": "コメント化・復帰",
+      "copyForForum": "フォーラム用にコピー（Markdown）",
+      "decreaseFontSize": "フォントサイズを小さく",
+      "decreaseIndent": "インデントを減らす",
+      "increaseFontSize": "フォントサイズを大きく",
+      "increaseIndent": "インデントを増やす",
+      "nextError": "次のエラー",
+      "previousError": "前のエラー",
+      "revealError": "エラーを表示"
+    },
+    "examples": {
+      "builtInExamples": "付属のスケッチ例",
+      "couldNotInitializeExamples": "付属のスケッチ例を初期化できませんでした。",
+      "customLibrary": "カスタムライブラリのスケッチ例",
+      "for": "{0}用のスケッチ例",
+      "forAny": "あらゆるボード用のスケッチ例",
+      "menu": "スケッチ例"
+    },
+    "firmware": {
+      "checkUpdates": "アップデートを確認",
+      "failedInstall": "インストールに失敗しました。もう一度試してください。",
+      "install": "インストール",
+      "installingFirmware": "ファームウェアをインストール中。",
+      "overwriteSketch": "インストールによりボード上のスケッチを上書きします。",
+      "selectBoard": "ボードを選択",
+      "selectVersion": "ファームウェアのバージョンを選択",
+      "successfullyInstalled": "ファームウェアのインストールに成功しました。",
+      "updater": "Firmware Updater"
+    },
+    "help": {
+      "environment": "環境",
+      "faq": "よくある質問",
+      "findInReference": "リファレンスで検索",
+      "gettingStarted": "はじめに",
+      "keyword": "キーワードを入力",
+      "privacyPolicy": "プライバシーポリシー",
+      "reference": "リファレンス",
+      "search": "Arduino.ccで検索",
+      "troubleshooting": "トラブルシューティング",
+      "visit": "Arduino.ccウェブサイトを開く"
+    },
+    "ide-updater": {
+      "checkForUpdates": "Arduino IDEのアップデートを確認",
+      "closeAndInstallButton": "終了してインストール",
+      "closeToInstallNotice": "ソフトウェアを終了してアップデートをインストールする。",
+      "downloadButton": "ダウンロード",
+      "downloadingNotice": "Arduino IDEの最新版をダウンロード中です。",
+      "errorCheckingForUpdates": "Arduino IDEの更新を確認中にエラーが発生しました。\n{0}",
+      "goToDownloadButton": "ダウンロードに移動",
+      "goToDownloadPage": "Arduino IDEのアップデートがありますが、自動でダウンロードしてインストールすることはできません。ダウンロードページに移動して、そこから最新版をダウンロードしてください。",
+      "ideUpdaterDialog": "ソフトウェア・アップデート",
+      "newVersionAvailable": "新しいバージョンのArduino IDE（{0}）をダウンロードできます。",
+      "noUpdatesAvailable": "Arduino IDEに最近のアップデートはありません",
+      "notNowButton": "今はしない",
+      "skipVersionButton": "バージョンをスキップ",
+      "updateAvailable": "アップデートがあります",
+      "versionDownloaded": "Arduino IDE {0}がダウンロードされました。"
+    },
+    "installable": {
+      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
+      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+    },
+    "library": {
+      "addZip": ".ZIP形式のライブラリをインストール...",
+      "arduinoLibraries": "Arduinoライブラリ",
+      "contributedLibraries": "提供されたライブラリ",
+      "include": "ライブラリをインクルード",
+      "installAll": "全てをインストール",
+      "installLibraryDependencies": "ライブラリの依存関係をインストール",
+      "installMissingDependencies": "不足している全ての依存関係をインストールしますか？",
+      "installOneMissingDependency": "不足している依存関係をインストールしますか？",
+      "installWithoutDependencies": "依存関係なしにインストール",
+      "installedSuccessfully": "ライブラリ{0}:{1}のインストールに成功しました。",
+      "libraryAlreadyExists": "ライブラリはすでに存在しています。上書きしますか？",
+      "manageLibraries": "ライブラリを管理...",
+      "namedLibraryAlreadyExists": "{0}という名前のライブラリフォルダはすでに存在しています。上書きしますか？",
+      "needsMultipleDependencies": "ライブラリ<b>{0}:{1}</b>には、現在インストールされていない複数の依存関係が必要です:",
+      "needsOneDependency": "ライブラリ<b>{0}:{1}</b>には、現在インストールされていない別の依存関係が必要です:",
+      "overwriteExistingLibrary": "既存のライブラリを上書きしますか？",
+      "successfullyInstalledZipLibrary": "アーカイブ{0}からライブラリのインストールに成功しました。",
+      "title": "ライブラリマネージャー",
+      "uninstalledSuccessfully": "ライブラリ{0}:{1}のアンインストールに成功しました。",
+      "zipLibrary": "ライブラリ"
+    },
+    "librarySearchProperty": {
+      "topic": "トピック"
+    },
+    "libraryTopic": {
+      "communication": "コミュニケーション",
+      "dataProcessing": "データ処理",
+      "dataStorage": "データ保存",
+      "deviceControl": "デバイス制御",
+      "display": "ディスプレイ",
+      "other": "その他",
+      "sensors": "センサ",
+      "signalInputOutput": "信号入出力",
+      "timing": "タイミング",
+      "uncategorized": "未分類"
+    },
+    "libraryType": {
+      "installed": "インストール済み"
+    },
+    "menu": {
+      "advanced": "詳細",
+      "sketch": "スケッチ",
+      "tools": "ツール"
+    },
+    "monitor": {
+      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "baudRate": "{0} baud",
+      "connectionFailedError": "Could not connect to {0} {1} port.",
+      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
+      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "notConnectedError": "Not connected to {0} {1} port.",
+      "unableToCloseWebSocket": "websocketを閉じることができません",
+      "unableToConnectToWebSocket": "websocketに接続することができません"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "新しいクラウドスケッチの名前"
+    },
+    "portProtocol": {
+      "network": "ネットワーク",
+      "serial": "シリアル"
+    },
+    "preferences": {
+      "additionalManagerURLs": "追加のボードマネージャのURL",
+      "auth.audience": "OAuth2オーディエンス。",
+      "auth.clientID": "OAuth2クライアントID。",
+      "auth.domain": "OAuth2ドメイン。",
+      "auth.registerUri": "新規ユーザーの登録用URI。",
+      "automatic": "自動",
+      "board.certificates": "ボードに書き込みできる証明書の一覧",
+      "browse": "参照",
+      "checkForUpdate": "IDE、ボード、ライブラリの利用可能なアップデートに関する通知を受け取ることができます。変更後にIDEの再起動が必要です。デフォルトはtrue。",
+      "choose": "選択",
+      "cli.daemonDebug": "Arduino CLIへのgRPC呼び出しのデバッグロギングを有効にします。この設定を有効にするにはIDEを再起動する必要があります。デフォルトはfalseです。",
+      "cloud.enabled": "スケッチの同期機能が有効な場合にはtrueを指定。デフォルトではtrue。",
+      "cloud.pull.warn": "クラウドスケッチをプルする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
+      "cloud.push.warn": "クラウドスケッチをプッシュする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
+      "cloud.pushpublic.warn": "パブリックスケッチをクラウドにプッシュする前に、ユーザーに警告を表示するにはtrueを指定。デフォルトではtrue。",
+      "cloud.sketchSyncEndpoint": "バックエンドからスケッチをプッシュ／プルするために使用されるエンドポイント。デフォルトではArduino Cloud APIを指します。",
+      "compile": "コンパイル",
+      "compile.experimental": "IDEが複数のコンパイラエラーを処理するよう設定するにはtrueを指定します。デフォルトは falseです。",
+      "compile.revealRange": "検証/アップロードに失敗した後、エディターでコンパイラエラーを表示する方法を調整します。使用可能な値: 'auto': 必要に応じて縦方向にスクロールし、行を示します。'center': 必要に応じて垂直方向にスクロールし、垂直方向の中央に行を示します。'top': 必要に応じて垂直方向にスクロールし、ビューポートの上部近くに行を表示します。'centerIfOutsideViewport': 必要に応じて垂直方向にスクロールし、ビューポートの外側にある場合のみ、垂直方向の中央に行を示します。デフォルト値は'{0}'です。",
+      "compile.verbose": "コンパイル時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
+      "compile.warnings": "使用する警告レベルをgccに指示します。デフォルトでは「なし」です。",
+      "compilerWarnings": "コンパイラの警告",
+      "editorFontSize": "エディターのフォントサイズ",
+      "editorQuickSuggestions": "エディターのクイックサジェスト",
+      "enterAdditionalURLs": "追加のURLを1行ずつ入力",
+      "files.inside.sketches": "スケッチ内のファイルを表示",
+      "ide.updateBaseUrl": "アップデートをダウンロードするためのベースURL。デフォルトは 'https://downloads.arduino.cc/arduino-ide' です。",
+      "ide.updateChannel": "アップデート元のリリースチャンネル。stableは安定版リリース、nightlyは最新の開発用ビルドです。",
+      "interfaceScale": "インターフェイスのスケール",
+      "invalid.editorFontSize": "エディターのフォントサイズが無効です。正の整数でなければなりません。",
+      "invalid.sketchbook.location": "スケッチブックの場所が無効です: {0}",
+      "invalid.theme": "無効なテーマです。",
+      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.log": "Arduino Language Serverがスケッチフォルダにログファイルを生成した方がよい場合はtrue。それ以外はfalse。デフォルトではfalse。",
+      "language.realTimeDiagnostics": "trueの場合、言語サーバーはエディターでの入力時にリアルタイムの診断を提供します。デフォルトはfalseです。",
+      "manualProxy": "手動プロキシ設定",
+      "monitor": {
+        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+      },
+      "network": "ネットワーク",
+      "newSketchbookLocation": "新しいスケッチブックの場所を選択",
+      "noCliConfig": "CLIの設定を読み込めませんでした",
+      "noProxy": "プロキシなし",
+      "proxySettings": {
+        "hostname": "ホスト名",
+        "password": "パスワード",
+        "port": "ポート番号",
+        "username": "ユーザー名"
+      },
+      "showVerbose": "より詳細な情報を表示する",
+      "sketch": {
+        "inoBlueprint": "デフォルトの `.ino` ブループリント・ファイルへの絶対ファイルシステムパス。指定された場合、IDEによって作成されるすべての新しいスケッチに、ブループリント・ファイルの内容が使用されます。指定されない場合、スケッチはArduinoデフォルトの内容で生成されます。アクセスできないブループリント・ファイルは無視されます。この設定を有効にするには**IDE の再起動が必要**です。"
+      },
+      "sketchbook.location": "スケッチブックの場所",
+      "sketchbook.showAllFiles": "スケッチ内のすべてのスケッチファイルを表示するにはtrueを指定。デフォルトではfalse。",
+      "survey.notification": "アンケートが利用可能になったとき、通知を受け取る場合はTrueを指定します。デフォルトではTrue。",
+      "unofficialBoardSupport": "クリックして非公式ボードをサポートするURLのリストを表示",
+      "upload": "書き込み",
+      "upload.verbose": "書き込み時に詳細な出力を行うにはtrueを指定。デフォルトではfalse。",
+      "verifyAfterUpload": "書き込み後にコードを検証する",
+      "window.autoScale": "ユーザーインターフェイスをフォントサイズに合わせて自動的に拡大縮小させるにはtrueを指定。",
+      "window.zoomLevel": {
+        "deprecationMessage": "廃止済み。代わりに'window.zoomLevel'を使用してください。"
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "クラウドスケッチの新しい名前"
+    },
+    "replaceMsg": "{0}の既存のバージョンを置き換えますか？",
+    "selectZip": "追加したいライブラリの入ったZIPファイルを選択",
+    "serial": {
+      "autoscroll": "自動スクロール",
+      "carriageReturn": "CRのみ",
+      "connecting": "Connecting to '{0}' on '{1}'...",
+      "message": "メッセージ（'{1}'の{0}にメッセージを送信するにはEnter）",
+      "newLine": "LFのみ",
+      "newLineCarriageReturn": "CRおよびLF",
+      "noLineEndings": "改行なし",
+      "notConnected": "接続されていません。自動的に接続するには、ボードとポートを選択してください。",
+      "openSerialPlotter": "シリアルプロッタ",
+      "timestamp": "タイムスタンプ",
+      "toggleTimestamp": "タイムスタンプを表示・非表示"
+    },
+    "sketch": {
+      "archiveSketch": "スケッチをアーカイブする",
+      "cantOpen": "「{0}」というフォルダはすでに存在します。スケッチを開けません。",
+      "compile": "スケッチをコンパイル中…",
+      "configureAndUpload": "構成と書き込み",
+      "createdArchive": "アーカイブ'{0}'を作成しました。",
+      "doneCompiling": "コンパイル完了。",
+      "doneUploading": "書き込み完了",
+      "editInvalidSketchFolderLocationQuestion": "スケッチを別の場所に保存してみますか？",
+      "editInvalidSketchFolderQuestion": "スケッチを別の名前で保存しますか？",
+      "exportBinary": "コンパイル済みバイナリをエクスポート",
+      "invalidCloudSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 36 characters.",
+      "invalidSketchFolderLocationDetails": "スケッチは、それ自身の中のフォルダに保存することはできません。",
+      "invalidSketchFolderLocationMessage": "無効なスケッチフォルダの場所：'{0}'。",
+      "invalidSketchFolderNameMessage": "スケッチフォルダの名前が無効です：'{0}'",
+      "invalidSketchName": "The name must start with a letter, number, or underscore, followed by letters, numbers, dashes, dots and underscores. Maximum length is 63 characters.",
+      "moving": "移動",
+      "movingMsg": "ファイル\"{0}\"は、\"{1}\"という名前のスケッチフォルダの中にあることが必要です。\nこのフォルダを作成し、ファイルを移動させ、継続しますか？",
+      "new": "新規スケッチ",
+      "noTrailingPeriod": "ファイル名の末尾にドットを付けることはできません",
+      "openFolder": "フォルダを開く",
+      "openRecent": "最近使った項目を開く",
+      "openSketchInNewWindow": "新規ウィンドウでスケッチを開く",
+      "reservedFilename": "'{0}'は予約されたファイル名です。",
+      "saveFolderAs": "スケッチフォルダを別名で保存…",
+      "saveSketch": "あとで再び開くためスケッチを保存する。",
+      "saveSketchAs": "スケッチを別名で保存…",
+      "showFolder": "スケッチフォルダを表示",
+      "sketch": "スケッチ",
+      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchbook": "スケッチブック",
+      "titleLocalSketchbook": "ローカルスケッチブック",
+      "titleSketchbook": "スケッチブック",
+      "upload": "書き込み",
+      "uploadUsingProgrammer": "書き込み装置を使って書き込む",
+      "uploading": "書き込み中…",
+      "userFieldsNotFoundError": "接続されたボードのユーザーフィールドが見つかりません。",
+      "verify": "検証",
+      "verifyOrCompile": "検証・コンパイル"
+    },
+    "sketchbook": {
+      "newCloudSketch": "新規クラウドスケッチ",
+      "newSketch": "新規スケッチ"
+    },
+    "survey": {
+      "answerSurvey": "アンケートに回答する",
+      "dismissSurvey": "次回から表示しない",
+      "surveyMessage": "とても簡単なアンケートに答えて、私たちの改善にご協力ください。私たちはコミュニティを大切にしており、サポーターのことをもう少しよく知りたいのです。"
+    },
+    "theme": {
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "dark": "Dark",
+      "deprecated": "{0} (deprecated)",
+      "hc": "Dark High Contrast",
+      "hcLight": "Light High Contrast",
+      "light": "Light",
+      "user": "{0} (user)"
+    },
+    "title": {
+      "cloud": "Cloud"
+    },
+    "updateIndexes": {
+      "updateIndexes": "インデックスを更新",
+      "updateLibraryIndex": "ライブラリのインデックスを更新",
+      "updatePackageIndex": "パッケージのインデックスを更新"
+    },
+    "upload": {
+      "error": "{0} エラー: {1}"
+    },
+    "userFields": {
+      "cancel": "キャンセル",
+      "enterField": "{0}を入力",
+      "upload": "マイコンボードに書き込む"
+    },
+    "validateSketch": {
+      "abortFixMessage": "スケッチはまだ無効です。残りの問題を修正しますか？'{0}'をクリックすると、新しいスケッチが開かれます。",
+      "abortFixTitle": "無効なスケッチです",
+      "renameSketchFileMessage": "スケッチファイル'{0}'は使用できません。{1}スケッチファイルの名前を今すぐ変更しますか？",
+      "renameSketchFileTitle": "無効なスケッチファイル名です",
+      "renameSketchFolderMessage": "スケッチ'{0}'は使用できません。{1}このメッセージをなくすには、スケッチの名前を変えてください。今すぐスケッチ名を変更しますか？",
+      "renameSketchFolderTitle": "無効なスケッチ名です"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}'は既に存在しています。"
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "バックエンドに接続できません。",
+      "cannotConnectDaemon": "CLI daemonに接続できません。",
+      "couldNotSave": "スケッチを保存できませんでした。保存されていない作業内容を好きなテキストエディターにコピーして、IDEを再起動してください。",
+      "daemonOffline": "CLI Daemonはオフラインです",
+      "offline": "オフライン",
+      "offlineText": "オフライン",
+      "quitTitle": "本当に終了しますか？"
+    },
+    "editor": {
+      "unsavedTitle": "未保存 – {0}"
+    },
+    "messages": {
+      "collapse": "折り畳む",
+      "expand": "展開する"
+    },
+    "workspace": {
+      "deleteCloudSketch": "クラウドスケッチ'{0}'はArduinoサーバおよびローカルキャッシュから永久に削除されます。この動作はやり直せません。現在のスケッチを削除しますか？",
+      "deleteCurrentSketch": "スケッチ'{0}'は永久に削除されます。この動作はやり直せません。現在のスケッチを削除しますか？",
+      "fileNewName": "新しいファイルの名前",
+      "invalidExtension": "拡張子「.{0}」は、使えません。",
+      "newFileName": "ファイルの新しい名前"
+    }
+  }
+}

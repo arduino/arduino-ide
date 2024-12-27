@@ -1,0 +1,499 @@
+#theia-bottom-content-panel .p-TabBar[data-orientation="horizontal"].theia-app-bottom {
+    background: var(--theia-editorGroupHeader-tabsBackground);
+}
+
+/* Avoid the Intellisense widget may be cover by the bottom panel partially.
+   TODO: This issue may be resolved after monaco-editor upgrade */
+#theia-main-content-panel {
+    z-index: auto;
+}
+
+#theia-main-content-panel div[id^="code-editor-opener"] {
+    z-index: auto;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item {
+    margin-left: 0;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item .toggle-serial-monitor,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-save-sketch--toolbar,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-open-sketch--toolbar,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-new-sketch--toolbar {
+    border-radius: 1px;
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: var(--arduino-button-height);
+    width: var(--arduino-button-height);
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-upload-sketch--toolbar,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-verify-sketch--toolbar,
+.p-TabBar-toolbar .item.arduino-tool-item .arduino-start-debug {
+    background: var(--theia-arduino-toolbar-button-background);
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover>div {
+    background: var(--theia-arduino-toolbar-button-hoverBackground);
+}
+
+.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover>div.toggle-serial-monitor,
+.p-TabBar-toolbar .item.arduino-tool-item.enabled:hover>div.toggle-serial-plotter {
+    background-color: var(--theia-arduino-toolbar-button-secondary-hoverBackground);
+    border-radius: 14px;
+}
+
+.arduino-verify-sketch--toolbar,
+.arduino-upload-sketch--toolbar,
+.arduino-start-debug {
+    border-radius: 14px;
+}
+
+.item.arduino-tool-item.toggled {
+    background-color: unset;
+    opacity: 1;
+    border: none;
+}
+
+.item.arduino-tool-item.toggled .arduino-verify-sketch--toolbar,
+.item.arduino-tool-item.toggled .arduino-upload-sketch--toolbar {
+    background-color: var(--theia-arduino-toolbar-toggleBackground) !important;
+}
+
+.arduino-tool-icon {
+    height: var(--arduino-button-height);
+    width: var(--arduino-button-height);
+}
+
+.arduino-verify-sketch--toolbar-icon {
+    -webkit-mask: url(../icons/verify.svg) center no-repeat;
+    background-color: var(--theia-titleBar-activeBackground);
+}
+
+.arduino-upload-sketch--toolbar-icon {
+    -webkit-mask: url(../icons/upload.svg) center no-repeat;
+    background-color: var(--theia-titleBar-activeBackground);
+}
+
+.toggle-serial-monitor-icon {
+    -webkit-mask: url(../icons/monitor.svg) center no-repeat;
+    background-color: var(--theia-arduino-toolbar-button-secondary-label);
+}
+
+.toggle-serial-plotter-icon {
+    -webkit-mask: url(../icons/plotter.svg) center no-repeat;
+    background-color: var(--theia-arduino-toolbar-button-secondary-label);
+}
+
+.arduino-start-debug-icon {
+    -webkit-mask: url("../icons/debug-dark.svg") 50% 60%;
+    -webkit-mask-size: 70%;
+    -webkit-mask-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--theia-titleBar-activeBackground);
+}
+
+#arduino-toolbar-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.lingzhi-close-button {
+    height: 35px;
+    width: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-app-region: no-drag;
+    user-select: none;
+}
+
+.lingzhi-close-button:hover {
+    background-color: #ff0000;
+}
+
+.lingzhi-button {
+    height: 35px;
+    width: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-app-region: no-drag;
+    user-select: none;
+}
+
+.lingzhi-button:hover {
+    background-color: #c1c1c1;
+}
+
+.lingzhi-button-img {
+    width: 19px;
+    height: 19px;
+}
+
+.p-TabBar-toolbar.theia-arduino-toolbar {
+    align-items: center;
+    gap: 8px;
+    margin: 0 0px;
+    padding: 0;
+    z-index: 0;
+}
+
+.p-TabBar-toolbar .item>div {
+    text-align: center;
+}
+
+/* 修改顶部栏高度 */
+:root {
+    --theia-private-menubar-height: 48px;
+    /* set the topbar height */
+}
+
+#theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
+    justify-content: flex-start;
+}
+
+#theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.left {
+    min-width: 398px;
+    justify-content: flex-end;
+}
+
+.arduino-toolbar-tooltip {
+    display: flex;
+    align-items: center;
+    color: var(--theia-titleBar-activeForeground);
+}
+
+.arduino-open-boards-control-icon {
+    mask: none;
+    -webkit-mask: none;
+    background: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--theia-titleBar-activeBackground);
+}
+
+.p-TabBar.theia-app-sides .p-TabBar-tabIcon.fa-arduino-folder,
+.p-TabBar.theia-app-sides .p-TabBar-tabIcon.fa-arduino-boards {
+    font-size: 21px;
+}
+
+.p-TabBar.theia-app-sides .p-TabBar-tab.p-mod-current,
+.p-TabBar.theia-app-sides .p-TabBar-tab:hover {
+    background-image: linear-gradient(to right, #a0a0a0, #e5e5ea) !important;
+    border-left: 1px solid #ffffff;
+    border-top: 1px solid #ffffff !important;
+    border-bottom: 1px solid #a0a0a0 !important;
+}
+
+.p-TabBar.theia-app-right .p-TabBar-tab.p-mod-current {
+    border-top-color: transparent;
+    box-shadow: none !important;
+}
+
+.p-TabBar.theia-app-left .p-TabBar-tab.p-mod-current {
+    box-shadow: none !important;
+}
+
+.theia-app-sidebar-container {
+    background: none !important;
+    background-image: linear-gradient(to right, #9a9a9a, #aeabab) !important;
+}
+
+.p-Widget.theia-sidebar-menu {
+    background: none !important;
+    background-image: linear-gradient(to right, #9a9a9a, #aeabab) !important;
+}
+
+.p-TabBar.theia-app-sides {
+    background: none !important;
+    background-image: linear-gradient(to right, #9a9a9a, #aeabab) !important;
+}
+
+.p-TabBar.theia-app-sides .p-TabBar-tab.p-mod-current,
+.p-TabBar.theia-app-sides .p-TabBar-tab:active {
+    border-left: none;
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+.p-TabBar.theia-app-sides .p-TabBar-tab {
+    background: none !important;
+}
+
+.p-Widget.theia-sidebar-menu i {
+    background-color: none !important;
+    background-image: linear-gradient(to right, #9a9a9a, #aeabab) !important;
+}
+
+.p-Widget.theia-sidebar-menu i:hover {
+    background-image: linear-gradient(to right, #a0a0a0, #e5e5ea) !important;
+    border-left: 1px solid #ffffff !important;
+    border-top: 1px solid #ffffff !important;
+    border-bottom: 1px solid #a0a0a0 !important;
+}
+
+button.theia-button.secondary {
+    border: 1px solid #41adff !important;
+}
+
+.theia-button.secondary {
+    color: #000000;
+}
+
+.theia-button {
+    border: 1px solid #acacac !important;
+}
+
+.theia-button:focus {
+    outline: none;
+}
+
+.theia-button:active,
+.theia-button:focus {
+    box-shadow: none !important;
+}
+
+#theia-bottom-content-panel .p-TabBar-tab {
+    background: #ffffff;
+}
+
+#theia-main-content-panel .p-TabBar .p-TabBar-tab.p-mod-current {
+    box-shadow: 0 1px 0 #acacac inset;
+}
+
+#theia-main-content-panel .p-TabBar .p-TabBar-tab {
+    background: #f0f0f0;
+}
+
+#theia-top-panel>* {
+    -webkit-app-region: drag;
+    user-select: none;
+}
+
+.theia-side-panel {
+    top: 0px !important;
+    height: 100% !important;
+}
+
+.p-TabBar .p-TabBar-tabIcon,
+.p-TabBar-tab.p-mod-drag-image .p-TabBar-tabIcon {
+    line-height: 1 !important;
+}
+
+.p-TabBar.theia-app-sides .p-TabBar-tabIcon {
+    align-items: normal !important;
+}
+
+.lingzhi-icon-class {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -26px;
+    color: #000000;
+}
+
+.p-Widget.theia-sidebar-menu i {
+    padding: 0 0 !important;
+    flex-direction: column;
+    border-top: 1px solid;
+    border-image: linear-gradient(to right, #9a9a9a, #aeabab) 1;
+    border-left: 1px solid #9a9a9a;
+    width: 47px;
+    height: 47px;
+}
+
+.lingzhi-icon-bottom {
+    color: #000000;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.lingzhi-top-transverse-line {
+    background: linear-gradient(to top, #d0d0d0, #e7e7e7);
+    height: 15px;
+    width: 100%;
+}
+
+.t-siw-search-container {
+    border-top: 1px solid #d0d0d0;
+    margin-top: 6px;
+    height: calc(100% - 25px);
+}
+
+.lingzhi-home {
+    height: 100% !important;
+}
+
+/*设置的css 开始================*/
+.lingzhi-stretch {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.lingzhi-daima {
+    height: 100% !important;
+}
+
+.flex-line-lingzhi {
+    width: 100%;
+    height: 60px;
+    background-color: #ededed;
+    border: 1px solid #dddddd;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: flex-start;
+}
+
+.lingzhi-flex-line {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.lingzhi-span {
+    margin-left: 10px;
+    margin-right: 4px;
+}
+
+.lingzhi-setting {
+    height: 17px !important;
+    border: 1px solid #c0c0c0 !important;
+}
+
+.lingzhi-column {
+    display: flex;
+    align-items: center;
+    flex-direction: unset !important;
+    width: 100%;
+    gap: 10px;
+    height: 40px;
+    background-color: #ededed;
+    border: 1px solid #dddddd;
+    border-radius: 2px;
+}
+
+.lingzhi-size {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    gap: 10px;
+}
+
+.lingzhi-scale {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lingzhi-compiler-warning {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lingzhi-editing-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    width: 100%;
+    background-color: #ededed;
+    border: 1px solid #dddddd;
+    border-radius: 2px;
+    margin-top: 5px;
+}
+
+/*设置的css 结束================*/
+
+/*快捷键的css 开始================*/
+.lingzhi-ide-keymaps-title {
+    width: 51%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #c8c8c8;
+    margin-top: 1px;
+    color: #000000;
+    background-image: linear-gradient(to top, #e7e7e7, #fcfcfc);
+}
+
+.lingzhi-ide-keymaps-raw {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #c8c8c8;
+    color: #000000;
+}
+
+.lingzhi-ide-keymaps-top {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lingzhi-ide-keymaps-main {
+    width: 100%;
+    height: 218px;
+    overflow-y: auto;
+}
+
+/*快捷键的css 结束================*/
+
+
+
+
+.monaco-editor .margin {
+    border-right: 2px solid var(--theia-sideBar-background);
+    box-sizing: border-box;
+}
+
+.noWrapInfo {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.theia-sidepanel-toolbar .theia-sidepanel-title {
+    margin-left: 10px;
+}
+
+/* Output */
+.theia-output .editor-container {
+    background-color: var(--theia-terminal-background);
+}
+
+.theia-output .monaco-editor .lines-content.monaco-editor-background {
+    background-color: var(--theia-terminal-background);
+}
+
+.theia-output .monaco-editor .lines-content.monaco-editor-background .view-lines .view-line .mtk1:not(.theia-output-error):not(.theia-output-warning) {
+    color: var(--theia-terminal-foreground);
+}
+
+.theia-output .monaco-editor .margin {
+    border-right: none;
+    background-color: var(--theia-terminal-background);
+}
+
+.monaco-hover .hover-row.markdown-hover:first-child p {
+    margin-top: 8px;
+}
+
+.monaco-hover .hover-row.markdown-hover:first-child .monaco-tokenized-source {
+    margin-top: 8px;
+}

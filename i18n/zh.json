@@ -1,0 +1,555 @@
+{
+  "arduino": {
+    "about": {
+      "detail": "版本：{0}\n日期：{1}{2}\nCLI 版本：{3}\n\n{4}",
+      "label": "关于 {0}"
+    },
+    "home": {
+      "titleHome": "主页",
+      "openHome": "打开主页"
+    },
+    "account": {
+      "goToCloudEditor": "转到云编辑器",
+      "goToIoTCloud": "转到物联网云",
+      "goToProfile": "转到个人资料",
+      "menuTitle": "Arduino Cloud"
+    },
+    "board": {
+      "board": "开发板 {0}",
+      "boardConfigDialogTitle": "选择其他开发板和端口",
+      "boardInfo": "开发板信息",
+      "boards": "开发板",
+      "configDialog1": "如果要上传项目，请选择开发板和端口。",
+      "configDialog2": "如果你只选择了开发板，你可以编译项目，但不能上传项目。",
+      "couldNotFindPreviouslySelected": "在安装的平台 ‘{1}’ 中找不到以前选择的开发板 ‘{0}’。请手动选择要使用的开发板。你想现在重新选择它吗？",
+      "editBoardsConfig": "编辑开发板和端口……",
+      "getBoardInfo": "获得开发板信息",
+      "inSketchbook": "（在项目文件夹中）",
+      "installNow": "必须为当前选定的 {2} 开发板板安装 “{0}{1}” 内核。你想现在安装吗？",
+      "noBoardsFound": "没有找到 “{0}” 相关开发板",
+      "noNativeSerialPort": "本地串行端口，无法获取信息。",
+      "noPortsDiscovered": "未发现端口",
+      "nonSerialPort": "非串行端口，无法获取信息。",
+      "openBoardsConfig": "选择其他开发板和接口......",
+      "pleasePickBoard": "请选择要连接的开发板。",
+      "port": "端口 {0}",
+      "ports": "端口",
+      "programmer": "编程器",
+      "reselectLater": "稍后重新选择",
+      "revertBoardsConfig": "使用在 '{1}' 上发现的 '{0}'",
+      "searchBoard": "搜索开发坂",
+      "selectBoard": "选择开发板",
+      "selectPortForInfo": "请选择一个端口以获取开发板信息。",
+      "showAllAvailablePorts": "启用时显示所有可用端口",
+      "showAllPorts": "显示所有端口",
+      "succesfullyInstalledPlatform": "已成功安装平台 {0}：{1}",
+      "succesfullyUninstalledPlatform": "已成功卸载平台 {0}：{1}",
+      "typeOfPorts": "{0} 端口",
+      "unconfirmedBoard": "没有经过确认的开发板",
+      "unknownBoard": "未知开发板"
+    },
+    "boardsManager": "开发板管理器",
+    "boardsType": {
+      "arduinoCertified": "Arduino 认证"
+    },
+    "bootloader": {
+      "burnBootloader": "烧录引导程序",
+      "burningBootloader": "正在烧录引导程序…",
+      "doneBurningBootloader": "完成烧录引导程序。"
+    },
+    "burnBootloader": {
+      "error": "烧录引导程序时出错：{0}"
+    },
+    "certificate": {
+      "addNew": "添加新的",
+      "addURL": "添加地址以获取 SSL 根证书",
+      "boardAtPort": "{0} 在 {1}",
+      "certificatesUploaded": "证书已上传。",
+      "enterURL": "输入地址",
+      "noSupportedBoardConnected": "未连接受支持的开发板",
+      "openContext": "打开上下文",
+      "remove": "移除",
+      "selectBoard": "选择开发板...",
+      "selectCertificateToUpload": "1.选择要上传的证书",
+      "selectDestinationBoardToUpload": "2.选择开发板并上传证书",
+      "upload": "上传",
+      "uploadFailed": "上传失败。请再试一次。",
+      "uploadRootCertificates": "上传 SSL 根证书",
+      "uploadingCertificates": "上传证书。"
+    },
+    "checkForUpdates": {
+      "checkForUpdates": "检查 Arduino 更新",
+      "installAll": "全部安装",
+      "noUpdates": "没有可用的更新。",
+      "promptUpdateBoards": "您的某些开发板有可用更新。",
+      "promptUpdateLibraries": "您的某些库有可用更新。",
+      "updatingBoards": "更新开发板中...",
+      "updatingLibraries": "更新库中..."
+    },
+    "cli-error-parser": {
+      "keyboardError": "没有找到 ‘Keyboard’，请检查您的项目是否包含 ‘#include<Keyboard.h>’？",
+      "mouseError": "没有找到 ‘Mouse’，请检查您的项目是否包含 ‘#include<Mouse.h>’？"
+    },
+    "cloud": {
+      "chooseSketchVisibility": "选择项目的可见性：",
+      "cloudSketchbook": "云项目文件夹",
+      "connected": "已连接",
+      "continue": "继续",
+      "donePulling": "拉取完成 ‘{0}’。",
+      "donePushing": "推送完成 ‘{0}’。",
+      "embed": "嵌入：",
+      "emptySketchbook": "你的项目文件夹是空的",
+      "goToCloud": "前往 Cloud",
+      "learnMore": "查看更多",
+      "link": "链接：",
+      "notYetPulled": "无法推送到 Cloud。未被拉取。",
+      "offline": "离线",
+      "openInCloudEditor": "在 Cloud 编辑器打开",
+      "options": "选项......",
+      "privateVisibility": "私有的。只有你可以查看项目。",
+      "profilePicture": "资料图片",
+      "publicVisibility": "公开的。有链接的人都可以查看项目。",
+      "pull": "拉取",
+      "pullFirst": "你必须先拉取才能推送到 Cloud。",
+      "pullSketch": "拉取项目",
+      "pullSketchMsg": "从 Cloud 中拉取此项目将覆盖其本地项目。你确定要继续吗？",
+      "push": "推送",
+      "pushSketch": "推送项目",
+      "pushSketchMsg": "这是公开的项目。推送前，确保在 arduino_secrets.h 中明确了所有敏感信息。可以从共享界面将项目设为私人项目。",
+      "remote": "远程",
+      "share": "共享......",
+      "shareSketch": "共享项目",
+      "showHideSketchbook": "显示 / 隐藏云端项目",
+      "signIn": "登录",
+      "signInToCloud": "登录 Arduino Cloud",
+      "signOut": "退出登录",
+      "sync": "同步",
+      "syncEditSketches": "同步和编辑 Arduino Cloud 项目",
+      "visitArduinoCloud": "访问 Arduino Cloud 以创建云项目。"
+    },
+    "cloudSketch": {
+      "alreadyExists": "云端项目 '{0}' 已经存在。",
+      "creating": "正在创建云端项目 '{0}'...",
+      "new": "新的云端项目",
+      "notFound": "无法拉取云端项目 '{0}'。它并不存在。",
+      "pulling": "正在同步远程项目文件夹，拉取“{0}”中...",
+      "pushing": "同步项目中，正在推送 '{0}'...",
+      "renaming": "将云端项目从 '{0}' 重命名为 '{1}'...",
+      "synchronizingSketchbook": "同步项目中..."
+    },
+    "common": {
+      "all": "全部",
+      "contributed": "已贡献",
+      "installManually": "手动安装",
+      "later": "之后",
+      "noBoardSelected": "没有选择开发板",
+      "noSketchOpened": "未打开项目",
+      "notConnected": "[没有连接]",
+      "offlineIndicator": "你似乎处于离线状态。如果没有网络连接，Arduino CLI 可能无法下载所需的资源，并可能导致故障。请连接网络并重新启动程序。",
+      "oldFormat": "‘{0}’ 仍然使用旧的 ‘.pde’ 格式。是否要切换到新的 ‘.ino’ 扩展？",
+      "partner": "合作伙伴",
+      "processing": "正在处理中",
+      "recommended": "推荐",
+      "retired": "不再支持的",
+      "selectManually": "手动选择",
+      "selectedOn": "在{0}上",
+      "serialMonitor": "串口监视器",
+      "type": "类型",
+      "unknown": "未知",
+      "updateable": "可更新"
+    },
+    "compile": {
+      "error": "编译错误：{0}"
+    },
+    "component": {
+      "boardsIncluded": "包含在此包中的开发板：",
+      "by": "by",
+      "clickToOpen": "单击以在浏览器中打开：{0}",
+      "filterSearch": "筛选搜索结果…",
+      "install": "安装",
+      "installLatest": "安装最新版本",
+      "installVersion": "安装 {0}",
+      "installed": "{0} 已安装",
+      "moreInfo": "更多信息",
+      "otherVersions": "其他版本",
+      "remove": "移除",
+      "title": "{0} by {1}",
+      "uninstall": "卸载",
+      "uninstallMsg": "是否要卸载 {0}？",
+      "update": "更新"
+    },
+    "configuration": {
+      "cli": {
+        "inaccessibleDirectory": "无法访问位于 ‘{0}’ 的项目文件夹：{1}。"
+      }
+    },
+    "connectionStatus": {
+      "connectionLost": "连接丢失。云项目操作和更新操作将不可用。"
+    },
+    "contributions": {
+      "addFile": "添加文件",
+      "fileAdded": "将一个文件添加到项目中。",
+      "plotter": {
+        "couldNotOpen": "无法打开串口绘图仪"
+      },
+      "replaceTitle": "替换"
+    },
+    "core": {
+      "compilerWarnings": {
+        "all": "全部",
+        "default": "默认",
+        "more": "较多",
+        "none": "无"
+      }
+    },
+    "coreContribution": {
+      "copyError": "复制错误信息",
+      "noBoardSelected": "未选择开发板。请从工具 > 板菜单中选择您的 Arduino 开发板。"
+    },
+    "createCloudCopy": "推送项目到云端",
+    "daemon": {
+      "restart": "重启守护进程",
+      "start": "启动守护进程",
+      "stop": "停止守护进程"
+    },
+    "debug": {
+      "debugWithMessage": "调试 - {0}",
+      "debuggingNotSupported": "‘{0}’ 不支持调试",
+      "getDebugInfo": "正在获取调试信息。。。",
+      "noPlatformInstalledFor": "‘{0}’ 平台未安装",
+      "noProgrammerSelectedFor": "未为 '{0}' 项目选择任何编程器。",
+      "optimizeForDebugging": "调试优化",
+      "sketchIsNotCompiled": "项目 '{0}' 在开始调试会话之前必须经过验证。请验证草图并重新开始调试。你现在要验证草图吗？"
+    },
+    "developer": {
+      "clearBoardList": "清除开发板的历史列表",
+      "clearBoardsConfig": "清除已经选择的开发板和连接端口",
+      "dumpBoardList": "列出开发板列表"
+    },
+    "dialog": {
+      "dontAskAgain": "不要再请求"
+    },
+    "editor": {
+      "autoFormat": "自动格式化",
+      "commentUncomment": "注释/取消注释",
+      "copyForForum": "复制到论坛（Markdown）",
+      "decreaseFontSize": "减小字号",
+      "decreaseIndent": "减少缩进",
+      "increaseFontSize": "放大字体",
+      "increaseIndent": "增加缩进",
+      "nextError": "下一个错误",
+      "previousError": "上一个错误",
+      "revealError": "显示错误"
+    },
+    "examples": {
+      "builtInExamples": "内置示例",
+      "couldNotInitializeExamples": "无法初始化内置示例。",
+      "customLibrary": "来自自定义库的示例",
+      "for": "{0} 的示例",
+      "forAny": "任何开发板的示例",
+      "menu": "示例"
+    },
+    "firmware": {
+      "checkUpdates": "检查更新",
+      "failedInstall": "安装失败。请再试一次。",
+      "install": "安装",
+      "installingFirmware": "安装固件",
+      "overwriteSketch": "安装将覆盖开发板上的项目。",
+      "selectBoard": "选择开发板",
+      "selectVersion": "选择固件版本",
+      "successfullyInstalled": "固件成功安装",
+      "updater": "固件更新"
+    },
+    "help": {
+      "environment": "环境",
+      "faq": "常见问题",
+      "findInReference": "在参考文件寻找",
+      "gettingStarted": "入门",
+      "keyword": "输入关键字",
+      "privacyPolicy": "隐私政策",
+      "reference": "参考",
+      "search": "在 lingzhilab.com 搜索",
+      "troubleshooting": "故障排除",
+      "visit": "访问 lingzhilab.com"
+    },
+    "ide-updater": {
+      "checkForUpdates": "检查 Arduino IDE 更新",
+      "closeAndInstallButton": "关闭并安装",
+      "closeToInstallNotice": "关闭软件并安装更新。",
+      "downloadButton": "下载",
+      "downloadingNotice": "正在下载 Arduino IDE 的最新版本。",
+      "errorCheckingForUpdates": "检查 Arduino IDE 更新时出错。{0}",
+      "goToDownloadButton": "去下载",
+      "goToDownloadPage": "Arduino IDE可以更新，但我们无法自动下载和安装。请转到下载页面并下载最新版本手动安装。",
+      "ideUpdaterDialog": "软件更新",
+      "newVersionAvailable": "新版本的 Arduino IDE（{0}）可供下载。",
+      "noUpdatesAvailable": "目前 Arduino IDE 没有可更新的版本。",
+      "notNowButton": "不是现在",
+      "skipVersionButton": "跳过这次版本更新",
+      "updateAvailable": "IDE 可更新。",
+      "versionDownloaded": "Arduino IDE {0} 已经下载。"
+    },
+    "installable": {
+      "libraryInstallFailed": "库文件 '{0}{1}' 安装失败",
+      "platformInstallFailed": "平台安装失败：'{0}{1}'"
+    },
+    "library": {
+      "addZip": "添加 .ZIP 库...",
+      "arduinoLibraries": "Arduino 库",
+      "contributedLibraries": "贡献库",
+      "include": "导入库",
+      "installAll": "全部安装",
+      "installLibraryDependencies": "安装库的依赖",
+      "installMissingDependencies": "是否安装所有缺少的依赖？",
+      "installOneMissingDependency": "是否安装缺少的依赖？",
+      "installWithoutDependencies": "仅安装库 (跳过依赖)",
+      "installedSuccessfully": "已成功安装 {0} 库：{1}",
+      "libraryAlreadyExists": "库已经存在。是否要覆盖它？",
+      "manageLibraries": "管理库...",
+      "namedLibraryAlreadyExists": "名为 {0} 的库文件夹已存在。是否要覆盖它？",
+      "needsMultipleDependencies": "<b>{0} 库：{1}</b> 需要一些未安装的依赖：",
+      "needsOneDependency": "<b>{0} 库：{1}</b> 需要一些未安装的依赖：",
+      "overwriteExistingLibrary": "是否覆盖现有的库？",
+      "successfullyInstalledZipLibrary": "已从 {0} 存档成功安装库",
+      "title": "库管理",
+      "uninstalledSuccessfully": "已成功卸载 {0} 库：{1}",
+      "zipLibrary": "库"
+    },
+    "librarySearchProperty": {
+      "topic": "话题"
+    },
+    "libraryTopic": {
+      "communication": "交流",
+      "dataProcessing": "数据处理",
+      "dataStorage": "数据存储",
+      "deviceControl": "设备控制",
+      "display": "显示",
+      "other": "其他",
+      "sensors": "传感器",
+      "signalInputOutput": "信号输入/输出",
+      "timing": "定时",
+      "uncategorized": "未分类"
+    },
+    "libraryType": {
+      "installed": "已安装"
+    },
+    "menu": {
+      "advanced": "高级设置",
+      "sketch": "项目",
+      "tools": "工具"
+    },
+    "monitor": {
+      "alreadyConnectedError": "无法连接至 {0} {1} 端口。已有连接。",
+      "baudRate": "波特率 {0}",
+      "connectionFailedError": "无法连接至 {0} {1} 端口。",
+      "connectionFailedErrorWithDetails": "{0} 无法连接至 {1} {2} 端口。",
+      "connectionTimeout": "超时。IDE 在连接到监视器后，没有收到“成功”消息",
+      "missingConfigurationError": "无法连接至 {0} {1} 端口。监视器配置缺失。",
+      "notConnectedError": "没有连接至 {0} {1} 端口。",
+      "unableToCloseWebSocket": "无法关闭 websocket",
+      "unableToConnectToWebSocket": "无法连接 websocket"
+    },
+    "newCloudSketch": {
+      "newSketchTitle": "新云端项目的名称"
+    },
+    "portProtocol": {
+      "network": "网络",
+      "serial": "串口"
+    },
+    "preferences": {
+      "additionalManagerURLs": "其他开发板管理器地址",
+      "auth.audience": "OAuth2 受众。",
+      "auth.clientID": "OAuth2 客户端 ID",
+      "auth.domain": "OAuth2 域",
+      "auth.registerUri": "用于注册新用户的地址。",
+      "automatic": " 自动调整",
+      "board.certificates": "可上传到开发板的证书列表",
+      "browse": "浏览",
+      "checkForUpdate": "接收 IDE、开发板和库的可用更新通知。更改后需要重启 IDE。默认情况为开启。",
+      "choose": "选择",
+      "cli.daemonDebug": "启用对 Arduino CLI 的 gRPC 调用的调试记录。该设置需要重新启动 IDE 才能生效。默认不启用。",
+      "cloud.enabled": "True 则启用项目同步功能。默认为 True。",
+      "cloud.pull.warn": "True 则在拉取 cloud 项目之前警告用户。默认为 True。",
+      "cloud.push.warn": "True 则在推送 cloud 项目之前警告用户。默认为 True。",
+      "cloud.pushpublic.warn": "True 则将公开项目推送到 cloud 中之前警告用户。默认为 True。",
+      "cloud.sketchSyncEndpoint": "用于从后台推送项目的端点。默认情况下，它指向 Arduino Cloud API。",
+      "compile": "编译",
+      "compile.experimental": "True 则 IDE 处理多个编译器错误。默认为 False。",
+      "compile.revealRange": "调整编译器错误在 “验证/上传” 失败后在编辑器中的显示方式。可能的值：‘auto’：根据需要垂直滚动并显示一行。‘center’：必要时垂直滚动并显示垂直居中的一行。‘top’：必要时垂直滚动并显示靠近视口顶部的一行，优化用于查看代码定义。‘centerIfOutsideViewport’：根据需要垂直滚动并显示垂直居中的线，只有当它位于视口之外时。默认值是 ‘{0}’。",
+      "compile.verbose": "True 则输出详细编译信息。默认为 False",
+      "compile.warnings": "设置 gcc 警告级别。默认为 None",
+      "compilerWarnings": "编译器警告",
+      "editorFontSize": "编辑器字体大小",
+      "editorQuickSuggestions": "编辑快速建议",
+      "enterAdditionalURLs": "输入补充地址，每行一个。",
+      "files.inside.sketches": "显示项目中的文件夹",
+      "ide.updateBaseUrl": "下载更新的网址。默认为 ‘https://downloads.arduino.cc/arduino-ide’",
+      "ide.updateChannel": "在发布频道中获取更新信息。‘stable’ 是稳定的版本，‘nightly’ 是最新的开发版本。",
+      "interfaceScale": "界面比例",
+      "invalid.editorFontSize": "编辑器字体大小无效。它必须是正整数。",
+      "invalid.sketchbook.location": "无效的项目文件夹地址：{0}",
+      "invalid.theme": "无效的主题。",
+      "language.asyncWorkers": "Arduino 语言服务器（clangd）使用的异步工作线程数。 后台索引也使用相同数量的工作线程。 最小值为 0，最大值为 8。 当值为 0 时，语言服务器将使用所有可用的核心。 默认值为 0。",
+      "language.log": "True 则 Arduino Language Server 将日志文件生成到项目文件夹中。默认为 False。",
+      "language.realTimeDiagnostics": " True 则 language server 在编辑器中输入时提供实时诊断。默认为 False。",
+      "manualProxy": "手动配置代理",
+      "monitor": {
+        "dockPanel": "_{0}_窗口小部件所在的应用程序shell区域不是在 \"bottom\" 或  \"bottom\"。默认为 \"{1}\"。"
+      },
+      "network": "网络",
+      "newSketchbookLocation": "选择新的项目文件夹地址",
+      "noCliConfig": "无法加载 CLI 配置",
+      "noProxy": "无代理",
+      "proxySettings": {
+        "hostname": "主机名",
+        "password": "密码",
+        "port": "端口号",
+        "username": "用户名"
+      },
+      "showVerbose": "显示详细输出",
+      "sketch": {
+        "inoBlueprint": "指定默认 “.ino” 模板文件的绝对路径。如果指定，则该模板文件的内容将被用于 IDE 创建的每一个新 sketch。如果未指定，则使用Arduino默认的内容来创建新 sketch。不可用的模板文件将被自动忽略。**需要重启IDE** 以使此设置生效。"
+      },
+      "sketchbook.location": "项目文件夹地址",
+      "sketchbook.showAllFiles": "True 则显示项目中的所有项目文件。默认情况下为 False。",
+      "survey.notification": "True 则在有调查时应通知用户。默认为 True。",
+      "unofficialBoardSupport": "点击获取支持的非官方开发板地址列表",
+      "upload": "上传",
+      "upload.verbose": "True 则输出详细上传信息。默认情况下为 False。",
+      "verifyAfterUpload": "上传后验证代码",
+      "window.autoScale": "True 则用户界面随字体大小自动缩放。",
+      "window.zoomLevel": {
+        "deprecationMessage": "已弃用。请改用“window.zoomLevel”。"
+      }
+    },
+    "renameCloudSketch": {
+      "renameSketchTitle": "云端项目的新名称"
+    },
+    "replaceMsg": "是否替换 {0} 的现有版本？",
+    "selectZip": "选择包含要添加的库的 zip 文件",
+    "serial": {
+      "autoscroll": "自动滚屏",
+      "carriageReturn": "回车",
+      "connecting": "在 '{1}' 上连接至 '{0}' 中……",
+      "message": "消息（按回车将消息发送到“{1}”上的“{0}”）",
+      "newLine": "换行",
+      "newLineCarriageReturn": "换行 和 回车 两者都是",
+      "noLineEndings": "没有结束符",
+      "notConnected": "未连接。选择要自动连接的开发板和端口。",
+      "openSerialPlotter": "串口绘图仪",
+      "timestamp": "时间戳",
+      "toggleTimestamp": "显示时间戳"
+    },
+    "sketch": {
+      "archiveSketch": "项目存档",
+      "cantOpen": "“{0}” 文件夹已存在。无法打开项目。",
+      "compile": "正在编译项目…",
+      "configureAndUpload": "配置并上传",
+      "createdArchive": "已创建存档 ‘{0}’。",
+      "doneCompiling": "编译完成",
+      "doneUploading": "上传完成",
+      "editInvalidSketchFolderLocationQuestion": "你想试试把项目保存到不同的位置吗？",
+      "editInvalidSketchFolderQuestion": "你想尝试用不同的名字保存项目吗？",
+      "exportBinary": "导出已编译的二进制文件",
+      "invalidCloudSketchName": "名称必须以字母、数字或下划线开头，后面接着字母、数字、破折号、点和下划线。最大长度为 36 个字符。",
+      "invalidSketchFolderLocationDetails": "你不能把一个项目保存到它本身的一个文件夹里。",
+      "invalidSketchFolderLocationMessage": "无效的项目文件夹位置： '{0}'",
+      "invalidSketchFolderNameMessage": "无效的项目文件夹名称：'{0}'",
+      "invalidSketchName": "名称必须以字母、数字或下划线开头，后面接着字母、数字、破折号、点和下划线。最大长度为 63 个字符。",
+      "moving": "移动",
+      "movingMsg": "“{0}” 文件需要位于 “{1}” 项目文件夹中。\n创建此文件夹，移动文件，然后继续？",
+      "new": "新建项目",
+      "noTrailingPeriod": "文件名不能以点结尾",
+      "openFolder": "打开文件夹",
+      "openRecent": "打开最近",
+      "openSketchInNewWindow": "在新窗口打开项目",
+      "reservedFilename": "'{0}' 是一个保留的文件名。",
+      "saveFolderAs": "将项目文件夹另存为…",
+      "saveSketch": "保存你的项目，以便以后再次打开它。",
+      "saveSketchAs": "将项目文件夹另存为…",
+      "showFolder": "显示项目文件夹",
+      "sketch": "项目",
+      "sketchAlreadyContainsThisFileError": "该项目已包含一个名为 '{0}' 的文件。",
+      "sketchAlreadyContainsThisFileMessage": "保存项目 “{0}” 为 “{1}” 失败。{2}",
+      "sketchbook": "项目文件夹",
+      "titleLocalSketchbook": "本地项目文件夹",
+      "titleSketchbook": "项目文件夹",
+      "upload": "上传",
+      "uploadUsingProgrammer": "使用编程器上传",
+      "uploading": "正在上传…",
+      "userFieldsNotFoundError": "找不到已连接开发板的用户字段",
+      "verify": "验证",
+      "verifyOrCompile": "验证/编译"
+    },
+    "sketchbook": {
+      "newCloudSketch": "新的云端项目",
+      "newSketch": "新建项目"
+    },
+    "survey": {
+      "answerSurvey": "回答问卷",
+      "dismissSurvey": "不要再显示",
+      "surveyMessage": "请回答这份很短的调查来帮助我们改进。我们重视我们的社区，也希望能够更好地了解我们的支持者。"
+    },
+    "theme": {
+      "currentThemeNotFound": "找不到当前选中的主题：{0}。Arduino IDE 已选择一个与缺失者兼容的内置主题。",
+      "dark": "暗黑",
+      "deprecated": "{0} （已弃用）",
+      "hc": "深色高对比度",
+      "hcLight": "浅色高对比度",
+      "light": "明亮",
+      "user": "{0}（用户）"
+    },
+    "title": {
+      "cloud": "云"
+    },
+    "updateIndexes": {
+      "updateIndexes": "更新索引",
+      "updateLibraryIndex": "更新库索引",
+      "updatePackageIndex": "更新包索引"
+    },
+    "upload": {
+      "error": "{0} 错误：{1}"
+    },
+    "userFields": {
+      "cancel": "取消",
+      "enterField": "输入 {0}",
+      "upload": "上传"
+    },
+    "validateSketch": {
+      "abortFixMessage": "项目仍然是无效的。你想解决剩下的问题吗？通过点击 '{0}'，一个新的项目将被打开。",
+      "abortFixTitle": "无效的项目",
+      "renameSketchFileMessage": "项目文件 '{0}' 不能使用。{1} 你想现在重新命名项目文件吗？",
+      "renameSketchFileTitle": "无效的项目文件名",
+      "renameSketchFolderMessage": "不能使用项目 '{0}'。 '{1}' 要删除此消息，请重命名项目。 现在要重命名项目吗？",
+      "renameSketchFolderTitle": "无效的项目名"
+    },
+    "workspace": {
+      "alreadyExists": "'{0}' 已经存在。"
+    }
+  },
+  "theia": {
+    "core": {
+      "cannotConnectBackend": "无法连接后台。",
+      "cannotConnectDaemon": "无法连接 CLI 守护进程。",
+      "couldNotSave": "无法保存项目。请将未保存的工作复制到您喜爱的文本编辑器中，然后重新启动 IDE。",
+      "daemonOffline": "CLI 守护进程离线",
+      "offline": "离线",
+      "offlineText": "离线",
+      "quitTitle": "你确定你要退出吗？"
+    },
+    "editor": {
+      "unsavedTitle": "未保存–{0}"
+    },
+    "messages": {
+      "collapse": "崩溃",
+      "expand": "扩展"
+    },
+    "workspace": {
+      "deleteCloudSketch": "云端项目 '{0}' 将从 Arduino 服务器和本地缓存中被永久删除。这个操作是不可逆的。你想删除当前的项目吗？",
+      "deleteCurrentSketch": "项目 '{0}' 将被永久删除。这个操作是不可逆的。你想删除当前的项目吗？",
+      "fileNewName": "新文件的名称",
+      "invalidExtension": ".{0} 不是有效扩展名",
+      "newFileName": "文件的新名称"
+    }
+  }
+}

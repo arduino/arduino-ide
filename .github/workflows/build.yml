@@ -1,0 +1,641 @@
+name: Arduino IDE
+
+on:
+  create:
+  push:
+    branches:
+      - main
+      - '[0-9]+.[0-9]+.x'
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/build.yml'
+      - '.vscode/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - '!scripts/merge-channel-files.js'
+      - 'static/**'
+      - '*.md'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
+    inputs:
+      paid-runners:
+        description: Include builds on non-free runners
+        type: boolean
+        default: false
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '!.github/workflows/build.yml'
+      - '.vscode/**'
+      - 'docs/**'
+      - 'scripts/**'
+      - '!scripts/merge-channel-files.js'
+      - 'static/**'
+      - '*.md'
+  schedule:
+    - cron: '0 3 * * *' # run every day at 3AM (https://docs.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
+  workflow_run:
+    workflows:
+      - Push Container Images
+    branches:
+      - main
+    types: 
+      - completed
+
+env:
+  # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
+  GO_VERSION: '1.21'
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: '18.17'
+  JOB_TRANSFER_ARTIFACT: build-artifacts
+  CHANGELOG_ARTIFACTS: changelog
+  STAGED_CHANNEL_FILES_ARTIFACT: staged-channel-files
+  BASE_BUILD_DATA: |
+    - config:
+        # Human identifier for the job.
+        name: Windows
+        runs-on: windows-2019
+        # The value is a string representing a JSON document.
+        # Setting this to null causes the job to run directly in the runner machine instead of in a container.
+        container: |
+          null
+        # Name of the secret that contains the certificate.
+        certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX
+        # Name of the secret that contains the certificate password.
+        certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD
+        # File extension for the certificate.
+        certificate-extension: pfx
+        # Quoting on the value is required here to allow the same comparison expression syntax to be used for this
+        # and the companion needs.select-targets.outputs.merge-channel-files property (output values always have string
+        # type).
+        mergeable-channel-file: 'false'
+      artifacts:
+        - path: '*Windows_64bit.exe'
+          name: Windows_X86-64_interactive_installer
+        - path: '*Windows_64bit.msi'
+          name: Windows_X86-64_MSI
+        - path: '*Windows_64bit.zip'
+          name: Windows_X86-64_zip
+    - config:
+        name: Linux
+        runs-on: ubuntu-latest
+        container: |
+          {
+            \"image\": \"ghcr.io/arduino/arduino-ide/linux:main\"
+          }
+        mergeable-channel-file: 'false'
+      artifacts:
+        - path: '*Linux_64bit.zip'
+          name: Linux_X86-64_zip
+        - path: '*Linux_64bit.AppImage'
+          name: Linux_X86-64_app_image
+    - config:
+        name: macOS x86
+        runs-on: macos-latest
+        container: |
+          null
+        # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+        # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+        certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+        certificate-password-secret: KEYCHAIN_PASSWORD
+        certificate-extension: p12
+        mergeable-channel-file: 'true'
+      artifacts:
+        - path: '*macOS_64bit.dmg'
+          name: macOS_X86-64_dmg
+        - path: '*macOS_64bit.zip'
+          name: macOS_X86-64_zip
+  PAID_RUNNER_BUILD_DATA: |
+    - config:
+        name: macOS ARM
+        runs-on: macos-latest-xlarge
+        container: |
+          null
+        certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+        certificate-password-secret: KEYCHAIN_PASSWORD
+        certificate-extension: p12
+        mergeable-channel-file: 'true'
+      artifacts:
+        - path: '*macOS_arm64.dmg'
+          name: macOS_arm64_dmg
+        - path: '*macOS_arm64.zip'
+          name: macOS_arm64_zip
+
+jobs:
+  run-determination:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.determination.outputs.result }}
+    permissions: {}
+    steps:
+      - name: Determine if the rest of the workflow should run
+        id: determination
+        run: |
+          RELEASE_BRANCH_REGEX="refs/heads/[0-9]+.[0-9]+.x"
+          # The `create` event trigger doesn't support `branches` filters, so it's necessary to use Bash instead.
+          if [[
+            "${{ github.event_name }}" != "create" ||
+            "${{ github.ref }}" =~ $RELEASE_BRANCH_REGEX
+          ]]; then
+            # Run the other jobs.
+            RESULT="true"
+          else
+            # There is no need to run the other jobs.
+            RESULT="false"
+          fi
+
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
+  build-type-determination:
+    needs: run-determination
+    if: needs.run-determination.outputs.result == 'true'
+    runs-on: ubuntu-latest
+    outputs:
+      is-release: ${{ steps.determination.outputs.is-release }}
+      is-nightly: ${{ steps.determination.outputs.is-nightly }}
+      channel-name: ${{ steps.determination.outputs.channel-name }}
+      publish-to-s3: ${{ steps.determination.outputs.publish-to-s3 }}
+    permissions: {}
+    steps:
+      - name: Determine the type of build
+        id: determination
+        run: |
+          if [[
+            "${{ startsWith(github.ref, 'refs/tags/') }}" == "true"
+          ]]; then
+            is_release="true"
+            is_nightly="false"
+            channel_name="stable"
+          elif [[
+            "${{ github.event_name }}" == "schedule" ||
+            (
+              "${{ github.event_name }}" == "workflow_dispatch" &&
+              "${{ github.ref }}" == "refs/heads/main"
+            )
+          ]]; then
+            is_release="false"
+            is_nightly="true"
+            channel_name="nightly"
+          else
+            is_release="false"
+            is_nightly="false"
+            channel_name="nightly"
+          fi
+
+          echo "is-release=$is_release" >> $GITHUB_OUTPUT
+          echo "is-nightly=$is_nightly" >> $GITHUB_OUTPUT
+          echo "channel-name=$channel_name" >> $GITHUB_OUTPUT
+          # Only attempt upload to Amazon S3 if the credentials are available.
+          echo "publish-to-s3=${{ secrets.AWS_SECRET_ACCESS_KEY != '' }}" >> $GITHUB_OUTPUT
+
+  select-targets:
+    needs: build-type-determination
+    runs-on: ubuntu-latest
+    outputs:
+      artifact-matrix: ${{ steps.assemble.outputs.artifact-matrix }}
+      build-matrix: ${{ steps.assemble.outputs.build-matrix }}
+      merge-channel-files: ${{ steps.assemble.outputs.merge-channel-files }}
+    permissions: {}
+    steps:
+      - name: Assemble target data
+        id: assemble
+        run: |
+          # Only run the builds that incur runner charges on release or select manually triggered runs.
+          if [[
+            "${{ needs.build-type-determination.outputs.is-release }}" == "true" ||
+            "${{ github.event.inputs.paid-runners }}" == "true"
+          ]]; then
+            build_matrix="$(
+              (
+                echo "${{ env.BASE_BUILD_DATA }}";
+                echo "${{ env.PAID_RUNNER_BUILD_DATA }}"
+              ) | \
+              yq \
+                --output-format json \
+                '[.[].config]'
+            )"
+
+            artifact_matrix="$(
+              (
+                echo "${{ env.BASE_BUILD_DATA }}";
+                echo "${{ env.PAID_RUNNER_BUILD_DATA }}"
+              ) | \
+              yq \
+                --output-format json \
+                '[.[].artifacts.[]]'
+            )"
+
+            # The build matrix produces two macOS jobs (x86 and ARM) so the "channel update info files"
+            # generated by each must be merged.
+            merge_channel_files="true"
+
+          else
+            build_matrix="$(
+              echo "${{ env.BASE_BUILD_DATA }}" | \
+              yq \
+                --output-format json \
+                '[.[].config]'
+            )"
+
+            artifact_matrix="$(
+              echo "${{ env.BASE_BUILD_DATA }}" | \
+              yq \
+                --output-format json \
+                '[.[].artifacts.[]]'
+            )"
+
+            merge_channel_files="false"
+          fi
+
+          # Set workflow step outputs.
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+          delimiter="$RANDOM"
+          echo "build-matrix<<$delimiter" >> $GITHUB_OUTPUT
+          echo "$build_matrix" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
+
+          delimiter="$RANDOM"
+          echo "artifact-matrix<<$delimiter" >> $GITHUB_OUTPUT
+          echo "$artifact_matrix" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
+
+          echo "merge-channel-files=$merge_channel_files" >> $GITHUB_OUTPUT
+
+  build:
+    name: build (${{ matrix.config.name }})
+    needs:
+      - build-type-determination
+      - select-targets
+    env:
+      # Location of artifacts generated by build.
+      BUILD_ARTIFACTS_PATH: electron-app/dist/build-artifacts
+    strategy:
+      matrix:
+        config: ${{ fromJson(needs.select-targets.outputs.build-matrix) }}
+    runs-on: ${{ matrix.config.runs-on }}
+    container: ${{ fromJSON(matrix.config.container) }}
+    defaults:
+      run:
+        # Avoid problems caused by different default shell for container jobs (sh) vs non-container jobs (bash).
+        shell: bash
+
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        if: fromJSON(matrix.config.container) == null
+        uses: actions/checkout@v4
+
+      - name: Checkout
+        # actions/checkout@v4 has dependency on a higher version of glibc than available in the Linux container.
+        if: fromJSON(matrix.config.container) != null
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        if: fromJSON(matrix.config.container) == null
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
+
+      - name: Install Python 3.x
+        if: fromJSON(matrix.config.container) == null
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11.x'
+
+      - name: Install Go
+        if: fromJSON(matrix.config.container) == null
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Go
+        # actions/setup-go@v5 has dependency on a higher version of glibc than available in the Linux container.
+        if: fromJSON(matrix.config.container) != null
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Taskfile
+        if: fromJSON(matrix.config.container) == null
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.x
+
+      - name: Install Taskfile
+        # actions/setup-task@v2 has dependency on a higher version of glibc than available in the Linux container.
+        if: fromJSON(matrix.config.container) != null
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.x
+
+      - name: Package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          AC_USERNAME: ${{ secrets.AC_USERNAME }}
+          AC_PASSWORD: ${{ secrets.AC_PASSWORD }}
+          AC_TEAM_ID: ${{ secrets.AC_TEAM_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          IS_NIGHTLY: ${{ needs.build-type-determination.outputs.is-nightly }}
+          IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
+          CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
+          # The CREATE_* environment vars are only used to run tests. These secrets are optional. Dependent tests will
+          # be skipped if not available.
+          CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
+          CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
+          CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
+        run: |
+          # See: https://www.electron.build/code-signing
+          if [ $CAN_SIGN = false ]; then
+            echo "Skipping the app signing: certificate not provided."
+          else
+            export CSC_LINK="${{ runner.temp }}/signing_certificate.${{ matrix.config.certificate-extension }}"
+            echo "${{ secrets[matrix.config.certificate-secret] }}" | base64 --decode > "$CSC_LINK"
+            export CSC_KEY_PASSWORD="${{ secrets[matrix.config.certificate-password-secret] }}"
+            export CSC_FOR_PULL_REQUEST=true
+          fi
+
+          npx node-gyp install
+          yarn install --immutable
+
+          yarn --cwd arduino-ide-extension build
+          yarn test
+          yarn --cwd arduino-ide-extension test:slow
+          yarn --cwd arduino-ide-extension lint
+
+          yarn --cwd electron-app rebuild
+          yarn --cwd electron-app build
+          yarn --cwd electron-app package
+
+      # Both macOS jobs generate a "channel update info file" with same path and name. The second job to complete would
+      # overwrite the file generated by the first in the workflow artifact.
+      - name: Stage channel file for merge
+        if: >
+          needs.select-targets.outputs.merge-channel-files == 'true' &&
+          matrix.config.mergeable-channel-file == 'true'
+        run: |
+          staged_channel_files_path="${{ runner.temp }}/staged-channel-files"
+          mkdir "$staged_channel_files_path"
+          mv \
+            "${{ env.BUILD_ARTIFACTS_PATH }}/${{ needs.build-type-determination.outputs.channel-name }}-mac.yml" \
+            "${staged_channel_files_path}/${{ needs.build-type-determination.outputs.channel-name }}-mac-${{ runner.arch }}.yml"
+
+          # Set workflow environment variable for use in other steps.
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "STAGED_CHANNEL_FILES_PATH=$staged_channel_files_path" >> "$GITHUB_ENV"
+
+      - name: Upload staged-for-merge channel file artifact
+        uses: actions/upload-artifact@v3
+        if: >
+          needs.select-targets.outputs.merge-channel-files == 'true' &&
+          matrix.config.mergeable-channel-file == 'true'
+        with:
+          if-no-files-found: error
+          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          path: ${{ env.STAGED_CHANNEL_FILES_PATH }}
+
+      - name: Upload [GitHub Actions]
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.BUILD_ARTIFACTS_PATH }}
+
+  merge-channel-files:
+    needs:
+      - build-type-determination
+      - select-targets
+      - build
+    if: needs.select-targets.outputs.merge-channel-files == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Set environment variables
+        run: |
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#setting-an-environment-variable
+          echo "CHANNEL_FILES_PATH=${{ runner.temp }}/channel-files" >> "$GITHUB_ENV"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download staged-for-merge channel files artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          path: ${{ env.CHANNEL_FILES_PATH }}
+
+      - name: Remove no longer needed artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
+
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Install Task
+        uses: arduino/setup-task@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          version: 3.x
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Merge "channel update info files"
+        run: |
+          node \
+            ./scripts/merge-channel-files.js \
+              --channel "${{ needs.build-type-determination.outputs.channel-name }}" \
+              --input "${{ env.CHANNEL_FILES_PATH }}"
+
+      - name: Upload merged channel files to job transfer artifact
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.CHANNEL_FILES_PATH }}
+
+  artifacts:
+    name: ${{ matrix.artifact.name }} artifact
+    needs:
+      - select-targets
+      - build
+    if: always() && needs.build.result != 'skipped'
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        artifact: ${{ fromJson(needs.select-targets.outputs.artifact-matrix) }}
+
+    steps:
+      - name: Download job transfer artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+
+      - name: Upload tester build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.artifact.name }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
+
+  changelog:
+    needs:
+      - build-type-determination
+      - build
+    runs-on: ubuntu-latest
+    outputs:
+      BODY: ${{ steps.changelog.outputs.BODY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # To fetch all history for all branches and tags.
+
+      - name: Generate Changelog
+        id: changelog
+        env:
+          IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
+        run: |
+          export LATEST_TAG=$(git describe --abbrev=0)
+          export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
+          if [ "$IS_RELEASE" = true ]; then
+            export BODY=$(echo -e "$GIT_LOG")
+          else
+            export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-ide/releases/tag/$LATEST_TAG)")
+            if [ -z "$GIT_LOG" ]; then
+                export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
+            else
+                export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")
+            fi
+          fi
+          echo -e "$BODY"
+
+          # Set workflow step output
+          # See: https://docs.github.com/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
+          DELIMITER="$RANDOM"
+          echo "BODY<<$DELIMITER" >> $GITHUB_OUTPUT
+          echo "$BODY" >> $GITHUB_OUTPUT
+          echo "$DELIMITER" >> $GITHUB_OUTPUT
+
+          echo "$BODY" > CHANGELOG.txt
+
+      - name: Upload Changelog [GitHub Actions]
+        if: needs.build-type-determination.outputs.is-nightly == 'true'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: CHANGELOG.txt
+
+  publish:
+    needs:
+      - build-type-determination
+      - merge-channel-files
+      - changelog
+    if: >
+      always() &&
+      needs.build-type-determination.result == 'success' &&
+      (
+        needs.merge-channel-files.result == 'skipped' ||
+        needs.merge-channel-files.result == 'success'
+      ) &&
+      needs.changelog.result == 'success' &&
+      needs.build-type-determination.outputs.publish-to-s3 == 'true' &&
+      needs.build-type-determination.outputs.is-nightly == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download [GitHub Actions]
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+
+      - name: Publish Nightly [S3]
+        uses: docker://plugins/s3
+        env:
+          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_TARGET: '/arduino-ide/nightly'
+          PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  release:
+    needs:
+      - build-type-determination
+      - merge-channel-files
+      - changelog
+    if: >
+      always() &&
+      needs.build-type-determination.result == 'success' &&
+      (
+        needs.merge-channel-files.result == 'skipped' ||
+        needs.merge-channel-files.result == 'success'
+      ) &&
+      needs.changelog.result == 'success' &&
+      needs.build-type-determination.outputs.is-release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download [GitHub Actions]
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+
+      - name: Get Tag
+        id: tag_name
+        run: |
+          echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Publish Release [GitHub]
+        uses: svenstaro/upload-release-action@2.7.0
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
+          file: ${{ env.JOB_TRANSFER_ARTIFACT }}/*
+          tag: ${{ github.ref }}
+          file_glob: true
+          body: ${{ needs.changelog.outputs.BODY }}
+
+      - name: Publish Release [S3]
+        if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
+        uses: docker://plugins/s3
+        env:
+          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_TARGET: '/arduino-ide'
+          PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  clean:
+    # This job must run after all jobs that use the transfer artifact.
+    needs:
+      - build
+      - merge-channel-files
+      - publish
+      - release
+      - artifacts
+    if: always() && needs.build.result != 'skipped'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Remove unneeded job transfer artifact
+        uses: geekyeggo/delete-artifact@v2
+        with:
+          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
