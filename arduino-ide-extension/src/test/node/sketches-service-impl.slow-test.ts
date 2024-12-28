@@ -3,18 +3,19 @@ import {
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
 import { isWindows } from '@theia/core/lib/common/os';
+import { URI } from '@theia/core/lib/common/uri';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
-import { promises as fs } from 'node:fs';
-import { basename, join } from 'node:path';
 import { rejects } from 'node:assert/strict';
+import { promises as fs } from 'node:fs';
+import path, { basename, join } from 'node:path';
 import { sync as rimrafSync } from 'rimraf';
 import temp from 'temp';
 import { Sketch, SketchesError, SketchesService } from '../../common/protocol';
 import {
-  isAccessibleSketchPath,
   SketchesServiceImpl,
+  isAccessibleSketchPath,
 } from '../../node/sketches-service-impl';
 import { ErrnoException } from '../../node/utils/errors';
 import { createBaseContainer, startDaemon } from './node-test-bindings';
@@ -86,8 +87,7 @@ describe('isAccessibleSketchPath', () => {
     } catch (err) {
       expect(
         ErrnoException.isEACCES(err),
-        `Expected an error with EACCES code. Got: ${
-          typeof err === 'object' ? JSON.stringify(err) : err
+        `Expected an error with EACCES code. Got: ${typeof err === 'object' ? JSON.stringify(err) : err
         }`
       ).to.be.true;
     }
@@ -330,6 +330,37 @@ describe('sketches-service-impl', () => {
         fs.readFile(join(destinationPath, logBasename)),
         ErrnoException.isENOENT
       );
+    });
+
+    it('should copy sketch if the main sketch file has pde extension (#2377)', async () => {
+      const sketchesService =
+        container.get<SketchesServiceImpl>(SketchesService);
+      let sketch = await sketchesService.createNewSketch();
+      toDispose.push(disposeSketch(sketch));
+      expect(sketch.mainFileUri.endsWith('.ino')).to.be.true;
+
+      // Create a sketch and rename the main sketch file to .pde
+      const mainSketchFilePathIno = FileUri.fsPath(new URI(sketch.mainFileUri));
+      const sketchFolderPath = path.dirname(mainSketchFilePathIno);
+      const mainSketchFilePathPde = path.join(
+        sketchFolderPath,
+        `${basename(sketchFolderPath)}.pde`
+      );
+      await fs.rename(mainSketchFilePathIno, mainSketchFilePathPde);
+
+      sketch = await sketchesService.loadSketch(sketch.uri);
+      expect(sketch.mainFileUri.endsWith('.pde')).to.be.true;
+
+      const tempDirPath = await sketchesService['createTempFolder']();
+      const destinationPath = join(tempDirPath, 'GH-2377');
+      const destinationUri = FileUri.create(destinationPath).toString();
+
+      await sketchesService.copy(sketch, {
+        destinationUri,
+      });
+
+      const copiedSketch = await sketchesService.loadSketch(destinationUri);
+      expect(copiedSketch.mainFileUri.endsWith('.ino')).to.be.true;
     });
 
     it('should copy sketch inside the sketch folder', async () => {

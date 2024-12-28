@@ -17,7 +17,6 @@ import {
   UpdateLibrariesIndexRequest,
   UpdateLibrariesIndexResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/commands_pb';
-import * as commandsGrpcPb from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
 import {
   IndexType,
   IndexUpdateDidCompleteParams,
@@ -43,6 +42,10 @@ import {
 } from './grpc-progressible';
 import type { DefaultCliConfig } from './cli-config';
 import { ServiceError } from './service-error';
+import {
+  createArduinoCoreServiceClient,
+  createDefaultChannelOptions,
+} from './arduino-core-service-client';
 
 @injectable()
 export class CoreClientProvider {
@@ -128,11 +131,9 @@ export class CoreClientProvider {
   /**
    * Encapsulates both the gRPC core client creation (`CreateRequest`) and initialization (`InitRequest`).
    */
-  private async create(port: string): Promise<CoreClientProvider.Client> {
+  private async create(port: number): Promise<CoreClientProvider.Client> {
     this.closeClient();
-    // await this.createPackageIndexJson();
-    const address = this.address(port);
-    const client = await this.createClient(address);
+    const client = await this.createClient(port);
     this.toDisposeOnCloseClient.pushAll([
       Disposable.create(() => client.client.close()),
     ]);
@@ -196,22 +197,9 @@ export class CoreClientProvider {
     return this.toDisposeOnCloseClient.dispose();
   }
 
-  private async createClient(
-    address: string
-  ): Promise<CoreClientProvider.Client> {
-    // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
-    const ArduinoCoreServiceClient = grpc.makeClientConstructor(
-      // @ts-expect-error: ignore
-      commandsGrpcPb['cc.arduino.cli.commands.v1.ArduinoCoreService'],
-      'ArduinoCoreServiceService'
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ) as any;
-    const client = new ArduinoCoreServiceClient(
-      address,
-      grpc.credentials.createInsecure(),
-      this.channelOptions
-    ) as ArduinoCoreServiceClient;
-
+  private async createClient(port: number): Promise<CoreClientProvider.Client> {
+    const channelOptions = createDefaultChannelOptions(this.version);
+    const client = createArduinoCoreServiceClient({ port, channelOptions });
     const instance = await new Promise<Instance>((resolve, reject) => {
       client.create(new CreateRequest(), (err, resp) => {
         if (err) {
@@ -406,18 +394,6 @@ export class CoreClientProvider {
       onComplete: (params: IndexUpdateDidCompleteParams) =>
         this.notificationService.notifyIndexUpdateDidComplete(params),
     });
-  }
-
-  private address(port: string): string {
-    return `localhost:${port}`;
-  }
-
-  private get channelOptions(): Record<string, unknown> {
-    return {
-      'grpc.max_send_message_length': 512 * 1024 * 1024,
-      'grpc.max_receive_message_length': 512 * 1024 * 1024,
-      'grpc.primary_user_agent': `arduino-ide/${this.version}`,
-    };
   }
 
   private _version: string | undefined;

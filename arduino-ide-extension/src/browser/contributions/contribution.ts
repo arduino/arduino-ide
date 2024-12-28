@@ -1,83 +1,89 @@
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
+import {
+  FrontendApplication,
+  FrontendApplicationContribution,
+} from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
+import {
+  KeybindingContribution,
+  KeybindingRegistry,
+} from '@theia/core/lib/browser/keybinding';
+import { LabelProvider } from '@theia/core/lib/browser/label-provider';
+import { OpenerService, open } from '@theia/core/lib/browser/opener-service';
+import { Saveable } from '@theia/core/lib/browser/saveable';
+import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
+import {
+  TabBarToolbarContribution,
+  TabBarToolbarRegistry,
+} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
+import { CancellationToken } from '@theia/core/lib/common/cancellation';
+import {
+  Command,
+  CommandContribution,
+  CommandRegistry,
+  CommandService,
+} from '@theia/core/lib/common/command';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
+import { ILogger } from '@theia/core/lib/common/logger';
+import {
+  MenuContribution,
+  MenuModelRegistry,
+} from '@theia/core/lib/common/menu';
+import { MessageService } from '@theia/core/lib/common/message-service';
+import { MessageType } from '@theia/core/lib/common/message-service-protocol';
+import { nls } from '@theia/core/lib/common/nls';
+import { MaybePromise, isObject } from '@theia/core/lib/common/types';
+import URI from '@theia/core/lib/common/uri';
 import {
   inject,
   injectable,
   interfaces,
   postConstruct,
 } from '@theia/core/shared/inversify';
-import URI from '@theia/core/lib/common/uri';
-import { ILogger } from '@theia/core/lib/common/logger';
-import {
-  Disposable,
-  DisposableCollection,
-} from '@theia/core/lib/common/disposable';
-import { Saveable } from '@theia/core/lib/browser/saveable';
-import { FileService } from '@theia/filesystem/lib/browser/file-service';
-import { MaybePromise } from '@theia/core/lib/common/types';
-import { LabelProvider } from '@theia/core/lib/browser/label-provider';
 import { EditorManager } from '@theia/editor/lib/browser/editor-manager';
-import { MessageService } from '@theia/core/lib/common/message-service';
-import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { open, OpenerService } from '@theia/core/lib/browser/opener-service';
+import { FileService } from '@theia/filesystem/lib/browser/file-service';
+import { NotificationManager } from '@theia/messages/lib/browser/notifications-manager';
+import { OutputChannelSeverity } from '@theia/output/lib/browser/output-channel';
+import { MainMenuManager } from '../../common/main-menu-manager';
+import { userAbort } from '../../common/nls';
 import {
-  MenuModelRegistry,
-  MenuContribution,
-} from '@theia/core/lib/common/menu';
+  CoreError,
+  CoreService,
+  FileSystemExt,
+  ResponseServiceClient,
+  Sketch,
+  SketchesService,
+} from '../../common/protocol';
 import {
-  KeybindingRegistry,
-  KeybindingContribution,
-} from '@theia/core/lib/browser/keybinding';
-import {
-  TabBarToolbarContribution,
-  TabBarToolbarRegistry,
-} from '@theia/core/lib/browser/shell/tab-bar-toolbar';
-import {
-  FrontendApplicationContribution,
-  FrontendApplication,
-} from '@theia/core/lib/browser/frontend-application';
-import {
-  Command,
-  CommandRegistry,
-  CommandContribution,
-  CommandService,
-} from '@theia/core/lib/common/command';
+  ExecuteWithProgress,
+  UserAbortApplicationError,
+} from '../../common/protocol/progressible';
+import { ArduinoPreferences } from '../arduino-preferences';
+import { BoardsDataStore } from '../boards/boards-data-store';
+import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { ConfigServiceClient } from '../config/config-service-client';
+import { DialogService } from '../dialog-service';
 import { SettingsService } from '../dialogs/settings/settings';
 import {
   CurrentSketch,
   SketchesServiceClientImpl,
 } from '../sketches-service-client-impl';
-import {
-  SketchesService,
-  FileSystemExt,
-  Sketch,
-  CoreService,
-  CoreError,
-  ResponseServiceClient,
-} from '../../common/protocol';
-import { ArduinoPreferences } from '../arduino-preferences';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
-import { nls } from '@theia/core';
-import { OutputChannelManager } from '../theia/output/output-channel';
-import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
-import { ExecuteWithProgress } from '../../common/protocol/progressible';
-import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { BoardsDataStore } from '../boards/boards-data-store';
-import { NotificationManager } from '@theia/messages/lib/browser/notifications-manager';
-import { MessageType } from '@theia/core/lib/common/message-service-protocol';
-import { WorkspaceService } from '../theia/workspace/workspace-service';
-import { MainMenuManager } from '../../common/main-menu-manager';
-import { ConfigServiceClient } from '../config/config-service-client';
-import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
-import { DialogService } from '../dialog-service';
 import { ApplicationConnectionStatusContribution } from '../theia/core/connection-status-service';
+import { OutputChannelManager } from '../theia/output/output-channel';
+import { WorkspaceService } from '../theia/workspace/workspace-service';
 
 export {
   Command,
   CommandRegistry,
-  MenuModelRegistry,
   KeybindingRegistry,
+  MenuModelRegistry,
+  Sketch,
   TabBarToolbarRegistry,
   URI,
-  Sketch,
   open,
 };
 
@@ -252,6 +258,12 @@ export abstract class CoreServiceContribution extends SketchContribution {
   }
 
   protected handleError(error: unknown): void {
+    if (isObject(error) && UserAbortApplicationError.is(error)) {
+      this.outputChannelManager
+        .getChannel('Arduino')
+        .appendLine(userAbort, OutputChannelSeverity.Warning);
+      return;
+    }
     this.tryToastErrorMessage(error);
   }
 
@@ -302,7 +314,13 @@ export abstract class CoreServiceContribution extends SketchContribution {
   protected async doWithProgress<T>(options: {
     progressText: string;
     keepOutput?: boolean;
-    task: (progressId: string, coreService: CoreService) => Promise<T>;
+    task: (
+      progressId: string,
+      coreService: CoreService,
+      cancellationToken?: CancellationToken
+    ) => Promise<T>;
+    // false by default
+    cancelable?: boolean;
   }): Promise<T> {
     const toDisposeOnComplete = new DisposableCollection(
       this.maybeActivateMonitorWidget()
@@ -315,8 +333,10 @@ export abstract class CoreServiceContribution extends SketchContribution {
       messageService: this.messageService,
       responseService: this.responseService,
       progressText,
-      run: ({ progressId }) => task(progressId, this.coreService),
+      run: ({ progressId, cancellationToken }) =>
+        task(progressId, this.coreService, cancellationToken),
       keepOutput,
+      cancelable: options.cancelable,
     });
     toDisposeOnComplete.dispose();
     return result;

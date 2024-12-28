@@ -13,6 +13,7 @@
     "board": {
       "board": "Alaplap {0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Alaplapi információk",
       "boards": "boards",
       "configDialog1": "Válassz ki egy alaplapot és egy portot is - csak ekkor lehetséges a feltöltés. ",
@@ -31,10 +32,12 @@
       "port": "Port {0}",
       "ports": "ports",
       "programmer": "Programozó",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Később újra válaszd ki",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Alaplap választás",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Válassz egy portot az alaplap információinak megtekintéséhez. ",
       "showAllAvailablePorts": "Elérhető portok mutatása - ha engedélyezett",
       "showAllPorts": "Show all ports",
@@ -152,7 +155,8 @@
       "serialMonitor": "Soros monitor",
       "type": "Type",
       "unknown": "ismeretlen",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Összeállítási hiba: {0} "
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "A hibakeresést a '{0}' nem támogatja ",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "A platform nincs telepítve a következőhöz: „{0}” ",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimalizálás hibakereséséhez",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Írj be egy kulcsszót",
       "privacyPolicy": "Privacy Policy",
       "reference": "Referencia ",
-      "search": "Keresés az lingzhilab.com oldalon",
+      "search": "Keresés az Arduino.cc oldalon",
       "troubleshooting": "Hibaelhárítás",
-      "visit": "lingzhilab.com meglátogatása"
+      "visit": "Arduino.cc meglátogatása"
     },
     "ide-updater": {
       "checkForUpdates": "Check for Arduino IDE Updates",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből letöltése  előtt. Alapértelmezés szerint: kipipálva.",
       "cloud.push.warn": "Kipipálva: figyelmeztetés megjelenítése a vázlat/sketch felhőből való letöltése előtt. Alapértelmezés: kipipálva. ",
       "cloud.pushpublic.warn": "Kipipálva: figyelmeztetés megjelenítése a nyilvános vázlat/sketch felhőbe küldése előtt. Alapértelmezés szerint: kipipálva.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "A végpont/endpoint a vázlatok/sketch-ek háttéből történő letöltésére illetve  publikálására szolgál. Alapértelmezés szerint az Arduino Cloud API-ra mutat. ",
       "compile": "fordítás",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
@@ -411,7 +415,9 @@
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Kattints ide a nem hivatalos alaplapok fordítási URL-jeinek listájához ",
       "upload": "feltöltés",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "Kipipálva: a részletes feltöltési üzenetek kiírása a képernyőre. Alapértelmezés szerint hamis/nincs kipipálva.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Kód ellenőrzése feltöltés után",
       "window.autoScale": "Kipipálva, ha a felhasználói felület automatikusan méreteződik a betűmérettel együtt. ",
       "window.zoomLevel": {

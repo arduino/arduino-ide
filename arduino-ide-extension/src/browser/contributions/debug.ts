@@ -294,8 +294,8 @@ export class Debug
   ): Promise<boolean> {
     if (err instanceof Error) {
       try {
-        const tempBuildPaths = await this.sketchesService.tempBuildPath(sketch);
-        return tempBuildPaths.some((tempBuildPath) =>
+        const buildPaths = await this.sketchesService.getBuildPath(sketch);
+        return buildPaths.some((tempBuildPath: string) =>
           err.message.includes(tempBuildPath)
         );
       } catch {

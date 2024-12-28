@@ -37,7 +37,7 @@ describe('exec-utils', () => {
       expect(fs.accessSync(cliCopyPath, fs.constants.X_OK)).to.be.undefined;
       expect(cliCopyPath.includes(segment)).to.be.true;
       const stdout = await spawnCommand(cliCopyPath, ['version']);
-      expect(stdout.includes(filename)).to.be.true;
+      expect(stdout.includes(path.parse(filename).name)).to.be.true;
     });
   });
 

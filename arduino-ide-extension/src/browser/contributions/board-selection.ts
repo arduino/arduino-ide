@@ -20,8 +20,9 @@ import {
 } from '../../common/protocol';
 import type { BoardList } from '../../common/protocol/board-list';
 import { BoardsListWidget } from '../boards/boards-list-widget';
+import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
-import { PlaceholderMenuNode } from '../menu/arduino-menus';
+import { ArduinoMenus, PlaceholderMenuNode } from '../menu/arduino-menus';
 import { NotificationCenter } from '../notification-center';
 import { Command, CommandRegistry, SketchContribution } from './contribution';
 import { SidebarMenu } from '@theia/core/lib/browser/shell/sidebar-menu-widget';
@@ -50,6 +51,8 @@ export class BoardSelection extends SketchContribution {
   // 注入 NotificationCenter，用于接收通知
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
+  @inject(BoardsDataStore)
+  private readonly boardsDataStore: BoardsDataStore;
   // 注入 BoardsService，用于与开发板服务进行交互
   @inject(BoardsService)
   private readonly boardsService: BoardsService;
@@ -89,6 +92,29 @@ SN: ${SN}
           detail,
           buttons: [nls.localize('vscode/issueMainService/ok', '确定')],
         });
+      },
+    });
+
+    registry.registerCommand(BoardSelection.Commands.RELOAD_BOARD_DATA, {
+      execute: async () => {
+        const selectedFqbn =
+          this.boardsServiceProvider.boardList.boardsConfig.selectedBoard?.fqbn;
+        let message: string;
+
+        if (selectedFqbn) {
+          await this.boardsDataStore.reloadBoardData(selectedFqbn);
+          message = nls.localize(
+            'arduino/board/boardDataReloaded',
+            'Board data reloaded.'
+          );
+        } else {
+          message = nls.localize(
+            'arduino/board/selectBoardToReload',
+            'Please select a board first.'
+          );
+        }
+
+        this.messageService.info(message, { timeout: 2000 });
       },
     });
   }
@@ -191,6 +217,21 @@ SN: ${SN}
     //   )
     // );
 
+    const reloadBoardData = {
+      commandId: BoardSelection.Commands.RELOAD_BOARD_DATA.id,
+      label: nls.localize('arduino/board/reloadBoardData', 'Reload Board Data'),
+      order: '102',
+    };
+    this.menuModelRegistry.registerMenuAction(
+      ArduinoMenus.TOOLS__BOARD_SELECTION_GROUP,
+      reloadBoardData
+    );
+    this.toDisposeBeforeMenuRebuild.push(
+      Disposable.create(() =>
+        this.menuModelRegistry.unregisterMenuAction(reloadBoardData)
+      )
+    );
+
     // const getBoardInfo = {
     //   commandId: BoardSelection.Commands.GET_BOARD_INFO.id,
     //   label: '获得开发板信息',
@@ -228,7 +269,6 @@ SN: ${SN}
     const groupedBoards = new Map<string, BoardsPerVendor>();
     for (const board of installedBoards) {
       const { packageId, packageName } = board;
-      console;
       const { vendorId } = packageId;
       let boardsPerPackageName = groupedBoards.get(packageName);
       if (!boardsPerPackageName) {
@@ -350,7 +390,6 @@ SN: ${SN}
       for (let i = 0; i < ports.length; i++) {
         const { port, boards } = ports[i];
         const portKey = Port.keyOf(port);
-
         let label = `${port.addressLabel}`;
         if (boards?.length) {
           const boardsList = boards.map((board) => board.name).join(', ');
@@ -407,5 +446,8 @@ SN: ${SN}
 export namespace BoardSelection {
   export namespace Commands {
     export const GET_BOARD_INFO: Command = { id: 'lingzhi-get-board-info' };
+    export const RELOAD_BOARD_DATA: Command = {
+      id: 'lingzhi-reload-board-data',
+    };
   }
 }

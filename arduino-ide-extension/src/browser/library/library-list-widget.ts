@@ -12,17 +12,14 @@ import {
   LibrarySearch,
   LibraryService,
 } from '../../common/protocol/library-service';
-import {
-  ListWidget,
-  UserAbortError,
-} from '../widgets/component-list/list-widget';
+import { ListWidget } from '../widgets/component-list/list-widget';
 import { Installable } from '../../common/protocol';
 import { ListItemRenderer } from '../widgets/component-list/list-item-renderer';
 import { nls } from '@theia/core/lib/common';
 import { LibraryFilterRenderer } from '../widgets/component-list/filter-renderer';
 import { findChildTheiaButton, splitByBoldTag } from '../utils/dom';
+import { UserAbortError } from '../../common/protocol/progressible';
 
-// 可注入的 LibraryListWidget 类
 @injectable()
 export class LibraryListWidget extends ListWidget<
   LibraryPackage,

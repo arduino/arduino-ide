@@ -13,7 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function () {
+var global = (function() {
   if (this) { return this; }
   if (typeof window !== 'undefined') { return window; }
   if (typeof global !== 'undefined') { return global; }
@@ -55,7 +55,7 @@ goog.exportSymbol('proto.cc.arduino.cli.commands.v1.ToolsDependencies', null, gl
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardDetailsRequest, jspb.Message);
@@ -76,7 +76,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardDetailsResponse, jspb.Message);
@@ -97,7 +97,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties, jspb.Message);
@@ -118,7 +118,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.Package = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.Package = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.Package, jspb.Message);
@@ -139,7 +139,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.Help = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.Help = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.Help, jspb.Message);
@@ -160,7 +160,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardPlatform, jspb.Message);
@@ -181,7 +181,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.ToolsDependencies.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.ToolsDependencies, jspb.Message);
@@ -202,7 +202,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.Systems = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.Systems = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.Systems, jspb.Message);
@@ -223,7 +223,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.ConfigOption = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.ConfigOption.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.ConfigOption, jspb.Message);
@@ -244,7 +244,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.ConfigValue = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.ConfigValue, jspb.Message);
@@ -265,7 +265,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListRequest, jspb.Message);
@@ -286,7 +286,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListResponse = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.BoardListResponse.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListResponse, jspb.Message);
@@ -307,7 +307,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.DetectedPort = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.DetectedPort.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.DetectedPort, jspb.Message);
@@ -328,7 +328,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.BoardListAllRequest.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListAllRequest, jspb.Message);
@@ -349,7 +349,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.BoardListAllResponse.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListAllResponse, jspb.Message);
@@ -370,7 +370,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListWatchRequest, jspb.Message);
@@ -391,7 +391,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListWatchResponse, jspb.Message);
@@ -412,7 +412,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardListItem = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardListItem, jspb.Message);
@@ -433,7 +433,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardSearchRequest, jspb.Message);
@@ -454,7 +454,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse = function (opt_data) {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse = function(opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, proto.cc.arduino.cli.commands.v1.BoardSearchResponse.repeatedFields_, null);
 };
 goog.inherits(proto.cc.arduino.cli.commands.v1.BoardSearchResponse, jspb.Message);
@@ -469,44 +469,44 @@ if (goog.DEBUG && !COMPILED) {
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
+    fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    doNotExpandBuildProperties: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-      fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      doNotExpandBuildProperties: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -515,7 +515,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardDetailsRequest;
   return proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinaryFromReader(msg, reader);
@@ -529,29 +529,29 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinary = functio
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
-        msg.setInstance(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setFqbn(value);
-        break;
-      case 3:
-        var value = /** @type {boolean} */ (reader.readBool());
-        msg.setDoNotExpandBuildProperties(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
+      msg.setInstance(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFqbn(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setDoNotExpandBuildProperties(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -562,7 +562,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.deserializeBinaryFromReader
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -576,7 +576,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.serializeBinary =
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getInstance();
   if (f != null) {
@@ -607,7 +607,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.serializeBinaryToWriter = f
  * optional Instance instance = 1;
  * @return {?proto.cc.arduino.cli.commands.v1.Instance}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getInstance = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Instance} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Instance, 1));
 };
@@ -617,7 +617,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getInstance = fun
  * @param {?proto.cc.arduino.cli.commands.v1.Instance|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setInstance = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setInstance = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
@@ -626,7 +626,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setInstance = fun
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.clearInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.clearInstance = function() {
   return this.setInstance(undefined);
 };
 
@@ -635,7 +635,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.clearInstance = f
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.hasInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -644,7 +644,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.hasInstance = fun
  * optional string fqbn = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getFqbn = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getFqbn = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -653,7 +653,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getFqbn = functio
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setFqbn = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setFqbn = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -662,7 +662,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setFqbn = functio
  * optional bool do_not_expand_build_properties = 3;
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getDoNotExpandBuildProperties = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getDoNotExpandBuildProperties = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -671,7 +671,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.getDoNotExpandBui
  * @param {boolean} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setDoNotExpandBuildProperties = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setDoNotExpandBuildProperties = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
@@ -682,65 +682,65 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsRequest.prototype.setDoNotExpandBui
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.repeatedFields_ = [10, 11, 13, 15, 16];
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.repeatedFields_ = [10,11,13,15,16];
 
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    fqbn: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    name: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    version: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    propertiesId: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    alias: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    official: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
+    pinout: jspb.Message.getFieldWithDefault(msg, 7, ""),
+    pb_package: (f = msg.getPackage()) && proto.cc.arduino.cli.commands.v1.Package.toObject(includeInstance, f),
+    platform: (f = msg.getPlatform()) && proto.cc.arduino.cli.commands.v1.BoardPlatform.toObject(includeInstance, f),
+    toolsDependenciesList: jspb.Message.toObjectList(msg.getToolsDependenciesList(),
+    proto.cc.arduino.cli.commands.v1.ToolsDependencies.toObject, includeInstance),
+    configOptionsList: jspb.Message.toObjectList(msg.getConfigOptionsList(),
+    proto.cc.arduino.cli.commands.v1.ConfigOption.toObject, includeInstance),
+    programmersList: jspb.Message.toObjectList(msg.getProgrammersList(),
+    cc_arduino_cli_commands_v1_common_pb.Programmer.toObject, includeInstance),
+    identificationPropertiesList: jspb.Message.toObjectList(msg.getIdentificationPropertiesList(),
+    proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject, includeInstance),
+    buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 16)) == null ? undefined : f,
+    defaultProgrammerId: jspb.Message.getFieldWithDefault(msg, 17, "")
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      fqbn: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      version: jspb.Message.getFieldWithDefault(msg, 3, ""),
-      propertiesId: jspb.Message.getFieldWithDefault(msg, 4, ""),
-      alias: jspb.Message.getFieldWithDefault(msg, 5, ""),
-      official: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
-      pinout: jspb.Message.getFieldWithDefault(msg, 7, ""),
-      pb_package: (f = msg.getPackage()) && proto.cc.arduino.cli.commands.v1.Package.toObject(includeInstance, f),
-      platform: (f = msg.getPlatform()) && proto.cc.arduino.cli.commands.v1.BoardPlatform.toObject(includeInstance, f),
-      toolsDependenciesList: jspb.Message.toObjectList(msg.getToolsDependenciesList(),
-        proto.cc.arduino.cli.commands.v1.ToolsDependencies.toObject, includeInstance),
-      configOptionsList: jspb.Message.toObjectList(msg.getConfigOptionsList(),
-        proto.cc.arduino.cli.commands.v1.ConfigOption.toObject, includeInstance),
-      programmersList: jspb.Message.toObjectList(msg.getProgrammersList(),
-        cc_arduino_cli_commands_v1_common_pb.Programmer.toObject, includeInstance),
-      identificationPropertiesList: jspb.Message.toObjectList(msg.getIdentificationPropertiesList(),
-        proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject, includeInstance),
-      buildPropertiesList: (f = jspb.Message.getRepeatedField(msg, 16)) == null ? undefined : f,
-      defaultProgrammerId: jspb.Message.getFieldWithDefault(msg, 17, "")
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -749,7 +749,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardDetailsResponse;
   return proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReader(msg, reader);
@@ -763,82 +763,82 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinary = functi
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setFqbn(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setName(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setVersion(value);
-        break;
-      case 4:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setPropertiesId(value);
-        break;
-      case 5:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setAlias(value);
-        break;
-      case 6:
-        var value = /** @type {boolean} */ (reader.readBool());
-        msg.setOfficial(value);
-        break;
-      case 7:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setPinout(value);
-        break;
-      case 8:
-        var value = new proto.cc.arduino.cli.commands.v1.Package;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.Package.deserializeBinaryFromReader);
-        msg.setPackage(value);
-        break;
-      case 9:
-        var value = new proto.cc.arduino.cli.commands.v1.BoardPlatform;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinaryFromReader);
-        msg.setPlatform(value);
-        break;
-      case 10:
-        var value = new proto.cc.arduino.cli.commands.v1.ToolsDependencies;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinaryFromReader);
-        msg.addToolsDependencies(value);
-        break;
-      case 11:
-        var value = new proto.cc.arduino.cli.commands.v1.ConfigOption;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinaryFromReader);
-        msg.addConfigOptions(value);
-        break;
-      case 13:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Programmer;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Programmer.deserializeBinaryFromReader);
-        msg.addProgrammers(value);
-        break;
-      case 15:
-        var value = new proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader);
-        msg.addIdentificationProperties(value);
-        break;
-      case 16:
-        var value = /** @type {string} */ (reader.readString());
-        msg.addBuildProperties(value);
-        break;
-      case 17:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setDefaultProgrammerId(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFqbn(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVersion(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPropertiesId(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setAlias(value);
+      break;
+    case 6:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setOfficial(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPinout(value);
+      break;
+    case 8:
+      var value = new proto.cc.arduino.cli.commands.v1.Package;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.Package.deserializeBinaryFromReader);
+      msg.setPackage(value);
+      break;
+    case 9:
+      var value = new proto.cc.arduino.cli.commands.v1.BoardPlatform;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinaryFromReader);
+      msg.setPlatform(value);
+      break;
+    case 10:
+      var value = new proto.cc.arduino.cli.commands.v1.ToolsDependencies;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinaryFromReader);
+      msg.addToolsDependencies(value);
+      break;
+    case 11:
+      var value = new proto.cc.arduino.cli.commands.v1.ConfigOption;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinaryFromReader);
+      msg.addConfigOptions(value);
+      break;
+    case 13:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Programmer;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Programmer.deserializeBinaryFromReader);
+      msg.addProgrammers(value);
+      break;
+    case 15:
+      var value = new proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader);
+      msg.addIdentificationProperties(value);
+      break;
+    case 16:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addBuildProperties(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDefaultProgrammerId(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -849,7 +849,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.deserializeBinaryFromReade
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -863,7 +863,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.serializeBinary 
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getFqbn();
   if (f.length > 0) {
@@ -983,7 +983,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.serializeBinaryToWriter = 
  * optional string fqbn = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getFqbn = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getFqbn = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -992,7 +992,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getFqbn = functi
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setFqbn = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setFqbn = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1001,7 +1001,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setFqbn = functi
  * optional string name = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getName = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -1010,7 +1010,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getName = functi
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setName = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -1019,7 +1019,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setName = functi
  * optional string version = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getVersion = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getVersion = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -1028,7 +1028,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getVersion = fun
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setVersion = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -1037,7 +1037,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setVersion = fun
  * optional string properties_id = 4;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPropertiesId = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPropertiesId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
@@ -1046,7 +1046,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPropertiesId 
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPropertiesId = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPropertiesId = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -1055,7 +1055,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPropertiesId 
  * optional string alias = 5;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getAlias = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getAlias = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
@@ -1064,7 +1064,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getAlias = funct
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setAlias = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setAlias = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
 };
 
@@ -1073,7 +1073,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setAlias = funct
  * optional bool official = 6;
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getOfficial = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getOfficial = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 6, false));
 };
 
@@ -1082,7 +1082,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getOfficial = fu
  * @param {boolean} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setOfficial = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setOfficial = function(value) {
   return jspb.Message.setProto3BooleanField(this, 6, value);
 };
 
@@ -1091,7 +1091,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setOfficial = fu
  * optional string pinout = 7;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPinout = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPinout = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
@@ -1100,7 +1100,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPinout = func
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPinout = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPinout = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
 };
 
@@ -1109,7 +1109,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPinout = func
  * optional Package package = 8;
  * @return {?proto.cc.arduino.cli.commands.v1.Package}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPackage = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPackage = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Package} */ (
     jspb.Message.getWrapperField(this, proto.cc.arduino.cli.commands.v1.Package, 8));
 };
@@ -1119,7 +1119,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPackage = fun
  * @param {?proto.cc.arduino.cli.commands.v1.Package|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPackage = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPackage = function(value) {
   return jspb.Message.setWrapperField(this, 8, value);
 };
 
@@ -1128,7 +1128,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPackage = fun
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearPackage = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearPackage = function() {
   return this.setPackage(undefined);
 };
 
@@ -1137,7 +1137,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearPackage = f
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.hasPackage = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.hasPackage = function() {
   return jspb.Message.getField(this, 8) != null;
 };
 
@@ -1146,7 +1146,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.hasPackage = fun
  * optional BoardPlatform platform = 9;
  * @return {?proto.cc.arduino.cli.commands.v1.BoardPlatform}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPlatform = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPlatform = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.BoardPlatform} */ (
     jspb.Message.getWrapperField(this, proto.cc.arduino.cli.commands.v1.BoardPlatform, 9));
 };
@@ -1156,7 +1156,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getPlatform = fu
  * @param {?proto.cc.arduino.cli.commands.v1.BoardPlatform|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPlatform = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPlatform = function(value) {
   return jspb.Message.setWrapperField(this, 9, value);
 };
 
@@ -1165,7 +1165,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setPlatform = fu
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearPlatform = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearPlatform = function() {
   return this.setPlatform(undefined);
 };
 
@@ -1174,7 +1174,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearPlatform = 
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.hasPlatform = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.hasPlatform = function() {
   return jspb.Message.getField(this, 9) != null;
 };
 
@@ -1183,7 +1183,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.hasPlatform = fu
  * repeated ToolsDependencies tools_dependencies = 10;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.ToolsDependencies>}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getToolsDependenciesList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getToolsDependenciesList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.ToolsDependencies>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.ToolsDependencies, 10));
 };
@@ -1193,7 +1193,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getToolsDependen
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.ToolsDependencies>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setToolsDependenciesList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setToolsDependenciesList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 10, value);
 };
 
@@ -1203,7 +1203,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setToolsDependen
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addToolsDependencies = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addToolsDependencies = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 10, opt_value, proto.cc.arduino.cli.commands.v1.ToolsDependencies, opt_index);
 };
 
@@ -1212,7 +1212,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addToolsDependen
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearToolsDependenciesList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearToolsDependenciesList = function() {
   return this.setToolsDependenciesList([]);
 };
 
@@ -1221,7 +1221,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearToolsDepend
  * repeated ConfigOption config_options = 11;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.ConfigOption>}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getConfigOptionsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getConfigOptionsList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.ConfigOption>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.ConfigOption, 11));
 };
@@ -1231,7 +1231,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getConfigOptions
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.ConfigOption>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setConfigOptionsList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setConfigOptionsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 11, value);
 };
 
@@ -1241,7 +1241,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setConfigOptions
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addConfigOptions = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addConfigOptions = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 11, opt_value, proto.cc.arduino.cli.commands.v1.ConfigOption, opt_index);
 };
 
@@ -1250,7 +1250,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addConfigOptions
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearConfigOptionsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearConfigOptionsList = function() {
   return this.setConfigOptionsList([]);
 };
 
@@ -1259,7 +1259,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearConfigOptio
  * repeated Programmer programmers = 13;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.Programmer>}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getProgrammersList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getProgrammersList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.Programmer>} */ (
     jspb.Message.getRepeatedWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Programmer, 13));
 };
@@ -1269,7 +1269,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getProgrammersLi
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.Programmer>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setProgrammersList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setProgrammersList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 13, value);
 };
 
@@ -1279,7 +1279,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setProgrammersLi
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.Programmer}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addProgrammers = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addProgrammers = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 13, opt_value, proto.cc.arduino.cli.commands.v1.Programmer, opt_index);
 };
 
@@ -1288,7 +1288,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addProgrammers =
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearProgrammersList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearProgrammersList = function() {
   return this.setProgrammersList([]);
 };
 
@@ -1297,7 +1297,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearProgrammers
  * repeated BoardIdentificationProperties identification_properties = 15;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties>}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getIdentificationPropertiesList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getIdentificationPropertiesList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties, 15));
 };
@@ -1307,7 +1307,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getIdentificatio
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setIdentificationPropertiesList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setIdentificationPropertiesList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 15, value);
 };
 
@@ -1317,7 +1317,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setIdentificatio
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addIdentificationProperties = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addIdentificationProperties = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 15, opt_value, proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties, opt_index);
 };
 
@@ -1326,7 +1326,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addIdentificatio
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearIdentificationPropertiesList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearIdentificationPropertiesList = function() {
   return this.setIdentificationPropertiesList([]);
 };
 
@@ -1335,7 +1335,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearIdentificat
  * repeated string build_properties = 16;
  * @return {!Array<string>}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getBuildPropertiesList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getBuildPropertiesList = function() {
   return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 16));
 };
 
@@ -1344,7 +1344,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getBuildProperti
  * @param {!Array<string>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setBuildPropertiesList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setBuildPropertiesList = function(value) {
   return jspb.Message.setField(this, 16, value || []);
 };
 
@@ -1354,7 +1354,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setBuildProperti
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addBuildProperties = function (value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addBuildProperties = function(value, opt_index) {
   return jspb.Message.addToRepeatedField(this, 16, value, opt_index);
 };
 
@@ -1363,7 +1363,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.addBuildProperti
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearBuildPropertiesList = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearBuildPropertiesList = function() {
   return this.setBuildPropertiesList([]);
 };
 
@@ -1372,7 +1372,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.clearBuildProper
  * optional string default_programmer_id = 17;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getDefaultProgrammerId = function () {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getDefaultProgrammerId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
 };
 
@@ -1381,7 +1381,7 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.getDefaultProgra
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardDetailsResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setDefaultProgrammerId = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setDefaultProgrammerId = function(value) {
   return jspb.Message.setProto3StringField(this, 17, value);
 };
 
@@ -1390,42 +1390,42 @@ proto.cc.arduino.cli.commands.v1.BoardDetailsResponse.prototype.setDefaultProgra
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    propertiesMap: (f = msg.getPropertiesMap()) ? f.toObject(includeInstance, undefined) : []
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      propertiesMap: (f = msg.getPropertiesMap()) ? f.toObject(includeInstance, undefined) : []
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -1434,7 +1434,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties}
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties;
   return proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader(msg, reader);
@@ -1448,22 +1448,22 @@ proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinary
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties}
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = msg.getPropertiesMap();
-        reader.readMessage(value, function (message, reader) {
-          jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-        });
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = msg.getPropertiesMap();
+      reader.readMessage(value, function(message, reader) {
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
+         });
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -1474,7 +1474,7 @@ proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.deserializeBinary
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -1488,7 +1488,7 @@ proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.seriali
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPropertiesMap(true);
   if (f && f.getLength() > 0) {
@@ -1503,9 +1503,9 @@ proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.serializeBinaryTo
  * empty, instead returning `undefined`
  * @return {!jspb.Map<string,string>}
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.getPropertiesMap = function (opt_noLazyCreate) {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.getPropertiesMap = function(opt_noLazyCreate) {
   return /** @type {!jspb.Map<string,string>} */ (
-    jspb.Message.getMapField(this, 1, opt_noLazyCreate,
+      jspb.Message.getMapField(this, 1, opt_noLazyCreate,
       null));
 };
 
@@ -1514,57 +1514,56 @@ proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.getProp
  * Clears values from the map. The map will be non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.clearPropertiesMap = function () {
+proto.cc.arduino.cli.commands.v1.BoardIdentificationProperties.prototype.clearPropertiesMap = function() {
   this.getPropertiesMap().clear();
-  return this;
-};
+  return this;};
 
 
 
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.Package.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.Package.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.Package.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.Package.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.Package} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.Package.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    maintainer: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    url: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    websiteUrl: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    email: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    name: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    help: (f = msg.getHelp()) && proto.cc.arduino.cli.commands.v1.Help.toObject(includeInstance, f)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.Package} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.Package.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      maintainer: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      url: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      websiteUrl: jspb.Message.getFieldWithDefault(msg, 3, ""),
-      email: jspb.Message.getFieldWithDefault(msg, 4, ""),
-      name: jspb.Message.getFieldWithDefault(msg, 5, ""),
-      help: (f = msg.getHelp()) && proto.cc.arduino.cli.commands.v1.Help.toObject(includeInstance, f)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -1573,7 +1572,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.Package}
  */
-proto.cc.arduino.cli.commands.v1.Package.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.Package.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.Package;
   return proto.cc.arduino.cli.commands.v1.Package.deserializeBinaryFromReader(msg, reader);
@@ -1587,41 +1586,41 @@ proto.cc.arduino.cli.commands.v1.Package.deserializeBinary = function (bytes) {
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.Package}
  */
-proto.cc.arduino.cli.commands.v1.Package.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.Package.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setMaintainer(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setUrl(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setWebsiteUrl(value);
-        break;
-      case 4:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setEmail(value);
-        break;
-      case 5:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setName(value);
-        break;
-      case 6:
-        var value = new proto.cc.arduino.cli.commands.v1.Help;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.Help.deserializeBinaryFromReader);
-        msg.setHelp(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMaintainer(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUrl(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setWebsiteUrl(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEmail(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 6:
+      var value = new proto.cc.arduino.cli.commands.v1.Help;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.Help.deserializeBinaryFromReader);
+      msg.setHelp(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -1632,7 +1631,7 @@ proto.cc.arduino.cli.commands.v1.Package.deserializeBinaryFromReader = function 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.Package.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -1646,7 +1645,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.serializeBinary = function ()
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.Package.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.Package.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getMaintainer();
   if (f.length > 0) {
@@ -1698,7 +1697,7 @@ proto.cc.arduino.cli.commands.v1.Package.serializeBinaryToWriter = function (mes
  * optional string maintainer = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.getMaintainer = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.getMaintainer = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1707,7 +1706,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.getMaintainer = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.setMaintainer = function (value) {
+proto.cc.arduino.cli.commands.v1.Package.prototype.setMaintainer = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1716,7 +1715,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.setMaintainer = function (val
  * optional string url = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.getUrl = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.getUrl = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -1725,7 +1724,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.getUrl = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.setUrl = function (value) {
+proto.cc.arduino.cli.commands.v1.Package.prototype.setUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -1734,7 +1733,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.setUrl = function (value) {
  * optional string website_url = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.getWebsiteUrl = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.getWebsiteUrl = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -1743,7 +1742,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.getWebsiteUrl = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.setWebsiteUrl = function (value) {
+proto.cc.arduino.cli.commands.v1.Package.prototype.setWebsiteUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -1752,7 +1751,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.setWebsiteUrl = function (val
  * optional string email = 4;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.getEmail = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.getEmail = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
@@ -1761,7 +1760,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.getEmail = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.setEmail = function (value) {
+proto.cc.arduino.cli.commands.v1.Package.prototype.setEmail = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -1770,7 +1769,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.setEmail = function (value) {
  * optional string name = 5;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.getName = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
@@ -1779,7 +1778,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.getName = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.setName = function (value) {
+proto.cc.arduino.cli.commands.v1.Package.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
 };
 
@@ -1788,7 +1787,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.setName = function (value) {
  * optional Help help = 6;
  * @return {?proto.cc.arduino.cli.commands.v1.Help}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.getHelp = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.getHelp = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Help} */ (
     jspb.Message.getWrapperField(this, proto.cc.arduino.cli.commands.v1.Help, 6));
 };
@@ -1798,7 +1797,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.getHelp = function () {
  * @param {?proto.cc.arduino.cli.commands.v1.Help|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
 */
-proto.cc.arduino.cli.commands.v1.Package.prototype.setHelp = function (value) {
+proto.cc.arduino.cli.commands.v1.Package.prototype.setHelp = function(value) {
   return jspb.Message.setWrapperField(this, 6, value);
 };
 
@@ -1807,7 +1806,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.setHelp = function (value) {
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.Package} returns this
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.clearHelp = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.clearHelp = function() {
   return this.setHelp(undefined);
 };
 
@@ -1816,7 +1815,7 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.clearHelp = function () {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.Package.prototype.hasHelp = function () {
+proto.cc.arduino.cli.commands.v1.Package.prototype.hasHelp = function() {
   return jspb.Message.getField(this, 6) != null;
 };
 
@@ -1825,42 +1824,42 @@ proto.cc.arduino.cli.commands.v1.Package.prototype.hasHelp = function () {
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.Help.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.Help.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.Help.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.Help.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.Help} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.Help.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    online: jspb.Message.getFieldWithDefault(msg, 1, "")
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.Help} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.Help.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      online: jspb.Message.getFieldWithDefault(msg, 1, "")
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -1869,7 +1868,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.Help}
  */
-proto.cc.arduino.cli.commands.v1.Help.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.Help.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.Help;
   return proto.cc.arduino.cli.commands.v1.Help.deserializeBinaryFromReader(msg, reader);
@@ -1883,20 +1882,20 @@ proto.cc.arduino.cli.commands.v1.Help.deserializeBinary = function (bytes) {
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.Help}
  */
-proto.cc.arduino.cli.commands.v1.Help.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.Help.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setOnline(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOnline(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -1907,7 +1906,7 @@ proto.cc.arduino.cli.commands.v1.Help.deserializeBinaryFromReader = function (ms
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.Help.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.Help.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.Help.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -1921,7 +1920,7 @@ proto.cc.arduino.cli.commands.v1.Help.prototype.serializeBinary = function () {
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.Help.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.Help.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getOnline();
   if (f.length > 0) {
@@ -1937,7 +1936,7 @@ proto.cc.arduino.cli.commands.v1.Help.serializeBinaryToWriter = function (messag
  * optional string online = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Help.prototype.getOnline = function () {
+proto.cc.arduino.cli.commands.v1.Help.prototype.getOnline = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -1946,7 +1945,7 @@ proto.cc.arduino.cli.commands.v1.Help.prototype.getOnline = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Help} returns this
  */
-proto.cc.arduino.cli.commands.v1.Help.prototype.setOnline = function (value) {
+proto.cc.arduino.cli.commands.v1.Help.prototype.setOnline = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -1955,48 +1954,48 @@ proto.cc.arduino.cli.commands.v1.Help.prototype.setOnline = function (value) {
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardPlatform.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardPlatform.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardPlatform} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardPlatform.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    architecture: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    category: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    url: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    archiveFilename: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    checksum: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    size: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    name: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardPlatform} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardPlatform.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      architecture: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      category: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      url: jspb.Message.getFieldWithDefault(msg, 3, ""),
-      archiveFilename: jspb.Message.getFieldWithDefault(msg, 4, ""),
-      checksum: jspb.Message.getFieldWithDefault(msg, 5, ""),
-      size: jspb.Message.getFieldWithDefault(msg, 6, 0),
-      name: jspb.Message.getFieldWithDefault(msg, 7, "")
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -2005,7 +2004,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardPlatform;
   return proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinaryFromReader(msg, reader);
@@ -2019,44 +2018,44 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinary = function (byt
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setArchitecture(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setCategory(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setUrl(value);
-        break;
-      case 4:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setArchiveFilename(value);
-        break;
-      case 5:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setChecksum(value);
-        break;
-      case 6:
-        var value = /** @type {number} */ (reader.readInt64());
-        msg.setSize(value);
-        break;
-      case 7:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setName(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setArchitecture(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setCategory(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUrl(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setArchiveFilename(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setChecksum(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setSize(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -2067,7 +2066,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.deserializeBinaryFromReader = fun
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardPlatform.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -2081,7 +2080,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.serializeBinary = funct
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getArchitecture();
   if (f.length > 0) {
@@ -2139,7 +2138,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.serializeBinaryToWriter = functio
  * optional string architecture = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getArchitecture = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getArchitecture = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -2148,7 +2147,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getArchitecture = funct
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setArchitecture = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setArchitecture = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -2157,7 +2156,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setArchitecture = funct
  * optional string category = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getCategory = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getCategory = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -2166,7 +2165,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getCategory = function 
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setCategory = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setCategory = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -2175,7 +2174,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setCategory = function 
  * optional string url = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getUrl = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getUrl = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -2184,7 +2183,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getUrl = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setUrl = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -2193,7 +2192,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setUrl = function (valu
  * optional string archive_filename = 4;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getArchiveFilename = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getArchiveFilename = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
@@ -2202,7 +2201,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getArchiveFilename = fu
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setArchiveFilename = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setArchiveFilename = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -2211,7 +2210,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setArchiveFilename = fu
  * optional string checksum = 5;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getChecksum = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getChecksum = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
@@ -2220,7 +2219,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getChecksum = function 
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setChecksum = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setChecksum = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
 };
 
@@ -2229,7 +2228,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setChecksum = function 
  * optional int64 size = 6;
  * @return {number}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getSize = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getSize = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
 };
 
@@ -2238,7 +2237,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getSize = function () {
  * @param {number} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setSize = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setSize = function(value) {
   return jspb.Message.setProto3IntField(this, 6, value);
 };
 
@@ -2247,7 +2246,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setSize = function (val
  * optional string name = 7;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getName = function () {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
 };
 
@@ -2256,7 +2255,7 @@ proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.getName = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardPlatform} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setName = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardPlatform.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 7, value);
 };
 
@@ -2272,46 +2271,46 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.repeatedFields_ = [4];
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.ToolsDependencies.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.ToolsDependencies.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    packager: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    name: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    version: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    systemsList: jspb.Message.toObjectList(msg.getSystemsList(),
+    proto.cc.arduino.cli.commands.v1.Systems.toObject, includeInstance)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.ToolsDependencies.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      packager: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      version: jspb.Message.getFieldWithDefault(msg, 3, ""),
-      systemsList: jspb.Message.toObjectList(msg.getSystemsList(),
-        proto.cc.arduino.cli.commands.v1.Systems.toObject, includeInstance)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -2320,7 +2319,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.ToolsDependencies;
   return proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinaryFromReader(msg, reader);
@@ -2334,33 +2333,33 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinary = function 
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setPackager(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setName(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setVersion(value);
-        break;
-      case 4:
-        var value = new proto.cc.arduino.cli.commands.v1.Systems;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.Systems.deserializeBinaryFromReader);
-        msg.addSystems(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPackager(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setVersion(value);
+      break;
+    case 4:
+      var value = new proto.cc.arduino.cli.commands.v1.Systems;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.Systems.deserializeBinaryFromReader);
+      msg.addSystems(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -2371,7 +2370,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.deserializeBinaryFromReader =
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.ToolsDependencies.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -2385,7 +2384,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.serializeBinary = f
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPackager();
   if (f.length > 0) {
@@ -2423,7 +2422,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.serializeBinaryToWriter = fun
  * optional string packager = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getPackager = function () {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getPackager = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -2432,7 +2431,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getPackager = funct
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} returns this
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setPackager = function (value) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setPackager = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -2441,7 +2440,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setPackager = funct
  * optional string name = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getName = function () {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -2450,7 +2449,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getName = function 
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} returns this
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setName = function (value) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -2459,7 +2458,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setName = function 
  * optional string version = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getVersion = function () {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getVersion = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -2468,7 +2467,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getVersion = functi
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} returns this
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setVersion = function (value) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setVersion = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -2477,7 +2476,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setVersion = functi
  * repeated Systems systems = 4;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.Systems>}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getSystemsList = function () {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getSystemsList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.Systems>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.Systems, 4));
 };
@@ -2487,7 +2486,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.getSystemsList = fu
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.Systems>} value
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} returns this
 */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setSystemsList = function (value) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setSystemsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 4, value);
 };
 
@@ -2497,7 +2496,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.setSystemsList = fu
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.Systems}
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.addSystems = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.addSystems = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 4, opt_value, proto.cc.arduino.cli.commands.v1.Systems, opt_index);
 };
 
@@ -2506,7 +2505,7 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.addSystems = functi
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.ToolsDependencies} returns this
  */
-proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.clearSystemsList = function () {
+proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.clearSystemsList = function() {
   return this.setSystemsList([]);
 };
 
@@ -2515,46 +2514,46 @@ proto.cc.arduino.cli.commands.v1.ToolsDependencies.prototype.clearSystemsList = 
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.Systems.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.Systems.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.Systems.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.Systems.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.Systems} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.Systems.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    checksum: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    host: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    archiveFilename: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    url: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    size: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.Systems} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.Systems.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      checksum: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      host: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      archiveFilename: jspb.Message.getFieldWithDefault(msg, 3, ""),
-      url: jspb.Message.getFieldWithDefault(msg, 4, ""),
-      size: jspb.Message.getFieldWithDefault(msg, 5, 0)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -2563,7 +2562,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.Systems}
  */
-proto.cc.arduino.cli.commands.v1.Systems.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.Systems.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.Systems;
   return proto.cc.arduino.cli.commands.v1.Systems.deserializeBinaryFromReader(msg, reader);
@@ -2577,36 +2576,36 @@ proto.cc.arduino.cli.commands.v1.Systems.deserializeBinary = function (bytes) {
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.Systems}
  */
-proto.cc.arduino.cli.commands.v1.Systems.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.Systems.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setChecksum(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setHost(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setArchiveFilename(value);
-        break;
-      case 4:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setUrl(value);
-        break;
-      case 5:
-        var value = /** @type {number} */ (reader.readInt64());
-        msg.setSize(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setChecksum(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setHost(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setArchiveFilename(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUrl(value);
+      break;
+    case 5:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setSize(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -2617,7 +2616,7 @@ proto.cc.arduino.cli.commands.v1.Systems.deserializeBinaryFromReader = function 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.Systems.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -2631,7 +2630,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.serializeBinary = function ()
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.Systems.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.Systems.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getChecksum();
   if (f.length > 0) {
@@ -2675,7 +2674,7 @@ proto.cc.arduino.cli.commands.v1.Systems.serializeBinaryToWriter = function (mes
  * optional string checksum = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.getChecksum = function () {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.getChecksum = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -2684,7 +2683,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.getChecksum = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Systems} returns this
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.setChecksum = function (value) {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.setChecksum = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -2693,7 +2692,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.setChecksum = function (value
  * optional string host = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.getHost = function () {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.getHost = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -2702,7 +2701,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.getHost = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Systems} returns this
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.setHost = function (value) {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.setHost = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -2711,7 +2710,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.setHost = function (value) {
  * optional string archive_filename = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.getArchiveFilename = function () {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.getArchiveFilename = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -2720,7 +2719,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.getArchiveFilename = function
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Systems} returns this
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.setArchiveFilename = function (value) {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.setArchiveFilename = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -2729,7 +2728,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.setArchiveFilename = function
  * optional string url = 4;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.getUrl = function () {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.getUrl = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
@@ -2738,7 +2737,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.getUrl = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.Systems} returns this
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.setUrl = function (value) {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.setUrl = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
 };
 
@@ -2747,7 +2746,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.setUrl = function (value) {
  * optional int64 size = 5;
  * @return {number}
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.getSize = function () {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.getSize = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
@@ -2756,7 +2755,7 @@ proto.cc.arduino.cli.commands.v1.Systems.prototype.getSize = function () {
  * @param {number} value
  * @return {!proto.cc.arduino.cli.commands.v1.Systems} returns this
  */
-proto.cc.arduino.cli.commands.v1.Systems.prototype.setSize = function (value) {
+proto.cc.arduino.cli.commands.v1.Systems.prototype.setSize = function(value) {
   return jspb.Message.setProto3IntField(this, 5, value);
 };
 
@@ -2772,45 +2771,45 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.repeatedFields_ = [3];
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.ConfigOption.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.ConfigOption.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.ConfigOption} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.ConfigOption.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    option: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    optionLabel: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    valuesList: jspb.Message.toObjectList(msg.getValuesList(),
+    proto.cc.arduino.cli.commands.v1.ConfigValue.toObject, includeInstance)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.ConfigOption} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.ConfigOption.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      option: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      optionLabel: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      valuesList: jspb.Message.toObjectList(msg.getValuesList(),
-        proto.cc.arduino.cli.commands.v1.ConfigValue.toObject, includeInstance)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -2819,7 +2818,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.ConfigOption;
   return proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinaryFromReader(msg, reader);
@@ -2833,29 +2832,29 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinary = function (byte
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setOption(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setOptionLabel(value);
-        break;
-      case 3:
-        var value = new proto.cc.arduino.cli.commands.v1.ConfigValue;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinaryFromReader);
-        msg.addValues(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOption(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOptionLabel(value);
+      break;
+    case 3:
+      var value = new proto.cc.arduino.cli.commands.v1.ConfigValue;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinaryFromReader);
+      msg.addValues(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -2866,7 +2865,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.deserializeBinaryFromReader = func
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.ConfigOption.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -2880,7 +2879,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.serializeBinary = functi
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getOption();
   if (f.length > 0) {
@@ -2911,7 +2910,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.serializeBinaryToWriter = function
  * optional string option = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getOption = function () {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getOption = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -2920,7 +2919,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getOption = function () 
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption} returns this
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setOption = function (value) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setOption = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -2929,7 +2928,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setOption = function (va
  * optional string option_label = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getOptionLabel = function () {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getOptionLabel = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -2938,7 +2937,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getOptionLabel = functio
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption} returns this
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setOptionLabel = function (value) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setOptionLabel = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -2947,7 +2946,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setOptionLabel = functio
  * repeated ConfigValue values = 3;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.ConfigValue>}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getValuesList = function () {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getValuesList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.ConfigValue>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.ConfigValue, 3));
 };
@@ -2957,7 +2956,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.getValuesList = function
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.ConfigValue>} value
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption} returns this
 */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setValuesList = function (value) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setValuesList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 3, value);
 };
 
@@ -2967,7 +2966,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.setValuesList = function
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigValue}
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.addValues = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.addValues = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.cc.arduino.cli.commands.v1.ConfigValue, opt_index);
 };
 
@@ -2976,7 +2975,7 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.addValues = function (op
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigOption} returns this
  */
-proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.clearValuesList = function () {
+proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.clearValuesList = function() {
   return this.setValuesList([]);
 };
 
@@ -2985,44 +2984,44 @@ proto.cc.arduino.cli.commands.v1.ConfigOption.prototype.clearValuesList = functi
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.ConfigValue.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.ConfigValue.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.ConfigValue} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.ConfigValue.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    value: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    valueLabel: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    selected: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.ConfigValue} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.ConfigValue.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      value: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      valueLabel: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      selected: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -3031,7 +3030,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigValue}
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.ConfigValue;
   return proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinaryFromReader(msg, reader);
@@ -3045,28 +3044,28 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinary = function (bytes
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigValue}
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setValue(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setValueLabel(value);
-        break;
-      case 3:
-        var value = /** @type {boolean} */ (reader.readBool());
-        msg.setSelected(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setValue(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setValueLabel(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setSelected(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -3077,7 +3076,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.deserializeBinaryFromReader = funct
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.ConfigValue.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -3091,7 +3090,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.serializeBinary = functio
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.ConfigValue.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getValue();
   if (f.length > 0) {
@@ -3121,7 +3120,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.serializeBinaryToWriter = function 
  * optional string value = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getValue = function () {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getValue = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -3130,7 +3129,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getValue = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigValue} returns this
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setValue = function (value) {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setValue = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -3139,7 +3138,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setValue = function (valu
  * optional string value_label = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getValueLabel = function () {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getValueLabel = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -3148,7 +3147,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getValueLabel = function 
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigValue} returns this
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setValueLabel = function (value) {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setValueLabel = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -3157,7 +3156,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setValueLabel = function 
  * optional bool selected = 3;
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getSelected = function () {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getSelected = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -3166,7 +3165,7 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.getSelected = function ()
  * @param {boolean} value
  * @return {!proto.cc.arduino.cli.commands.v1.ConfigValue} returns this
  */
-proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setSelected = function (value) {
+proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setSelected = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
@@ -3175,44 +3174,44 @@ proto.cc.arduino.cli.commands.v1.ConfigValue.prototype.setSelected = function (v
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListRequest.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
+    timeout: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    fqbn: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListRequest} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListRequest.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-      timeout: jspb.Message.getFieldWithDefault(msg, 2, 0),
-      fqbn: jspb.Message.getFieldWithDefault(msg, 3, "")
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -3221,7 +3220,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListRequest;
   return proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinaryFromReader(msg, reader);
@@ -3235,29 +3234,29 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinary = function (
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
-        msg.setInstance(value);
-        break;
-      case 2:
-        var value = /** @type {number} */ (reader.readInt64());
-        msg.setTimeout(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setFqbn(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
+      msg.setInstance(value);
+      break;
+    case 2:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setTimeout(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFqbn(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -3268,7 +3267,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.deserializeBinaryFromReader = 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -3282,7 +3281,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.serializeBinary = fu
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getInstance();
   if (f != null) {
@@ -3313,7 +3312,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.serializeBinaryToWriter = func
  * optional Instance instance = 1;
  * @return {?proto.cc.arduino.cli.commands.v1.Instance}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getInstance = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Instance} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Instance, 1));
 };
@@ -3323,7 +3322,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getInstance = functi
  * @param {?proto.cc.arduino.cli.commands.v1.Instance|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListRequest} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setInstance = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setInstance = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
@@ -3332,7 +3331,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setInstance = functi
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.clearInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.clearInstance = function() {
   return this.setInstance(undefined);
 };
 
@@ -3341,7 +3340,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.clearInstance = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.hasInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -3350,7 +3349,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.hasInstance = functi
  * optional int64 timeout = 2;
  * @return {number}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getTimeout = function () {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getTimeout = function() {
   return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
@@ -3359,7 +3358,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getTimeout = functio
  * @param {number} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setTimeout = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setTimeout = function(value) {
   return jspb.Message.setProto3IntField(this, 2, value);
 };
 
@@ -3368,7 +3367,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setTimeout = functio
  * optional string fqbn = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getFqbn = function () {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getFqbn = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -3377,7 +3376,7 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.getFqbn = function (
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setFqbn = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setFqbn = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -3388,48 +3387,49 @@ proto.cc.arduino.cli.commands.v1.BoardListRequest.prototype.setFqbn = function (
  * @private {!Array<number>}
  * @const
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.repeatedFields_ = [1];
+proto.cc.arduino.cli.commands.v1.BoardListResponse.repeatedFields_ = [1,2];
 
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListResponse.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    portsList: jspb.Message.toObjectList(msg.getPortsList(),
+    proto.cc.arduino.cli.commands.v1.DetectedPort.toObject, includeInstance),
+    warningsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListResponse} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListResponse.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      portsList: jspb.Message.toObjectList(msg.getPortsList(),
-        proto.cc.arduino.cli.commands.v1.DetectedPort.toObject, includeInstance)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -3438,7 +3438,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListResponse;
   return proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinaryFromReader(msg, reader);
@@ -3452,21 +3452,25 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinary = function 
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new proto.cc.arduino.cli.commands.v1.DetectedPort;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader);
-        msg.addPorts(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new proto.cc.arduino.cli.commands.v1.DetectedPort;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader);
+      msg.addPorts(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addWarnings(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -3477,7 +3481,7 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.deserializeBinaryFromReader =
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListResponse.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -3491,7 +3495,7 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.serializeBinary = f
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getPortsList();
   if (f.length > 0) {
@@ -3501,6 +3505,13 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.serializeBinaryToWriter = fun
       proto.cc.arduino.cli.commands.v1.DetectedPort.serializeBinaryToWriter
     );
   }
+  f = message.getWarningsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -3508,7 +3519,7 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.serializeBinaryToWriter = fun
  * repeated DetectedPort ports = 1;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.DetectedPort>}
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.getPortsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.getPortsList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.DetectedPort>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.DetectedPort, 1));
 };
@@ -3518,7 +3529,7 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.getPortsList = func
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.DetectedPort>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.setPortsList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.setPortsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -3528,7 +3539,7 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.setPortsList = func
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort}
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.addPorts = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.addPorts = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.cc.arduino.cli.commands.v1.DetectedPort, opt_index);
 };
 
@@ -3537,8 +3548,45 @@ proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.addPorts = function
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.clearPortsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.clearPortsList = function() {
   return this.setPortsList([]);
+};
+
+
+/**
+ * repeated string warnings = 2;
+ * @return {!Array<string>}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.getWarningsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.setWarningsList = function(value) {
+  return jspb.Message.setField(this, 2, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.addWarnings = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.cc.arduino.cli.commands.v1.BoardListResponse} returns this
+ */
+proto.cc.arduino.cli.commands.v1.BoardListResponse.prototype.clearWarningsList = function() {
+  return this.setWarningsList([]);
 };
 
 
@@ -3553,44 +3601,44 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.repeatedFields_ = [1];
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.DetectedPort.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.DetectedPort.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.DetectedPort} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.DetectedPort.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    matchingBoardsList: jspb.Message.toObjectList(msg.getMatchingBoardsList(),
+    proto.cc.arduino.cli.commands.v1.BoardListItem.toObject, includeInstance),
+    port: (f = msg.getPort()) && cc_arduino_cli_commands_v1_port_pb.Port.toObject(includeInstance, f)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.DetectedPort} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.DetectedPort.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      matchingBoardsList: jspb.Message.toObjectList(msg.getMatchingBoardsList(),
-        proto.cc.arduino.cli.commands.v1.BoardListItem.toObject, includeInstance),
-      port: (f = msg.getPort()) && cc_arduino_cli_commands_v1_port_pb.Port.toObject(includeInstance, f)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -3599,7 +3647,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.DetectedPort;
   return proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader(msg, reader);
@@ -3613,26 +3661,26 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinary = function (byte
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new proto.cc.arduino.cli.commands.v1.BoardListItem;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader);
-        msg.addMatchingBoards(value);
-        break;
-      case 2:
-        var value = new cc_arduino_cli_commands_v1_port_pb.Port;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_port_pb.Port.deserializeBinaryFromReader);
-        msg.setPort(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new proto.cc.arduino.cli.commands.v1.BoardListItem;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader);
+      msg.addMatchingBoards(value);
+      break;
+    case 2:
+      var value = new cc_arduino_cli_commands_v1_port_pb.Port;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_port_pb.Port.deserializeBinaryFromReader);
+      msg.setPort(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -3643,7 +3691,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader = func
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.DetectedPort.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -3657,7 +3705,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.serializeBinary = functi
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.DetectedPort.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getMatchingBoardsList();
   if (f.length > 0) {
@@ -3682,7 +3730,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.serializeBinaryToWriter = function
  * repeated BoardListItem matching_boards = 1;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.getMatchingBoardsList = function () {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.getMatchingBoardsList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.BoardListItem, 1));
 };
@@ -3692,7 +3740,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.getMatchingBoardsList = 
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>} value
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort} returns this
 */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.setMatchingBoardsList = function (value) {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.setMatchingBoardsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -3702,7 +3750,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.setMatchingBoardsList = 
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.addMatchingBoards = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.addMatchingBoards = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.cc.arduino.cli.commands.v1.BoardListItem, opt_index);
 };
 
@@ -3711,7 +3759,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.addMatchingBoards = func
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort} returns this
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.clearMatchingBoardsList = function () {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.clearMatchingBoardsList = function() {
   return this.setMatchingBoardsList([]);
 };
 
@@ -3720,7 +3768,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.clearMatchingBoardsList 
  * optional Port port = 2;
  * @return {?proto.cc.arduino.cli.commands.v1.Port}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.getPort = function () {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.getPort = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Port} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_port_pb.Port, 2));
 };
@@ -3730,7 +3778,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.getPort = function () {
  * @param {?proto.cc.arduino.cli.commands.v1.Port|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort} returns this
 */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.setPort = function (value) {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.setPort = function(value) {
   return jspb.Message.setWrapperField(this, 2, value);
 };
 
@@ -3739,7 +3787,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.setPort = function (valu
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.DetectedPort} returns this
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.clearPort = function () {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.clearPort = function() {
   return this.setPort(undefined);
 };
 
@@ -3748,7 +3796,7 @@ proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.clearPort = function () 
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.hasPort = function () {
+proto.cc.arduino.cli.commands.v1.DetectedPort.prototype.hasPort = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
@@ -3764,44 +3812,44 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.repeatedFields_ = [2];
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListAllRequest.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListAllRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
+    searchArgsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
+    includeHiddenBoards: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListAllRequest.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-      searchArgsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
-      includeHiddenBoards: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -3810,7 +3858,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListAllRequest;
   return proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinaryFromReader(msg, reader);
@@ -3824,29 +3872,29 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinary = functio
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
-        msg.setInstance(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.addSearchArgs(value);
-        break;
-      case 3:
-        var value = /** @type {boolean} */ (reader.readBool());
-        msg.setIncludeHiddenBoards(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
+      msg.setInstance(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addSearchArgs(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIncludeHiddenBoards(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -3857,7 +3905,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.deserializeBinaryFromReader
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListAllRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -3871,7 +3919,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.serializeBinary =
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getInstance();
   if (f != null) {
@@ -3902,7 +3950,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.serializeBinaryToWriter = f
  * optional Instance instance = 1;
  * @return {?proto.cc.arduino.cli.commands.v1.Instance}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getInstance = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Instance} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Instance, 1));
 };
@@ -3912,7 +3960,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getInstance = fun
  * @param {?proto.cc.arduino.cli.commands.v1.Instance|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setInstance = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setInstance = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
@@ -3921,7 +3969,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setInstance = fun
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.clearInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.clearInstance = function() {
   return this.setInstance(undefined);
 };
 
@@ -3930,7 +3978,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.clearInstance = f
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.hasInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -3939,7 +3987,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.hasInstance = fun
  * repeated string search_args = 2;
  * @return {!Array<string>}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getSearchArgsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getSearchArgsList = function() {
   return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 2));
 };
 
@@ -3948,7 +3996,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getSearchArgsList
  * @param {!Array<string>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setSearchArgsList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setSearchArgsList = function(value) {
   return jspb.Message.setField(this, 2, value || []);
 };
 
@@ -3958,7 +4006,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setSearchArgsList
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.addSearchArgs = function (value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.addSearchArgs = function(value, opt_index) {
   return jspb.Message.addToRepeatedField(this, 2, value, opt_index);
 };
 
@@ -3967,7 +4015,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.addSearchArgs = f
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.clearSearchArgsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.clearSearchArgsList = function() {
   return this.setSearchArgsList([]);
 };
 
@@ -3976,7 +4024,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.clearSearchArgsLi
  * optional bool include_hidden_boards = 3;
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getIncludeHiddenBoards = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getIncludeHiddenBoards = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -3985,7 +4033,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.getIncludeHiddenB
  * @param {boolean} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setIncludeHiddenBoards = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListAllRequest.prototype.setIncludeHiddenBoards = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
@@ -4001,43 +4049,43 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.repeatedFields_ = [1];
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListAllResponse.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListAllResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListAllResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
+    proto.cc.arduino.cli.commands.v1.BoardListItem.toObject, includeInstance)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListAllResponse} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListAllResponse.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
-        proto.cc.arduino.cli.commands.v1.BoardListItem.toObject, includeInstance)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -4046,7 +4094,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListAllResponse;
   return proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinaryFromReader(msg, reader);
@@ -4060,21 +4108,21 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinary = functi
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new proto.cc.arduino.cli.commands.v1.BoardListItem;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader);
-        msg.addBoards(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new proto.cc.arduino.cli.commands.v1.BoardListItem;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader);
+      msg.addBoards(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -4085,7 +4133,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.deserializeBinaryFromReade
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListAllResponse.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -4099,7 +4147,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.serializeBinary 
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getBoardsList();
   if (f.length > 0) {
@@ -4116,7 +4164,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.serializeBinaryToWriter = 
  * repeated BoardListItem boards = 1;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.getBoardsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.getBoardsList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.BoardListItem, 1));
 };
@@ -4126,7 +4174,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.getBoardsList = 
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.setBoardsList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.setBoardsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -4136,7 +4184,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.setBoardsList = 
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem}
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.addBoards = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.addBoards = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.cc.arduino.cli.commands.v1.BoardListItem, opt_index);
 };
 
@@ -4145,7 +4193,7 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.addBoards = func
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListAllResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.clearBoardsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.clearBoardsList = function() {
   return this.setBoardsList([]);
 };
 
@@ -4154,42 +4202,42 @@ proto.cc.arduino.cli.commands.v1.BoardListAllResponse.prototype.clearBoardsList 
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -4198,7 +4246,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListWatchRequest;
   return proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinaryFromReader(msg, reader);
@@ -4212,21 +4260,21 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinary = funct
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
-        msg.setInstance(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
+      msg.setInstance(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -4237,7 +4285,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.deserializeBinaryFromRead
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -4251,7 +4299,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.serializeBinary
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getInstance();
   if (f != null) {
@@ -4268,7 +4316,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.serializeBinaryToWriter =
  * optional Instance instance = 1;
  * @return {?proto.cc.arduino.cli.commands.v1.Instance}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.getInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.getInstance = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Instance} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Instance, 1));
 };
@@ -4278,7 +4326,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.getInstance = f
  * @param {?proto.cc.arduino.cli.commands.v1.Instance|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.setInstance = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.setInstance = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
@@ -4287,7 +4335,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.setInstance = f
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.clearInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.clearInstance = function() {
   return this.setInstance(undefined);
 };
 
@@ -4296,7 +4344,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.clearInstance =
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.hasInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -4305,44 +4353,44 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchRequest.prototype.hasInstance = f
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    eventType: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    port: (f = msg.getPort()) && proto.cc.arduino.cli.commands.v1.DetectedPort.toObject(includeInstance, f),
+    error: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      eventType: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      port: (f = msg.getPort()) && proto.cc.arduino.cli.commands.v1.DetectedPort.toObject(includeInstance, f),
-      error: jspb.Message.getFieldWithDefault(msg, 3, "")
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -4351,7 +4399,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListWatchResponse;
   return proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinaryFromReader(msg, reader);
@@ -4365,29 +4413,29 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinary = func
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setEventType(value);
-        break;
-      case 2:
-        var value = new proto.cc.arduino.cli.commands.v1.DetectedPort;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader);
-        msg.setPort(value);
-        break;
-      case 3:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setError(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEventType(value);
+      break;
+    case 2:
+      var value = new proto.cc.arduino.cli.commands.v1.DetectedPort;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.DetectedPort.deserializeBinaryFromReader);
+      msg.setPort(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setError(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -4398,7 +4446,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.deserializeBinaryFromRea
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -4412,7 +4460,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.serializeBinar
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getEventType();
   if (f.length > 0) {
@@ -4443,7 +4491,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.serializeBinaryToWriter 
  * optional string event_type = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getEventType = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getEventType = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -4452,7 +4500,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getEventType =
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setEventType = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setEventType = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -4461,7 +4509,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setEventType =
  * optional DetectedPort port = 2;
  * @return {?proto.cc.arduino.cli.commands.v1.DetectedPort}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getPort = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getPort = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.DetectedPort} */ (
     jspb.Message.getWrapperField(this, proto.cc.arduino.cli.commands.v1.DetectedPort, 2));
 };
@@ -4471,7 +4519,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getPort = func
  * @param {?proto.cc.arduino.cli.commands.v1.DetectedPort|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setPort = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setPort = function(value) {
   return jspb.Message.setWrapperField(this, 2, value);
 };
 
@@ -4480,7 +4528,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setPort = func
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.clearPort = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.clearPort = function() {
   return this.setPort(undefined);
 };
 
@@ -4489,7 +4537,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.clearPort = fu
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.hasPort = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.hasPort = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
@@ -4498,7 +4546,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.hasPort = func
  * optional string error = 3;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getError = function () {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getError = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
@@ -4507,7 +4555,7 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.getError = fun
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListWatchResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setError = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setError = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
 };
 
@@ -4516,45 +4564,45 @@ proto.cc.arduino.cli.commands.v1.BoardListWatchResponse.prototype.setError = fun
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardListItem.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardListItem.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardListItem} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardListItem.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    name: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    isHidden: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
+    platform: (f = msg.getPlatform()) && cc_arduino_cli_commands_v1_common_pb.Platform.toObject(includeInstance, f)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardListItem} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardListItem.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-      fqbn: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      isHidden: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-      platform: (f = msg.getPlatform()) && cc_arduino_cli_commands_v1_common_pb.Platform.toObject(includeInstance, f)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -4563,7 +4611,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardListItem;
   return proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader(msg, reader);
@@ -4577,33 +4625,33 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinary = function (byt
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setName(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setFqbn(value);
-        break;
-      case 3:
-        var value = /** @type {boolean} */ (reader.readBool());
-        msg.setIsHidden(value);
-        break;
-      case 6:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Platform;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Platform.deserializeBinaryFromReader);
-        msg.setPlatform(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setFqbn(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIsHidden(value);
+      break;
+    case 6:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Platform;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Platform.deserializeBinaryFromReader);
+      msg.setPlatform(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -4614,7 +4662,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader = fun
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardListItem.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -4628,7 +4676,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.serializeBinary = funct
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getName();
   if (f.length > 0) {
@@ -4666,7 +4714,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.serializeBinaryToWriter = functio
  * optional string name = 1;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getName = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -4675,7 +4723,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getName = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setName = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
@@ -4684,7 +4732,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setName = function (val
  * optional string fqbn = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getFqbn = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getFqbn = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -4693,7 +4741,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getFqbn = function () {
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setFqbn = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setFqbn = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4702,7 +4750,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setFqbn = function (val
  * optional bool is_hidden = 3;
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getIsHidden = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getIsHidden = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -4711,7 +4759,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getIsHidden = function 
  * @param {boolean} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setIsHidden = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setIsHidden = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
@@ -4720,7 +4768,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setIsHidden = function 
  * optional Platform platform = 6;
  * @return {?proto.cc.arduino.cli.commands.v1.Platform}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getPlatform = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getPlatform = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Platform} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Platform, 6));
 };
@@ -4730,7 +4778,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.getPlatform = function 
  * @param {?proto.cc.arduino.cli.commands.v1.Platform|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setPlatform = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setPlatform = function(value) {
   return jspb.Message.setWrapperField(this, 6, value);
 };
 
@@ -4739,7 +4787,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.setPlatform = function 
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.clearPlatform = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.clearPlatform = function() {
   return this.setPlatform(undefined);
 };
 
@@ -4748,7 +4796,7 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.clearPlatform = functio
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.hasPlatform = function () {
+proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.hasPlatform = function() {
   return jspb.Message.getField(this, 6) != null;
 };
 
@@ -4757,44 +4805,44 @@ proto.cc.arduino.cli.commands.v1.BoardListItem.prototype.hasPlatform = function 
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardSearchRequest.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardSearchRequest.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
+    searchArgs: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    includeHiddenBoards: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardSearchRequest.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      instance: (f = msg.getInstance()) && cc_arduino_cli_commands_v1_common_pb.Instance.toObject(includeInstance, f),
-      searchArgs: jspb.Message.getFieldWithDefault(msg, 2, ""),
-      includeHiddenBoards: jspb.Message.getBooleanFieldWithDefault(msg, 3, false)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -4803,7 +4851,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardSearchRequest;
   return proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinaryFromReader(msg, reader);
@@ -4817,29 +4865,29 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinary = function
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
-        reader.readMessage(value, cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
-        msg.setInstance(value);
-        break;
-      case 2:
-        var value = /** @type {string} */ (reader.readString());
-        msg.setSearchArgs(value);
-        break;
-      case 3:
-        var value = /** @type {boolean} */ (reader.readBool());
-        msg.setIncludeHiddenBoards(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new cc_arduino_cli_commands_v1_common_pb.Instance;
+      reader.readMessage(value,cc_arduino_cli_commands_v1_common_pb.Instance.deserializeBinaryFromReader);
+      msg.setInstance(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setSearchArgs(value);
+      break;
+    case 3:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setIncludeHiddenBoards(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -4850,7 +4898,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.deserializeBinaryFromReader 
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardSearchRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -4864,7 +4912,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.serializeBinary = 
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getInstance();
   if (f != null) {
@@ -4895,7 +4943,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.serializeBinaryToWriter = fu
  * optional Instance instance = 1;
  * @return {?proto.cc.arduino.cli.commands.v1.Instance}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getInstance = function() {
   return /** @type{?proto.cc.arduino.cli.commands.v1.Instance} */ (
     jspb.Message.getWrapperField(this, cc_arduino_cli_commands_v1_common_pb.Instance, 1));
 };
@@ -4905,7 +4953,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getInstance = func
  * @param {?proto.cc.arduino.cli.commands.v1.Instance|undefined} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setInstance = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setInstance = function(value) {
   return jspb.Message.setWrapperField(this, 1, value);
 };
 
@@ -4914,7 +4962,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setInstance = func
  * Clears the message field making it undefined.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.clearInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.clearInstance = function() {
   return this.setInstance(undefined);
 };
 
@@ -4923,7 +4971,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.clearInstance = fu
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.hasInstance = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.hasInstance = function() {
   return jspb.Message.getField(this, 1) != null;
 };
 
@@ -4932,7 +4980,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.hasInstance = func
  * optional string search_args = 2;
  * @return {string}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getSearchArgs = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getSearchArgs = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -4941,7 +4989,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getSearchArgs = fu
  * @param {string} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setSearchArgs = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setSearchArgs = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
@@ -4950,7 +4998,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setSearchArgs = fu
  * optional bool include_hidden_boards = 3;
  * @return {boolean}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getIncludeHiddenBoards = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getIncludeHiddenBoards = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 3, false));
 };
 
@@ -4959,7 +5007,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.getIncludeHiddenBo
  * @param {boolean} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchRequest} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setIncludeHiddenBoards = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardSearchRequest.prototype.setIncludeHiddenBoards = function(value) {
   return jspb.Message.setProto3BooleanField(this, 3, value);
 };
 
@@ -4975,43 +5023,43 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.repeatedFields_ = [1];
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
-  /**
-   * Creates an object representation of this proto.
-   * Field names that are reserved in JavaScript and will be renamed to pb_name.
-   * Optional fields that are not set will be set to undefined.
-   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
-   * For the list of reserved names please see:
-   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
-   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
-   *     JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @return {!Object}
-   */
-  proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.toObject = function (opt_includeInstance) {
-    return proto.cc.arduino.cli.commands.v1.BoardSearchResponse.toObject(opt_includeInstance, this);
+/**
+ * Creates an object representation of this proto.
+ * Field names that are reserved in JavaScript and will be renamed to pb_name.
+ * Optional fields that are not set will be set to undefined.
+ * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+ * For the list of reserved names please see:
+ *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+ * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+ *     JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @return {!Object}
+ */
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.toObject = function(opt_includeInstance) {
+  return proto.cc.arduino.cli.commands.v1.BoardSearchResponse.toObject(opt_includeInstance, this);
+};
+
+
+/**
+ * Static version of the {@see toObject} method.
+ * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+ *     the JSPB instance for transitional soy proto support:
+ *     http://goto/soy-param-migration
+ * @param {!proto.cc.arduino.cli.commands.v1.BoardSearchResponse} msg The msg instance to transform.
+ * @return {!Object}
+ * @suppress {unusedLocalVariables} f is only used for nested messages
+ */
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.toObject = function(includeInstance, msg) {
+  var f, obj = {
+    boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
+    proto.cc.arduino.cli.commands.v1.BoardListItem.toObject, includeInstance)
   };
 
-
-  /**
-   * Static version of the {@see toObject} method.
-   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
-   *     the JSPB instance for transitional soy proto support:
-   *     http://goto/soy-param-migration
-   * @param {!proto.cc.arduino.cli.commands.v1.BoardSearchResponse} msg The msg instance to transform.
-   * @return {!Object}
-   * @suppress {unusedLocalVariables} f is only used for nested messages
-   */
-  proto.cc.arduino.cli.commands.v1.BoardSearchResponse.toObject = function (includeInstance, msg) {
-    var f, obj = {
-      boardsList: jspb.Message.toObjectList(msg.getBoardsList(),
-        proto.cc.arduino.cli.commands.v1.BoardListItem.toObject, includeInstance)
-    };
-
-    if (includeInstance) {
-      obj.$jspbMessageInstance = msg;
-    }
-    return obj;
-  };
+  if (includeInstance) {
+    obj.$jspbMessageInstance = msg;
+  }
+  return obj;
+};
 }
 
 
@@ -5020,7 +5068,7 @@ if (jspb.Message.GENERATE_TO_OBJECT) {
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinary = function (bytes) {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinary = function(bytes) {
   var reader = new jspb.BinaryReader(bytes);
   var msg = new proto.cc.arduino.cli.commands.v1.BoardSearchResponse;
   return proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinaryFromReader(msg, reader);
@@ -5034,21 +5082,21 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinary = functio
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchResponse}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinaryFromReader = function (msg, reader) {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinaryFromReader = function(msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-      case 1:
-        var value = new proto.cc.arduino.cli.commands.v1.BoardListItem;
-        reader.readMessage(value, proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader);
-        msg.addBoards(value);
-        break;
-      default:
-        reader.skipField();
-        break;
+    case 1:
+      var value = new proto.cc.arduino.cli.commands.v1.BoardListItem;
+      reader.readMessage(value,proto.cc.arduino.cli.commands.v1.BoardListItem.deserializeBinaryFromReader);
+      msg.addBoards(value);
+      break;
+    default:
+      reader.skipField();
+      break;
     }
   }
   return msg;
@@ -5059,7 +5107,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.deserializeBinaryFromReader
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.serializeBinary = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.serializeBinary = function() {
   var writer = new jspb.BinaryWriter();
   proto.cc.arduino.cli.commands.v1.BoardSearchResponse.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
@@ -5073,7 +5121,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.serializeBinary =
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.serializeBinaryToWriter = function (message, writer) {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getBoardsList();
   if (f.length > 0) {
@@ -5090,7 +5138,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.serializeBinaryToWriter = f
  * repeated BoardListItem boards = 1;
  * @return {!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.getBoardsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.getBoardsList = function() {
   return /** @type{!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.cc.arduino.cli.commands.v1.BoardListItem, 1));
 };
@@ -5100,7 +5148,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.getBoardsList = f
  * @param {!Array<!proto.cc.arduino.cli.commands.v1.BoardListItem>} value
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchResponse} returns this
 */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.setBoardsList = function (value) {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.setBoardsList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -5110,7 +5158,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.setBoardsList = f
  * @param {number=} opt_index
  * @return {!proto.cc.arduino.cli.commands.v1.BoardListItem}
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.addBoards = function (opt_value, opt_index) {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.addBoards = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.cc.arduino.cli.commands.v1.BoardListItem, opt_index);
 };
 
@@ -5119,7 +5167,7 @@ proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.addBoards = funct
  * Clears the list making it empty but non-null.
  * @return {!proto.cc.arduino.cli.commands.v1.BoardSearchResponse} returns this
  */
-proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.clearBoardsList = function () {
+proto.cc.arduino.cli.commands.v1.BoardSearchResponse.prototype.clearBoardsList = function() {
   return this.setBoardsList([]);
 };
 

@@ -5,43 +5,46 @@
       "label": "O {0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
+      "goToCloudEditor": "Otevřít v cloudovém editoru",
       "goToIoTCloud": "Go to IoT Cloud",
-      "goToProfile": "Go to Profile",
+      "goToProfile": "Jdi do profilu",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "Deska {0}",
       "boardConfigDialogTitle": "Zvolit jinou Desku a Port",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Info o desce",
       "boards": "Desky",
       "configDialog1": "Pokud chcete nahrát sketch, musíte zvolit jak desku tak i port.",
       "configDialog2": "Pokud zvolíte jen desku, budete schopni kompilovat sketch, ale nebudete ji moci nahrát do desky.",
       "couldNotFindPreviouslySelected": "Dříve zvolená deska '{0}' v instalované platformě '{1}' nebyla nalezena. Zvolte prosím manuálně desku kterou chcete použít. Chcete tuto desku zvolit nyní? ",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Editovat Desku a Port",
       "getBoardInfo": "Získat info o desce.",
       "inSketchbook": "(v projektech)",
       "installNow": "\"{0}{1}\" jádro musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
       "noBoardsFound": "Nenalezeny žádné desky pro \"{0}\"",
-      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noNativeSerialPort": "Fyzický sériový port, nemohu získat informace.",
       "noPortsDiscovered": "Nenalezeny žádné porty",
-      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "nonSerialPort": "Nemohu získat informace, tohle není sériový port.",
       "openBoardsConfig": "Zvolte jinou desku a port...",
       "pleasePickBoard": "Vyberte prosím desku která je připojená k zvolenému portu. ",
       "port": "Port {0}",
       "ports": "porty",
       "programmer": "Programátor",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Zvolit později",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "Použij '{0}' objeven na '{1}'",
       "searchBoard": "Vyhledat desku",
       "selectBoard": "Zvolit desku",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Prosím zvolte port pro získání informací o desce.",
       "showAllAvailablePorts": "Zobrazit všechny dostupné porty (pokud je zaškrtnuto)",
       "showAllPorts": "Ukázat všechny porty",
       "succesfullyInstalledPlatform": "Platforma {0}:{1} byla úspěšně nainstalována.",
       "succesfullyUninstalledPlatform": "Platforma {0}:{1} byla úspěšně odinstalována.",
       "typeOfPorts": "{0}porty",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "Nepotvrzená deska",
       "unknownBoard": "Neznámá deska"
     },
     "boardsManager": "Manažér desek",
@@ -84,7 +87,7 @@
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' nebylo nalezeno. Obsahuje váš projekt řádek '#include <Keyboard.h>'?",
-      "mouseError": "'Mouse' not found. Does your sketch include the line '#include <Mouse.h>'?"
+      "mouseError": "'Myš' nebyla nalezena. Obsahuje váš projekt řádek '#include <Mouse.h>'?"
     },
     "cloud": {
       "chooseSketchVisibility": "Zvolte viditelnost sketche:",
@@ -152,7 +155,8 @@
       "serialMonitor": "Seriový monitor",
       "type": "typ",
       "unknown": "Neznámý",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Chyba kompilace: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Debugging není podporován s  '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platforma není nainstalována pro '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "optimalizovat pro Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Napište klíčové slovo",
       "privacyPolicy": "Zásady ochrany osobních údajů",
       "reference": "Reference",
-      "search": "Hledat na lingzhilab.com",
+      "search": "Hledat na Arduino.cc",
       "troubleshooting": "Řešení problémů",
-      "visit": "Navštívit lingzhilab.com"
+      "visit": "Navštívit Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Zkontrolovat aktualizace",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "Ano pokud by měl být uživatel varován před stahováním cloud sketche. Ano je výchozí hodnota. ",
       "cloud.push.warn": "Ano pokud by měl být uživatel varován před odesláním cloud sketche. Ano je výchozí hodnota. ",
       "cloud.pushpublic.warn": "Ano pokud by měl být uživatel varován před odesláním veřejné sketche do cloudu. Ano je výchozí hodnota. ",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "Endpoint použitý pro stahování a odesílání sketchí z backendu. Ve výchozím stavu je toto směrováno na Arduino Cloud API.",
       "compile": "kompilovat",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
@@ -411,7 +415,9 @@
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Zde klikněte pro seznam adres neoficiálně podporovaných desek",
       "upload": "nahrát",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "Ano pro podrobný výstup při nahrávání. Ne je výchozí hodnota.  ",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Kontrolovat kód po nahrání",
       "window.autoScale": "Ano pokud se měřítko uživatelského prostředí automaticky mění s velikostí písma. ",
       "window.zoomLevel": {

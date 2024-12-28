@@ -72,8 +72,8 @@ export class DaemonPort implements FrontendApplicationContribution {
   @inject(NotificationCenter)
   private readonly notificationCenter: NotificationCenter;
 
-  private readonly onPortDidChangeEmitter = new Emitter<string | undefined>();
-  private _port: string | undefined;
+  private readonly onPortDidChangeEmitter = new Emitter<number | undefined>();
+  private _port: number | undefined;
 
   onStart(): void {
     this.daemon.tryGetPort().then(
@@ -89,15 +89,15 @@ export class DaemonPort implements FrontendApplicationContribution {
     this.onPortDidChangeEmitter.dispose();
   }
 
-  get port(): string | undefined {
+  get port(): number | undefined {
     return this._port;
   }
 
-  get onDidChangePort(): Event<string | undefined> {
+  get onDidChangePort(): Event<number | undefined> {
     return this.onPortDidChangeEmitter.event;
   }
 
-  private setPort(port: string | undefined): void {
+  private setPort(port: number | undefined): void {
     const oldPort = this._port;
     this._port = port;
     if (this._port !== oldPort) {

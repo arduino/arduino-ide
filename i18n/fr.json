@@ -13,6 +13,7 @@
     "board": {
       "board": "Carte{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Information de la carte",
       "boards": "boards",
       "configDialog1": "Sélectionnez une carte et un port si vous souhaitez téléverser un croquis.",
@@ -31,10 +32,12 @@
       "port": "Port{0}",
       "ports": "ports",
       "programmer": "Programmeur",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Re-sélectionner plus tard",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Selectionner une carte",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Merci de choisir un port pour obtenir des informations sur la carte.",
       "showAllAvailablePorts": "Affiche les ports disponibles quand activer.",
       "showAllPorts": "Show all ports",
@@ -152,7 +155,8 @@
       "serialMonitor": "Moniteur série",
       "type": "Type",
       "unknown": "Inconnu",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Erreur de compilation : {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Le débogage n'est pas supporté pour '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plateforme n'est pas installée pour '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimisé pour le déboggage.",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Tapez un mot clé",
       "privacyPolicy": "Politique de confidentialité",
       "reference": "Référence",
-      "search": "Rechercher sur lingzhilab.com",
+      "search": "Rechercher sur Arduino.cc",
       "troubleshooting": "Dépannage",
-      "visit": "Visitez lingzhilab.com"
+      "visit": "Visitez Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Check for Arduino IDE Updates",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "Vrai si les utilisateurs devrait être averti avant de pull un croquis sur le cloud. Par défaut, la valeur est vrai.",
       "cloud.push.warn": "Vrai, si les utilisateurs devrait être averti avant de push un croquis sur le cloud. Par défaut, la valeur est vrai.",
       "cloud.pushpublic.warn": "Vrai si les utilisateurs devrait être avertit avant de publier un croquis public sur le cloud. Vrai par défaut.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "L'endpoint est utilisé pour pousser et tirer des croquis à partir du backend. Par défault, il pointe vers l'Arduino Cloud API.",
       "compile": "compiler",
       "compile.experimental": "Vrai si l'IDE doit gérer les multiples erreurs du compilateur. Faux par défaut",
@@ -411,7 +415,9 @@
       "survey.notification": "Vrai si les utilisateurs doivent être avertis si une enquête est disponible. Vrai par défaut.",
       "unofficialBoardSupport": "Cliquer pour la liste non-officielle des URLs des support de cartes",
       "upload": "téléverser",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "Vrai si le téléchargement en mode verbose. Faux par défaut.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Vérifier le code après le téléversement",
       "window.autoScale": "Vrai si l'interface utilisateur s'ajuste avec la taille de la police.",
       "window.zoomLevel": {

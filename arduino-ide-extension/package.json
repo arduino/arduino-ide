@@ -13,7 +13,7 @@
     "download-ls": "node ./scripts/download-ls.js",
     "download-examples": "node ./scripts/download-examples.js",
     "generate-protocol": "node ./scripts/generate-protocol.js",
-    "lint": "eslint",
+    "lint": "eslint .",
     "prebuild": "rimraf lib",
     "build": "tsc",
     "build:dev": "yarn build",
@@ -39,6 +39,7 @@
     "@theia/outline-view": "1.41.0",
     "@theia/output": "1.41.0",
     "@theia/plugin-ext": "1.41.0",
+    "@theia/plugin-ext-vscode": "1.41.0",
     "@theia/preferences": "1.41.0",
     "@theia/scm": "1.41.0",
     "@theia/search-in-workspace": "1.41.0",
@@ -66,13 +67,15 @@
     "cross-fetch": "^3.1.5",
     "dateformat": "^3.0.3",
     "deepmerge": "^4.2.2",
+    "dompurify": "^2.4.7",
     "drivelist": "^9.2.4",
     "electron-updater": "^4.6.5",
     "fast-deep-equal": "^3.1.3",
     "fast-json-stable-stringify": "^2.1.0",
     "fast-safe-stringify": "^2.1.1",
     "filename-reserved-regex": "^2.0.0",
-    "glob": "^7.1.6",
+    "fqbn": "^1.0.5",
+    "glob": "10.4.4",
     "google-protobuf": "^3.20.1",
     "hash.js": "^1.1.7",
     "is-online": "^10.0.0",
@@ -126,8 +129,8 @@
     "rimraf": "^2.6.1"
   },
   "optionalDependencies": {
-    "grpc-tools": "^1.12.4",
-    "protoc": "^1.0.4"
+    "@pingghost/protoc": "^1.0.2",
+    "grpc-tools": "^1.12.4"
   },
   "mocha": {
     "require": [
@@ -169,13 +172,17 @@
   ],
   "arduino": {
     "arduino-cli": {
-      "version": "0.35.3"
+      "version": "1.1.1"
     },
     "arduino-fwuploader": {
       "version": "2.4.1"
     },
     "arduino-language-server": {
-      "version": "0.7.6"
+      "version": {
+        "owner": "arduino",
+        "repo": "arduino-language-server",
+        "commitish": "05ec308"
+      }
     },
     "clangd": {
       "version": "14.0.0"

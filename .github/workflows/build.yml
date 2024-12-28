@@ -40,7 +40,7 @@ on:
       - Push Container Images
     branches:
       - main
-    types: 
+    types:
       - completed
 
 env:
@@ -48,28 +48,38 @@ env:
   GO_VERSION: '1.21'
   # See: https://github.com/actions/setup-node/#readme
   NODE_VERSION: '18.17'
-  JOB_TRANSFER_ARTIFACT: build-artifacts
+  YARN_VERSION: '1.22'
+  JOB_TRANSFER_ARTIFACT_PREFIX: build-artifacts-
   CHANGELOG_ARTIFACTS: changelog
-  STAGED_CHANNEL_FILES_ARTIFACT: staged-channel-files
+  STAGED_CHANNEL_FILE_ARTIFACT_PREFIX: staged-channel-file-
   BASE_BUILD_DATA: |
     - config:
         # Human identifier for the job.
         name: Windows
-        runs-on: windows-2019
+        runs-on: [self-hosted, windows-sign-pc]
         # The value is a string representing a JSON document.
         # Setting this to null causes the job to run directly in the runner machine instead of in a container.
         container: |
           null
         # Name of the secret that contains the certificate.
-        certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX
+        certificate-secret: INSTALLER_CERT_WINDOWS_CER
         # Name of the secret that contains the certificate password.
-        certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD
+        certificate-password-secret: INSTALLER_CERT_WINDOWS_PASSWORD
         # File extension for the certificate.
         certificate-extension: pfx
+        # Container for windows cert signing
+        certificate-container: INSTALLER_CERT_WINDOWS_CONTAINER
+        # Arbitrary identifier used to give the workflow artifact uploaded by each "build" matrix job a unique name.
+        job-transfer-artifact-suffix: Windows_64bit
         # Quoting on the value is required here to allow the same comparison expression syntax to be used for this
         # and the companion needs.select-targets.outputs.merge-channel-files property (output values always have string
         # type).
         mergeable-channel-file: 'false'
+        # as this runs on a self hosted runner, we need to avoid building with the default working directory path,
+        # otherwise paths in the build job will be too long for `light.exe`
+        # we use the below as a Symbolic link (just changing the wd will break the checkout action)
+        # this is a work around (see: https://github.com/actions/checkout/issues/197).
+        working-directory: 'C:\a'
       artifacts:
         - path: '*Windows_64bit.exe'
           name: Windows_X86-64_interactive_installer
@@ -84,6 +94,7 @@ env:
           {
             \"image\": \"ghcr.io/arduino/arduino-ide/linux:main\"
           }
+        job-transfer-artifact-suffix: Linux_64bit
         mergeable-channel-file: 'false'
       artifacts:
         - path: '*Linux_64bit.zip'
@@ -92,7 +103,7 @@ env:
           name: Linux_X86-64_app_image
     - config:
         name: macOS x86
-        runs-on: macos-latest
+        runs-on: macos-13
         container: |
           null
         # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
@@ -100,27 +111,32 @@ env:
         certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
         certificate-password-secret: KEYCHAIN_PASSWORD
         certificate-extension: p12
+        job-transfer-artifact-suffix: macOS_64bit
         mergeable-channel-file: 'true'
       artifacts:
         - path: '*macOS_64bit.dmg'
           name: macOS_X86-64_dmg
         - path: '*macOS_64bit.zip'
           name: macOS_X86-64_zip
-  PAID_RUNNER_BUILD_DATA: |
     - config:
         name: macOS ARM
-        runs-on: macos-latest-xlarge
+        runs-on: macos-latest
         container: |
           null
         certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
         certificate-password-secret: KEYCHAIN_PASSWORD
         certificate-extension: p12
+        job-transfer-artifact-suffix: macOS_arm64
         mergeable-channel-file: 'true'
       artifacts:
         - path: '*macOS_arm64.dmg'
           name: macOS_arm64_dmg
         - path: '*macOS_arm64.zip'
           name: macOS_arm64_zip
+  PAID_RUNNER_BUILD_DATA: |
+    # This system was implemented to allow selective use of paid GitHub-hosted runners, due to the Apple Silicon runner
+    # incurring a charge at that time. Free Apple Silicon runners are now available so the configuration was moved to
+    # `BASE_BUILD_DATA`, but the system was left in place for future use.
 
 jobs:
   run-determination:
@@ -223,7 +239,7 @@ jobs:
               ) | \
               yq \
                 --output-format json \
-                '[.[].artifacts.[]]'
+                'map(.artifacts[] + (.config | pick(["job-transfer-artifact-suffix"])))'
             )"
 
             # The build matrix produces two macOS jobs (x86 and ARM) so the "channel update info files"
@@ -242,7 +258,7 @@ jobs:
               echo "${{ env.BASE_BUILD_DATA }}" | \
               yq \
                 --output-format json \
-                '[.[].artifacts.[]]'
+                'map(.artifacts[] + (.config | pick(["job-transfer-artifact-suffix"])))'
             )"
 
             merge_channel_files="false"
@@ -268,8 +284,19 @@ jobs:
       - build-type-determination
       - select-targets
     env:
+      # https://github.blog/changelog/2024-03-07-github-actions-all-actions-will-run-on-node20-instead-of-node16-by-default/
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
       # Location of artifacts generated by build.
       BUILD_ARTIFACTS_PATH: electron-app/dist/build-artifacts
+      # to skip passing signing credentials to electron-builder
+      IS_WINDOWS_CONFIG: ${{ matrix.config.name == 'Windows' }}
+      INSTALLER_CERT_WINDOWS_CER: "/tmp/cert.cer"
+      # We are hardcoding the path for signtool because is not present on the windows PATH env var by default.
+      # Keep in mind that this path could change when upgrading to a new runner version
+      SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
+      WIN_CERT_PASSWORD: ${{ secrets[matrix.config.certificate-password-secret] }}
+      WIN_CERT_CONTAINER_NAME: ${{ secrets[matrix.config.certificate-container] }}
+
     strategy:
       matrix:
         config: ${{ fromJson(needs.select-targets.outputs.build-matrix) }}
@@ -283,53 +310,49 @@ jobs:
     timeout-minutes: 90
 
     steps:
+      - name: Symlink custom working directory
+        shell: cmd
+        if: runner.os == 'Windows' && matrix.config.working-directory
+        run: |
+          if not exist "${{ matrix.config.working-directory }}" mklink /d "${{ matrix.config.working-directory }}" "C:\actions-runner\_work\arduino-ide\arduino-ide"
+
       - name: Checkout
-        if: fromJSON(matrix.config.container) == null
         uses: actions/checkout@v4
 
-      - name: Checkout
-        # actions/checkout@v4 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container) != null
-        uses: actions/checkout@v3
 
       - name: Install Node.js
-        if: fromJSON(matrix.config.container) == null
+        if: runner.name != 'WINDOWS-SIGN-PC'
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
-          cache: 'yarn'
+          # Yarn is a prerequisite for the action's cache feature, so caching should be disabled when running in the
+          # container where Yarn is not pre-installed.
+          cache: ${{ fromJSON(matrix.config.container) == null && 'yarn' || null }}
+
+      - name: Install Yarn
+        if: runner.name != 'WINDOWS-SIGN-PC'
+        run: |
+          npm \
+            install \
+              --global \
+              "yarn@${{ env.YARN_VERSION }}"
 
       - name: Install Python 3.x
-        if: fromJSON(matrix.config.container) == null
+        if: fromJSON(matrix.config.container) == null && runner.name != 'WINDOWS-SIGN-PC'
         uses: actions/setup-python@v5
         with:
           python-version: '3.11.x'
 
       - name: Install Go
-        if: fromJSON(matrix.config.container) == null
+        if: runner.name != 'WINDOWS-SIGN-PC'
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Install Go
-        # actions/setup-go@v5 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container) != null
-        uses: actions/setup-go@v4
-        with:
-          go-version: ${{ env.GO_VERSION }}
-
       - name: Install Taskfile
-        if: fromJSON(matrix.config.container) == null
+        if: runner.name != 'WINDOWS-SIGN-PC'
         uses: arduino/setup-task@v2
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          version: 3.x
-
-      - name: Install Taskfile
-        # actions/setup-task@v2 has dependency on a higher version of glibc than available in the Linux container.
-        if: fromJSON(matrix.config.container) != null
-        uses: arduino/setup-task@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
@@ -345,14 +368,10 @@ jobs:
           IS_NIGHTLY: ${{ needs.build-type-determination.outputs.is-nightly }}
           IS_RELEASE: ${{ needs.build-type-determination.outputs.is-release }}
           CAN_SIGN: ${{ secrets[matrix.config.certificate-secret] != '' }}
-          # The CREATE_* environment vars are only used to run tests. These secrets are optional. Dependent tests will
-          # be skipped if not available.
-          CREATE_USERNAME: ${{ secrets.CREATE_USERNAME }}
-          CREATE_PASSWORD: ${{ secrets.CREATE_PASSWORD }}
-          CREATE_CLIENT_SECRET: ${{ secrets.CREATE_CLIENT_SECRET }}
+        working-directory: ${{ matrix.config.working-directory || './' }}
         run: |
           # See: https://www.electron.build/code-signing
-          if [ $CAN_SIGN = false ]; then
+          if [ $CAN_SIGN = false ] || [ $IS_WINDOWS_CONFIG = true ]; then
             echo "Skipping the app signing: certificate not provided."
           else
             export CSC_LINK="${{ runner.temp }}/signing_certificate.${{ matrix.config.certificate-extension }}"
@@ -362,13 +381,9 @@ jobs:
           fi
 
           npx node-gyp install
-          yarn install --immutable
+          yarn install
 
           yarn --cwd arduino-ide-extension build
-          yarn test
-          yarn --cwd arduino-ide-extension test:slow
-          yarn --cwd arduino-ide-extension lint
-
           yarn --cwd electron-app rebuild
           yarn --cwd electron-app build
           yarn --cwd electron-app package
@@ -379,6 +394,7 @@ jobs:
         if: >
           needs.select-targets.outputs.merge-channel-files == 'true' &&
           matrix.config.mergeable-channel-file == 'true'
+        working-directory: ${{ matrix.config.working-directory || './' }}
         run: |
           staged_channel_files_path="${{ runner.temp }}/staged-channel-files"
           mkdir "$staged_channel_files_path"
@@ -391,20 +407,26 @@ jobs:
           echo "STAGED_CHANNEL_FILES_PATH=$staged_channel_files_path" >> "$GITHUB_ENV"
 
       - name: Upload staged-for-merge channel file artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: >
           needs.select-targets.outputs.merge-channel-files == 'true' &&
           matrix.config.mergeable-channel-file == 'true'
         with:
           if-no-files-found: error
-          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
-          path: ${{ env.STAGED_CHANNEL_FILES_PATH }}
+          name: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}${{ matrix.config.job-transfer-artifact-suffix }}
+          path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.STAGED_CHANNEL_FILES_PATH) || env.STAGED_CHANNEL_FILES_PATH }}
 
-      - name: Upload [GitHub Actions]
-        uses: actions/upload-artifact@v3
+      - name: Upload builds to job transfer artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.BUILD_ARTIFACTS_PATH }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.config.job-transfer-artifact-suffix }}
+          path: ${{ matrix.config.working-directory && format('{0}/{1}', matrix.config.working-directory, env.BUILD_ARTIFACTS_PATH) || env.BUILD_ARTIFACTS_PATH }}
+
+      - name: Manual Clean up for self-hosted runners
+        if: runner.os == 'Windows' && matrix.config.working-directory
+        shell: cmd
+        run: |
+          rmdir /s /q "${{ matrix.config.working-directory }}\${{ env.BUILD_ARTIFACTS_PATH }}"
 
   merge-channel-files:
     needs:
@@ -423,16 +445,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download staged-for-merge channel files artifact
-        uses: actions/download-artifact@v3
+      - name: Download staged-for-merge channel file artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          merge-multiple: true
           path: ${{ env.CHANNEL_FILES_PATH }}
+          pattern: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}*
 
-      - name: Remove no longer needed artifact
-        uses: geekyeggo/delete-artifact@v2
+      - name: Remove no longer needed artifacts
+        uses: geekyeggo/delete-artifact@v5
         with:
-          name: ${{ env.STAGED_CHANNEL_FILES_ARTIFACT }}
+          name: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}*
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -462,11 +485,11 @@ jobs:
               --channel "${{ needs.build-type-determination.outputs.channel-name }}" \
               --input "${{ env.CHANNEL_FILES_PATH }}"
 
-      - name: Upload merged channel files to job transfer artifact
-        uses: actions/upload-artifact@v3
+      - name: Upload merged channel files job transfer artifact
+        uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}channel-files
           path: ${{ env.CHANNEL_FILES_PATH }}
 
   artifacts:
@@ -477,22 +500,25 @@ jobs:
     if: always() && needs.build.result != 'skipped'
     runs-on: ubuntu-latest
 
+    env:
+      BUILD_ARTIFACTS_FOLDER: build-artifacts
+
     strategy:
       matrix:
         artifact: ${{ fromJson(needs.select-targets.outputs.artifact-matrix) }}
 
     steps:
-      - name: Download job transfer artifact
-        uses: actions/download-artifact@v3
+      - name: Download job transfer artifact that contains ${{ matrix.artifact.name }} tester build
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.artifact.job-transfer-artifact-suffix }}
+          path: ${{ env.BUILD_ARTIFACTS_FOLDER }}
 
       - name: Upload tester build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact.name }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}/${{ matrix.artifact.path }}
+          path: ${{ env.BUILD_ARTIFACTS_FOLDER }}/${{ matrix.artifact.path }}
 
   changelog:
     needs:
@@ -535,11 +561,11 @@ jobs:
 
           echo "$BODY" > CHANGELOG.txt
 
-      - name: Upload Changelog [GitHub Actions]
+      - name: Upload changelog job transfer artifact
         if: needs.build-type-determination.outputs.is-nightly == 'true'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}changelog
           path: CHANGELOG.txt
 
   publish:
@@ -558,18 +584,23 @@ jobs:
       needs.build-type-determination.outputs.publish-to-s3 == 'true' &&
       needs.build-type-determination.outputs.is-nightly == 'true'
     runs-on: ubuntu-latest
+
+    env:
+      ARTIFACTS_FOLDER: build-artifacts
+
     steps:
-      - name: Download [GitHub Actions]
-        uses: actions/download-artifact@v3
+      - name: Download all job transfer artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          merge-multiple: true
+          path: ${{ env.ARTIFACTS_FOLDER }}
+          pattern: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*
 
       - name: Publish Nightly [S3]
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
-          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_SOURCE: '${{ env.ARTIFACTS_FOLDER }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.ARTIFACTS_FOLDER }}/'
           PLUGIN_TARGET: '/arduino-ide/nightly'
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -590,12 +621,17 @@ jobs:
       needs.changelog.result == 'success' &&
       needs.build-type-determination.outputs.is-release == 'true'
     runs-on: ubuntu-latest
+
+    env:
+      ARTIFACTS_FOLDER: build-artifacts
+
     steps:
-      - name: Download [GitHub Actions]
-        uses: actions/download-artifact@v3
+      - name: Download all job transfer artifacts
+        uses: actions/download-artifact@v4
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
-          path: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          merge-multiple: true
+          path: ${{ env.ARTIFACTS_FOLDER }}
+          pattern: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*
 
       - name: Get Tag
         id: tag_name
@@ -603,11 +639,11 @@ jobs:
           echo "TAG_NAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Publish Release [GitHub]
-        uses: svenstaro/upload-release-action@2.7.0
+        uses: svenstaro/upload-release-action@2.9.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ steps.tag_name.outputs.TAG_NAME }}
-          file: ${{ env.JOB_TRANSFER_ARTIFACT }}/*
+          file: ${{ env.ARTIFACTS_FOLDER }}/*
           tag: ${{ github.ref }}
           file_glob: true
           body: ${{ needs.changelog.outputs.BODY }}
@@ -616,8 +652,8 @@ jobs:
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
         uses: docker://plugins/s3
         env:
-          PLUGIN_SOURCE: '${{ env.JOB_TRANSFER_ARTIFACT }}/*'
-          PLUGIN_STRIP_PREFIX: '${{ env.JOB_TRANSFER_ARTIFACT }}/'
+          PLUGIN_SOURCE: '${{ env.ARTIFACTS_FOLDER }}/*'
+          PLUGIN_STRIP_PREFIX: '${{ env.ARTIFACTS_FOLDER }}/'
           PLUGIN_TARGET: '/arduino-ide'
           PLUGIN_BUCKET: ${{ secrets.DOWNLOADS_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -635,7 +671,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Remove unneeded job transfer artifact
-        uses: geekyeggo/delete-artifact@v2
+      - name: Remove unneeded job transfer artifacts
+        uses: geekyeggo/delete-artifact@v5
         with:
-          name: ${{ env.JOB_TRANSFER_ARTIFACT }}
+          name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*

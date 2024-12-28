@@ -13,6 +13,7 @@
     "board": {
       "board": "לוח{0}",
       "boardConfigDialogTitle": "יש לבחור לוח ופורט אחר",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "פרטי הלוח",
       "boards": "boards",
       "configDialog1": "נא לבחור סוג לוח ופורט כדי להעלות את הסקיצה.",
@@ -31,10 +32,12 @@
       "port": "פורט{0}",
       "ports": "ports",
       "programmer": "תכנת",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "בחר מחדש מאוחר יותר",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "חפש לוח",
       "selectBoard": "בחר לוח",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "אנא בחר פורט לקבלת מידע אודותיו.",
       "showAllAvailablePorts": "הצג את כל הפורטים הזמינים כשמופעל",
       "showAllPorts": "Show all ports",
@@ -152,7 +155,8 @@
       "serialMonitor": "מוניטור סיריאלי",
       "type": "סוג",
       "unknown": "לא ידוע",
-      "updateable": "ניתן לעדכון"
+      "updateable": "ניתן לעדכון",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "שגיאת קומפילציה: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "דיבאג לא נתמך על ידי '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "פלטפורמה אינה מותקנת עבור ׳{0}׳",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "אופטימיזציה לדיבאג",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "הקלד מילה",
       "privacyPolicy": "מדיניות פרטיות",
       "reference": "הפניה",
-      "search": "חיפוש ב lingzhilab.com",
+      "search": "חיפוש ב Arduino.cc",
       "troubleshooting": "פתרון תקלות",
-      "visit": "בקר ב lingzhilab.com"
+      "visit": "בקר ב Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "בדיקת עדכונים לArduino IDE",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "קומפילציה",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
@@ -411,7 +415,9 @@
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "upload",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "True for verbose upload output. False by default.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Verify code after upload",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
       "window.zoomLevel": {

@@ -170,6 +170,36 @@ describe('board-service-provider', () => {
     expect(events).deep.equals([expectedEvent]);
   });
 
+  it('should ignore custom board configs from the FQBN', () => {
+    boardsServiceProvider['_boardsConfig'] = {
+      selectedBoard: uno,
+      selectedPort: unoSerialPort,
+    };
+    const events: BoardsConfigChangeEvent[] = [];
+    toDisposeAfterEach.push(
+      boardsServiceProvider.onBoardsConfigDidChange((event) =>
+        events.push(event)
+      )
+    );
+    const mkr1000WithCustomOptions = {
+      ...mkr1000,
+      fqbn: `${mkr1000.fqbn}:c1=v1`,
+    };
+    const didUpdate = boardsServiceProvider.updateConfig(
+      mkr1000WithCustomOptions
+    );
+    expect(didUpdate).to.be.true;
+    const expectedEvent: BoardIdentifierChangeEvent = {
+      previousSelectedBoard: uno,
+      selectedBoard: mkr1000WithCustomOptions, // the even has the custom board options
+    };
+    expect(events).deep.equals([expectedEvent]);
+    // the persisted state does not have the config options property
+    expect(boardsServiceProvider.boardsConfig.selectedBoard?.fqbn).to.equal(
+      mkr1000.fqbn
+    );
+  });
+
   it('should not update the board if did not change (board identifier)', () => {
     boardsServiceProvider['_boardsConfig'] = {
       selectedBoard: uno,
@@ -372,19 +402,18 @@ describe('board-service-provider', () => {
     },
   ];
   boardListHistoryTestSuites.forEach((suite, index) =>
-    it(`should handle board list history updates (${
-      suite.description ? suite.description : `#${index + 1}`
-    })`, () => {
-      const { init, params, expected, assert, detectedPorts } = suite;
-      boardsServiceProvider['_boardsConfig'] = init;
-      if (detectedPorts) {
-        notificationCenter.notifyDetectedPortsDidChange({ detectedPorts });
-      }
-      const actual =
-        boardsServiceProvider['maybeUpdateBoardListHistory'](params);
-      expect(actual).to.be.deep.equal(expected);
-      assert?.(actual, boardsServiceProvider);
-    })
+    it(`should handle board list history updates (${suite.description ? suite.description : `#${index + 1}`
+      })`, () => {
+        const { init, params, expected, assert, detectedPorts } = suite;
+        boardsServiceProvider['_boardsConfig'] = init;
+        if (detectedPorts) {
+          notificationCenter.notifyDetectedPortsDidChange({ detectedPorts });
+        }
+        const actual =
+          boardsServiceProvider['maybeUpdateBoardListHistory'](params);
+        expect(actual).to.be.deep.equal(expected);
+        assert?.(actual, boardsServiceProvider);
+      })
   );
 
   function createContainer(): Container {
@@ -401,12 +430,12 @@ describe('board-service-provider', () => {
         bind(NotificationCenter).toSelf().inSingletonScope();
         bind(NotificationServiceServer).toConstantValue(<
           NotificationServiceServer
-        >{
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          setClient(_) {
-            // nothing
-          },
-        });
+          >{
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            setClient(_) {
+              // nothing
+            },
+          });
         bind(FrontendApplicationStateService).toSelf().inSingletonScope();
         bind(BoardsDataStore).toConstantValue(<BoardsDataStore>{});
         bind(LocalStorageService).toSelf().inSingletonScope();

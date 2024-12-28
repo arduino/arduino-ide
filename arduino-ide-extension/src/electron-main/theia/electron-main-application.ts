@@ -386,7 +386,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       this.createWindowUri(),
       this.createWindow(options),
     ]);
-
     electronWindow.loadURL(uri.withFragment(encodeURI(file)).toString(true));
     return electronWindow;
   }
@@ -418,9 +417,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         this.delete(sketch);
       }
     });
-    ipcMain.on(CHANNEL_SHOW_PLOTTER_WINDOW, async (event, args) => {
-      this.handleShowPlotterWindow(event, args);
-    });
+    ipcMain.on(CHANNEL_SHOW_PLOTTER_WINDOW, (event, args) =>
+      this.handleShowPlotterWindow(event, args)
+    );
   }
 
   // keys are the host window IDs
@@ -572,7 +571,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         });
         backendProcess.on('error', (error) => {
           reject(error);
-          reject();
         });
         app.on('quit', () => {
           try {

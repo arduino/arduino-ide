@@ -13,6 +13,7 @@
     "board": {
       "board": "Placa{0}",
       "boardConfigDialogTitle": "Seleccionar Otra Placa y Puerto",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Información de la placa",
       "boards": "Placas",
       "configDialog1": "Selecciona tanto una placa como un puerto si quieres cargar un sketch.",
@@ -31,10 +32,12 @@
       "port": "Puerto {0}",
       "ports": "puertos",
       "programmer": "Programador",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Vuelve a seleccionar más tarde",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Buscar placa",
       "selectBoard": "Seleccionar Placa",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Por favor, seleccione un puerto para obtener información sobre la placa.",
       "showAllAvailablePorts": "Muestra todos los puertos disponibles cuando está activado",
       "showAllPorts": "Mostrar todos los puertos",
@@ -78,9 +81,9 @@
       "installAll": "Instalar todo",
       "noUpdates": "No se han encontrado actualizaciones recientes disponibles",
       "promptUpdateBoards": "Actualizaciones disponibles para alguna de tus placas",
-      "promptUpdateLibraries": "Actualizaciones disponibles para algunas de tus librerías",
+      "promptUpdateLibraries": "Actualizaciones disponibles para algunas de tus bibliotecas.",
       "updatingBoards": "Actualizando placas...",
-      "updatingLibraries": "Actualizando librerías..."
+      "updatingLibraries": "Actualizando bibliotecas..."
     },
     "cli-error-parser": {
       "keyboardError": "'Keyboard' no encontrado. ¿Tiene tu proyecto incluida la linea '#include <Keyboard.h>'?",
@@ -152,7 +155,8 @@
       "serialMonitor": "Monitor Serie",
       "type": "Tipo",
       "unknown": "Desconocido",
-      "updateable": "Actualizable"
+      "updateable": "Actualizable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Error de compilación: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimizar para depuración",
       "sketchIsNotCompiled": "El sketch '{0}' debe ser verificado antes de iniciar una sesión de depuración. Por favor, verifique el sketch e inicia la depuración nuevamente. ¿Deseas verificar el sketch ahora?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Escribe una palabra clave",
       "privacyPolicy": "Política de privacidad",
       "reference": "Referencia",
-      "search": "Buscar en lingzhilab.com",
+      "search": "Buscar en Arduino.cc",
       "troubleshooting": "Resolución de problemas",
-      "visit": "Visitar lingzhilab.com"
+      "visit": "Visitar Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Comprobar actualizaciones para Arduino IDE",
@@ -361,13 +364,14 @@
       "automatic": "Automático",
       "board.certificates": "Listado de certificados que pueden ser cargados en las placas",
       "browse": "Explorar",
-      "checkForUpdate": "Recibe notificaciones sobre actualizaciones disponibles del IDE, placas y librerías. Requiere reiniciar el IDE despues de hacer cambios. Por defecto está habilitado.",
+      "checkForUpdate": "Recibe notificaciones sobre actualizaciones disponibles del IDE, placas y bibliotecas. Requiere reiniciar el IDE despues de hacer cambios. Por defecto está habilitado.",
       "choose": "Elija",
       "cli.daemonDebug": "Habilitar logueo de depuración de las llamadas gRPC al Arduino CLI. Requiere un reinicio del IDE para tener efecto. Deshabilitado por defecto.",
       "cloud.enabled": "Verdadero si las funciones de sincronización del sketch están activadas. Verdadero por defecto.",
       "cloud.pull.warn": "Verdadero si se debe advertir a los usuarios antes de sacar un boceto de la nube. El valor predeterminado es verdadero.",
       "cloud.push.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto a la nube. El valor predeterminado es verdadero.",
       "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
       "compile": "Compliar",
       "compile.experimental": "True si el IDE debe manejar multiples errores del compilador. False por defecto",
@@ -411,7 +415,9 @@
       "survey.notification": "Verdadero si usuarios deberían ser notificados cuando una encuesta esté disponible. Verdadero es predeterminado.",
       "unofficialBoardSupport": "Pulsa para listar las URLs de las tarjetas no oficiales",
       "upload": "Carga",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "Verdadero para una salida verbosa de la carga. Falso por defecto.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Verificar el código después de cargarlo",
       "window.autoScale": "Verdadero si la interfaz de usuario se escala automáticamente con el tamaño de la fuente.",
       "window.zoomLevel": {
@@ -496,11 +502,11 @@
       "user": "{0} (user)"
     },
     "title": {
-      "cloud": "Cloud"
+      "cloud": "Nube"
     },
     "updateIndexes": {
-      "updateIndexes": "Actualizar indices",
-      "updateLibraryIndex": "Actualizar Indice de librerías",
+      "updateIndexes": "Actualizar índices",
+      "updateLibraryIndex": "Actualizar índice de bibliotecas",
       "updatePackageIndex": "Actualizar índice de paquete"
     },
     "upload": {

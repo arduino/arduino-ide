@@ -345,8 +345,8 @@ export class ApplicationShell extends TheiaApplicationShell {
 
     // 将容器添加到节点中
     this.boardImg.node.insertBefore(container, this.scrollContainer);
-    if (isRefresh) { 
-      dropdown.value = "lingzhi:STM32F1:lingzhistandard";
+    if (isRefresh) {
+      dropdown.value = 'lingzhi:STM32F1:lingzhistandard';
       const parts = dropdown.value.split(':');
       const imgName = parts[parts.length - 1];
       this.imgDisplay(imgName);

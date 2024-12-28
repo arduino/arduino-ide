@@ -38,6 +38,10 @@ export class UploadRequest extends jspb.Message {
 
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
+    clearUploadPropertiesList(): void;
+    getUploadPropertiesList(): Array<string>;
+    setUploadPropertiesList(value: Array<string>): UploadRequest;
+    addUploadProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadRequest.AsObject;
@@ -63,6 +67,7 @@ export namespace UploadRequest {
         dryRun: boolean,
 
         userFieldsMap: Array<[string, string]>,
+        uploadPropertiesList: Array<string>,
     }
 }
 
@@ -185,6 +190,10 @@ export class UploadUsingProgrammerRequest extends jspb.Message {
 
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
+    clearUploadPropertiesList(): void;
+    getUploadPropertiesList(): Array<string>;
+    setUploadPropertiesList(value: Array<string>): UploadUsingProgrammerRequest;
+    addUploadProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadUsingProgrammerRequest.AsObject;
@@ -210,18 +219,27 @@ export namespace UploadUsingProgrammerRequest {
         dryRun: boolean,
 
         userFieldsMap: Array<[string, string]>,
+        uploadPropertiesList: Array<string>,
     }
 }
 
 export class UploadUsingProgrammerResponse extends jspb.Message { 
+
+    hasOutStream(): boolean;
+    clearOutStream(): void;
     getOutStream(): Uint8Array | string;
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): UploadUsingProgrammerResponse;
+
+    hasErrStream(): boolean;
+    clearErrStream(): void;
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): UploadUsingProgrammerResponse;
+
+    getMessageCase(): UploadUsingProgrammerResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadUsingProgrammerResponse.AsObject;
@@ -238,6 +256,13 @@ export namespace UploadUsingProgrammerResponse {
         outStream: Uint8Array | string,
         errStream: Uint8Array | string,
     }
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        OUT_STREAM = 1,
+        ERR_STREAM = 2,
+    }
+
 }
 
 export class BurnBootloaderRequest extends jspb.Message { 
@@ -264,6 +289,10 @@ export class BurnBootloaderRequest extends jspb.Message {
 
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
+    clearUploadPropertiesList(): void;
+    getUploadPropertiesList(): Array<string>;
+    setUploadPropertiesList(value: Array<string>): BurnBootloaderRequest;
+    addUploadProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BurnBootloaderRequest.AsObject;
@@ -286,18 +315,27 @@ export namespace BurnBootloaderRequest {
         dryRun: boolean,
 
         userFieldsMap: Array<[string, string]>,
+        uploadPropertiesList: Array<string>,
     }
 }
 
 export class BurnBootloaderResponse extends jspb.Message { 
+
+    hasOutStream(): boolean;
+    clearOutStream(): void;
     getOutStream(): Uint8Array | string;
     getOutStream_asU8(): Uint8Array;
     getOutStream_asB64(): string;
     setOutStream(value: Uint8Array | string): BurnBootloaderResponse;
+
+    hasErrStream(): boolean;
+    clearErrStream(): void;
     getErrStream(): Uint8Array | string;
     getErrStream_asU8(): Uint8Array;
     getErrStream_asB64(): string;
     setErrStream(value: Uint8Array | string): BurnBootloaderResponse;
+
+    getMessageCase(): BurnBootloaderResponse.MessageCase;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BurnBootloaderResponse.AsObject;
@@ -314,6 +352,13 @@ export namespace BurnBootloaderResponse {
         outStream: Uint8Array | string,
         errStream: Uint8Array | string,
     }
+
+    export enum MessageCase {
+        MESSAGE_NOT_SET = 0,
+        OUT_STREAM = 1,
+        ERR_STREAM = 2,
+    }
+
 }
 
 export class ListProgrammersAvailableForUploadRequest extends jspb.Message { 

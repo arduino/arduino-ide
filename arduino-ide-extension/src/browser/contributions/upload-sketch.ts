@@ -5,8 +5,8 @@ import {
   MonitorManagerProxyClient,
   Port,
   ResponseService,
-  sanitizeFqbn,
 } from '../../common/protocol';
+import { FQBN } from 'fqbn';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -149,6 +149,7 @@ export class UploadSketch extends CoreServiceContribution {
     try {
       // toggle the toolbar button and menu item state.
       // uploadInProgress will be set to false whether the upload fails or not
+      const autoVerify = this.preferences['arduino.upload.autoVerify'];
       // 设置上传状态为正在进行
       this.uploadInProgress = true;
       // 更新菜单管理器
@@ -199,8 +200,7 @@ export class UploadSketch extends CoreServiceContribution {
           <VerifySketchParams>{
             // 不导出二进制文件
             exportBinaries: false,
-            // 静默模式
-            silent: true,
+            mode: autoVerify ? 'auto' : 'dry-run',
           }
         );
       // 如果没有获取到编译选项，则返回
@@ -233,17 +233,43 @@ export class UploadSketch extends CoreServiceContribution {
       // 调用doWithProgress方法，执行上传操作
       // const uploadResponse = await this.doWithProgress({
       //   progressText: nls.localize('arduino/sketch/uploading', 'Uploading...'),
-      //   task: (progressId, coreService) =>
-      //     coreService.upload({ ...uploadOptions, progressId }),
+      //   task: async (progressId, coreService, token) => {
+      //     try {
+      //       return await coreService.upload(
+      //         { ...uploadOptions, progressId },
+      //         token
+      //       );
+      //     } catch (err) {
+      //       if (err.code === 4005) {
+      //         const uploadWithProgrammerOptions = await this.uploadOptions(
+      //           true,
+      //           verifyOptions
+      //         );
+      //         if (uploadWithProgrammerOptions) {
+      //           return coreService.upload(
+      //             { ...uploadWithProgrammerOptions, progressId },
+      //             token
+      //           );
+      //         }
+      //       } else {
+      //         throw err;
+      //       }
+      //     }
+      //   },
       //   keepOutput: true,
+      //   cancelable: true,
       // });
-      // this.responseServiceClient.clearOutput();
+
+      // if (!uploadResponse) {
+      //   return;
+      // }
+
       await this.coreService1.upload({ ...uploadOptions });
-      // the port update is NOOP if nothing has changed
+      // // the port update is NOOP if nothing has changed
       // this.boardsServiceProvider.updateConfig(uploadResponse.portAfterUpload);
 
       // this.messageService.info(
-      //   nls.localize('arduino/sketch/doneUploading', '完成上传.'),
+      //   nls.localize('arduino/sketch/doneUploading', 'Done uploading.'),
       //   { timeout: 3000 }
       // );
       const chunk = '\n完成上传.\n';
@@ -273,7 +299,11 @@ export class UploadSketch extends CoreServiceContribution {
     const [fqbn, { selectedProgrammer: programmer }, verify, verbose] =
       await Promise.all([
         verifyOptions.fqbn, // already decorated FQBN
-        this.boardsDataStore.getData(sanitizeFqbn(verifyOptions.fqbn)),
+        this.boardsDataStore.getData(
+          verifyOptions.fqbn
+            ? new FQBN(verifyOptions.fqbn).toString(true)
+            : undefined
+        ),
         this.preferences.get('arduino.upload.verify'),
         this.preferences.get('arduino.upload.verbose'),
       ]);

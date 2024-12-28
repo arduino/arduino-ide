@@ -1,7 +1,6 @@
 import { promises as fs } from 'node:fs';
 import { dirname } from 'node:path';
 import yaml from 'js-yaml';
-import * as grpc from '@grpc/grpc-js';
 import { injectable, inject, named } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ILogger } from '@theia/core/lib/common/logger';
@@ -16,18 +15,17 @@ import {
   ConfigState,
 } from '../common/protocol';
 import { spawnCommand } from './exec-util';
-import {
-  MergeRequest,
-  WriteRequest,
-} from './cli-protocol/cc/arduino/cli/settings/v1/settings_pb';
-import { SettingsServiceClient } from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
-import * as serviceGrpcPb from './cli-protocol/cc/arduino/cli/settings/v1/settings_grpc_pb';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
-import { DefaultCliConfig, CLI_CONFIG } from './cli-config';
+import { DefaultCliConfig, CLI_CONFIG, CliConfig } from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone, nls } from '@theia/core';
 import { ErrnoException } from './utils/errors';
+import { createArduinoCoreServiceClient } from './arduino-core-service-client';
+import {
+  ConfigurationSaveRequest,
+  SettingsSetValueRequest,
+} from './cli-protocol/cc/arduino/cli/commands/v1/settings_pb';
 import { join } from 'node:path';
 
 const deepmerge = require('deepmerge');
@@ -97,7 +95,7 @@ export class ConfigServiceImpl
     };
     copyDefaultCliConfig.locale = locale || 'en';
     const proxy = Network.stringify(network);
-    copyDefaultCliConfig.network = { proxy };
+    copyDefaultCliConfig.network = proxy ? { proxy } : {}; // must be an empty object to unset the default prop with the `WriteRequest`.
 
     // always use the port of the daemon
     const port = await this.daemon.getPort();
@@ -179,91 +177,16 @@ export class ConfigServiceImpl
     const cliConfigPath = FileUri.fsPath(cliConfigFileUri);
     this.logger.info(`Loading CLI configuration from ${cliConfigPath}...`);
     try {
-      // const content1 = await fs.readFile(cliConfigPath, {
-      //   encoding: 'utf8',
-      // });
-
-      // if (content1) {
-      //   const lines = content1.split('\n');
-
-      //   let inDirectoriesSection = false;
-      //   let dataLine = '';
-      //   let downloadsLine = '';
-      //   let userLine = '';
-      //   let librariesLine = '';
-
-      //   for (let i = 0; i < lines.length; i++) {
-      //     const line = lines[i];
-      //     if (line.startsWith('directories:')) {
-      //       inDirectoriesSection = true;
-      //     } else if (inDirectoriesSection && line.startsWith('    data:')) {
-      //       dataLine = line;
-      //     } else if (
-      //       inDirectoriesSection &&
-      //       line.startsWith('    downloads:')
-      //     ) {
-      //       downloadsLine = line;
-      //     } else if (inDirectoriesSection && line.startsWith('    user:')) {
-      //       userLine = line;
-      //     } else if (
-      //       inDirectoriesSection &&
-      //       line.startsWith('    builtin:') &&
-      //       lines[i + 1].startsWith('        libraries:')
-      //     ) {
-      //       librariesLine = lines[i + 1];
-      //     }
-      //   }
-
-      //   const dataPathParts = dataLine.split(': ')[1].split('\\');
-      //   dataPathParts[dataPathParts.length - 1] = 'Lingzhi';
-      //   const newDataPath = dataPathParts.join('\\');
-      //   lines[lines.indexOf(dataLine)] = `    data: ${newDataPath}`;
-
-      //   const downloadsPathParts = downloadsLine.split(': ')[1].split('\\');
-      //   const lastIndex = downloadsPathParts.length - 2;
-      //   downloadsPathParts[lastIndex] = 'Lingzhi';
-      //   const newDownloadsPath = downloadsPathParts.join('\\');
-      //   lines[
-      //     lines.indexOf(downloadsLine)
-      //   ] = `    downloads: ${newDownloadsPath}`;
-
-      //   const userPathParts = userLine.split(': ')[1].split('\\');
-      //   userPathParts[userPathParts.length - 1] = 'Examples';
-      //   const newUserPath = userPathParts.join('\\');
-      //   lines[lines.indexOf(userLine)] = `    user: ${newUserPath}`;
-
-      //   const librariesPathParts: string | any[] = [];
-      //   if (librariesLine) {
-      //     const librariesPathParts = librariesLine.split(': ')[1].split('\\');
-      //     const librariesLastIndex = librariesPathParts.length - 2;
-      //     librariesPathParts[librariesLastIndex] = 'Lingzhi';
-      //     const newLibrariesPath = librariesPathParts.join('\\');
-      //     lines[
-      //       lines.indexOf(librariesLine)
-      //     ] = `        libraries: ${newLibrariesPath}`;
-      //   }
-      //   const updatedYaml = lines.join('\n');
-      //   if (
-      //     (dataPathParts[dataPathParts.length - 1] = 'Arduino15') ||
-      //     downloadsPathParts[lastIndex] === 'Arduino15' ||
-      //     userPathParts[userPathParts.length - 1] === 'Arduino' ||
-      //     (librariesLine &&
-      //       librariesPathParts[librariesPathParts.length - 2] === 'Arduino15')
-      //   ) {
-      //     await fs.writeFile(cliConfigPath, updatedYaml);
-      //   }
-      // }
-
       const content = await fs.readFile(cliConfigPath, {
         encoding: 'utf8',
       });
-      const model = (yaml.safeLoad(content) || {}) as DefaultCliConfig;
+      const model = (yaml.safeLoad(content) || {}) as CliConfig;
       this.logger.info(`Loaded CLI configuration: ${JSON.stringify(model)}`);
-      if (model.directories.data && model.directories.user) {
+      if (model.directories?.data && model.directories?.user) {
         this.logger.info(
           "'directories.data' and 'directories.user' are set in the CLI configuration model."
         );
-        return model;
+        return model as DefaultCliConfig;
       }
       // The CLI can run with partial (missing `port`, `directories`), the IDE2 cannot.
       // We merge the default CLI config with the partial user's config.
@@ -294,13 +217,17 @@ export class ConfigServiceImpl
 
   private async getFallbackCliConfig(): Promise<DefaultCliConfig> {
     const cliPath = this.daemon.getExecPath();
-    const rawJson = await spawnCommand(cliPath, [
-      'config',
-      'dump',
-      'format',
-      '--json',
+    const [configRaw, directoriesRaw] = await Promise.all([
+      spawnCommand(cliPath, ['config', 'dump', '--json']),
+      // Since CLI 1.0, the command `config dump` only returns user-modified values and not default ones.
+      // directories.user and directories.data are required by IDE2 so we get the default value explicitly.
+      spawnCommand(cliPath, ['config', 'get', 'directories', '--json']),
     ]);
-    return JSON.parse(rawJson);
+
+    const config = JSON.parse(configRaw);
+    const { user, data } = JSON.parse(directoriesRaw);
+
+    return { ...config.config, directories: { user, data } };
   }
 
   //    await spawnCommand(cliPath, ['config', 'init', '--dest-dir', fsPathToDir]);
@@ -375,61 +302,65 @@ export class ConfigServiceImpl
   }
 
   private async updateDaemon(
-    port: string | number,
+    port: number,
     config: DefaultCliConfig
   ): Promise<void> {
-    const client = this.createClient(port);
-    const req = new MergeRequest();
     const json = JSON.stringify(config, null, 2);
-    req.setJsonData(json);
     this.logger.info(`Updating daemon with 'data': ${json}`);
-    return new Promise<void>((resolve, reject) => {
-      client.merge(req, (error) => {
+
+    const updatableConfig = {
+      locale: config.locale,
+      'directories.user': config.directories.user,
+      'directories.data': config.directories.data,
+      'network.proxy': config.network?.proxy,
+      'board_manager.additional_urls':
+        config.board_manager?.additional_urls || [],
+    };
+
+    const client = createArduinoCoreServiceClient({ port });
+
+    for (const [key, value] of Object.entries(updatableConfig)) {
+      const req = new SettingsSetValueRequest();
+      req.setKey(key);
+      req.setEncodedValue(JSON.stringify(value));
+      await new Promise<void>((resolve) => {
+        client.settingsSetValue(req, (error) => {
+          if (error) {
+            this.logger.error(
+              `Could not update config with key: ${key} and value: ${value}`,
+              error
+            );
+          }
+          resolve();
+        });
+      });
+    }
+
+    client.close();
+  }
+
+  private async writeDaemonState(port: number): Promise<void> {
+    const client = createArduinoCoreServiceClient({ port });
+    const req = new ConfigurationSaveRequest();
+    req.setSettingsFormat('yaml');
+
+    const configRaw = await new Promise<string>((resolve, reject) => {
+      client.configurationSave(req, (error, resp) => {
         try {
           if (error) {
             reject(error);
             return;
           }
-          resolve();
+          resolve(resp.getEncodedSettings());
         } finally {
           client.close();
         }
       });
     });
-  }
 
-  private async writeDaemonState(port: string | number): Promise<void> {
-    const client = this.createClient(port);
-    const req = new WriteRequest();
     const cliConfigUri = await this.getCliConfigFileUri();
     const cliConfigPath = FileUri.fsPath(cliConfigUri);
-    req.setFilePath(cliConfigPath);
-    return new Promise<void>((resolve, reject) => {
-      client.write(req, (error) => {
-        try {
-          if (error) {
-            reject(error);
-            return;
-          }
-          resolve();
-        } finally {
-          client.close();
-        }
-      });
-    });
-  }
-
-  private createClient(port: string | number): SettingsServiceClient {
-    // https://github.com/agreatfool/grpc_tools_node_protoc_ts/blob/master/doc/grpcjs_support.md#usage
-    const SettingsServiceClient = grpc.makeClientConstructor(
-      // @ts-expect-error: ignore
-      serviceGrpcPb['cc.arduino.cli.settings.v1.SettingsService'],
-      'SettingsServiceService'
-    ) as any;
-    return new SettingsServiceClient(
-      `localhost:${port}`,
-      grpc.credentials.createInsecure()
-    ) as SettingsServiceClient;
+    await fs.writeFile(cliConfigPath, configRaw, { encoding: 'utf-8' });
   }
 
   // #1445

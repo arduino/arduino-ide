@@ -21,15 +21,29 @@ import { SidebarMenu } from '@theia/core/lib/browser/shell/sidebar-menu-widget';
 import { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
 import { CreateFeatures } from '../create/create-features';
 
+export type VerifySketchMode =
+  /**
+   * When the user explicitly triggers the verify command from the primary UI: menu, toolbar, or keybinding. The UI shows the output, updates the toolbar items state, etc.
+   */
+  | 'explicit'
+  /**
+   * When the verify phase automatically runs as part of the upload but there is no UI indication of the command: the toolbar items do not update.
+   */
+  | 'auto'
+  /**
+   * The verify does not run. There is no UI indication of the command. For example, when the user decides to disable the auto verify (`'arduino.upload.autoVerify'`) to skips the code recompilation phase.
+   */
+  | 'dry-run';
+
 export interface VerifySketchParams {
   /**
    * Same as `CoreService.Options.Compile#exportBinaries`
    */
   readonly exportBinaries?: boolean;
   /**
-   * If `true`, there won't be any UI indication of the verify command in the toolbar. It's `false` by default.
+   * The mode specifying how verify should run. It's `'explicit'` by default.
    */
-  readonly silent?: boolean;
+  readonly mode?: VerifySketchMode;
 }
 
 export const verifyMenu: SidebarMenu = {
@@ -41,11 +55,9 @@ export const verifyMenu: SidebarMenu = {
 };
 
 /**
- *  - `"idle"` when neither verify, nor upload is running,
- *  - `"explicit-verify"` when only verify is running triggered by the user, and
- *  - `"automatic-verify"` is when the automatic verify phase is running as part of an upload triggered by the user.
+ *  - `"idle"` when neither verify, nor upload is running
  */
-type VerifyProgress = 'idle' | 'explicit-verify' | 'automatic-verify';
+type VerifyProgress = 'idle' | VerifySketchMode;
 
 @injectable()
 export class VerifySketch extends CoreServiceContribution {
@@ -84,10 +96,10 @@ export class VerifySketch extends CoreServiceContribution {
     registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
       isVisible: (widget, showToolbar: boolean) =>
         showToolbar && ArduinoToolbar.is(widget) && widget.side === 'left',
-      isEnabled: () => this.verifyProgress !== 'explicit-verify',
+      isEnabled: () => this.verifyProgress !== 'explicit',
       // toggled only when verify is running, but not toggled when automatic verify is running before the upload
       // https://github.com/arduino/arduino-ide/pull/1750#pullrequestreview-1214762975
-      isToggled: () => this.verifyProgress === 'explicit-verify',
+      isToggled: () => this.verifyProgress === 'explicit',
       execute: () =>
         registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id),
     });
@@ -148,9 +160,7 @@ export class VerifySketch extends CoreServiceContribution {
 
     try {
       // 根据params参数的silent属性，设置verifyProgress的值
-      this.verifyProgress = params?.silent
-        ? 'automatic-verify'
-        : 'explicit-verify';
+      this.verifyProgress = params?.mode ?? 'explicit';
       // 触发onDidChangeEmitter事件
       this.onDidChangeEmitter.fire();
       // 更新menuManager
@@ -159,6 +169,7 @@ export class VerifySketch extends CoreServiceContribution {
       this.clearVisibleNotification();
       // 重置coreErrorHandler
       this.coreErrorHandler.reset();
+      const dryRun = this.verifyProgress === 'dry-run';
 
       // 根据params参数的exportBinaries属性，获取options
       const options = await this.options(params?.exportBinaries);
@@ -167,21 +178,31 @@ export class VerifySketch extends CoreServiceContribution {
         return undefined;
       }
 
+      if (dryRun) {
+        return options;
+      }
+
       // 使用doWithProgress方法，执行编译任务
       // await this.doWithProgress({
-      //   // 设置进度文本
       //   progressText: nls.localize(
       //     'arduino/sketch/compile',
       //     'Compiling sketch...'
       //   ),
-      //   // 设置任务
-      //   task: (progressId, coreService) =>
-      //     coreService.compile({
-      //       // 将options和progressId作为参数传递给compile方法
-      //       ...options,
-      //       progressId,
-      //     }),
+      //   task: (progressId, coreService, token) =>
+      //     coreService.compile(
+      //       {
+      //         ...options,
+      //         progressId,
+      //       },
+      //       token
+      //     ),
+      //   cancelable: true,
       // });
+      // this.messageService.info(
+      //   nls.localize('arduino/sketch/doneCompiling', 'Done compiling.'),
+      //   { timeout: 3000 }
+      // );
+
       this.responseServiceClient.clearOutput();
       await this.coreService1.compile({
         // 将options和progressId作为参数传递给compile方法

@@ -99,7 +99,6 @@ export class ShellLayoutRestorer extends TheiaShellLayoutRestorer {
     console.log('------- END SERIALIZED LAYOUT DATA -------');
     const layoutData = await this.inflate(serializedLayoutData);
     await app.shell.setLayoutData(layoutData);
-
     this.logger.info('<<< The layout has been successfully restored.');
     return true;
   }

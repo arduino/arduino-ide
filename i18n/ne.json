@@ -13,6 +13,7 @@
     "board": {
       "board": "बोर्ड {0}",
       "boardConfigDialogTitle": "अन्य बोर्ड र पोर्ट चयन गर्नुहोस् |",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "बोर्डको जानकारी",
       "boards": "बोर्डहरू",
       "configDialog1": "यदि तपाइँ स्केच अपलोड गर्न चाहनुहुन्छ भने बोर्ड र पोर्ट दुवै चयन गर्नुहोस्।",
@@ -31,10 +32,12 @@
       "port": "पोर्ट {0}",
       "ports": "पोर्टहरू",
       "programmer": "प्रोग्रामर",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "पुन: चयन गर्नुहोस्",
       "revertBoardsConfig": "'{1}' मा फेला परेको '{0}' प्रयोग गर्नुहोस्",
       "searchBoard": "बोर्ड खोज्नुहोस। ",
       "selectBoard": "बोर्ड छान्नुहोस । ",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "बोर्ड जानकारी प्राप्त गर्न पोर्ट चयन गर्नुहोस्।",
       "showAllAvailablePorts": "अनुमति हुँदा सबै उपलब्ध पोर्टहरू देखाउँछ।",
       "showAllPorts": "पोर्टहरु हेर्नुहोस |",
@@ -152,7 +155,8 @@
       "serialMonitor": "सिरियल मनिटर",
       "type": "प्रकार",
       "unknown": "थाहा नभएको",
-      "updateable": "अपडेट गर्न मिल्ने"
+      "updateable": "अपडेट गर्न मिल्ने",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "संकलन त्रुटि: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "डिबगिङ '{0}' द्वारा समर्थित छैन",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}' को लागि प्लेटफर्म स्थापना गरिएको छैन",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "डिबगिङका लागि अप्टिमाइज गर्नुहोस्",
       "sketchIsNotCompiled": "डिबग अवधि सुरु गर्नु अघि स्केच {0} पुष्टि गरिनुपर्छ। कृपया स्केच पुष्टि गर्नुहोस् र फेरि डिबगिङ सुरु गर्नुहोस्। के तपाई अहिले स्केच पुष्टि गर्न चाहनुहुन्छ?"
     },
@@ -264,9 +267,9 @@
       "keyword": "किवर्ड टाइप गर्नुहोस्",
       "privacyPolicy": "गोपनीयता नीति",
       "reference": "सन्दर्भ",
-      "search": "lingzhilab.com मा खोज्नुहोस्",
+      "search": "Arduino.cc मा खोज्नुहोस्",
       "troubleshooting": "समस्या निवारण",
-      "visit": "lingzhilab.com मा जानुहोस्"
+      "visit": "Arduino.cc मा जानुहोस्"
     },
     "ide-updater": {
       "checkForUpdates": "Arduino IDE अपडेटहरूको लागि जाँच गर्नुहोस्",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "क्लाउड स्केच पुल गर्नु अघि प्रयोगकर्ताहरूलाई चेतावनी दिनुपर्छ भने सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित सेटिङमा सही हुन्छ।",
       "cloud.push.warn": "क्लाउड स्केच पुश गर्नु अघि प्रयोगकर्ताहरूलाई चेतावनी दिनुपर्छ भने सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित सेटिङमा सही हुन्छ।",
       "cloud.pushpublic.warn": "यदि प्रयोगकर्ताहरूलाई क्लाउडमा सार्वजनिक स्केच पुश गर्नु अघि चेतावनी दिनुपर्छ भने सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित सेटिङमा सही हुन्छ।",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "ब्याकइन्डबाट स्केचहरू पुश गर्न र पुल गर्न अन्तिम बिन्दु प्रयोग गरियो। पूर्वनिर्धारित रूपमा यसले Arduino क्लाउड API लाई संकेत गर्दछ।",
       "compile": "कम्पाइल ",
       "compile.experimental": "यदि IDE ले धेरै कम्पाइलर त्रुटिहरू ह्यान्डल गर्नुपर्छ भने सक्षम गर्नुहोस्। यो पूर्वनिर्धारित सेटिङमा असक्षम छ।",
@@ -411,7 +415,9 @@
       "survey.notification": "यदि सर्वेक्षण उपलब्ध छ भने प्रयोगकर्ताहरूलाई सूचित गरिनुपर्छ भने सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित रूपमा सही छ।",
       "unofficialBoardSupport": "अनौपचारिक बोर्ड समर्थन गर्ने URL को सूचीको लागि क्लिक गर्नुहोस्",
       "upload": "अपलोड ",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "वर्बोज अपलोड आउटपुट को लागी सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित रूपमा असक्षम छ। ",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "कोड अपलोड गरेपछि प्रमाणित गर्नुहोस्",
       "window.autoScale": "प्रयोगकर्ता इन्टरफेसले स्वचालित रूपमा फन्ट साइजसँग मापन गरेमा सही संकेत गर्नुहोस्।",
       "window.zoomLevel": {

@@ -1,4 +1,5 @@
 import { nls } from '@theia/core/lib/common/nls';
+import { FQBN } from 'fqbn';
 import type { MaybePromise } from '@theia/core/lib/common/types';
 import type URI from '@theia/core/lib/common/uri';
 import {
@@ -66,7 +67,10 @@ export interface BoardsService
     skipPostInstall?: boolean;
   }): Promise<void>;
   getDetectedPorts(): Promise<DetectedPorts>;
-  getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
+  getBoardDetails(options: {
+    fqbn: string;
+    forceRefresh?: boolean;
+  }): Promise<BoardDetails | undefined>;
   getBoardPackage(options: {
     id: string /* TODO: change to PlatformIdentifier type? */;
   }): Promise<BoardsPackage | undefined>;
@@ -75,6 +79,9 @@ export interface BoardsService
   }): Promise<BoardsPackage | undefined>;
   searchBoards({ query }: { query?: string }): Promise<BoardWithPackage[]>;
   getInstalledBoards(): Promise<BoardWithPackage[]>;
+  /**
+   * Returns with all installed platforms including the manually installed ones.
+   */
   getInstalledPlatforms(): Promise<BoardsPackage[]>;
   getBoardUserFields(options: {
     fqbn: string;
@@ -594,12 +601,8 @@ export function assertSanitizedFqbn(fqbn: string): void {
  * `VENDOR:ARCHITECTURE:BOARD_ID` format.
  * See the details of the `{build.fqbn}` entry in the [specs](https://arduino.github.io/arduino-cli/latest/platform-specification/#global-predefined-properties).
  */
-export function sanitizeFqbn(fqbn: string | undefined): string | undefined {
-  if (!fqbn) {
-    return undefined;
-  }
-  const [vendor, arch, id] = fqbn.split(':');
-  return `${vendor}:${arch}:${id}`;
+export function sanitizeFqbn(fqbn: string): string {
+  return new FQBN(fqbn).sanitize().toString();
 }
 
 export type PlatformIdentifier = Readonly<{ vendorId: string; arch: string }>;
@@ -756,8 +759,8 @@ export function boardIdentifierEquals(
     return false; // TODO: This a strict now. Maybe compare name in the future.
   }
   if (left.fqbn && right.fqbn) {
-    const leftFqbn = options.looseFqbn ? sanitizeFqbn(left.fqbn) : left.fqbn;
-    const rightFqbn = options.looseFqbn ? sanitizeFqbn(right.fqbn) : right.fqbn;
+    const leftFqbn = new FQBN(left.fqbn).toString(options.looseFqbn);
+    const rightFqbn = new FQBN(right.fqbn).toString(options.looseFqbn);
     return leftFqbn === rightFqbn;
   }
   // No more Genuino hack.

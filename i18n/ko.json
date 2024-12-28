@@ -13,7 +13,8 @@
     "board": {
       "board": "보드{0}",
       "boardConfigDialogTitle": "보드 및 포트 선택",
-      "boardInfo": "보드정보",
+      "boardDataReloaded": "Board data reloaded.",
+      "boardInfo": "보드 정보",
       "boards": "boards",
       "configDialog1": "스케치를 업로드할 보드 및 포트를 선택",
       "configDialog2": "보드를 선택하면 컴파일은 가능하지만, 스케치를 업로드 할 수 없습니다.",
@@ -31,10 +32,12 @@
       "port": "포트{0}",
       "ports": "ports",
       "programmer": "프로그래머",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "나중에 선택",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "보드 검색",
       "selectBoard": "보드 선택",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "보드 정보를 얻으려면 포트를 선택하십시오.",
       "showAllAvailablePorts": "활성화된 사용 가능한 모든 포트를 표시합니다.",
       "showAllPorts": "모든 포트 보이기",
@@ -152,7 +155,8 @@
       "serialMonitor": "시리얼 모니터",
       "type": "Type",
       "unknown": "알 수 없음",
-      "updateable": "업데이트 가능함"
+      "updateable": "업데이트 가능함",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "컴파일 오류: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}'에 대한 플랫폼이 설치되어 있지 않습니다",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "디버깅 최적화",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "키워드 입력",
       "privacyPolicy": "개인정보 정책",
       "reference": "참조",
-      "search": "on lingzhilab.com 에서 검색",
+      "search": "on Arduino.cc 에서 검색",
       "troubleshooting": "문제 해결",
-      "visit": "lingzhilab.com 방문"
+      "visit": "Arduino.cc 방문"
     },
     "ide-updater": {
       "checkForUpdates": "Arduino IDE 업데이트 확인",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "클라우드 스케치를 pulling 전에 사용자에게 경고해야 하는 경우 True입니다. 기본값은 true입니다.",
       "cloud.push.warn": "클라우드 스케치를 pushing 전에 사용자에게 경고해야 하는 경우 True입니다. 기본값은 true입니다.",
       "cloud.pushpublic.warn": "공개 스케치를 클라우드로 pushing 전에 사용자에게 경고해야 하는 경우 True입니다.기본값은 true입니다.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "컴파일",
       "compile.experimental": "IDE가 여러 컴파일러 오류를 처리해야 하는 경우 True입니다.기본적으로 False입니다.",
@@ -411,7 +415,9 @@
       "survey.notification": "설문조사를 사용할 수 있는 경우 사용자에게 알림을 보내야 하는 경우 True입니다. 기본은 True입니다.",
       "unofficialBoardSupport": "비공식 보드 지원 URL 목록을 보려면 클릭하십시오.",
       "upload": "업로드",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "자세한 업로드 출력의 경우 True이고 기본적으로 False입니다.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "업로드 후 코드확인",
       "window.autoScale": "사용자 인터페이스가 글꼴 크기에 따라 자동으로 조정되는 경우 True입니다.",
       "window.zoomLevel": {

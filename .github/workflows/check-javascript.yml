@@ -1,0 +1,88 @@
+# Source: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/check-javascript-task.md
+name: Check JavaScript
+
+env:
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: 18.17
+
+# See: https://docs.github.com/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
+on:
+  create:
+  push:
+    paths:
+      - '.github/workflows/check-javascript.ya?ml'
+      - '**/.eslintignore'
+      - '**/.eslintrc*'
+      - '**/.npmrc'
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+      - '**.jsx?'
+  pull_request:
+    paths:
+      - '.github/workflows/check-javascript.ya?ml'
+      - '**/.eslintignore'
+      - '**/.eslintrc*'
+      - '**/.npmrc'
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+      - '**.jsx?'
+  workflow_dispatch:
+  repository_dispatch:
+
+jobs:
+  run-determination:
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      result: ${{ steps.determination.outputs.result }}
+    steps:
+      - name: Determine if the rest of the workflow should run
+        id: determination
+        run: |
+          RELEASE_BRANCH_REGEX="refs/heads/[0-9]+.[0-9]+.x"
+          # The `create` event trigger doesn't support `branches` filters, so it's necessary to use Bash instead.
+          if [[
+            "${{ github.event_name }}" != "create" ||
+            "${{ github.ref }}" =~ $RELEASE_BRANCH_REGEX
+          ]]; then
+            # Run the other jobs.
+            RESULT="true"
+          else
+            # There is no need to run the other jobs.
+            RESULT="false"
+          fi
+
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+
+  check:
+    needs: run-determination
+    if: needs.run-determination.outputs.result == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: yarn
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install npm package dependencies
+        env:
+          # Avoid failure of @vscode/ripgrep installation due to GitHub API rate limiting:
+          # https://github.com/microsoft/vscode-ripgrep#github-api-limit-note
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          yarn install
+
+      - name: Lint
+        run: |
+          yarn \
+            --cwd arduino-ide-extension \
+            lint

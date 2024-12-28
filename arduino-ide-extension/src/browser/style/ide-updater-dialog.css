@@ -28,6 +28,40 @@
     min-width: 0;
 }
 
+.ide-updater-dialog--footer {
+    display: inline-block;
+    margin-top: -16px;
+    padding: 12px 0 24px 0;
+    border-top: 1px solid var(--theia-editorWidget-border);
+}
+
+.ide-updater-dialog--footer-content {
+    float: right;
+}
+
+.ide-updater-dialog--footer-link {
+    display: inline-block;
+    color: var(--theia-textLink-foreground);
+    font-weight: 500;
+    line-height: 13px;
+}
+
+.ide-updater-dialog--footer-link:hover {
+    color: var(--theia-textLink-foreground);
+    cursor: pointer;
+}
+
+.ide-updater-dialog--footer-link-icon {
+    display: inline-block;
+    -webkit-mask: url(../icons/link-open-icon.svg) center no-repeat;
+    background-color: var(--theia-textLink-foreground);
+    height: 12px;
+    width: 12px;
+    cursor: pointer;
+    transform: translateY(2px);
+    margin-left: 4px;
+}
+
 .ide-updater-dialog .changelog {
     color: var(--theia-editor-foreground);
     background-color: var(--theia-editor-background);
@@ -100,6 +134,7 @@
     max-height: 100%;
     overflow: hidden;
     display: flex;
+    padding-bottom: 20px !important;
 }
 
 #ide-updater-dialog-container .skip-version-button {

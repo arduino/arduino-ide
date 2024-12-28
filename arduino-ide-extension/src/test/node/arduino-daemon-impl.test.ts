@@ -21,7 +21,7 @@ class SilentArduinoDaemonImpl extends ArduinoDaemonImpl {
 
   override async spawnDaemonProcess(): Promise<{
     daemon: ChildProcess;
-    port: string;
+    port: number;
   }> {
     return super.spawnDaemonProcess();
   }

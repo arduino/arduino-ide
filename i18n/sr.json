@@ -13,6 +13,7 @@
     "board": {
       "board": "Плоча{0}",
       "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Информације о плочи",
       "boards": "boards",
       "configDialog1": "Одабери и плочу и порт ако желиш да спустиш рад.",
@@ -31,10 +32,12 @@
       "port": "Порт{0}",
       "ports": "ports",
       "programmer": "Програмер",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Одабери поново касније",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Одабери плочу",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Одабери порт да добијеш информације о плочи",
       "showAllAvailablePorts": "Приказује све доступне портове када је укључено",
       "showAllPorts": "Show all ports",
@@ -152,7 +155,8 @@
       "serialMonitor": "Монитор серијског порта",
       "type": "Type",
       "unknown": "Непознато",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Грешка приликом превођења: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "'{0}' не подржава отклањање грешака",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Платформа није инсталирана за '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Оптимизовано за отклањање грешака",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Унеси кључну ријеч",
       "privacyPolicy": "Политика приватности",
       "reference": "Референца",
-      "search": "Потражи на lingzhilab.com",
+      "search": "Потражи на Arduino.cc",
       "troubleshooting": "Рјешавање проблема",
-      "visit": "Посјети lingzhilab.com"
+      "visit": "Посјети Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Check for Arduino IDE Updates",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "преведи",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
@@ -411,7 +415,9 @@
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "спусти",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "True for verbose upload output. False by default.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Провјери код након спуштања",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
       "window.zoomLevel": {

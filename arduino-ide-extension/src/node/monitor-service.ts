@@ -23,8 +23,7 @@ import {
 import {
   EnumerateMonitorPortSettingsRequest,
   EnumerateMonitorPortSettingsResponse,
-  MonitorPortConfiguration,
-  MonitorPortSetting,
+  MonitorPortOpenRequest,
   MonitorRequest,
   MonitorResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/monitor_pb';
@@ -39,6 +38,10 @@ import {
 } from '@theia/core/lib/common/promise-util';
 import { MonitorServiceFactoryOptions } from './monitor-service-factory';
 import { ServiceError } from './service-error';
+import {
+  MonitorPortConfiguration,
+  MonitorPortSetting,
+} from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 
 export const MonitorServiceName = 'monitor-service';
 type DuplexHandlerKeys =
@@ -230,16 +233,16 @@ export class MonitorService extends CoreClientAware implements Disposable {
       const coreClient = await this.coreClient;
 
       const { instance } = coreClient;
-      const monitorRequest = new MonitorRequest();
-      monitorRequest.setInstance(instance);
+      const openPortRequest = new MonitorPortOpenRequest();
+      openPortRequest.setInstance(instance);
       if (this.board?.fqbn) {
-        monitorRequest.setFqbn(this.board.fqbn);
+        openPortRequest.setFqbn(this.board.fqbn);
       }
       if (this.port?.address && this.port?.protocol) {
         const rpcPort = new RpcPort();
         rpcPort.setAddress(this.port.address);
         rpcPort.setProtocol(this.port.protocol);
-        monitorRequest.setPort(rpcPort);
+        openPortRequest.setPort(rpcPort);
       }
       const config = new MonitorPortConfiguration();
       for (const id in this.settings.pluggableMonitorSettings) {
@@ -248,9 +251,9 @@ export class MonitorService extends CoreClientAware implements Disposable {
         s.setValue(this.settings.pluggableMonitorSettings[id].selectedValue);
         config.addSettings(s);
       }
-      monitorRequest.setPortConfiguration(config);
+      openPortRequest.setPortConfiguration(config);
 
-      await this.pollWriteToStream(monitorRequest);
+      await this.pollWriteToStream(openPortRequest);
       // Only store the config, if the monitor has successfully started.
       this.currentPortConfigSnapshot = MonitorPortConfiguration.toObject(
         false,
@@ -344,7 +347,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     }
   }
 
-  pollWriteToStream(request: MonitorRequest): Promise<void> {
+  pollWriteToStream(request: MonitorPortOpenRequest): Promise<void> {
     const createWriteToStreamExecutor =
       (duplex: ClientDuplexStream<MonitorRequest, MonitorResponse>) =>
         (resolve: () => void, reject: (reason?: unknown) => void) => {
@@ -380,7 +383,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
           ];
 
           this.setDuplexHandlers(duplex, resolvingDuplexHandlers);
-          duplex.write(request);
+          duplex.write(new MonitorRequest().setOpenRequest(request));
         };
 
     return Promise.race([
@@ -409,6 +412,8 @@ export class MonitorService extends CoreClientAware implements Disposable {
     ]) as Promise<unknown> as Promise<void>;
   }
 
+  private endingDuplex: Promise<void> | undefined;
+
   /**
    * Pauses the currently running monitor, it still closes the gRPC connection
    * with the underlying monitor process but it doesn't stop the message handlers
@@ -418,29 +423,43 @@ export class MonitorService extends CoreClientAware implements Disposable {
    * @returns
    */
   async pause(): Promise<void> {
-    return new Promise(async (resolve) => {
-      if (!this.duplex) {
-        this.logger.warn(
-          `monitor to ${this.port?.address} using ${this.port?.protocol} already stopped`
-        );
-        return resolve();
-      }
-      // It's enough to close the connection with the client
-      // to stop the monitor process
-      this.duplex.end();
-      this.logger.info(
-        `stopped monitor to ${this.port?.address} using ${this.port?.protocol}`
+    const duplex = this.duplex;
+    if (!duplex) {
+      this.logger.warn(
+        `monitor to ${this.port?.address} using ${this.port?.protocol} already stopped`
       );
+      return;
+    }
+    if (this.endingDuplex) {
+      return this.endingDuplex;
+    }
+    const deferredEnd = new Deferred<void>();
+    this.endingDuplex = deferredEnd.promise;
 
-      this.duplex.on('end', resolve);
+    // to terminate the monitor connection, send a close request, and wait for the end event
+    duplex.once('end', () => {
+      deferredEnd.resolve();
     });
+    try {
+      await new Promise((resolve) =>
+        duplex.write(new MonitorRequest().setClose(true), resolve)
+      );
+      await this.endingDuplex;
+    } finally {
+      this.endingDuplex = undefined;
+    }
+    // Sanity check
+    // Duplexes are allowed to be half open, check whether the monitor server (the readable) has ended
+    if (!duplex.readableEnded) {
+      throw new Error('Could not end the monitor connection');
+    }
   }
 
   /**
    * Stop the monitor currently running
    */
   async stop(): Promise<void> {
-    return this.pause().finally(this.stopMessagesHandlers.bind(this));
+    return this.pause().finally(() => this.stopMessagesHandlers());
   }
 
   /**
@@ -454,11 +473,7 @@ export class MonitorService extends CoreClientAware implements Disposable {
     if (!this.duplex) {
       throw createNotConnectedError(this.port);
     }
-    const coreClient = await this.coreClient;
-    const { instance } = coreClient;
-
     const req = new MonitorRequest();
-    req.setInstance(instance);
     req.setTxData(new TextEncoder().encode(message));
     return new Promise<void>((resolve, reject) => {
       if (this.duplex) {
@@ -588,17 +603,13 @@ export class MonitorService extends CoreClientAware implements Disposable {
       return;
     }
 
-    const coreClient = await this.coreClient;
-    const { instance } = coreClient;
-
     this.logger.info(
       `Sending monitor request with new port configuration: ${JSON.stringify(
         MonitorPortConfiguration.toObject(false, diffConfig)
       )}`
     );
     const req = new MonitorRequest();
-    req.setInstance(instance);
-    req.setPortConfiguration(diffConfig);
+    req.setUpdatedConfiguration(diffConfig);
     this.duplex.write(req);
   }
 

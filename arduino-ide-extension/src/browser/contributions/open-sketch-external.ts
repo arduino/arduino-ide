@@ -1,4 +1,4 @@
-import { injectable } from '@theia/core/shared/inversify';
+simport { injectable } from '@theia/core/shared/inversify';
 import URI from '@theia/core/lib/common/uri';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import {

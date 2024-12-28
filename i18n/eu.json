@@ -13,6 +13,7 @@
     "board": {
       "board": "{0} plaka",
       "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Plakaren informazioa",
       "boards": "boards",
       "configDialog1": "Hautatu plaka bat eta ataka bat programa bat kargatu nahi baduzu.",
@@ -31,10 +32,12 @@
       "port": "{0} ataka",
       "ports": "ports",
       "programmer": "Programatzailea",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Hautatu berriz geroago",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Search board",
       "selectBoard": "Hautatu plaka",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Hautatu ataka bat plakaren informazioa eskuratzeko.",
       "showAllAvailablePorts": "Gaituta dagoenean erabilgarri dauden ataka guztiak erakusten ditu",
       "showAllPorts": "Show all ports",
@@ -152,7 +155,8 @@
       "serialMonitor": "Serieko monitorea",
       "type": "Type",
       "unknown": "Ezezaguna",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Konpilazio-errorea: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Ez dauka arazketarako euskarririk: '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Plataforma ez dago instalatuta honentzat: '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimizatu arazketarako",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Idatzi gako-hitz bat",
       "privacyPolicy": "Pribatutasun politika",
       "reference": "Erreferentzia",
-      "search": "Bilatu lingzhilab.com-n",
+      "search": "Bilatu Arduino.cc-n",
       "troubleshooting": "Arazoak konpontzen",
-      "visit": "Bisitatu lingzhilab.com"
+      "visit": "Bisitatu Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Check for Arduino IDE Updates",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeitik kargatu aurretik. Lehenetsia egia da.",
       "cloud.push.warn": "Egia bada erabiltzaileek abisua jasoko dute programa bat hodeian gorde aurretik. Lehenetsia egia da.",
       "cloud.pushpublic.warn": "Egia bada erabiltzaileek abisua jasoko dute programa publiko bat hodeian gorde aurretik. Lehenetsia egia da.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "Zerbitzari batean programak gorde eta kargatzeko amaiera-puntua. Lehenetsia Arduino Cloud API da.",
       "compile": "konpilazioa",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
@@ -411,7 +415,9 @@
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Egin klik ofizialak ez diren plaken laguntza-URL zerrenda ikusteko",
       "upload": "karga",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "Egia kargaren irteera xehatua izateko. Lehenetsia Gezurra.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Egiaztatu kodea kargatu ondoren",
       "window.autoScale": "Egia erabiltzaile interfazea letra-tamainarekin automatikoki eskalatzen bada.",
       "window.zoomLevel": {

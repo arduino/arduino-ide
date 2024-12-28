@@ -6,15 +6,16 @@
 
 import * as grpc from "@grpc/grpc-js";
 import * as cc_arduino_cli_commands_v1_commands_pb from "../../../../../cc/arduino/cli/commands/v1/commands_pb";
-import * as google_rpc_status_pb from "../../../../../google/rpc/status_pb";
-import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_board_pb from "../../../../../cc/arduino/cli/commands/v1/board_pb";
+import * as cc_arduino_cli_commands_v1_common_pb from "../../../../../cc/arduino/cli/commands/v1/common_pb";
 import * as cc_arduino_cli_commands_v1_compile_pb from "../../../../../cc/arduino/cli/commands/v1/compile_pb";
 import * as cc_arduino_cli_commands_v1_core_pb from "../../../../../cc/arduino/cli/commands/v1/core_pb";
 import * as cc_arduino_cli_commands_v1_debug_pb from "../../../../../cc/arduino/cli/commands/v1/debug_pb";
-import * as cc_arduino_cli_commands_v1_monitor_pb from "../../../../../cc/arduino/cli/commands/v1/monitor_pb";
-import * as cc_arduino_cli_commands_v1_upload_pb from "../../../../../cc/arduino/cli/commands/v1/upload_pb";
 import * as cc_arduino_cli_commands_v1_lib_pb from "../../../../../cc/arduino/cli/commands/v1/lib_pb";
+import * as cc_arduino_cli_commands_v1_monitor_pb from "../../../../../cc/arduino/cli/commands/v1/monitor_pb";
+import * as cc_arduino_cli_commands_v1_settings_pb from "../../../../../cc/arduino/cli/commands/v1/settings_pb";
+import * as cc_arduino_cli_commands_v1_upload_pb from "../../../../../cc/arduino/cli/commands/v1/upload_pb";
+import * as google_rpc_status_pb from "../../../../../google/rpc/status_pb";
 
 interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
     create: IArduinoCoreServiceService_ICreate;
@@ -43,7 +44,6 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     listProgrammersAvailableForUpload: IArduinoCoreServiceService_IListProgrammersAvailableForUpload;
     burnBootloader: IArduinoCoreServiceService_IBurnBootloader;
     platformSearch: IArduinoCoreServiceService_IPlatformSearch;
-    platformList: IArduinoCoreServiceService_IPlatformList;
     libraryDownload: IArduinoCoreServiceService_ILibraryDownload;
     libraryInstall: IArduinoCoreServiceService_ILibraryInstall;
     libraryUpgrade: IArduinoCoreServiceService_ILibraryUpgrade;
@@ -59,6 +59,14 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     debug: IArduinoCoreServiceService_IDebug;
     isDebugSupported: IArduinoCoreServiceService_IIsDebugSupported;
     getDebugConfig: IArduinoCoreServiceService_IGetDebugConfig;
+    checkForArduinoCLIUpdates: IArduinoCoreServiceService_ICheckForArduinoCLIUpdates;
+    cleanDownloadCacheDirectory: IArduinoCoreServiceService_ICleanDownloadCacheDirectory;
+    configurationSave: IArduinoCoreServiceService_IConfigurationSave;
+    configurationOpen: IArduinoCoreServiceService_IConfigurationOpen;
+    configurationGet: IArduinoCoreServiceService_IConfigurationGet;
+    settingsEnumerate: IArduinoCoreServiceService_ISettingsEnumerate;
+    settingsGetValue: IArduinoCoreServiceService_ISettingsGetValue;
+    settingsSetValue: IArduinoCoreServiceService_ISettingsSetValue;
 }
 
 interface IArduinoCoreServiceService_ICreate extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.CreateRequest, cc_arduino_cli_commands_v1_commands_pb.CreateResponse> {
@@ -295,15 +303,6 @@ interface IArduinoCoreServiceService_IPlatformSearch extends grpc.MethodDefiniti
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse>;
 }
-interface IArduinoCoreServiceService_IPlatformList extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, cc_arduino_cli_commands_v1_core_pb.PlatformListResponse> {
-    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/PlatformList";
-    requestStream: false;
-    responseStream: false;
-    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_core_pb.PlatformListRequest>;
-    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_core_pb.PlatformListRequest>;
-    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_core_pb.PlatformListResponse>;
-    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_core_pb.PlatformListResponse>;
-}
 interface IArduinoCoreServiceService_ILibraryDownload extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadRequest, cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/LibraryDownload";
     requestStream: false;
@@ -439,6 +438,78 @@ interface IArduinoCoreServiceService_IGetDebugConfig extends grpc.MethodDefiniti
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse>;
 }
+interface IArduinoCoreServiceService_ICheckForArduinoCLIUpdates extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/CheckForArduinoCLIUpdates";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse>;
+}
+interface IArduinoCoreServiceService_ICleanDownloadCacheDirectory extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/CleanDownloadCacheDirectory";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse>;
+}
+interface IArduinoCoreServiceService_IConfigurationSave extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ConfigurationSave";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse>;
+}
+interface IArduinoCoreServiceService_IConfigurationOpen extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ConfigurationOpen";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse>;
+}
+interface IArduinoCoreServiceService_IConfigurationGet extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ConfigurationGet";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse>;
+}
+interface IArduinoCoreServiceService_ISettingsEnumerate extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/SettingsEnumerate";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse>;
+}
+interface IArduinoCoreServiceService_ISettingsGetValue extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/SettingsGetValue";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse>;
+}
+interface IArduinoCoreServiceService_ISettingsSetValue extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/SettingsSetValue";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse>;
+}
 
 export const ArduinoCoreServiceService: IArduinoCoreServiceService;
 
@@ -469,7 +540,6 @@ export interface IArduinoCoreServiceServer extends grpc.UntypedServiceImplementa
     listProgrammersAvailableForUpload: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_upload_pb.ListProgrammersAvailableForUploadRequest, cc_arduino_cli_commands_v1_upload_pb.ListProgrammersAvailableForUploadResponse>;
     burnBootloader: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_upload_pb.BurnBootloaderRequest, cc_arduino_cli_commands_v1_upload_pb.BurnBootloaderResponse>;
     platformSearch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse>;
-    platformList: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, cc_arduino_cli_commands_v1_core_pb.PlatformListResponse>;
     libraryDownload: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadRequest, cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadResponse>;
     libraryInstall: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_lib_pb.LibraryInstallRequest, cc_arduino_cli_commands_v1_lib_pb.LibraryInstallResponse>;
     libraryUpgrade: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeRequest, cc_arduino_cli_commands_v1_lib_pb.LibraryUpgradeResponse>;
@@ -485,6 +555,14 @@ export interface IArduinoCoreServiceServer extends grpc.UntypedServiceImplementa
     debug: grpc.handleBidiStreamingCall<cc_arduino_cli_commands_v1_debug_pb.DebugRequest, cc_arduino_cli_commands_v1_debug_pb.DebugResponse>;
     isDebugSupported: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_debug_pb.IsDebugSupportedRequest, cc_arduino_cli_commands_v1_debug_pb.IsDebugSupportedResponse>;
     getDebugConfig: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse>;
+    checkForArduinoCLIUpdates: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse>;
+    cleanDownloadCacheDirectory: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse>;
+    configurationSave: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse>;
+    configurationOpen: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse>;
+    configurationGet: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse>;
+    settingsEnumerate: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse>;
+    settingsGetValue: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse>;
+    settingsSetValue: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse>;
 }
 
 export interface IArduinoCoreServiceClient {
@@ -554,9 +632,6 @@ export interface IArduinoCoreServiceClient {
     platformSearch(request: cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse) => void): grpc.ClientUnaryCall;
     platformSearch(request: cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse) => void): grpc.ClientUnaryCall;
     platformSearch(request: cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse) => void): grpc.ClientUnaryCall;
-    platformList(request: cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformListResponse) => void): grpc.ClientUnaryCall;
-    platformList(request: cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformListResponse) => void): grpc.ClientUnaryCall;
-    platformList(request: cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformListResponse) => void): grpc.ClientUnaryCall;
     libraryDownload(request: cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadResponse>;
     libraryDownload(request: cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadResponse>;
     libraryInstall(request: cc_arduino_cli_commands_v1_lib_pb.LibraryInstallRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_lib_pb.LibraryInstallResponse>;
@@ -595,6 +670,30 @@ export interface IArduinoCoreServiceClient {
     getDebugConfig(request: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse) => void): grpc.ClientUnaryCall;
     getDebugConfig(request: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse) => void): grpc.ClientUnaryCall;
     getDebugConfig(request: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse) => void): grpc.ClientUnaryCall;
+    checkForArduinoCLIUpdates(request: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse) => void): grpc.ClientUnaryCall;
+    checkForArduinoCLIUpdates(request: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse) => void): grpc.ClientUnaryCall;
+    checkForArduinoCLIUpdates(request: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse) => void): grpc.ClientUnaryCall;
+    cleanDownloadCacheDirectory(request: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse) => void): grpc.ClientUnaryCall;
+    cleanDownloadCacheDirectory(request: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse) => void): grpc.ClientUnaryCall;
+    cleanDownloadCacheDirectory(request: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse) => void): grpc.ClientUnaryCall;
+    configurationSave(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse) => void): grpc.ClientUnaryCall;
+    configurationSave(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse) => void): grpc.ClientUnaryCall;
+    configurationSave(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse) => void): grpc.ClientUnaryCall;
+    configurationOpen(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse) => void): grpc.ClientUnaryCall;
+    configurationOpen(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse) => void): grpc.ClientUnaryCall;
+    configurationOpen(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse) => void): grpc.ClientUnaryCall;
+    configurationGet(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse) => void): grpc.ClientUnaryCall;
+    configurationGet(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse) => void): grpc.ClientUnaryCall;
+    configurationGet(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse) => void): grpc.ClientUnaryCall;
+    settingsEnumerate(request: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse) => void): grpc.ClientUnaryCall;
+    settingsEnumerate(request: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse) => void): grpc.ClientUnaryCall;
+    settingsEnumerate(request: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse) => void): grpc.ClientUnaryCall;
+    settingsGetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse) => void): grpc.ClientUnaryCall;
+    settingsGetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse) => void): grpc.ClientUnaryCall;
+    settingsGetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse) => void): grpc.ClientUnaryCall;
+    settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
+    settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
+    settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCoreServiceClient {
@@ -665,9 +764,6 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public platformSearch(request: cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse) => void): grpc.ClientUnaryCall;
     public platformSearch(request: cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse) => void): grpc.ClientUnaryCall;
     public platformSearch(request: cc_arduino_cli_commands_v1_core_pb.PlatformSearchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformSearchResponse) => void): grpc.ClientUnaryCall;
-    public platformList(request: cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformListResponse) => void): grpc.ClientUnaryCall;
-    public platformList(request: cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformListResponse) => void): grpc.ClientUnaryCall;
-    public platformList(request: cc_arduino_cli_commands_v1_core_pb.PlatformListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_core_pb.PlatformListResponse) => void): grpc.ClientUnaryCall;
     public libraryDownload(request: cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadResponse>;
     public libraryDownload(request: cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_lib_pb.LibraryDownloadResponse>;
     public libraryInstall(request: cc_arduino_cli_commands_v1_lib_pb.LibraryInstallRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_lib_pb.LibraryInstallResponse>;
@@ -704,4 +800,28 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public getDebugConfig(request: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse) => void): grpc.ClientUnaryCall;
     public getDebugConfig(request: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse) => void): grpc.ClientUnaryCall;
     public getDebugConfig(request: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_debug_pb.GetDebugConfigResponse) => void): grpc.ClientUnaryCall;
+    public checkForArduinoCLIUpdates(request: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse) => void): grpc.ClientUnaryCall;
+    public checkForArduinoCLIUpdates(request: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse) => void): grpc.ClientUnaryCall;
+    public checkForArduinoCLIUpdates(request: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CheckForArduinoCLIUpdatesResponse) => void): grpc.ClientUnaryCall;
+    public cleanDownloadCacheDirectory(request: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse) => void): grpc.ClientUnaryCall;
+    public cleanDownloadCacheDirectory(request: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse) => void): grpc.ClientUnaryCall;
+    public cleanDownloadCacheDirectory(request: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.CleanDownloadCacheDirectoryResponse) => void): grpc.ClientUnaryCall;
+    public configurationSave(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse) => void): grpc.ClientUnaryCall;
+    public configurationSave(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse) => void): grpc.ClientUnaryCall;
+    public configurationSave(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationSaveResponse) => void): grpc.ClientUnaryCall;
+    public configurationOpen(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse) => void): grpc.ClientUnaryCall;
+    public configurationOpen(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse) => void): grpc.ClientUnaryCall;
+    public configurationOpen(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationOpenResponse) => void): grpc.ClientUnaryCall;
+    public configurationGet(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse) => void): grpc.ClientUnaryCall;
+    public configurationGet(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse) => void): grpc.ClientUnaryCall;
+    public configurationGet(request: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.ConfigurationGetResponse) => void): grpc.ClientUnaryCall;
+    public settingsEnumerate(request: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse) => void): grpc.ClientUnaryCall;
+    public settingsEnumerate(request: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse) => void): grpc.ClientUnaryCall;
+    public settingsEnumerate(request: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse) => void): grpc.ClientUnaryCall;
+    public settingsGetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse) => void): grpc.ClientUnaryCall;
+    public settingsGetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse) => void): grpc.ClientUnaryCall;
+    public settingsGetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse) => void): grpc.ClientUnaryCall;
+    public settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
+    public settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
+    public settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
 }

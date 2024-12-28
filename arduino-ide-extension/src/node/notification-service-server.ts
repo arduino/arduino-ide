@@ -15,8 +15,7 @@ import type {
 
 @injectable()
 export class NotificationServiceServerImpl
-  implements NotificationServiceServer
-{
+  implements NotificationServiceServer {
   private readonly clients: NotificationServiceClient[] = [];
 
   notifyDidReinitialize(): void {
@@ -43,7 +42,7 @@ export class NotificationServiceServerImpl
     this.clients.forEach((client) => client.notifyIndexUpdateDidFail(params));
   }
 
-  notifyDaemonDidStart(port: string): void {
+  notifyDaemonDidStart(port: number): void {
     this.clients.forEach((client) => client.notifyDaemonDidStart(port));
   }
 

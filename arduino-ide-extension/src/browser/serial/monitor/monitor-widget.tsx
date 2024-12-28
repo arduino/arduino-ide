@@ -58,8 +58,6 @@ export class MonitorWidget extends ReactWidget {
 
   private readonly toDisposeOnReset: DisposableCollection;
 
-  public a = (<div>nihao</div>);
-
   constructor() {
     super();
     this.id = MonitorWidget.ID;

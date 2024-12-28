@@ -21,12 +21,8 @@ export const SelectManually = '手动选择';
 
 export const serialMonitorWidgetLabel = '串口监视器';
 
-export const noBoardSelected = nls.localize(
-  'arduino/common/noBoardSelected',
-  'No board selected'
-);
+export const noBoardSelected = '未选板';
 
-export const noSketchOpened = nls.localize(
-  'arduino/common/noSketchOpened',
-  'No sketch opened'
-);
+export const noSketchOpened = '没有草图打开';
+
+export const userAbort = '用户中断';

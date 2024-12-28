@@ -13,6 +13,7 @@
     "board": {
       "board": "{0} 開發板",
       "boardConfigDialogTitle": "選擇其他開發板及連接埠",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "開發板資訊",
       "boards": "開發板",
       "configDialog1": "若要上傳 Sketch 請選擇開發板及連接埠",
@@ -31,10 +32,12 @@
       "port": "連接埠: {0}",
       "ports": "連接埠",
       "programmer": "燒錄器",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "請稍後再選擇",
       "revertBoardsConfig": "使用在  '{1}' 發現的 '{0}'",
       "searchBoard": "搜尋開發板",
       "selectBoard": "選擇開發版",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "請選定連接埠以便取得開發板的資訊",
       "showAllAvailablePorts": "當開啟時，顯示所有可用的埠",
       "showAllPorts": "顯示所有連接埠",
@@ -152,7 +155,8 @@
       "serialMonitor": "序列埠監控窗",
       "type": "類型",
       "unknown": "未知",
-      "updateable": "可更新"
+      "updateable": "可更新",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "編譯錯誤:{0} "
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "'{0}' 不支援除錯功能。",
       "getDebugInfo": "取得除錯資訊...",
       "noPlatformInstalledFor": "平台未安裝給'{0}'",
-      "noProgrammerSelectedFor": "未選取給 '{0}' 用的燒錄器",
       "optimizeForDebugging": "除錯最佳化",
       "sketchIsNotCompiled": "Sketch '{0}' 在除錯前必須已驗證過。請先驗證 sketch 後再除錯。要現在驗證 sketch 嗎？"
     },
@@ -264,9 +267,9 @@
       "keyword": "輸入關鍵字",
       "privacyPolicy": "隱私政策",
       "reference": "參考文件",
-      "search": "在 lingzhilab.com 搜尋",
+      "search": "在 Arduino.cc 搜尋",
       "troubleshooting": "故障排除",
-      "visit": "造訪 lingzhilab.com"
+      "visit": "造訪 Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "檢查 Arduino IDE 更新",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "讀取雲端 sketch 前會警告使用者。預設: 開啟。",
       "cloud.push.warn": "推送雲端 sketch 前會警告使用者。預設: 開啟。",
       "cloud.pushpublic.warn": "推送公開的 sketch 到雲端前會警告使用者。預設: 開啟。",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "用來從後台讀取或推送 sketch 的端點。預設: Arduino 雲 API。",
       "compile": "編譯",
       "compile.experimental": "IDE 處理多個編譯器錯誤。 預設: 關閉",
@@ -411,7 +415,9 @@
       "survey.notification": "有新問卷時會通知使用者, 預設為: true。",
       "unofficialBoardSupport": "點擊來取得非官方開發版的支援網址",
       "upload": "上傳",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "上傳時輸出的詳細資訊。預設: False",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "上傳後驗證程式碼",
       "window.autoScale": "使用者介面隨字體大小自動縮放。",
       "window.zoomLevel": {

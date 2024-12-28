@@ -127,6 +127,9 @@ export class SketchbookTreeModel extends FileTreeModel {
         if (preferenceName === 'arduino.sketchbook.showAllFiles') {
           this.updateRoot();
         }
+        if (preferenceName === 'arduino.cloud.sharedSpaceID') {
+          this.updateRoot();
+        }
       })
     );
 
@@ -262,11 +265,11 @@ export class SketchbookTreeModel extends FileTreeModel {
     const nodes = [...this.getNodesByUri(uri)];
     return nodes.length > 0
       ? nodes.reduce(
-          (
-            node1,
-            node2 // return the node closest to the workspace root
-          ) => (node1.id.length >= node2.id.length ? node1 : node2)
-        )
+        (
+          node1,
+          node2 // return the node closest to the workspace root
+        ) => (node1.id.length >= node2.id.length ? node1 : node2)
+      )
       : undefined;
   }
 

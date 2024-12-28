@@ -43,8 +43,7 @@
       "dependsOn": [
         "Watch Extension",
         "Watch App"
-      ],
-      "problemMatcher": []
+      ]
     }
   ]
 }

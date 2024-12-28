@@ -1,4 +1,5 @@
 import { ApplicationError } from '@theia/core/lib/common/application-error';
+import type { CancellationToken } from '@theia/core/lib/common/cancellation';
 import type {
   Location,
   Position,
@@ -6,7 +7,7 @@ import type {
 } from '@theia/core/shared/vscode-languageserver-protocol';
 import type { CompileSummary as ApiCompileSummary } from 'vscode-arduino-api';
 import type { BoardUserField, Installable } from '../../common/protocol/';
-import { isPortIdentifier, PortIdentifier, Programmer } from './boards-service';
+import { PortIdentifier, Programmer, isPortIdentifier } from './boards-service';
 import type { IndexUpdateSummary } from './notification-service';
 import type { Sketch } from './sketches-service';
 
@@ -69,6 +70,7 @@ export namespace CoreError {
     Upload: 4002,
     UploadUsingProgrammer: 4003,
     BurnBootloader: 4004,
+    UploadRequiresProgrammer: 4005,
   };
   export const VerifyFailed = declareCoreError(Codes.Verify);
   export const UploadFailed = declareCoreError(Codes.Upload);
@@ -76,6 +78,10 @@ export namespace CoreError {
     Codes.UploadUsingProgrammer
   );
   export const BurnBootloaderFailed = declareCoreError(Codes.BurnBootloader);
+  export const UploadRequiresProgrammer = declareCoreError(
+    Codes.UploadRequiresProgrammer
+  );
+
   export function is(
     error: unknown
   ): error is ApplicationError<number, ErrorLocation[]> {
@@ -161,9 +167,18 @@ export function isUploadResponse(arg: unknown): arg is UploadResponse {
 export const CoreServicePath = '/services/core-service';
 export const CoreService = Symbol('CoreService');
 export interface CoreService {
-  compile(options: CoreService.Options.Compile): Promise<void>;
-  upload(options: CoreService.Options.Upload): Promise<UploadResponse>;
-  burnBootloader(options: CoreService.Options.Bootloader): Promise<void>;
+  compile(
+    options: CoreService.Options.Compile,
+    cancellationToken?: CancellationToken
+  ): Promise<void>;
+  upload(
+    options: CoreService.Options.Upload,
+    cancellationToken?: CancellationToken
+  ): Promise<UploadResponse>;
+  burnBootloader(
+    options: CoreService.Options.Bootloader,
+    cancellationToken?: CancellationToken
+  ): Promise<void>;
   /**
    * Refreshes the underling core gRPC client for the Arduino CLI.
    */

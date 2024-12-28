@@ -1,0 +1,7 @@
+#version-welcome-dialog-container>.dialogBlock {
+    width: 546px;
+
+    .bold {
+        font-weight: bold;
+    }
+}

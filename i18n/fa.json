@@ -13,6 +13,7 @@
     "board": {
       "board": "بورد {0}",
       "boardConfigDialogTitle": "انتخاب یک بورد و پورت دیگر",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "مشخصات برد",
       "boards": "بردها",
       "configDialog1": "اگر می‌خواهید طرحی را آپلود کنید، هم یک تابلو و هم یک پورت انتخاب کنید.",
@@ -31,10 +32,12 @@
       "port": "پورت {0}",
       "ports": "پورت ها",
       "programmer": "Programmer",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "بعدا انتخاب کنید",
       "revertBoardsConfig": "استفاده از «{0}» پیدا شده در «{1}»",
       "searchBoard": "جستجوی بورد",
       "selectBoard": "انتخاب برد",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "لطفاً یک پورت را برای به دست آوردن اطلاعات هیئت مدیره انتخاب کنید.",
       "showAllAvailablePorts": "نمایش تمام پورت های موجود در صورت فعال بودن",
       "showAllPorts": "نمایش تمام پورت ها",
@@ -152,7 +155,8 @@
       "serialMonitor": "نمایشگر ترمینال سریال",
       "type": "نوع",
       "unknown": "نامعلوم",
-      "updateable": "قابل به روز رسانی"
+      "updateable": "قابل به روز رسانی",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "خطای کامپایل : {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "رفع خطا توسط {0} پشتیبانی نمی شود.",
       "getDebugInfo": "در حال دریافت اطلاعات اشکال زدایی...",
       "noPlatformInstalledFor": "دستگاه مورد نظر برای {0} نصب نشده است",
-      "noProgrammerSelectedFor": "برنامه‌نویسی برای \"{0}\" انتخاب نشده است.",
       "optimizeForDebugging": "بهینه کردن برای رفع خطا",
       "sketchIsNotCompiled": "طرح «{0}» باید قبل از شروع برای اشکال‌زدایی بازبینی شود. لطفاً طرح را بازبینی کنید و دوباره اشکال زدایی را شروع کنید. آیا می خواهید اکنون طرح را تأیید کنید؟"
     },
@@ -264,9 +267,9 @@
       "keyword": "کلید واژه را بنویسید",
       "privacyPolicy": "حریم خصوصی",
       "reference": "دستورالعمل",
-      "search": "جستجو در lingzhilab.com",
+      "search": "جستجو در Arduino.cc",
       "troubleshooting": "عیب یابی",
-      "visit": "بازدید از lingzhilab.com"
+      "visit": "بازدید از Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "به روز رسانی آردوینو IDE را بررسی کنید",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "اگر هشدار دادن به کاربران قبل از کشیدن یک طرح ابری درست می باشد ، پیش فرض ها صحیح است.",
       "cloud.push.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح ابری درست است پیش فرض ها درست می باشد",
       "cloud.pushpublic.warn": "اگر هشدار دادن به کاربران قبل از ارسال یک طرح عمومی به فضای درست می باشد پیش فرض ها درست است.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "نقطه ای برای ارسال و دریافت طرح ها استفاده می شود . به طور پیش فرض به رابط ابر آردوینو استفاده می کند.",
       "compile": "کامپایل",
       "compile.experimental": "درست است اگر IDE باید چندین خطای کامپایلر را مدیریت کند. به طور پیش فرض نادرست است",
@@ -411,7 +415,9 @@
       "survey.notification": "درست است اگر در صورت وجود نظرسنجی به کاربران اطلاع داده شود. به طور پیش فرض درست است.",
       "unofficialBoardSupport": "برای لیستی از آدرس های اینترنتی پشتیبانی هیئت مدیره غیررسمی کلیک کنید",
       "upload": "بارگذاری",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "برای خروجی آپلود پرمخاطب درست است. به طور پیش فرض نادرست است.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "تائید کد بعد از بارگذاری",
       "window.autoScale": "اگر رابط کاربری به طور خودکار با اندازه فونت تغییر کند درست است.",
       "window.zoomLevel": {

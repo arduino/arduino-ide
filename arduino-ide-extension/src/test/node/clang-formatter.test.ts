@@ -119,11 +119,10 @@ describe('clang-formatter', () => {
       styleArg: JSON.stringify({ [style.key]: style.value }),
     }))
     .map(({ value, styleArg }) =>
-      it(`should execute the formatter with a single ${
-        Array.isArray(value) ? 'array' : typeof value
-      } type style configuration value: ${styleArg}`, async () => {
-        await expectNoChanges(formatter, styleArg);
-      })
+      it(`should execute the formatter with a single ${Array.isArray(value) ? 'array' : typeof value
+        } type style configuration value: ${styleArg}`, async () => {
+          await expectNoChanges(formatter, styleArg);
+        })
     );
 
   it('should execute the formatter with a multiple clang formatter styles', async () => {

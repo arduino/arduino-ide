@@ -2,7 +2,7 @@
   "name": "lingzhilab-ide2",
   "version": "3.6.0",
   "description": "零知实验室",
-  "repository": "https://github.com/arduino/arduino-ide.git",
+  "repository": "https://github.com/wybzedd/lingzhi.git",
   "author": "零知实验室",
   "license": "AGPL-3.0-or-later",
   "private": true,

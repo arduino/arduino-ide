@@ -13,6 +13,7 @@
     "board": {
       "board": "Kart{0}",
       "boardConfigDialogTitle": "Başka Kart ve Port Seç",
+      "boardDataReloaded": "Kart bilgisi yeniden yüklendi.",
       "boardInfo": "Kart Bilgisi",
       "boards": "kartlar",
       "configDialog1": "Bir eskiz yüklemek istiyorsanız Kart ve Port seçmelisiniz.",
@@ -31,10 +32,12 @@
       "port": "Port{0}",
       "ports": "portlar",
       "programmer": "Programlayıcı",
+      "reloadBoardData": "Kart Bilgisini Yeniden Yükle",
       "reselectLater": "Daha sonra tekrar seç",
       "revertBoardsConfig": " '{1}''da bulunan '{0}''i kullan",
       "searchBoard": "Kart ara",
       "selectBoard": "Kart Seç",
+      "selectBoardToReload": "Lütfen önce bir kart seçin.",
       "selectPortForInfo": "Kart bilgisi almak için lütfen bir port seçin.",
       "showAllAvailablePorts": "Etkinleştirildiğinde tüm mevcut portları görüntüler",
       "showAllPorts": "Tüm portları göster",
@@ -152,7 +155,8 @@
       "serialMonitor": "Seri Port Ekranı",
       "type": "Tür",
       "unknown": "Bilinmeyen",
-      "updateable": "Güncellenebilir"
+      "updateable": "Güncellenebilir",
+      "userAbort": "Kullanıcı iptali"
     },
     "compile": {
       "error": "Derleme hatası: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Debug '{0}' tarafından desteklenmiyor",
       "getDebugInfo": "Hata ayıklama bilgisi alınıyor...",
       "noPlatformInstalledFor": "'{0}' için platform kurulmadı",
-      "noProgrammerSelectedFor": "'{0}' için programlayıcı seçilmedi",
       "optimizeForDebugging": "Debug için Optimize et",
       "sketchIsNotCompiled": "Hata ayıklama -debug- oturumuna başlamadan önce '{0}' eskizi doğrulanmalıdır. Lütfen eskizi doğrulayın ve hata ayıklamayı yeniden başlatın. Eskizi şimdi doğrulamak ister misiniz?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Bir anahtar kelime yazın",
       "privacyPolicy": "Gizlilik Politikası",
       "reference": "Başvuru",
-      "search": "lingzhilab.com'de Ara",
+      "search": "Arduino.cc'de Ara",
       "troubleshooting": "Sorun Giderme",
-      "visit": "lingzhilab.com'yi Ziyaret Et"
+      "visit": "Arduino.cc'yi Ziyaret Et"
     },
     "ide-updater": {
       "checkForUpdates": "Arduino IDE Güncellemelerini kontrol et",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "Kullanıcılar bir bulut eskizini çekmeden önce uyarılacaksa açın. Varsayılan: Açık.",
       "cloud.push.warn": "Kullanıcılar bir bulut eskizini göndermeden önce uyarılacaksa açın. Varsayılan: Açık.",
       "cloud.pushpublic.warn": "Kullanıcılar buluta herkese açık bir eskiz yüklemeden önce uyarılacaksa açın. Varsayılan: Açık.",
+      "cloud.sharedSpaceId": "Eskiz defterinin yükleneceği paylaşılan Arduino Cloud alanı ID'si. Boş bırakılırsa özel alanınız seçilir.",
       "cloud.sketchSyncEndpoint": "Ana yapıdan eskizler çekmek veya göndermek için son nokta kullanılır. Varsayılan: Arduino Cloud API.",
       "compile": "derle",
       "compile.experimental": "IDE'nin birden fazla derleme hatasını kontrol etmesini istiyorsanız açın. Varsayılan olarak kapalı.",
@@ -411,7 +415,9 @@
       "survey.notification": "Bir anket bulunduğunda kullanıcılara gösterilecekse açın. Varsayılan olarak açıktır.",
       "unofficialBoardSupport": "Desteklenmeyen kart destek URL'leri listesi için tıklayın",
       "upload": "yükle",
+      "upload.autoVerify": "Açıldığında IDE yükleme öncesinde kodu otomatik olarak doğrular. Varsayılan olarak açıktır. Bu değer kapalı olduğunda, IDE ikili dosyayı karta yüklemeden önce tekrar derlemez. Bu ayarı sadece gerçekten ne yaptığınızı biliyor olduğunuz durumlarda kapatmanız önerilir.",
       "upload.verbose": " Ayrıntılı yükleme çıktısı için açın. Varsayılan: Kapalı",
+      "upload.verify": "Yüklemeden sonra, kart üzerindeki belleğin içeriğini yüklenen ikili dosya ile doğrula.",
       "verifyAfterUpload": "Yüklemeden sonra kodu doğrula",
       "window.autoScale": "Kullanıcı arayüzü yazı tipi boyutu ile otomatik olarak ölçeklenecekse açın",
       "window.zoomLevel": {

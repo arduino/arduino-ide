@@ -13,6 +13,7 @@
     "board": {
       "board": "ဘုတ်{0}",
       "boardConfigDialogTitle": "အခြားဘုတ်နှင့်အပေါက်ကို ရွေးချယ်ပါ",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "ဘုတ်ဆိုင်ရာအချက်အလက်",
       "boards": "ဘုတ်များ",
       "configDialog1": "ကုတ်ဖိုင်တစ်ခုကို upload တင်လိုပါက ဘုတ်နှင့်အပေါက် နှစ်ခုလုံးကို ရွေးပေးပါ။",
@@ -31,10 +32,12 @@
       "port": "အပေါက်{0}",
       "ports": "အပေါက်များ",
       "programmer": "ပရိုဂရမ်မာ",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "နောက်မှ ပြန်ရွေးချယ်မည်",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "ဘုတ်ရှာမည်",
       "selectBoard": "ဘုတ်ရွေးချယ်မည်",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "လျှပ်စစ်ဘုတ်ဆိုင်ရာအချက်အလက်ရရှိရန် အပေါက်ကို ရွေးချယ်ပါ။",
       "showAllAvailablePorts": "အမှန်ခြစ်ထားပါက ရွေးချယ်နိုင်သော အပေါက်များအားလုံးကို ဖော်ပြပေးမည်",
       "showAllPorts": "အပေါက်အားလုံးပြ",
@@ -152,7 +155,8 @@
       "serialMonitor": "အတန်းလိုက်ဆက်သွယ်မှုမော်နီတာ",
       "type": "အမျိုးအစား",
       "unknown": "မသိ",
-      "updateable": "အပ်ဒိတ်တင်၍ရသော"
+      "updateable": "အပ်ဒိတ်တင်၍ရသော",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "ကုတ်ပေါင်းခြင်းဆိုင်ရာအမှား- {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "ကုတ်ပြစ်ချက်ရှာဖွေမှုကို '{0}'မှ မပေးထားပါ",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "'{0}' အတွက် ပလက်ဖောင်းကို မထည့်သွင်းရသေးပါ",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "ကုတ်ပြစ်ချက်ရှာဖွေရန်အတွက်ဦးစားပေးမည်",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "သော့ချက်စကားလုံးရိုက်လိုက်ပါ",
       "privacyPolicy": "ကိုယ်ရေးဆိုင်ရာအချက်အလက် မူဝါဒ",
       "reference": "ကိုးကားချက်",
-      "search": "lingzhilab.com မှာ သွားရှာမယ်",
+      "search": "Arduino.cc မှာ သွားရှာမယ်",
       "troubleshooting": "ပြဿနာဖြေရှင်းခြင်း",
-      "visit": "lingzhilab.com ကိုသွားကြည့်မယ်ကွာ"
+      "visit": "Arduino.cc ကိုသွားကြည့်မယ်ကွာ"
     },
     "ide-updater": {
       "checkForUpdates": "အာဒီနိုအိုင်ဒီအီးအပ်ဒိတ်များစစ်မည်",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "ကလောက်ကုတ်ဖိုင်လ်ကို စက်ထဲ့သို့ မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
       "cloud.push.warn": "ကလောက်ကုတ်ဖိုင်လ်သို့ ကုတ်ဖိုင်လ် မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
       "cloud.pushpublic.warn": "ကလောက်သို့ အများသုံးကုတ်ဖိုင်လ် မသွင်းခင် သတိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "နောက်ကွယ်လုပ်ဆောင်မှုစနစ်မှ ကုတ်ဖိုင်လ် ရယူခြင်း သို့ ပေးပို့ခြင်းလုပ်ရန် အသုံးပြုသော အဆုံးမှတ်။ မူရင်းတန်းဖိုး - အာဒီနိုကလောက်အေပီအိုင်သို့ ညွှန်ပြနေသည်။",
       "compile": "စက်ဘာသာပြန်",
       "compile.experimental": "ကုတ်ပေါင်းမှုဆိုင်ရာပြဿနာများအား အိုင်ဒီအီးမှ ကိုင်တွယ်မည်။ မူရင်းတန်ဖိုး - အမှား",
@@ -411,7 +415,9 @@
       "survey.notification": "စစ်တမ်းကောက်ပါက အသုံးပြုသူကို အသိပေးမည်။ မူရင်းတန်ဖိုး - အမှန်",
       "unofficialBoardSupport": "တရားမဝင်ဘုတ် ထောက်ပံ့မှုURLစာရင်းအတွက် ကလစ်လိုက်ပါ",
       "upload": "အပ်လုတ်တင်",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "အပ်လုတ်တင်မှုဆိုင်အချက်အလက်များ အသေးစိတ်ဖော်ပြမည်။ မူရင်းတန်ဖိုး - အမှား",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "အပ်လုတ်တင်ပြီးလျှင်ကုတ်ကိုစစ်ဆေးပါ",
       "window.autoScale": "အမှန်ဖြစ်နေပါက အသုံးပြုသူအင်တာဖေ့သည် ဖောင့်အရွယ်အစားနှင့်အတူ အလိုလိုချိန်ညှိမည်။",
       "window.zoomLevel": {

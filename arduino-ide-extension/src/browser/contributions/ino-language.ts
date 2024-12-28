@@ -9,7 +9,6 @@ import {
   BoardIdentifier,
   BoardsService,
   ExecutableService,
-  assertSanitizedFqbn,
   isBoardIdentifierChangeEvent,
   sanitizeFqbn,
 } from '../../common/protocol';
@@ -159,14 +158,11 @@ export class InoLanguage extends SketchContribution {
       this.notificationCenter.onDidReinitialize(() => forceRestart()),
       this.boardDataStore.onDidChange((event) => {
         if (this.languageServerFqbn) {
-          const sanitizedFqbn = sanitizeFqbn(this.languageServerFqbn);
-          if (!sanitizeFqbn) {
-            throw new Error(
-              `Failed to sanitize the FQBN of the running language server. FQBN with the board settings was: ${this.languageServerFqbn}`
-            );
-          }
+          const sanitizedFQBN = sanitizeFqbn(this.languageServerFqbn);
+          // The incoming FQBNs might contain custom boards configs, sanitize them before the comparison.
+          // https://github.com/arduino/arduino-ide/pull/2113#pullrequestreview-1499998328
           const matchingChange = event.changes.find(
-            (change) => change.fqbn === sanitizedFqbn
+            (change) => sanitizedFQBN === sanitizeFqbn(change.fqbn)
           );
           const { boardsConfig } = this.boardsServiceProvider;
           if (
@@ -196,11 +192,7 @@ export class InoLanguage extends SketchContribution {
     forceStart = false
   ): Promise<void> {
     const port = await this.daemon.tryGetPort();
-    if (!port) {
-      return;
-    }
-    const portNumber = Number.parseInt(port, 10); // TODO: IDE2 APIs should provide a number and not string
-    if (Number.isNaN(portNumber)) {
+    if (typeof port !== 'number') {
       return;
     }
     const release = await this.languageServerStartMutex.acquire();
@@ -232,7 +224,6 @@ export class InoLanguage extends SketchContribution {
         }
         return;
       }
-      assertSanitizedFqbn(fqbn);
       const fqbnWithConfig = await this.boardDataStore.appendConfigToFqbn(fqbn);
       if (!fqbnWithConfig) {
         throw new Error(
@@ -279,7 +270,7 @@ export class InoLanguage extends SketchContribution {
           lsPath,
           daemonAddress: {
             hostname: 'localhost',
-            port: portNumber,
+            port,
             instance: 1, // TODO: get it from the backend
           },
           clangdPath,

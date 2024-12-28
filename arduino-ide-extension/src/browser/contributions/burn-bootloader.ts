@@ -32,11 +32,15 @@ export class BurnBootloader extends CoreServiceContribution {
           'arduino/bootloader/burningBootloader',
           'Burning bootloader...'
         ),
-        task: (progressId, coreService) =>
-          coreService.burnBootloader({
-            ...options,
-            progressId,
-          }),
+        task: (progressId, coreService, token) =>
+          coreService.burnBootloader(
+            {
+              ...options,
+              progressId,
+            },
+            token
+          ),
+        cancelable: true,
       });
       this.messageService.info(
         nls.localize(

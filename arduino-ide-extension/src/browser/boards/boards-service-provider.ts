@@ -12,6 +12,7 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { ILogger } from '@theia/core/lib/common/logger';
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { nls } from '@theia/core/lib/common/nls';
+import { deepClone } from '@theia/core/lib/common/objects';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import type { Mutable } from '@theia/core/lib/common/types';
 import { inject, injectable, optional } from '@theia/core/shared/inversify';
@@ -21,31 +22,32 @@ import {
 } from '@theia/output/lib/browser/output-channel';
 import {
   BoardIdentifier,
-  boardIdentifierEquals,
+  BoardUserField,
+  BoardWithPackage,
   BoardsConfig,
   BoardsConfigChangeEvent,
   BoardsPackage,
   BoardsService,
-  BoardUserField,
-  BoardWithPackage,
   DetectedPorts,
+  Port,
+  PortIdentifier,
+  boardIdentifierEquals,
   emptyBoardsConfig,
   isBoardIdentifier,
   isBoardIdentifierChangeEvent,
   isPortIdentifier,
   isPortIdentifierChangeEvent,
-  Port,
-  PortIdentifier,
   portIdentifierEquals,
+  sanitizeFqbn,
   serializePlatformIdentifier,
 } from '../../common/protocol';
 import {
   BoardList,
   BoardListHistory,
-  createBoardList,
   EditBoardsConfigActionParams,
-  isBoardListHistory,
   SelectBoardsConfigActionParams,
+  createBoardList,
+  isBoardListHistory,
 } from '../../common/protocol/board-list';
 import type { Defined } from '../../common/types';
 import type {
@@ -104,6 +106,21 @@ type BoardListHistoryUpdateResult =
 type BoardToSelect = BoardIdentifier | undefined | 'ignore-board';
 type PortToSelect = PortIdentifier | undefined | 'ignore-port';
 
+function sanitizeBoardToSelectFQBN(board: BoardToSelect): BoardToSelect {
+  if (isBoardIdentifier(board)) {
+    return sanitizeBoardIdentifierFQBN(board);
+  }
+  return board;
+}
+function sanitizeBoardIdentifierFQBN(board: BoardIdentifier): BoardIdentifier {
+  if (board.fqbn) {
+    const copy: Mutable<BoardIdentifier> = deepClone(board);
+    copy.fqbn = sanitizeFqbn(board.fqbn);
+    return copy;
+  }
+  return board;
+}
+
 interface UpdateBoardListHistoryParams {
   readonly portToSelect: PortToSelect;
   readonly boardToSelect: BoardToSelect;
@@ -135,6 +152,9 @@ export interface BoardListUIActions {
   readonly edit: EditBoardsConfigAction;
 }
 export type BoardListUI = BoardList & BoardListUIActions;
+
+export type BoardsConfigChangeEventUI = BoardsConfigChangeEvent &
+  Readonly<{ reason?: UpdateBoardsConfigReason }>;
 
 @injectable()
 export class BoardListDumper implements Disposable {
@@ -188,7 +208,7 @@ export class BoardsServiceProvider
   private _ready = new Deferred<void>();
 
   private readonly boardsConfigDidChangeEmitter =
-    new Emitter<BoardsConfigChangeEvent>();
+    new Emitter<BoardsConfigChangeEventUI>();
   readonly onBoardsConfigDidChange = this.boardsConfigDidChangeEmitter.event;
 
   private readonly boardListDidChangeEmitter = new Emitter<BoardListUI>();
@@ -351,7 +371,8 @@ export class BoardsServiceProvider
       portToSelect !== 'ignore-port' &&
       !portIdentifierEquals(portToSelect, previousSelectedPort);
     const boardDidChangeEvent = boardDidChange
-      ? { selectedBoard: boardToSelect, previousSelectedBoard }
+      ? // The change event must always contain any custom board options. Hence the board to select is not sanitized.
+      { selectedBoard: boardToSelect, previousSelectedBoard }
       : undefined;
     const portDidChangeEvent = portDidChange
       ? { selectedPort: portToSelect, previousSelectedPort }
@@ -372,14 +393,29 @@ export class BoardsServiceProvider
       return false;
     }
 
-    this.maybeUpdateBoardListHistory({ portToSelect, boardToSelect });
-    this.maybeUpdateBoardsData({ boardToSelect, reason });
+    // unlike for the board change event, every persistent state must not contain custom board config options in the FQBN
+    const sanitizedBoardToSelect = sanitizeBoardToSelectFQBN(boardToSelect);
+
+    this.maybeUpdateBoardListHistory({
+      portToSelect,
+      boardToSelect: sanitizedBoardToSelect,
+    });
+    this.maybeUpdateBoardsData({
+      boardToSelect: sanitizedBoardToSelect,
+      reason,
+    });
 
     if (isBoardIdentifierChangeEvent(event)) {
-      this._boardsConfig.selectedBoard = event.selectedBoard;
+      this._boardsConfig.selectedBoard = event.selectedBoard
+        ? sanitizeBoardIdentifierFQBN(event.selectedBoard)
+        : event.selectedBoard;
     }
     if (isPortIdentifierChangeEvent(event)) {
       this._boardsConfig.selectedPort = event.selectedPort;
+    }
+
+    if (reason) {
+      event = Object.assign(event, { reason });
     }
 
     this.boardsConfigDidChangeEmitter.fire(event);

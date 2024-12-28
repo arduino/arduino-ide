@@ -1,51 +1,62 @@
+import { type ClientReadableStream } from '@grpc/grpc-js';
+import { ApplicationError } from '@theia/core/lib/common/application-error';
+import type { CancellationToken } from '@theia/core/lib/common/cancellation';
+import { CommandService } from '@theia/core/lib/common/command';
+import {
+  Disposable,
+  DisposableCollection,
+} from '@theia/core/lib/common/disposable';
+import { nls } from '@theia/core/lib/common/nls';
+import type { Mutable } from '@theia/core/lib/common/types';
 import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { relative } from 'node:path';
 import * as jspb from 'google-protobuf';
-import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
-import type { ClientReadableStream } from '@grpc/grpc-js';
+import path from 'node:path';
 import {
-  CompilerWarnings,
-  CoreService,
-  CoreError,
+  UploadResponse as ApiUploadResponse,
+  OutputMessage,
+  Port,
+  PortIdentifier,
+  resolveDetectedPort,
+} from '../common/protocol';
+import {
   CompileSummary,
+  CompilerWarnings,
+  CoreError,
+  CoreService,
   isCompileSummary,
   isUploadResponse,
 } from '../common/protocol/core-service';
+import { ResponseService } from '../common/protocol/response-service';
+import { firstToUpperCase, notEmpty } from '../common/utils';
+import { BoardDiscovery, createApiPort } from './board-discovery';
+import { tryParseError } from './cli-error-parser';
+import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
+import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
   CompileRequest,
   CompileResponse,
+  InstanceNeedsReinitializationError,
 } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
-import { CoreClientAware } from './core-client-provider';
+import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
   BurnBootloaderRequest,
   BurnBootloaderResponse,
+  ProgrammerIsRequiredForUploadError,
   UploadRequest,
   UploadResponse,
   UploadUsingProgrammerRequest,
   UploadUsingProgrammerResponse,
 } from './cli-protocol/cc/arduino/cli/commands/v1/upload_pb';
-import { ResponseService } from '../common/protocol/response-service';
-import {
-  resolveDetectedPort,
-  OutputMessage,
-  PortIdentifier,
-  Port,
-  UploadResponse as ApiUploadResponse,
-} from '../common/protocol';
-import { ArduinoCoreServiceClient } from './cli-protocol/cc/arduino/cli/commands/v1/commands_grpc_pb';
-import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
-import { ApplicationError, CommandService, Disposable, nls } from '@theia/core';
-import { MonitorManager } from './monitor-manager';
-import { AutoFlushingBuffer } from './utils/buffers';
-import { tryParseError } from './cli-error-parser';
-import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
-import { firstToUpperCase, notEmpty } from '../common/utils';
-import { ServiceError } from './service-error';
+import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
-import type { Mutable } from '@theia/core/lib/common/types';
-import { BoardDiscovery, createApiPort } from './board-discovery';
+import { MonitorManager } from './monitor-manager';
+import { ServiceError } from './service-error';
+import { AutoFlushingBuffer } from './utils/buffers';
+import { userAbort } from '../common/nls';
+import { UserAbortApplicationError } from '../common/protocol/progressible';
 import { SerialPort } from 'serialport';
+
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
   export type Response = UploadResponse | UploadUsingProgrammerResponse;
@@ -66,9 +77,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
   private serialPort: SerialPort;
 
-  async compile(options: CoreService.Options.Compile): Promise<void> {
+  async compile(
+    options: CoreService.Options.Compile,
+    cancellationToken?: CancellationToken
+  ): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
+    const request = this.compileRequest(options, instance);
     const compileSummary = <CompileSummaryFragment>{};
     const progressHandler = this.createProgressHandler(options);
     const compileSummaryHandler = (response: CompileResponse) =>
@@ -77,69 +92,113 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       progressHandler,
       compileSummaryHandler
     );
-    const request = this.compileRequest(options, instance);
-    return new Promise<void>((resolve, reject) => {
-      // 创建一个客户端
-      client
-        .compile(request)
-        .on('data', handler.onData)
-        .on('error', (error) => {
-          if (!ServiceError.is(error)) {
-            console.error(
-              'Unexpected error occurred while compiling the sketch.',
-              error
-            );
-            reject('\n' + error);
-          } else {
-            const compilerErrors = tryParseError({
-              content: handler.content,
-              sketch: options.sketch,
-            });
-            let message = `编译错误: ${compilerErrors
-                .map(({ message }) => message)
-                .filter(notEmpty)
-                .shift() ?? error.details
-              }`;
+    const toDisposeOnFinally = new DisposableCollection(handler);
 
-            // 翻译
-            message = message.replace(
-              'No connection established',
-              '未建立连接'
-            );
-            message = message.replace(
-              'Missing FQBN (Fully Qualified Board Name)',
-              '没有选择板。请从代码页面中选择Lingzhi板'
-            );
-            message = message.replace(
-              'No such file or directory',
-              '没有这样的文件或目录'
-            );
-            message = message.replace(
-              'expected initializer before',
-              '之前的期望初始化项'
-            );
-            message = message.replace('Invalid', '无效');
-            message = message.replace(
-              'getting build properties for board',
-              '获取板的构建属性'
-            );
-            message = message.replace(
-              'was not declared in this scope',
-              '未在此范围内声明'
-            );
-            message = message.replace('invalid value', '无效值');
-            message = message.replace('for option', '来自');
-            this.sendResponse(
-              '\n' + message + '\n',
-              OutputMessage.Severity.Error
-            );
-            reject(CoreError.VerifyFailed(message, compilerErrors));
-          }
-        })
-        .on('end', resolve);
+    return new Promise<void>((resolve, reject) => {
+      let hasRetried = false;
+
+      const handleUnexpectedError = (error: Error) => {
+        console.error(
+          'Unexpected error occurred while compiling the sketch.',
+          error
+        );
+        reject('\n' + error);
+      };
+
+      const handleCancellationError = () => {
+        console.log(userAbort);
+        reject(UserAbortApplicationError());
+      };
+
+      const handleInstanceNeedsReinitializationError = async (
+        error: ServiceError & InstanceNeedsReinitializationError
+      ) => {
+        if (hasRetried) {
+          // If error persists, send the error message to the output
+          return parseAndSendErrorResponse(error);
+        }
+
+        hasRetried = true;
+        await this.refresh();
+        return startCompileStream();
+      };
+
+      const parseAndSendErrorResponse = (error: ServiceError) => {
+        const compilerErrors = tryParseError({
+          content: handler.content,
+          sketch: options.sketch,
+        });
+        let message = `编译错误: ${compilerErrors
+            .map(({ message }) => message)
+            .filter(notEmpty)
+            .shift() ?? error.details
+          }`;
+
+        // 翻译
+        message = message.replace('No connection established', '未建立连接');
+        message = message.replace(
+          'Missing FQBN (Fully Qualified Board Name)',
+          '没有选择板。请从代码页面中选择Lingzhi板'
+        );
+        message = message.replace(
+          'No such file or directory',
+          '没有这样的文件或目录'
+        );
+        message = message.replace(
+          'expected initializer before',
+          '之前的期望初始化项'
+        );
+        message = message.replace('Invalid', '无效');
+        message = message.replace(
+          'getting build properties for board',
+          '获取板的构建属性'
+        );
+        message = message.replace(
+          'was not declared in this scope',
+          '未在此范围内声明'
+        );
+        message = message.replace('invalid value', '无效值');
+        message = message.replace('for option', '来自');
+
+        this.sendResponse('\n' + message + '\n', OutputMessage.Severity.Error);
+        reject(CoreError.VerifyFailed(message, compilerErrors));
+      };
+
+      const handleError = async (error: Error) => {
+        if (!ServiceError.is(error)) return handleUnexpectedError(error);
+        if (ServiceError.isCancel(error)) return handleCancellationError();
+
+        if (
+          ServiceError.isInstanceOf(error, InstanceNeedsReinitializationError)
+        ) {
+          return await handleInstanceNeedsReinitializationError(error);
+        }
+
+        parseAndSendErrorResponse(error);
+      };
+
+      const startCompileStream = () => {
+        const call = client.compile(request);
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
+          );
+        }
+
+        call
+          .on('data', handler.onData)
+          .on('error', handleError)
+          .on('end', resolve);
+      };
+
+      startCompileStream();
     }).finally(() => {
-      handler.dispose();
+      toDisposeOnFinally.dispose();
       if (!isCompileSummary(compileSummary)) {
+        if (cancellationToken && cancellationToken.isCancellationRequested) {
+          // NOOP
+          return;
+        }
         console.error(
           `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
             compileSummary
@@ -197,42 +256,36 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     request.setVerbose(options.verbose);
     request.setQuiet(false);
     if (typeof options.exportBinaries === 'boolean') {
-      const exportBinaries = new BoolValue();
-      exportBinaries.setValue(options.exportBinaries);
-      request.setExportBinaries(exportBinaries);
+      request.setExportBinaries(options.exportBinaries);
     }
     this.mergeSourceOverrides(request, options);
     return request;
   }
 
-  // 上传文件
   async upload(
-    options: CoreService.Options.Upload
+    options: CoreService.Options.Upload,
+    cancellationToken?: CancellationToken
   ): Promise<ApiUploadResponse> {
     if (options.port) {
       let path = options.port.address;
       await this.setIsp(path);
     }
-    // 获取是否使用程序员的选项
+
     const { usingProgrammer } = options;
-    // 返回上传文件的结果
     return this.doUpload(
       options,
-      // 根据是否使用程序员选择不同的请求
       usingProgrammer
         ? new UploadUsingProgrammerRequest()
         : new UploadRequest(),
-      // 根据是否使用程序员选择不同的上传方法
       (client) =>
         (usingProgrammer ? client.uploadUsingProgrammer : client.upload).bind(
           client
         ),
-      // 根据是否使用程序员选择不同的错误类型
       usingProgrammer
         ? CoreError.UploadUsingProgrammerFailed
         : CoreError.UploadFailed,
-      // 根据是否使用程序员选择不同的日志信息
-      `upload${usingProgrammer ? ' using programmer' : ''}`
+      `upload${usingProgrammer ? ' using programmer' : ''}`,
+      cancellationToken
     );
   }
 
@@ -246,7 +299,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       client: ArduinoCoreServiceClient
     ) => (request: REQ) => ClientReadableStream<RESP>,
     errorCtor: ApplicationError.Constructor<number, CoreError.ErrorLocation[]>,
-    task: string
+    task: string,
+    cancellationToken?: CancellationToken
   ): Promise<ApiUploadResponse> {
     const portBeforeUpload = options.port;
     const uploadResponseFragment: Mutable<Partial<ApiUploadResponse>> = {
@@ -281,35 +335,61 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       progressHandler,
       updateUploadResponseFragmentHandler
     );
+    const toDisposeOnFinally = new DisposableCollection(handler);
     const grpcCall = responseFactory(client);
     return this.notifyUploadWillStart(options).then(() =>
       new Promise<ApiUploadResponse>((resolve, reject) => {
-        grpcCall(this.initUploadRequest(request, options, instance))
+        const call = grpcCall(
+          this.initUploadRequest(request, options, instance)
+        );
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
+          );
+        }
+        call
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
               console.error(`Unexpected error occurred while ${task}.`, error);
               reject(error);
-            } else {
-              let err = error.details;
-              let message = `${firstToUpperCase(task)}错误:${err}`;
-              message.replace('Upload', '上传');
-              err = err.replace(
-                'Failed uploading: no upload port provided',
-                '上传失败：没有提供上传端口'
-              );
-              message.replace('read ECONNRESET', '读取 ECONNRESET');
-              this.sendResponse(err, OutputMessage.Severity.Error);
-              reject(
-                errorCtor(
-                  message,
-                  tryParseError({
-                    content: handler.content,
-                    sketch: options.sketch,
-                  })
-                )
-              );
+              return;
             }
+            if (ServiceError.isCancel(error)) {
+              console.log(userAbort);
+              reject(UserAbortApplicationError());
+              return;
+            }
+
+            if (
+              ServiceError.isInstanceOf(
+                error,
+                ProgrammerIsRequiredForUploadError
+              )
+            ) {
+              reject(CoreError.UploadRequiresProgrammer());
+              return;
+            }
+
+            let err = error.details;
+            let message = `${firstToUpperCase(task)}错误:${err}`;
+            message.replace('Upload', '上传');
+            err = err.replace(
+              'Failed uploading: no upload port provided',
+              '上传失败：没有提供上传端口'
+            );
+            message.replace('read ECONNRESET', '读取 ECONNRESET');
+
+            this.sendResponse(error.details, OutputMessage.Severity.Error);
+            reject(
+              errorCtor(
+                message,
+                tryParseError({
+                  content: handler.content,
+                  sketch: options.sketch,
+                })
+              )
+            );
           })
           .on('end', () => {
             if (isUploadResponse(uploadResponseFragment)) {
@@ -325,7 +405,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             }
           });
       }).finally(async () => {
-        handler.dispose();
+        toDisposeOnFinally.dispose();
         await this.notifyUploadDidFinish(
           Object.assign(options, {
             afterPort: uploadResponseFragment.portAfterUpload,
@@ -360,16 +440,25 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     return request;
   }
 
-  async burnBootloader(options: CoreService.Options.Bootloader): Promise<void> {
+  async burnBootloader(
+    options: CoreService.Options.Bootloader,
+    cancellationToken?: CancellationToken
+  ): Promise<void> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const progressHandler = this.createProgressHandler(options);
     const handler = this.createOnDataHandler(progressHandler);
     const request = this.burnBootloaderRequest(options, instance);
+    const toDisposeOnFinally = new DisposableCollection(handler);
     return this.notifyUploadWillStart(options).then(() =>
       new Promise<void>((resolve, reject) => {
-        client
-          .burnBootloader(request)
+        const call = client.burnBootloader(request);
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
+          );
+        }
+        call
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
@@ -378,23 +467,28 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
                 error
               );
               reject(error);
-            } else {
-              this.sendResponse(error.details, OutputMessage.Severity.Error);
-              reject(
-                CoreError.BurnBootloaderFailed(
-                  nls.localize(
-                    'arduino/burnBootloader/error',
-                    'Error while burning the bootloader: {0}',
-                    error.details
-                  ),
-                  tryParseError({ content: handler.content })
-                )
-              );
+              return;
             }
+            if (ServiceError.isCancel(error)) {
+              console.log(userAbort);
+              reject(UserAbortApplicationError());
+              return;
+            }
+            this.sendResponse(error.details, OutputMessage.Severity.Error);
+            reject(
+              CoreError.BurnBootloaderFailed(
+                nls.localize(
+                  'arduino/burnBootloader/error',
+                  'Error while burning the bootloader: {0}',
+                  error.details
+                ),
+                tryParseError({ content: handler.content })
+              )
+            );
           })
           .on('end', resolve);
       }).finally(async () => {
-        handler.dispose();
+        toDisposeOnFinally.dispose();
         await this.notifyUploadDidFinish(
           Object.assign(options, { afterPort: options.port })
         );
@@ -622,7 +716,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     for (const uri of Object.keys(options.sourceOverride)) {
       const content = options.sourceOverride[uri];
       if (content) {
-        const relativePath = relative(sketchPath, FileUri.fsPath(uri));
+        const relativePath = path.relative(sketchPath, FileUri.fsPath(uri));
         req.getSourceOverrideMap().set(relativePath, content);
       }
     }
@@ -717,18 +811,31 @@ function updateCompileSummary(
   compileSummary: CompileSummaryFragment,
   response: CompileResponse
 ): CompileSummaryFragment {
-  let buildPath = response.getBuildPath();
+  const messageCase = response.getMessageCase();
+  if (messageCase !== CompileResponse.MessageCase.RESULT) {
+    return compileSummary;
+  }
+  const result = response.getResult();
+  if (!result) {
+    console.warn(
+      `Build result is missing from response: ${JSON.stringify(
+        response.toObject(false)
+      )}`
+    );
+    return compileSummary;
+  }
+  const buildPath = result.getBuildPath();
   if (buildPath) {
     compileSummary.buildPath = buildPath;
     compileSummary.buildOutputUri = FileUri.create(buildPath).toString();
   }
-  const executableSectionsSize = response.getExecutableSectionsSizeList();
+  const executableSectionsSize = result.getExecutableSectionsSizeList();
   if (executableSectionsSize) {
     compileSummary.executableSectionsSize = executableSectionsSize.map((item) =>
       item.toObject(false)
     );
   }
-  const usedLibraries = response.getUsedLibrariesList();
+  const usedLibraries = result.getUsedLibrariesList();
   if (usedLibraries) {
     compileSummary.usedLibraries = usedLibraries.map((item) => {
       const object = item.toObject(false);
@@ -757,15 +864,15 @@ function updateCompileSummary(
       return library;
     });
   }
-  const boardPlatform = response.getBoardPlatform();
+  const boardPlatform = result.getBoardPlatform();
   if (boardPlatform) {
     compileSummary.buildPlatform = boardPlatform.toObject(false);
   }
-  const buildPlatform = response.getBuildPlatform();
+  const buildPlatform = result.getBuildPlatform();
   if (buildPlatform) {
     compileSummary.buildPlatform = buildPlatform.toObject(false);
   }
-  const buildProperties = response.getBuildPropertiesList();
+  const buildProperties = result.getBuildPropertiesList();
   if (buildProperties) {
     compileSummary.buildProperties = buildProperties.slice();
   }

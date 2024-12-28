@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿用户许可协议
 一、软件使用协议
     本协议是深圳市在芯间科技有限公司产品（以下简称“本软件产品”）的法律协议。一旦安装、复制或以其他方式使用本软件产品，即表示同意接受协议各项条件的约束。如果用户不同意协议的条件，请不要使用本软件产品。
@@ -10,3 +11,8 @@
 三、深圳市在芯间科技有限公司具有对以上各项条款内容的最终解释权和修改权。如用户对深圳市在芯间科技有限公司的解释或修改有异议，应当立即停止使用本软件产品。用户继续使用本软件产品的行为将被视为对深圳市在芯间科技有限公司的解释或修改的接受。
 
 深圳市在芯间科技-零知实验室
+=======
+Terms of Service
+
+The Arduino software is provided to you "as is" and we make no express or implied warranties whatsoever with respect to its functionality, operability, or use, including, without limitation, any implied warranties of merchantability, fitness for a particular purpose, or infringement. We expressly disclaim any liability whatsoever for any direct, indirect, consequential, incidental or special damages, including, without limitation, lost revenues, lost profits, losses resulting from business interruption or loss of data, regardless of the form of action or legal theory under which the liability may be asserted, even if advised of the possibility or likelihood of such damages.
+>>>>>>> 6eef09efd8f49827cabb4eabd8cb2ff99ffae09a

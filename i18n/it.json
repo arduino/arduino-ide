@@ -13,6 +13,7 @@
     "board": {
       "board": "Scheda{0}",
       "boardConfigDialogTitle": "Seleziona un'altra scheda e un'altra porta",
+      "boardDataReloaded": "Dati della scheda ricaricati.",
       "boardInfo": "Informazioni sulla scheda",
       "boards": "schede",
       "configDialog1": "Seleziona una scheda ed una porta se vuoi caricare uno sketch.",
@@ -31,10 +32,12 @@
       "port": "Porta{0}",
       "ports": "porte",
       "programmer": "Programmatore",
+      "reloadBoardData": "Ricarica i dati della scheda",
       "reselectLater": "Riselezionare più tardi",
       "revertBoardsConfig": "Usa '{0}' rilevato su '{1}'",
       "searchBoard": "Cerca la scheda",
       "selectBoard": "Seleziona la scheda",
+      "selectBoardToReload": "Seleziona una scheda.",
       "selectPortForInfo": "Selezionare la porta per ottenere info sulla scheda.",
       "showAllAvailablePorts": "Quando abilitato, mostra tutte le porte disponibili",
       "showAllPorts": "Mostra tutte le porte",
@@ -152,7 +155,8 @@
       "serialMonitor": "Monitor seriale",
       "type": "Tipo",
       "unknown": "Sconosciuto",
-      "updateable": "Aggiornabile"
+      "updateable": "Aggiornabile",
+      "userAbort": "Interruzione da parte dell'utente"
     },
     "compile": {
       "error": "Errore di compilazione: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Il debug non è supportato da '{0}'",
       "getDebugInfo": "Acquisizione delle informazioni di debug in corso...",
       "noPlatformInstalledFor": "La piattaforma non è ancora stata installata per '{0}'",
-      "noProgrammerSelectedFor": "Nessun programmatore selezionato per '{0}'",
       "optimizeForDebugging": "Ottimizzato per il Debug.",
       "sketchIsNotCompiled": "Lo sketch '{0}' deve essere verificato prima di avviare una sessione di debug. Verificare lo sketch e avviare nuovamente il debug. Si desidera verificare lo sketch adesso?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Digita una parola chiave",
       "privacyPolicy": "Politica sulla riservatezza",
       "reference": "Riferimenti",
-      "search": "Cerca su lingzhilab.com",
+      "search": "Cerca su Arduino.cc",
       "troubleshooting": "Risoluzione dei problemi",
-      "visit": "Vai al sito lingzhilab.com"
+      "visit": "Vai al sito Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Controlla gli aggiornamenti dell'IDE di Arduino",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "Imposta su true se gli utenti devono essere avvisato dopo avere effettuato il pull dello sketch sul cloud. Il valore predefinito è true.",
       "cloud.push.warn": "Imposta su True se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch cloud. Il valore predefinito è true.",
       "cloud.pushpublic.warn": "Imposta su true se gli utenti devono essere avvisati prima di eseguire l'invio di uno sketch pubblico nel cloud. Il valore predefinito è true.",
+      "cloud.sharedSpaceId": "L'ID dello spazio condiviso di Arduino Cloud da cui caricare lo sketchbook. Se vuoto, viene selezionato lo spazio privato.",
       "cloud.sketchSyncEndpoint": "La destinazione utilizzata per inviare e richiedere gli schizzi da un back-end. L'impostazione predefinita utilizza Arduino Cloud API.",
       "compile": "compilazione",
       "compile.experimental": "Imposta su true se l'IDE deve gestire errori multipli del compilatore. Il valore predefinito è false.",
@@ -411,7 +415,9 @@
       "survey.notification": "Vero se gli utenti devono essere avvisati quando è disponibile un sondaggio. Vero per impostazione predefinita.",
       "unofficialBoardSupport": "Clicca per ottenere la lista di collegamenti per le schede di terze parti, non schede ufficiali.",
       "upload": "caricamento",
+      "upload.autoVerify": "Vero se l'IDE deve verificare automaticamente il codice prima del caricamento. Vero per impostazione predefinita. Quando questo valore è falso, l'IDE non ricompila il codice prima di caricare il binario sulla scheda. Si consiglia di impostare questo valore su false solo se si sa cosa si sta facendo.",
       "upload.verbose": "Vero per un rapporto dettagliato durante l'upload. Il valore predefinito è impostato su falso.",
+      "upload.verify": "Dopo il caricamento, verificare che il contenuto della memoria sulla scheda corrisponda al binario caricato.",
       "verifyAfterUpload": "Verifica il codice dopo il caricamento",
       "window.autoScale": "Vero se l'interfaccia scala automaticamente in base alla dimensione del font.",
       "window.zoomLevel": {
@@ -454,7 +460,7 @@
       "invalidSketchName": "Il nome deve iniziare con una lettera, un numero o un trattino basso, seguito da lettere, numeri, trattini, punti e trattini bassi. La lunghezza massima è di 63 caratteri.",
       "moving": "Spostando",
       "movingMsg": "Il file \"{0}\" deve essere all'interno della cartella \"{1}\".\nCreare questa cartella, spostare il file e continuare?",
-      "new": "Nuovo Sketch",
+      "new": "Nuovo sketch",
       "noTrailingPeriod": "Il nome di un file non può terminare con un punto",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",

@@ -4,10 +4,6 @@
       "detail": "版本：{0}\n日期：{1}{2}\nCLI 版本：{3}\n\n{4}",
       "label": "关于 {0}"
     },
-    "home": {
-      "titleHome": "主页",
-      "openHome": "打开主页"
-    },
     "account": {
       "goToCloudEditor": "转到云编辑器",
       "goToIoTCloud": "转到物联网云",
@@ -17,6 +13,7 @@
     "board": {
       "board": "开发板 {0}",
       "boardConfigDialogTitle": "选择其他开发板和端口",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "开发板信息",
       "boards": "开发板",
       "configDialog1": "如果要上传项目，请选择开发板和端口。",
@@ -35,10 +32,12 @@
       "port": "端口 {0}",
       "ports": "端口",
       "programmer": "编程器",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "稍后重新选择",
       "revertBoardsConfig": "使用在 '{1}' 上发现的 '{0}'",
       "searchBoard": "搜索开发坂",
       "selectBoard": "选择开发板",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "请选择一个端口以获取开发板信息。",
       "showAllAvailablePorts": "启用时显示所有可用端口",
       "showAllPorts": "显示所有端口",
@@ -156,7 +155,8 @@
       "serialMonitor": "串口监视器",
       "type": "类型",
       "unknown": "未知",
-      "updateable": "可更新"
+      "updateable": "可更新",
+      "userAbort": "用户终止"
     },
     "compile": {
       "error": "编译错误：{0}"
@@ -217,7 +217,6 @@
       "debuggingNotSupported": "‘{0}’ 不支持调试",
       "getDebugInfo": "正在获取调试信息。。。",
       "noPlatformInstalledFor": "‘{0}’ 平台未安装",
-      "noProgrammerSelectedFor": "未为 '{0}' 项目选择任何编程器。",
       "optimizeForDebugging": "调试优化",
       "sketchIsNotCompiled": "项目 '{0}' 在开始调试会话之前必须经过验证。请验证草图并重新开始调试。你现在要验证草图吗？"
     },
@@ -268,9 +267,9 @@
       "keyword": "输入关键字",
       "privacyPolicy": "隐私政策",
       "reference": "参考",
-      "search": "在 lingzhilab.com 搜索",
+      "search": "在 Arduino.cc 搜索",
       "troubleshooting": "故障排除",
-      "visit": "访问 lingzhilab.com"
+      "visit": "访问 Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "检查 Arduino IDE 更新",
@@ -372,6 +371,7 @@
       "cloud.pull.warn": "True 则在拉取 cloud 项目之前警告用户。默认为 True。",
       "cloud.push.warn": "True 则在推送 cloud 项目之前警告用户。默认为 True。",
       "cloud.pushpublic.warn": "True 则将公开项目推送到 cloud 中之前警告用户。默认为 True。",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "用于从后台推送项目的端点。默认情况下，它指向 Arduino Cloud API。",
       "compile": "编译",
       "compile.experimental": "True 则 IDE 处理多个编译器错误。默认为 False。",
@@ -415,7 +415,9 @@
       "survey.notification": "True 则在有调查时应通知用户。默认为 True。",
       "unofficialBoardSupport": "点击获取支持的非官方开发板地址列表",
       "upload": "上传",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "True 则输出详细上传信息。默认情况下为 False。",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "上传后验证代码",
       "window.autoScale": "True 则用户界面随字体大小自动缩放。",
       "window.zoomLevel": {

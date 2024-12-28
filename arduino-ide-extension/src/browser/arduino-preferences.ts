@@ -116,6 +116,18 @@ const properties: ArduinoPreferenceSchemaProperties = {
   'arduino.upload.verify': {
     type: 'boolean',
     default: false,
+    description: nls.localize(
+      'arduino/preferences/upload.verify',
+      'After upload, verify that the contents of the memory on the board match the uploaded binary.'
+    ),
+  },
+  'arduino.upload.autoVerify': {
+    type: 'boolean',
+    default: true,
+    description: nls.localize(
+      'arduino/preferences/upload.autoVerify',
+      "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing."
+    ),
   },
   'arduino.window.autoScale': {
     type: 'boolean',
@@ -175,6 +187,14 @@ const properties: ArduinoPreferenceSchemaProperties = {
     description:
       '用于从后台推送项目的端点。默认情况下，它指向 Arduino Cloud API。',
     default: 'https://api2.arduino.cc/create',
+  },
+  'arduino.cloud.sharedSpaceID': {
+    type: 'string',
+    description: nls.localize(
+      'arduino/preferences/cloud.sharedSpaceId',
+      'The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.'
+    ),
+    default: '',
   },
   'arduino.auth.clientID': {
     type: 'string',
@@ -264,6 +284,7 @@ export interface ArduinoConfiguration {
   'arduino.compile.warnings': CompilerWarnings;
   'arduino.upload.verbose': boolean;
   'arduino.upload.verify': boolean;
+  'arduino.upload.autoVerify': boolean;
   'arduino.window.autoScale': boolean;
   'arduino.ide.updateChannel': UpdateChannel;
   'arduino.ide.updateBaseUrl': string;
@@ -274,6 +295,7 @@ export interface ArduinoConfiguration {
   'arduino.cloud.push.warn': boolean;
   'arduino.cloud.pushpublic.warn': boolean;
   'arduino.cloud.sketchSyncEndpoint': string;
+  'arduino.cloud.sharedSpaceID': string;
   'arduino.auth.clientID': string;
   'arduino.auth.domain': string;
   'arduino.auth.audience': string;

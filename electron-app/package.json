@@ -142,7 +142,8 @@
         "msi",
         "nsis",
         "zip"
-      ]
+      ],
+      "sign": "./scripts/windowsCustomSign.js"
     },
     "mac": {
       "darkModeSupport": true,
@@ -233,4 +234,8 @@
     "watch-extensions": "js",
     "timeout": 10000
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 6eef09efd8f49827cabb4eabd8cb2ff99ffae09a

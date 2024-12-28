@@ -13,6 +13,7 @@
     "board": {
       "board": "Papan{0}",
       "boardConfigDialogTitle": "Pilih Papan dan Port Lain",
+      "boardDataReloaded": "Board data reloaded.",
       "boardInfo": "Informasi Papan",
       "boards": "papan",
       "configDialog1": "Pilih antara Papan dan Port jika kamu ingin mengunggah sebuah sketsa.",
@@ -31,10 +32,12 @@
       "port": "Port{0}",
       "ports": "port",
       "programmer": "Pemrogram",
+      "reloadBoardData": "Reload Board Data",
       "reselectLater": "Pilih ulang nanti",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Cari papan",
       "selectBoard": "Pilih Papan",
+      "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "Mohon pilih port untuk memperoleh informasi papan.",
       "showAllAvailablePorts": "Tampilkan semua port yang tersedia saat dinyalakan",
       "showAllPorts": "Tampilkan semua port",
@@ -76,8 +79,8 @@
     "checkForUpdates": {
       "checkForUpdates": "Periksa Pembaruan Arduino",
       "installAll": "Pasang Semua",
-      "noUpdates": "There are no recent updates available.",
-      "promptUpdateBoards": "Updates are available for some of your boards.",
+      "noUpdates": "Tidak ada pembaruan terbaru yang tersedia.",
+      "promptUpdateBoards": "Pembaruan tersedia untuk beberapa papan Anda.",
       "promptUpdateLibraries": "Updates are available for some of your libraries.",
       "updatingBoards": "Updating boards...",
       "updatingLibraries": "Updating libraries..."
@@ -152,7 +155,8 @@
       "serialMonitor": "Serial Monitor",
       "type": "Type",
       "unknown": "Unknown",
-      "updateable": "Updatable"
+      "updateable": "Updatable",
+      "userAbort": "User abort"
     },
     "compile": {
       "error": "Compilation error: {0}"
@@ -213,7 +217,6 @@
       "debuggingNotSupported": "Debugging is not supported by '{0}'",
       "getDebugInfo": "Getting debug info...",
       "noPlatformInstalledFor": "Platform is not installed for '{0}'",
-      "noProgrammerSelectedFor": "No programmer selected for '{0}'",
       "optimizeForDebugging": "Optimize for Debugging",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
@@ -264,9 +267,9 @@
       "keyword": "Type a keyword",
       "privacyPolicy": "Privacy Policy",
       "reference": "Reference",
-      "search": "Search on lingzhilab.com",
+      "search": "Search on Arduino.cc",
       "troubleshooting": "Troubleshooting",
-      "visit": "Visit lingzhilab.com"
+      "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
       "checkForUpdates": "Check for Arduino IDE Updates",
@@ -368,6 +371,7 @@
       "cloud.pull.warn": "True if users should be warned before pulling a cloud sketch. Defaults to true.",
       "cloud.push.warn": "True if users should be warned before pushing a cloud sketch. Defaults to true.",
       "cloud.pushpublic.warn": "True if users should be warned before pushing a public sketch to the cloud. Defaults to true.",
+      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
       "cloud.sketchSyncEndpoint": "The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.",
       "compile": "compile",
       "compile.experimental": "True if the IDE should handle multiple compiler errors. False by default",
@@ -411,7 +415,9 @@
       "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "upload",
+      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "True for verbose upload output. False by default.",
+      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
       "verifyAfterUpload": "Verify code after upload",
       "window.autoScale": "True if the user interface automatically scales with the font size.",
       "window.zoomLevel": {

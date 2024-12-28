@@ -116,12 +116,16 @@ import { MessagingContribution } from './theia/core/messaging-contribution';
 import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
 import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
 import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
-import { PluginDeployer } from '@theia/plugin-ext/lib/common/plugin-protocol';
+import {
+  PluginDeployer,
+  PluginScanner,
+} from '@theia/plugin-ext/lib/common/plugin-protocol';
 import {
   LocalDirectoryPluginDeployerResolverWithFallback,
   PluginDeployer_GH_12064,
 } from './theia/plugin-ext/plugin-deployer';
 import { SettingsReader } from './settings-reader';
+import { VsCodePluginScanner } from './theia/plugin-ext-vscode/scanner-vscode';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -410,6 +414,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(PluginDeployer).to(PluginDeployer_GH_12064).inSingletonScope();
 
   bind(SettingsReader).toSelf().inSingletonScope();
+
+  // To read the enablement property of the viewsWelcome
+  // https://github.com/eclipse-theia/theia/issues/14309
+  bind(VsCodePluginScanner).toSelf().inSingletonScope();
+  rebind(PluginScanner).toService(VsCodePluginScanner);
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {

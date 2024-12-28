@@ -1,4 +1,4 @@
-import { nls } from '@theia/core/lib/common/nls';
+wimport { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import type { Settings } from '../dialogs/settings/settings';
 import { SettingsDialog } from '../dialogs/settings/settings-dialog';
