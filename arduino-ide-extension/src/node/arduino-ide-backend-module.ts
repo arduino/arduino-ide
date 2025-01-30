@@ -75,12 +75,7 @@ import {
 } from '../common/protocol';
 import { BackendApplication } from './theia/core/backend-application';
 import { BoardDiscovery } from './board-discovery';
-import { AuthenticationServiceImpl } from './auth/authentication-service-impl';
-import {
-  AuthenticationService,
-  AuthenticationServiceClient,
-  AuthenticationServicePath,
-} from '../common/protocol/authentication-service';
+
 import { ArduinoFirmwareUploaderImpl } from './arduino-firmware-uploader-impl';
 import { PlotterBackendContribution } from './plotter/plotter-backend-contribution';
 import { ArduinoLocalizationContribution } from './i18n/arduino-localization-contribution';
@@ -354,25 +349,25 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   ].forEach((name) => bindChildLogger(bind, name));
 
   // Cloud sketchbook bindings
-  bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
-  bind(AuthenticationService).toService(AuthenticationServiceImpl);
-  bind(BackendApplicationContribution).toService(AuthenticationServiceImpl);
-  bind(ConnectionHandler)
-    .toDynamicValue(
-      (context) =>
-        new JsonRpcConnectionHandler<AuthenticationServiceClient>(
-          AuthenticationServicePath,
-          (client) => {
-            const server = context.container.get<AuthenticationServiceImpl>(
-              AuthenticationServiceImpl
-            );
-            server.setClient(client);
-            client.onDidCloseConnection(() => server.disposeClient(client));
-            return server;
-          }
-        )
-    )
-    .inSingletonScope();
+  // bind(AuthenticationServiceImpl).toSelf().inSingletonScope();
+  // bind(AuthenticationService).toService(AuthenticationServiceImpl);
+  // bind(BackendApplicationContribution).toService(AuthenticationServiceImpl);
+  // bind(ConnectionHandler)
+  //   .toDynamicValue(
+  //     (context) =>
+  //       new JsonRpcConnectionHandler<AuthenticationServiceClient>(
+  //         AuthenticationServicePath,
+  //         (client) => {
+  //           const server = context.container.get<AuthenticationServiceImpl>(
+  //             AuthenticationServiceImpl
+  //           );
+  //           server.setClient(client);
+  //           client.onDidCloseConnection(() => server.disposeClient(client));
+  //           return server;
+  //         }
+  //       )
+  //   )
+  //   .inSingletonScope();
 
   bind(PlotterBackendContribution).toSelf().inSingletonScope();
   bind(BackendApplicationContribution).toService(PlotterBackendContribution);

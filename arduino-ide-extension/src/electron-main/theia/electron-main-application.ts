@@ -521,6 +521,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   protected override async startBackend(): Promise<number> {
+    // FIXME: temporary test to check improvements on low powered machines.
+    process.env.IS_LIGHT_VERSION = 'true';
     // Check if we should run everything as one process.
     const noBackendFork = process.argv.indexOf('--no-cluster') !== -1;
     // We cannot use the `process.cwd()` as the application project path (the location of the `package.json` in other words)

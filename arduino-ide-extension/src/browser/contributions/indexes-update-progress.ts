@@ -16,6 +16,10 @@ export class IndexesUpdateProgress extends Contribution {
     | undefined;
 
   override onStart(): void {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     this.notificationCenter.onIndexUpdateWillStart(({ progressId }) =>
       this.getOrCreateProgress(progressId)
     );

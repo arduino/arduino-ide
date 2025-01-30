@@ -170,6 +170,10 @@ export class BoardDiscovery
   }
 
   async start(): Promise<void> {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     this.logger.info('start');
     if (this.stopping) {
       this.logger.info('start is stopping wait');

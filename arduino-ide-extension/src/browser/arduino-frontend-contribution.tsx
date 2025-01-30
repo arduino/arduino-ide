@@ -42,6 +42,7 @@ import { ArduinoMenus } from './menu/arduino-menus';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { SerialPlotterContribution } from './serial/plotter/plotter-frontend-contribution';
 import { ArduinoToolbar } from './toolbar/arduino-toolbar';
+import { FrontendApplicationConfigProvider } from '@theia/core/lib/browser/frontend-application-config-provider';
 
 @injectable()
 export class ArduinoFrontendContribution
@@ -103,6 +104,12 @@ export class ArduinoFrontendContribution
   }
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {
+    const config = FrontendApplicationConfigProvider.get();
+
+    debugger;
+    if (config.isLightVersion) {
+      return;
+    }
     registry.registerItem({
       id: BoardsToolBarItem.TOOLBAR_ID,
       render: () => (

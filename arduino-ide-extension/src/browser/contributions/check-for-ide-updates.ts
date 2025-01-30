@@ -47,6 +47,10 @@ export class CheckForIDEUpdates extends Contribution {
   }
 
   override async onReady(): Promise<void> {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     this.updater
       .init(
         this.preferences.get('arduino.ide.updateChannel'),

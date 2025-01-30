@@ -113,6 +113,10 @@ export class InoLanguage extends SketchContribution {
   private languageServerFqbn?: string;
 
   override onReady(): void {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     const start = (
       selectedBoard: BoardIdentifier | undefined,
       forceStart = false
@@ -191,6 +195,10 @@ export class InoLanguage extends SketchContribution {
     name: string | undefined,
     forceStart = false
   ): Promise<void> {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     const port = await this.daemon.tryGetPort();
     if (typeof port !== 'number') {
       return;

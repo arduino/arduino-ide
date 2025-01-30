@@ -85,7 +85,6 @@ import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/co
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
 import { ProblemManager } from './theia/markers/problem-manager';
-import { BoardsAutoInstaller } from './boards/boards-auto-installer';
 import { ShellLayoutRestorer } from './theia/core/shell-layout-restorer';
 import {
   ArduinoComponentContextMenuRenderer,
@@ -222,9 +221,6 @@ import { NotificationsRenderer as TheiaNotificationsRenderer } from '@theia/mess
 import { NotificationsRenderer } from './theia/messages/notifications-renderer';
 import { SketchbookWidgetContribution } from './widgets/sketchbook/sketchbook-widget-contribution';
 import { LocalCacheFsProvider } from './local-cache/local-cache-fs-provider';
-import { CloudSketchbookWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-widget';
-import { CloudSketchbookTreeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-tree-widget';
-import { createCloudSketchbookTreeWidget } from './widgets/cloud-sketchbook/cloud-sketchbook-tree-container';
 import { CreateApi } from './create/create-api';
 import { ShareSketchDialog } from './dialogs/cloud-share-sketch-dialog';
 import { AuthenticationClientService } from './auth/authentication-client-service';
@@ -497,8 +493,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .whenTargetNamed('store');
 
   // Boards auto-installer
-  bind(BoardsAutoInstaller).toSelf().inSingletonScope();
-  bind(FrontendApplicationContribution).toService(BoardsAutoInstaller);
+  // bind(BoardsAutoInstaller).toSelf().inSingletonScope();
+  // bind(FrontendApplicationContribution).toService(BoardsAutoInstaller);
 
   // Boards list widget
   bind(BoardsListWidget).toSelf();
@@ -970,11 +966,11 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     createWidget: () => ctx.container.get(SketchbookCompositeWidget),
   }));
 
-  bind(CloudSketchbookWidget).toSelf();
-  rebind(SketchbookWidget).toService(CloudSketchbookWidget);
-  bind(CloudSketchbookTreeWidget).toDynamicValue(({ container }) =>
-    createCloudSketchbookTreeWidget(container)
-  );
+  // bind(CloudSketchbookWidget).toSelf();
+  // rebind(SketchbookWidget).toService(CloudSketchbookWidget);
+  // bind(CloudSketchbookTreeWidget).toDynamicValue(({ container }) =>
+  //   createCloudSketchbookTreeWidget(container)
+  // );
   bind(CreateApi).toSelf().inSingletonScope();
   bind(SketchCache).toSelf().inSingletonScope();
   bind(CreateFeatures).toSelf().inSingletonScope();

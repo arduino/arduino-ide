@@ -52,6 +52,10 @@ export class BoardsAutoInstaller implements FrontendApplicationContribution {
   private readonly toDispose = new DisposableCollection();
 
   onStart(): void {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     this.toDispose.pushAll([
       this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
         if (isBoardIdentifierChangeEvent(event)) {

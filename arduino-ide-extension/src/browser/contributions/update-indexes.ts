@@ -45,6 +45,10 @@ export class UpdateIndexes extends Contribution {
   }
 
   private async checkForUpdates(): Promise<void> {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     const checkForUpdates = this.preferences['arduino.checkForUpdates'];
     if (!checkForUpdates) {
       console.debug(
@@ -83,6 +87,10 @@ export class UpdateIndexes extends Contribution {
     types: IndexType[],
     force = false
   ): Promise<void> {
+    if (process.env.IS_LIGHT_VERSION) {
+      return;
+    }
+
     const updatedAt = new Date().toISOString();
     return Promise.all(
       types.map((type) => this.needsIndexUpdate(type, updatedAt, force))
@@ -104,6 +112,10 @@ export class UpdateIndexes extends Contribution {
     now: string,
     force = false
   ): Promise<IndexType | false> {
+    if (process.env.IS_LIGHT_VERSION) {
+      return false;
+    }
+
     if (force) {
       console.debug(
         `[update-indexes]: Update for index type: '${type}' was forcefully requested.`
