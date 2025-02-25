@@ -1,13 +1,11 @@
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import URI from '@theia/core/lib/common/uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import { HostedPluginSupport } from '../hosted/hosted-plugin-support';
 import type { ArduinoState } from 'vscode-arduino-api';
 import {
+  BoardsConfig,
   BoardsService,
   CompileSummary,
-  isCompileSummary,
-  BoardsConfig,
   PortIdentifier,
   resolveDetectedPort,
 } from '../../common/protocol';
@@ -18,8 +16,10 @@ import {
 } from '../../common/protocol/arduino-context-mapper';
 import { BoardsDataStore } from '../boards/boards-data-store';
 import { BoardsServiceProvider } from '../boards/boards-service-provider';
+import { HostedPluginSupport } from '../hosted/hosted-plugin-support';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { SketchContribution } from './contribution';
+import { CompileSummaryProvider } from './verify-sketch';
 
 /**
  * (non-API) exported for tests
@@ -43,6 +43,8 @@ export class UpdateArduinoState extends SketchContribution {
   private readonly boardsDataStore: BoardsDataStore;
   @inject(HostedPluginSupport)
   private readonly hostedPluginSupport: HostedPluginSupport;
+  @inject(CompileSummaryProvider)
+  private readonly compileSummaryProvider: CompileSummaryProvider;
 
   private readonly toDispose = new DisposableCollection();
 
@@ -60,14 +62,9 @@ export class UpdateArduinoState extends SketchContribution {
       this.configService.onDidChangeSketchDirUri((userDirUri) =>
         this.updateUserDirPath(userDirUri)
       ),
-      this.commandService.onDidExecuteCommand(({ commandId, args }) => {
-        if (
-          commandId === 'arduino.languageserver.notifyBuildDidComplete' &&
-          isCompileSummary(args[0])
-        ) {
-          this.updateCompileSummary(args[0]);
-        }
-      }),
+      this.compileSummaryProvider.onDidChangeCompileSummary(() =>
+        this.maybeUpdateCompileSummary()
+      ),
       this.boardsDataStore.onDidChange((event) => {
         const selectedFqbn =
           this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn;
@@ -88,10 +85,18 @@ export class UpdateArduinoState extends SketchContribution {
     this.updateSketchPath(this.sketchServiceClient.tryGetCurrentSketch());
     this.updateUserDirPath(this.configService.tryGetSketchDirUri());
     this.updateDataDirPath(this.configService.tryGetDataDirUri());
+    this.maybeUpdateCompileSummary();
   }
 
   onStop(): void {
     this.toDispose.dispose();
+  }
+
+  private maybeUpdateCompileSummary() {
+    const { compileSummary } = this.compileSummaryProvider;
+    if (compileSummary) {
+      this.updateCompileSummary(compileSummary);
+    }
   }
 
   private async updateSketchPath(
