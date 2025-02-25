@@ -73,7 +73,7 @@ jobs:
           cache: yarn
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install Dependencies (Ubuntu)
+      - name: Install dependencies (Linux only)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update

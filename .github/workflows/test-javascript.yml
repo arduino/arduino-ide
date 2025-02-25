@@ -107,7 +107,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
 
-      - name: Install Dependencies (Ubuntu)
+      - name: Install dependencies (Linux only)
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
