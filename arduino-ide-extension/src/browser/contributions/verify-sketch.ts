@@ -18,7 +18,7 @@ import { CoreErrorHandler } from './core-error-handler';
 export const CompileSummaryProvider = Symbol('CompileSummaryProvider');
 export interface CompileSummaryProvider {
   readonly compileSummary: CompileSummary | undefined;
-  readonly onDidChangeCompileSummary: Event<void>;
+  readonly onDidChangeCompileSummary: Event<CompileSummary | undefined>;
 }
 
 export type VerifySketchMode =
@@ -61,7 +61,9 @@ export class VerifySketch
 
   private readonly onDidChangeEmitter = new Emitter<void>();
   private readonly onDidChange = this.onDidChangeEmitter.event;
-  private readonly onDidChangeCompileSummaryEmitter = new Emitter<void>();
+  private readonly onDidChangeCompileSummaryEmitter = new Emitter<
+    CompileSummary | undefined
+  >();
   private verifyProgress: VerifyProgress = 'idle';
   private _compileSummary: CompileSummary | undefined;
 
@@ -132,7 +134,14 @@ export class VerifySketch
     return this._compileSummary;
   }
 
-  get onDidChangeCompileSummary(): Event<void> {
+  private updateCompileSummary(
+    compileSummary: CompileSummary | undefined
+  ): void {
+    this._compileSummary = compileSummary;
+    this.onDidChangeCompileSummaryEmitter.fire(this._compileSummary);
+  }
+
+  get onDidChangeCompileSummary(): Event<CompileSummary | undefined> {
     return this.onDidChangeCompileSummaryEmitter.event;
   }
 
@@ -180,11 +189,7 @@ export class VerifySketch
         { timeout: 3000 }
       );
 
-      this._compileSummary = compileSummary;
-      this.onDidChangeCompileSummaryEmitter.fire();
-      if (this._compileSummary) {
-        this.fireBuildDidComplete(this._compileSummary);
-      }
+      this.updateCompileSummary(compileSummary);
 
       // Returns with the used options for the compilation
       // so that follow-up tasks (such as upload) can reuse the compiled code.
@@ -226,28 +231,6 @@ export class VerifySketch
       sourceOverride,
       compilerWarnings,
     };
-  }
-
-  // Execute the a command contributed by the Arduino Tools VSIX to send the `ino/buildDidComplete` notification to the language server
-  private fireBuildDidComplete(compileSummary: CompileSummary): void {
-    const params = {
-      ...compileSummary,
-    };
-    console.info(
-      `Executing 'arduino.languageserver.notifyBuildDidComplete' with ${JSON.stringify(
-        params.buildOutputUri
-      )}`
-    );
-    this.commandService
-      .executeCommand('arduino.languageserver.notifyBuildDidComplete', params)
-      .catch((err) =>
-        console.error(
-          `Unexpected error when firing event on build did complete. ${JSON.stringify(
-            params.buildOutputUri
-          )}`,
-          err
-        )
-      );
   }
 }
 

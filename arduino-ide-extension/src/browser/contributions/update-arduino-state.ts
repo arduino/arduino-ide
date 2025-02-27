@@ -62,8 +62,12 @@ export class UpdateArduinoState extends SketchContribution {
       this.configService.onDidChangeSketchDirUri((userDirUri) =>
         this.updateUserDirPath(userDirUri)
       ),
-      this.compileSummaryProvider.onDidChangeCompileSummary(() =>
-        this.maybeUpdateCompileSummary()
+      this.compileSummaryProvider.onDidChangeCompileSummary(
+        (compilerSummary) => {
+          if (compilerSummary) {
+            this.updateCompileSummary(compilerSummary);
+          }
+        }
       ),
       this.boardsDataStore.onDidChange((event) => {
         const selectedFqbn =
@@ -85,18 +89,14 @@ export class UpdateArduinoState extends SketchContribution {
     this.updateSketchPath(this.sketchServiceClient.tryGetCurrentSketch());
     this.updateUserDirPath(this.configService.tryGetSketchDirUri());
     this.updateDataDirPath(this.configService.tryGetDataDirUri());
-    this.maybeUpdateCompileSummary();
-  }
-
-  onStop(): void {
-    this.toDispose.dispose();
-  }
-
-  private maybeUpdateCompileSummary() {
     const { compileSummary } = this.compileSummaryProvider;
     if (compileSummary) {
       this.updateCompileSummary(compileSummary);
     }
+  }
+
+  onStop(): void {
+    this.toDispose.dispose();
   }
 
   private async updateSketchPath(
