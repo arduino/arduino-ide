@@ -67,7 +67,7 @@ describe('update-arduino-state', function () {
   let onDataDirDidChangeEmitter: Emitter<URI | undefined>;
   let onSketchDirDidChangeEmitter: Emitter<URI | undefined>;
   let onDataStoreDidChangeEmitter: Emitter<BoardsDataStoreChangeEvent>;
-  let compileSummaryDidChangeEmitter: Emitter<void>;
+  let compileSummaryDidChangeEmitter: Emitter<CompileSummary | undefined>;
 
   beforeEach(async () => {
     toDisposeAfterEach = new DisposableCollection();
@@ -425,7 +425,7 @@ describe('update-arduino-state', function () {
       buildOutputUri: 'file:///path/to/build',
     };
     compileSummaryMock = summary;
-    compileSummaryDidChangeEmitter.fire();
+    compileSummaryDidChangeEmitter.fire(compileSummaryMock);
     await wait(50);
 
     const params = stateUpdateParams.filter(
