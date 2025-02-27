@@ -62,7 +62,7 @@ describe('update-arduino-state', function () {
   let currentSketchMock: CurrentSketch | undefined;
   let sketchDirUriMock: URI | undefined;
   let dataDirUriMock: URI | undefined;
-  let compileSummary: CompileSummary | undefined;
+  let compileSummaryMock: CompileSummary | undefined;
   let onCurrentSketchDidChangeEmitter: Emitter<CurrentSketch>;
   let onDataDirDidChangeEmitter: Emitter<URI | undefined>;
   let onSketchDirDidChangeEmitter: Emitter<URI | undefined>;
@@ -79,7 +79,7 @@ describe('update-arduino-state', function () {
     currentSketchMock = undefined;
     sketchDirUriMock = undefined;
     dataDirUriMock = undefined;
-    compileSummary = undefined;
+    compileSummaryMock = undefined;
     onCurrentSketchDidChangeEmitter = new Emitter();
     onDataDirDidChangeEmitter = new Emitter();
     onSketchDirDidChangeEmitter = new Emitter();
@@ -424,7 +424,7 @@ describe('update-arduino-state', function () {
       buildPlatform: undefined,
       buildOutputUri: 'file:///path/to/build',
     };
-    compileSummary = summary;
+    compileSummaryMock = summary;
     compileSummaryDidChangeEmitter.fire();
     await wait(50);
 
@@ -591,7 +591,7 @@ describe('update-arduino-state', function () {
         bind(UpdateArduinoState).toSelf().inSingletonScope();
         bind(CompileSummaryProvider).toConstantValue(<CompileSummaryProvider>{
           get compileSummary(): CompileSummary | undefined {
-            return compileSummary;
+            return compileSummaryMock;
           },
           onDidChangeCompileSummary: compileSummaryDidChangeEmitter.event,
         });
