@@ -36,7 +36,7 @@ on:
 
 jobs:
   run-determination:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions: {}
     outputs:
       result: ${{ steps.determination.outputs.result }}
@@ -77,7 +77,7 @@ jobs:
           - path: .
         operating-system:
           - macos-latest
-          - ubuntu-latest
+          - ubuntu-22.04
           - windows-latest
 
     steps:

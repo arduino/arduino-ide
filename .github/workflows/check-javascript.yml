@@ -33,7 +33,7 @@ on:
 
 jobs:
   run-determination:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions: {}
     outputs:
       result: ${{ steps.determination.outputs.result }}
@@ -59,7 +59,7 @@ jobs:
   check:
     needs: run-determination
     if: needs.run-determination.outputs.result == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       contents: read
 

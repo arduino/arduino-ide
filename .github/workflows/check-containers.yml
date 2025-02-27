@@ -20,7 +20,7 @@ on:
 jobs:
   run:
     name: Run (${{ matrix.image.path }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions: {}
     services:
       registry:
