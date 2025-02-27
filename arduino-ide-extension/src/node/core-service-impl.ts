@@ -176,6 +176,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       };
 
       startCompileStream();
+    }).finally(() => {
+      toDisposeOnFinally.dispose();
     });
   }
 
