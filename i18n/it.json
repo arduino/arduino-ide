@@ -275,6 +275,9 @@
       "checkForUpdates": "Controlla gli aggiornamenti dell'IDE di Arduino",
       "closeAndInstallButton": "Chiudi e Installa",
       "closeToInstallNotice": "Chiudi il software e installa l’aggiornamento sulla tua macchina",
+      "donateLinkIconTitle": "apri la pagina delle donazioni",
+      "donateLinkText": "dona per sostenerci",
+      "donateText": "L'open source è amore, {0}",
       "downloadButton": "Scarica",
       "downloadingNotice": "Stai scaricando l’ultima versione dell’Arduino IDE",
       "errorCheckingForUpdates": "Si è verificato un errore durante il controllo degli aggiornamenti per Arduino IDE {0}.",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "Il nome del file dello sketch non è valido",
       "renameSketchFolderMessage": "Lo sketch '{0}' non può essere usato. {1} Per eliminare questo messaggio, rinomina lo sketch. Vuoi rinominare adesso lo sketch?",
       "renameSketchFolderTitle": "Il nome dello sketch non è valido"
+    },
+    "versionWelcome": {
+      "cancelButton": "Forse in seguito",
+      "donateButton": "Dona adesso",
+      "donateMessage": "Arduino si impegna a mantenere il software libero e open-source per tutti. La tua donazione ci aiuta a sviluppare nuove funzionalità, a migliorare le librerie e a supportare milioni di utenti in tutto il mondo.",
+      "donateMessage2": "Considera l'opportunità di sostenere il nostro lavoro sull'IDE open source gratuito di Arduino.",
+      "title": "Benvenuto nella nuova versione dell'IDE di Arduino!",
+      "titleWithVersion": "Benvenuto nel nuovo IDE di Arduino! {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' è già presente."
