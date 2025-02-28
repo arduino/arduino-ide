@@ -225,8 +225,7 @@ export class ConfigServiceImpl
     ]);
 
     const config = JSON.parse(configRaw);
-    const { user, data } = JSON.parse(directoriesRaw);
-
+    const { user, data } = JSON.parse(directoriesRaw ?? '{}');
     return { ...config.config, directories: { user, data } };
   }
 
