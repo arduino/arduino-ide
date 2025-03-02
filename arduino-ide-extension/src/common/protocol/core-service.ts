@@ -171,7 +171,7 @@ export interface CoreService {
   compile(
     options: CoreService.Options.Compile,
     cancellationToken?: CancellationToken
-  ): Promise<void>;
+  ): Promise<CompileSummary | undefined>;
   upload(
     options: CoreService.Options.Upload,
     cancellationToken?: CancellationToken

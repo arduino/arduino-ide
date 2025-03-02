@@ -1,7 +1,6 @@
 import { type ClientReadableStream } from '@grpc/grpc-js';
 import { ApplicationError } from '@theia/core/lib/common/application-error';
 import type { CancellationToken } from '@theia/core/lib/common/cancellation';
-import { CommandService } from '@theia/core/lib/common/command';
 import {
   Disposable,
   DisposableCollection,
@@ -69,15 +68,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private readonly responseService: ResponseService;
   @inject(MonitorManager)
   private readonly monitorManager: MonitorManager;
-  @inject(CommandService)
-  private readonly commandService: CommandService;
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
 
   async compile(
     options: CoreService.Options.Compile,
     cancellationToken?: CancellationToken
-  ): Promise<void> {
+  ): Promise<CompileSummary | undefined> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const request = this.compileRequest(options, instance);
@@ -91,7 +88,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     );
     const toDisposeOnFinally = new DisposableCollection(handler);
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<CompileSummary | undefined>((resolve, reject) => {
       let hasRetried = false;
 
       const handleUnexpectedError = (error: Error) => {
@@ -164,48 +161,24 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
         call
           .on('data', handler.onData)
           .on('error', handleError)
-          .on('end', resolve);
+          .on('end', () => {
+            if (isCompileSummary(compileSummary)) {
+              resolve(compileSummary);
+            } else {
+              console.error(
+                `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
+                  compileSummary
+                )}`
+              );
+              resolve(undefined);
+            }
+          });
       };
 
       startCompileStream();
     }).finally(() => {
       toDisposeOnFinally.dispose();
-      if (!isCompileSummary(compileSummary)) {
-        if (cancellationToken && cancellationToken.isCancellationRequested) {
-          // NOOP
-          return;
-        }
-        console.error(
-          `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
-            compileSummary
-          )}`
-        );
-      } else {
-        this.fireBuildDidComplete(compileSummary);
-      }
     });
-  }
-
-  // This executes on the frontend, the VS Code extension receives it, and sends an `ino/buildDidComplete` notification to the language server.
-  private fireBuildDidComplete(compileSummary: CompileSummary): void {
-    const params = {
-      ...compileSummary,
-    };
-    console.info(
-      `Executing 'arduino.languageserver.notifyBuildDidComplete' with ${JSON.stringify(
-        params.buildOutputUri
-      )}`
-    );
-    this.commandService
-      .executeCommand('arduino.languageserver.notifyBuildDidComplete', params)
-      .catch((err) =>
-        console.error(
-          `Unexpected error when firing event on build did complete. ${JSON.stringify(
-            params.buildOutputUri
-          )}`,
-          err
-        )
-      );
   }
 
   private compileRequest(

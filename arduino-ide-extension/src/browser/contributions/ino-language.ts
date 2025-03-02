@@ -8,6 +8,7 @@ import {
   ArduinoDaemon,
   BoardIdentifier,
   BoardsService,
+  CompileSummary,
   ExecutableService,
   isBoardIdentifierChangeEvent,
   sanitizeFqbn,
@@ -23,6 +24,7 @@ import { HostedPluginEvents } from '../hosted/hosted-plugin-events';
 import { NotificationCenter } from '../notification-center';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { SketchContribution, URI } from './contribution';
+import { CompileSummaryProvider } from './verify-sketch';
 
 interface DaemonAddress {
   /**
@@ -107,6 +109,8 @@ export class InoLanguage extends SketchContribution {
   private readonly notificationCenter: NotificationCenter;
   @inject(BoardsDataStore)
   private readonly boardDataStore: BoardsDataStore;
+  @inject(CompileSummaryProvider)
+  private readonly compileSummaryProvider: CompileSummaryProvider;
 
   private readonly toDispose = new DisposableCollection();
   private readonly languageServerStartMutex = new Mutex();
@@ -173,6 +177,13 @@ export class InoLanguage extends SketchContribution {
           }
         }
       }),
+      this.compileSummaryProvider.onDidChangeCompileSummary(
+        (compileSummary) => {
+          if (compileSummary) {
+            this.fireBuildDidComplete(compileSummary);
+          }
+        }
+      ),
     ]);
     Promise.all([
       this.boardsServiceProvider.ready,
@@ -316,5 +327,33 @@ export class InoLanguage extends SketchContribution {
       'arduino.languageserver.start',
       params
     );
+  }
+
+  // Execute the a command contributed by the Arduino Tools VSIX to send the `ino/buildDidComplete` notification to the language server
+  private async fireBuildDidComplete(
+    compileSummary: CompileSummary
+  ): Promise<void> {
+    const params = {
+      ...compileSummary,
+    };
+    console.info(
+      `Executing 'arduino.languageserver.notifyBuildDidComplete' with ${JSON.stringify(
+        params.buildOutputUri
+      )}`
+    );
+
+    try {
+      await this.commandService.executeCommand(
+        'arduino.languageserver.notifyBuildDidComplete',
+        params
+      );
+    } catch (err) {
+      console.error(
+        `Unexpected error when firing event on build did complete. ${JSON.stringify(
+          params.buildOutputUri
+        )}`,
+        err
+      );
+    }
   }
 }

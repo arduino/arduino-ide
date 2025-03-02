@@ -1,12 +1,11 @@
-import { CancellationTokenSource } from '@theia/core/lib/common/cancellation';
-import { CommandRegistry } from '@theia/core/lib/common/command';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { isWindows } from '@theia/core/lib/common/os';
 import { FileUri } from '@theia/core/lib/node/file-uri';
-import { Container, injectable } from '@theia/core/shared/inversify';
+import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import {
   BoardsService,
+  CompileSummary,
   CoreService,
   SketchesService,
   isCompileSummary,
@@ -36,11 +35,9 @@ describe('core-service-impl', () => {
       this.timeout(testTimeout);
       const coreService = container.get<CoreService>(CoreService);
       const sketchesService = container.get<SketchesService>(SketchesService);
-      const commandService =
-        container.get<TestCommandRegistry>(TestCommandRegistry);
       const sketch = await sketchesService.createNewSketch();
 
-      await coreService.compile({
+      const compileSummary = await coreService.compile({
         fqbn: uno,
         sketch,
         optimizeForDebug: false,
@@ -48,18 +45,9 @@ describe('core-service-impl', () => {
         verbose: true,
       });
 
-      const executedBuildDidCompleteCommands =
-        commandService.executedCommands.filter(
-          ([command]) =>
-            command === 'arduino.languageserver.notifyBuildDidComplete'
-        );
-      expect(executedBuildDidCompleteCommands.length).to.be.equal(1);
-      const [, args] = executedBuildDidCompleteCommands[0];
-      expect(args.length).to.be.equal(1);
-      const arg = args[0];
-      expect(isCompileSummary(arg)).to.be.true;
-      expect('buildOutputUri' in arg).to.be.true;
-      expect(arg.buildOutputUri).to.be.not.undefined;
+      expect(isCompileSummary(compileSummary)).to.be.true;
+      expect((<CompileSummary>compileSummary).buildOutputUri).to.be.not
+        .undefined;
 
       const tempBuildPaths = await sketchesService.getBuildPath(sketch);
       if (isWindows) {
@@ -68,7 +56,7 @@ describe('core-service-impl', () => {
         expect(tempBuildPaths.length).to.be.equal(1);
       }
 
-      const { buildOutputUri } = arg;
+      const { buildOutputUri } = <CompileSummary>compileSummary;
       const buildOutputPath = FileUri.fsPath(buildOutputUri).toString();
       expect(tempBuildPaths.includes(buildOutputPath)).to.be.true;
     });
@@ -91,35 +79,5 @@ async function start(
 }
 
 async function createContainer(): Promise<Container> {
-  return createBaseContainer({
-    additionalBindings: (bind, rebind) => {
-      bind(TestCommandRegistry).toSelf().inSingletonScope();
-      rebind(CommandRegistry).toService(TestCommandRegistry);
-    },
-  });
-}
-
-@injectable()
-class TestCommandRegistry extends CommandRegistry {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  readonly executedCommands: [string, any[]][] = [];
-
-  override async executeCommand<T>(
-    commandId: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ...args: any[]
-  ): Promise<T | undefined> {
-    const { token } = new CancellationTokenSource();
-    this.onWillExecuteCommandEmitter.fire({
-      commandId,
-      args,
-      token,
-      waitUntil: () => {
-        // NOOP
-      },
-    });
-    this.executedCommands.push([commandId, args]);
-    this.onDidExecuteCommandEmitter.fire({ commandId, args });
-    return undefined;
-  }
+  return createBaseContainer();
 }

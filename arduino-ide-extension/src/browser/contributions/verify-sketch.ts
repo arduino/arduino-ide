@@ -1,7 +1,7 @@
-import { Emitter } from '@theia/core/lib/common/event';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import type { CoreService } from '../../common/protocol';
+import type { CompileSummary, CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -14,6 +14,12 @@ import {
   TabBarToolbarRegistry,
 } from './contribution';
 import { CoreErrorHandler } from './core-error-handler';
+
+export const CompileSummaryProvider = Symbol('CompileSummaryProvider');
+export interface CompileSummaryProvider {
+  readonly compileSummary: CompileSummary | undefined;
+  readonly onDidChangeCompileSummary: Event<CompileSummary | undefined>;
+}
 
 export type VerifySketchMode =
   /**
@@ -46,13 +52,20 @@ export interface VerifySketchParams {
 type VerifyProgress = 'idle' | VerifySketchMode;
 
 @injectable()
-export class VerifySketch extends CoreServiceContribution {
+export class VerifySketch
+  extends CoreServiceContribution
+  implements CompileSummaryProvider
+{
   @inject(CoreErrorHandler)
   private readonly coreErrorHandler: CoreErrorHandler;
 
   private readonly onDidChangeEmitter = new Emitter<void>();
   private readonly onDidChange = this.onDidChangeEmitter.event;
+  private readonly onDidChangeCompileSummaryEmitter = new Emitter<
+    CompileSummary | undefined
+  >();
   private verifyProgress: VerifyProgress = 'idle';
+  private _compileSummary: CompileSummary | undefined;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
@@ -117,6 +130,21 @@ export class VerifySketch extends CoreServiceContribution {
     super.handleError(error);
   }
 
+  get compileSummary(): CompileSummary | undefined {
+    return this._compileSummary;
+  }
+
+  private updateCompileSummary(
+    compileSummary: CompileSummary | undefined
+  ): void {
+    this._compileSummary = compileSummary;
+    this.onDidChangeCompileSummaryEmitter.fire(this._compileSummary);
+  }
+
+  get onDidChangeCompileSummary(): Event<CompileSummary | undefined> {
+    return this.onDidChangeCompileSummaryEmitter.event;
+  }
+
   private async verifySketch(
     params?: VerifySketchParams
   ): Promise<CoreService.Options.Compile | undefined> {
@@ -141,7 +169,7 @@ export class VerifySketch extends CoreServiceContribution {
         return options;
       }
 
-      await this.doWithProgress({
+      const compileSummary = await this.doWithProgress({
         progressText: nls.localize(
           'arduino/sketch/compile',
           'Compiling sketch...'
@@ -160,6 +188,9 @@ export class VerifySketch extends CoreServiceContribution {
         nls.localize('arduino/sketch/doneCompiling', 'Done compiling.'),
         { timeout: 3000 }
       );
+
+      this.updateCompileSummary(compileSummary);
+
       // Returns with the used options for the compilation
       // so that follow-up tasks (such as upload) can reuse the compiled code.
       // Note that the `fqbn` is already decorated with the board settings, if any.
