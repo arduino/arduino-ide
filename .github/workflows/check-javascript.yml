@@ -73,6 +73,12 @@ jobs:
           cache: yarn
           node-version: ${{ env.NODE_VERSION }}
 
+      - name: Install Dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxkbfile-dev libsecret-1-dev
+
       - name: Install npm package dependencies
         env:
           # Avoid failure of @vscode/ripgrep installation due to GitHub API rate limiting:
