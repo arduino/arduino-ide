@@ -24,7 +24,7 @@ on:
 
 jobs:
   run-determination:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.determination.outputs.result }}
     permissions: {}
@@ -52,7 +52,7 @@ jobs:
   check:
     needs: run-determination
     if: needs.run-determination.outputs.result == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository

@@ -25,7 +25,7 @@ on:
 
 jobs:
   run-determination:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions: {}
     outputs:
       result: ${{ steps.determination.outputs.result }}
@@ -52,7 +52,7 @@ jobs:
     name: check-sync (${{ matrix.project.path }})
     needs: run-determination
     if: needs.run-determination.outputs.result == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
 

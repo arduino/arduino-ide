@@ -89,7 +89,7 @@ env:
           name: Windows_X86-64_zip
     - config:
         name: Linux
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-latest
         container: |
           {
             \"image\": \"ghcr.io/arduino/arduino-ide/linux:main\"
@@ -140,7 +140,7 @@ env:
 
 jobs:
   run-determination:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       result: ${{ steps.determination.outputs.result }}
     permissions: {}
@@ -166,7 +166,7 @@ jobs:
   build-type-determination:
     needs: run-determination
     if: needs.run-determination.outputs.result == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       is-release: ${{ steps.determination.outputs.is-release }}
       is-nightly: ${{ steps.determination.outputs.is-nightly }}
@@ -207,7 +207,7 @@ jobs:
 
   select-targets:
     needs: build-type-determination
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       artifact-matrix: ${{ steps.assemble.outputs.artifact-matrix }}
       build-matrix: ${{ steps.assemble.outputs.build-matrix }}
@@ -434,7 +434,7 @@ jobs:
       - select-targets
       - build
     if: needs.select-targets.outputs.merge-channel-files == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     permissions: {}
     steps:
       - name: Set environment variables
@@ -498,7 +498,7 @@ jobs:
       - select-targets
       - build
     if: always() && needs.build.result != 'skipped'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     env:
       BUILD_ARTIFACTS_FOLDER: build-artifacts
@@ -524,7 +524,7 @@ jobs:
     needs:
       - build-type-determination
       - build
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       BODY: ${{ steps.changelog.outputs.BODY }}
     steps:
@@ -583,7 +583,7 @@ jobs:
       needs.changelog.result == 'success' &&
       needs.build-type-determination.outputs.publish-to-s3 == 'true' &&
       needs.build-type-determination.outputs.is-nightly == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     env:
       ARTIFACTS_FOLDER: build-artifacts
@@ -620,7 +620,7 @@ jobs:
       ) &&
       needs.changelog.result == 'success' &&
       needs.build-type-determination.outputs.is-release == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     env:
       ARTIFACTS_FOLDER: build-artifacts
@@ -668,7 +668,7 @@ jobs:
       - release
       - artifacts
     if: always() && needs.build.result != 'skipped'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Remove unneeded job transfer artifacts

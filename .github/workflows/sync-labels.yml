@@ -23,7 +23,7 @@ env:
 
 jobs:
   check:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -54,7 +54,7 @@ jobs:
 
   download:
     needs: check
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
@@ -81,7 +81,7 @@ jobs:
 
   sync:
     needs: download
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Set environment variables
