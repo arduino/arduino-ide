@@ -15,6 +15,9 @@ type TestLine = {
     charCount: number;
     maxCharacters?: number;
   };
+  lineIndex?: number;
+  cursorPosition?: number;
+  overflow?: string;
 };
 
 const date = new Date();
@@ -115,7 +118,137 @@ const testLines: TestLine[] = [
         { message: "Who's a good boy?\n", lineLen: 18 },
         { message: 'Yo', lineLen: 2 },
       ],
-    },
+    }
+  },
+  {
+    messages: ['Dog!'],
+    prevLines: { lines: [{ message: 'Hello\n', lineLen: 6 }], charCount: 6 },
+    expected: {
+      lines: [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!', lineLen: 4 },
+      ],
+      charCount: 10,
+    }
+  },
+  {
+    messages: ['\n'],
+    prevLines: { lines: [
+        { message: 'Hello', lineLen: 5 },
+      ], charCount: 5 },
+    expected: {
+      lines: [
+        { message: 'Hello\n', lineLen: 6 },
+      ],
+      charCount: 6,
+    }
+  },
+  {
+    messages: ['\n', '\x1B[H', 'Are', '\nYou'],
+    prevLines: { lines: [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'How', lineLen: 3 },
+    ], charCount: 14 },
+    expected: {
+      lines: [
+        { message: 'Are\no\n', lineLen: 6 },
+        { message: 'You!\n', lineLen: 5 },
+        { message: 'How\n', lineLen: 4 },
+      ],
+      charCount: 15,
+    }
+  },
+  {
+    messages: ['Yes\x1B[HNo'],
+    prevLines: { lines: [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'How', lineLen: 3 },
+      ], charCount: 14 },
+    cursorPosition: 1,
+    lineIndex: 2,
+    expected: {
+      lines: [
+        { message: 'Nollo\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'HYes', lineLen: 4 },
+      ],
+      charCount: 15,
+    }
+  },
+  {
+    messages: ['dy', '\x1B', '[H', 'Reset'],
+    prevLines: { lines: [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'How', lineLen: 3 },
+      ], charCount: 14 },
+    expected: {
+      lines: [
+        { message: 'Reset\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'Howdy', lineLen: 5 },
+      ],
+      charCount: 16,
+    }
+  },
+  {
+    messages: ['HReset'],
+    prevLines: { lines: [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'How', lineLen: 3 },
+      ], charCount: 14 },
+    overflow: '\x1B[',
+    expected: {
+      lines: [
+        { message: 'Reset\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'How', lineLen: 3 },
+      ],
+      charCount: 14,
+    }
+  },
+  {
+    messages: ['\x1B[H', 'Reset', '\x1B[H', 'Me', '\x1B'],
+    prevLines: { lines: [
+        { message: 'Hello', lineLen: 6 },
+      ], charCount: 6 },
+    expected: {
+      lines: [
+        { message: 'Meset', lineLen: 6 },
+      ],
+      charCount: 6,
+    }
+  },
+  {
+    messages: ['HReset', 'Clear \x1B[2J', 'Me'],
+    prevLines: { lines: [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!\n', lineLen: 5 },
+        { message: 'How', lineLen: 3 },
+      ], charCount: 14 },
+    overflow: '\x1B[',
+    expected: {
+      lines: [
+        { message: 'Me', lineLen: 2 },
+      ],
+      charCount: 2,
+    }
+  },
+  {
+    messages: ['2JReset'],
+    prevLines: { lines: [
+        { message: 'How', lineLen: 3 },
+      ], charCount: 3 },
+    overflow: '\x1B[',
+    expected: {
+      lines: [
+        { message: 'Reset', lineLen: 5 },
+      ],
+      charCount: 5,
+    }
   },
 ];
 
@@ -137,10 +270,18 @@ describe('Monitor Utils', () => {
   testLines.forEach((testLine) => {
     context('when converting messages', () => {
       it('should give the right result', () => {
-        const [newLines, addedCharCount] = messagesToLines(
+        const lineIndex = testLine.lineIndex || testLine.prevLines ? testLine.prevLines!.lines.length - 1 : null
+        const cursorPosition = testLine.cursorPosition || testLine.prevLines?.lines[testLine.prevLines?.lines.length - 1].message.length || 0;
+
+        if (testLine.overflow) {
+          testLine.messages[0] = testLine.overflow + testLine.messages[0]
+        }
+        const [newLines, addedCharCount, cLineIndex, cCursorPosition] = messagesToLines(
           testLine.messages,
           testLine.prevLines?.lines,
-          testLine.prevLines?.charCount
+          testLine.prevLines?.charCount,
+            lineIndex,
+            cursorPosition
         );
         newLines.forEach((line, index) => {
           expect(line.message).to.equal(testLine.expected.lines[index].message);
@@ -153,6 +294,8 @@ describe('Monitor Utils', () => {
         const [truncatedLines, totalCharCount] = truncateLines(
           newLines,
           addedCharCount,
+          cLineIndex,
+          cCursorPosition,
           testLine.expectedTruncated?.maxCharacters
         );
         let charCount = 0;
