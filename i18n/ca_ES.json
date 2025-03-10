@@ -275,6 +275,9 @@
       "checkForUpdates": "Comprova si hi ha actualitzacions de l'IDE d'Arduino",
       "closeAndInstallButton": "Tanca i instal·la",
       "closeToInstallNotice": "Tanqueu el programari i instal·leu l'actualització a la vostra màquina.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Descarrega",
       "downloadingNotice": "Descarregant de l'última versió de l'IDE d'Arduino.",
       "errorCheckingForUpdates": "S'ha produït un error en comprovar si hi ha actualitzacions de l'IDE d'Arduino.\n{0}",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "El nom del fitxer del programa no és vàlid",
       "renameSketchFolderMessage": "El programa \"{0}\" no es pot usar. {1} Per obtindre detalls del missatge, reanomena el programa. Vols reanomenar-lo ara?",
       "renameSketchFolderTitle": "El nom del programa no és vàlid"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "\"{0}\" ja existeix."

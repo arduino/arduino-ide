@@ -275,6 +275,9 @@
       "checkForUpdates": "Ελέγξτε για νέες ενημερώσεις Arduino IDE",
       "closeAndInstallButton": "Κλείσιμο και εγκατάσταση",
       "closeToInstallNotice": "Κλείστε το πρόγραμμα και εγκαταστήστε την ενημέρωση στον υπολογιστή σας.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Κατεβάστε",
       "downloadingNotice": "Λήψη της πιο πρόσφατης έκδοσης του Arduino IDE.",
       "errorCheckingForUpdates": "Σφάλμα κατά τον έλεγχο για ενημερώσεις του Arduino IDE.\n{0}",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "Μη έγκυρο όνομα αρχείου σχεδίου",
       "renameSketchFolderMessage": "Το σχέδιο '{0}' δεν μπορεί να χρησιμοποιηθεί. {1}Για να απαλλαγείτε από αυτό το μήνυμα, μετονομάστε το σχέδιο. Θέλετε να μετονομάσετε το σχέδιο τώρα;",
       "renameSketchFolderTitle": "Μη έγκυρο όνομα σκίτσου"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' υπάρχει ήδη."

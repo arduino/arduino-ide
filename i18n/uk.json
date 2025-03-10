@@ -275,6 +275,9 @@
       "checkForUpdates": "Перевірка оновлень Arduino IDE",
       "closeAndInstallButton": "Закрити та Встановити",
       "closeToInstallNotice": "Закрийте програму та встановіть оновлення.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Завантажити",
       "downloadingNotice": "Завантажити останню версію Arduino IDE.",
       "errorCheckingForUpdates": "Помилка під час перевірки оновлень Arduino IDE {0}",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "Помилка в імені файла скетча ",
       "renameSketchFolderMessage": "Скетч '{0}' не може бути використаний. {1} Щоб позбутися цього повідомлення, перейменуйте скетч. Бажаєте перейменувати скетч зараз?",
       "renameSketchFolderTitle": "Помилка в назві скетча"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' вже існує."
