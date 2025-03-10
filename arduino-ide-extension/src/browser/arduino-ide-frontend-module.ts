@@ -131,7 +131,10 @@ import { OpenSketch } from './contributions/open-sketch';
 import { Close } from './contributions/close';
 import { SaveAsSketch } from './contributions/save-as-sketch';
 import { SaveSketch } from './contributions/save-sketch';
-import { VerifySketch } from './contributions/verify-sketch';
+import {
+  CompileSummaryProvider,
+  VerifySketch,
+} from './contributions/verify-sketch';
 import { UploadSketch } from './contributions/upload-sketch';
 import { CommonFrontendContribution } from './theia/core/common-frontend-contribution';
 import { EditContributions } from './contributions/edit-contributions';
@@ -787,6 +790,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UpdateArduinoState);
   Contribution.configure(bind, BoardsDataMenuUpdater);
   Contribution.configure(bind, AutoSelectProgrammer);
+
+  bind(CompileSummaryProvider).toService(VerifySketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
   bind(StartupTaskProvider).toService(BoardsServiceProvider); // to reuse the boards config in another window

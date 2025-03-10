@@ -31,6 +31,7 @@ import {
   UpdateArduinoState,
   UpdateStateParams,
 } from '../../browser/contributions/update-arduino-state';
+import { CompileSummaryProvider } from '../../browser/contributions/verify-sketch';
 import { NotificationCenter } from '../../browser/notification-center';
 import {
   CurrentSketch,
@@ -61,10 +62,12 @@ describe('update-arduino-state', function () {
   let currentSketchMock: CurrentSketch | undefined;
   let sketchDirUriMock: URI | undefined;
   let dataDirUriMock: URI | undefined;
+  let compileSummaryMock: CompileSummary | undefined;
   let onCurrentSketchDidChangeEmitter: Emitter<CurrentSketch>;
   let onDataDirDidChangeEmitter: Emitter<URI | undefined>;
   let onSketchDirDidChangeEmitter: Emitter<URI | undefined>;
   let onDataStoreDidChangeEmitter: Emitter<BoardsDataStoreChangeEvent>;
+  let compileSummaryDidChangeEmitter: Emitter<CompileSummary | undefined>;
 
   beforeEach(async () => {
     toDisposeAfterEach = new DisposableCollection();
@@ -76,15 +79,18 @@ describe('update-arduino-state', function () {
     currentSketchMock = undefined;
     sketchDirUriMock = undefined;
     dataDirUriMock = undefined;
+    compileSummaryMock = undefined;
     onCurrentSketchDidChangeEmitter = new Emitter();
     onDataDirDidChangeEmitter = new Emitter();
     onSketchDirDidChangeEmitter = new Emitter();
     onDataStoreDidChangeEmitter = new Emitter();
+    compileSummaryDidChangeEmitter = new Emitter();
     toDisposeAfterEach.pushAll([
       onCurrentSketchDidChangeEmitter,
       onDataDirDidChangeEmitter,
       onSketchDirDidChangeEmitter,
       onDataStoreDidChangeEmitter,
+      compileSummaryDidChangeEmitter,
     ]);
 
     const container = createContainer();
@@ -418,10 +424,8 @@ describe('update-arduino-state', function () {
       buildPlatform: undefined,
       buildOutputUri: 'file:///path/to/build',
     };
-    await commandRegistry.executeCommand(
-      'arduino.languageserver.notifyBuildDidComplete',
-      summary
-    );
+    compileSummaryMock = summary;
+    compileSummaryDidChangeEmitter.fire(compileSummaryMock);
     await wait(50);
 
     const params = stateUpdateParams.filter(
@@ -585,6 +589,12 @@ describe('update-arduino-state', function () {
       new ContainerModule((bind, unbind, isBound, rebind) => {
         bindSketchesContribution(bind, unbind, isBound, rebind);
         bind(UpdateArduinoState).toSelf().inSingletonScope();
+        bind(CompileSummaryProvider).toConstantValue(<CompileSummaryProvider>{
+          get compileSummary(): CompileSummary | undefined {
+            return compileSummaryMock;
+          },
+          onDidChangeCompileSummary: compileSummaryDidChangeEmitter.event,
+        });
         rebind(BoardsService).toConstantValue(<BoardsService>{
           getDetectedPorts() {
             return {};
