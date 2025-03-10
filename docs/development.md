@@ -50,6 +50,7 @@ This repository contains the main code, but two more repositories are included d
 
 - To build the application, follow the Theia IDE [prerequisites](https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#prerequisites).
 - This project recommends using [Visual Studio Code (VS Code)](https://code.visualstudio.com/) for the development.
+- The build system might also need to build the [Arduino CLI](https://github.com/arduino/arduino-cli), the [Arduino Language Server](https://github.com/arduino/arduino-language-server), and other tools from the sources. In this case it is also necessary to have the build prerequisites for those projects installed. For more details, refer to the Arduino CLI's [prerequisites section](https://arduino.github.io/arduino-cli/latest/CONTRIBUTING/#prerequisites).
 
 ## Build from source
 

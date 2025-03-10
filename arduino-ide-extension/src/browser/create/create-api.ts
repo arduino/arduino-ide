@@ -509,11 +509,19 @@ export class CreateApi {
 
   private async headers(): Promise<Record<string, string>> {
     const token = await this.token();
-    return {
+    const headers: Record<string, string> = {
       'content-type': 'application/json',
       accept: 'application/json',
       authorization: `Bearer ${token}`,
     };
+
+    const sharedSpaceID =
+      this.arduinoPreferences['arduino.cloud.sharedSpaceID'];
+    if (sharedSpaceID) {
+      headers['x-organization'] = sharedSpaceID;
+    }
+
+    return headers;
   }
 
   private domain(apiVersion = 'v2'): string {

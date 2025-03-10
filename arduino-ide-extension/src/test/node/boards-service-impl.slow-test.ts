@@ -113,13 +113,13 @@ describe('boards-service-impl', () => {
       expect(result.length).greaterThan(1);
       const lastIndex = result.length - 1;
       const last = result[lastIndex];
-      expect(last.id).to.be.equal('arduino:mbed');
+      expect(last.id).to.be.equal('Microsoft:win10');
       expect(last.deprecated).to.be.true;
-      const windowsIoTCoreIndex = result.findIndex(
-        (platform) => platform.id === 'Microsoft:win10'
+      const arduinoMbedCoreIndex = result.findIndex(
+        (platform) => platform.id === 'arduino:mbed'
       );
-      expect(windowsIoTCoreIndex).to.be.greaterThanOrEqual(0);
-      expect(windowsIoTCoreIndex).to.be.lessThan(lastIndex);
+      expect(arduinoMbedCoreIndex).to.be.greaterThanOrEqual(0);
+      expect(arduinoMbedCoreIndex).to.be.lessThan(lastIndex);
       const first = result[0];
       expect(typeof first.deprecated).to.be.equal('boolean');
       expect(first.deprecated).to.be.false;

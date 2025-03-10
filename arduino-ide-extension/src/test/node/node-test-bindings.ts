@@ -289,7 +289,6 @@ export async function createCliConfig(
   const directories = {
     data: join(configDirPath, 'data', 'Arduino15'),
     downloads: join(configDirPath, 'data', 'Arduino15', 'staging'),
-    builtin: join(configDirPath, 'data', 'Arduino15', 'libraries'),
     user: join(configDirPath, 'user', 'Arduino'),
   };
   for (const directoryPath of Object.values(directories)) {

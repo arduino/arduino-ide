@@ -38,6 +38,10 @@ export class UploadRequest extends jspb.Message {
 
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
+    clearUploadPropertiesList(): void;
+    getUploadPropertiesList(): Array<string>;
+    setUploadPropertiesList(value: Array<string>): UploadRequest;
+    addUploadProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadRequest.AsObject;
@@ -63,6 +67,7 @@ export namespace UploadRequest {
         dryRun: boolean,
 
         userFieldsMap: Array<[string, string]>,
+        uploadPropertiesList: Array<string>,
     }
 }
 
@@ -185,6 +190,10 @@ export class UploadUsingProgrammerRequest extends jspb.Message {
 
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
+    clearUploadPropertiesList(): void;
+    getUploadPropertiesList(): Array<string>;
+    setUploadPropertiesList(value: Array<string>): UploadUsingProgrammerRequest;
+    addUploadProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UploadUsingProgrammerRequest.AsObject;
@@ -210,6 +219,7 @@ export namespace UploadUsingProgrammerRequest {
         dryRun: boolean,
 
         userFieldsMap: Array<[string, string]>,
+        uploadPropertiesList: Array<string>,
     }
 }
 
@@ -279,6 +289,10 @@ export class BurnBootloaderRequest extends jspb.Message {
 
     getUserFieldsMap(): jspb.Map<string, string>;
     clearUserFieldsMap(): void;
+    clearUploadPropertiesList(): void;
+    getUploadPropertiesList(): Array<string>;
+    setUploadPropertiesList(value: Array<string>): BurnBootloaderRequest;
+    addUploadProperties(value: string, index?: number): string;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BurnBootloaderRequest.AsObject;
@@ -301,6 +315,7 @@ export namespace BurnBootloaderRequest {
         dryRun: boolean,
 
         userFieldsMap: Array<[string, string]>,
+        uploadPropertiesList: Array<string>,
     }
 }
 

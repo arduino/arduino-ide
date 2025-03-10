@@ -4,7 +4,7 @@
 const isCI = require('is-ci');
 const fs = require('fs');
 const path = require('path');
-const glob = require('glob');
+const { glob } = require('glob');
 const { isRelease } = require('./utils');
 const { isZip, adjustArchiveStructure } = require('./archive');
 

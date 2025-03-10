@@ -74,9 +74,11 @@ jobs:
           - identifier: macOS signing certificate # Text used to identify certificate in notifications.
             certificate-secret: APPLE_SIGNING_CERTIFICATE_P12 # Name of the secret that contains the certificate.
             password-secret: KEYCHAIN_PASSWORD # Name of the secret that contains the certificate password.
+            type: pkcs12
           - identifier: Windows signing certificate
-            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX
-            password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD
+            certificate-secret: INSTALLER_CERT_WINDOWS_CER
+            # The password for the Windows certificate is not needed, because its not a container, but a single certificate.
+            type: x509
 
     steps:
       - name: Set certificate path environment variable
@@ -95,7 +97,7 @@ jobs:
           CERTIFICATE_PASSWORD: ${{ secrets[matrix.certificate.password-secret] }}
         run: |
           (
-            openssl pkcs12 \
+            openssl ${{ matrix.certificate.type }} \
               -in "${{ env.CERTIFICATE_PATH }}" \
               -legacy \
               -noout \
@@ -122,26 +124,43 @@ jobs:
           CERTIFICATE_PASSWORD: ${{ secrets[matrix.certificate.password-secret] }}
         id: get-days-before-expiration
         run: |
-          EXPIRATION_DATE="$(
-            (
-              openssl pkcs12 \
-                -in "${{ env.CERTIFICATE_PATH }}" \
-                -clcerts \
-                -legacy \
-                -nodes \
-                -passin env:CERTIFICATE_PASSWORD
-            ) | (
-              openssl x509 \
-                -noout \
-                -enddate
-            ) | (
-              grep \
-                --max-count=1 \
-                --only-matching \
-                --perl-regexp \
-                'notAfter=(\K.*)'
-            )
-          )"
+          if [[ ${{ matrix.certificate.type }} == "pkcs12" ]]; then
+            EXPIRATION_DATE="$(
+              (
+                openssl pkcs12 \
+                  -in "${{ env.CERTIFICATE_PATH }}" \
+                  -clcerts \
+                  -legacy \
+                  -nodes \
+                  -passin env:CERTIFICATE_PASSWORD
+              ) | (
+                openssl x509 \
+                  -noout \
+                  -enddate
+              ) | (
+                grep \
+                  --max-count=1 \
+                  --only-matching \
+                  --perl-regexp \
+                  'notAfter=(\K.*)'
+              )
+            )"
+          elif [[ ${{ matrix.certificate.type }} == "x509" ]]; then
+            EXPIRATION_DATE="$(
+                (
+                openssl x509 \
+                    -in ${{ env.CERTIFICATE_PATH }} \
+                    -noout \
+                    -enddate
+                ) | (
+                grep \
+                    --max-count=1 \
+                    --only-matching \
+                    --perl-regexp \
+                    'notAfter=(\K.*)'
+                )
+            )"
+          fi
 
           DAYS_BEFORE_EXPIRATION="$((($(date --utc --date="$EXPIRATION_DATE" +%s) - $(date --utc +%s)) / 60 / 60 / 24))"
 

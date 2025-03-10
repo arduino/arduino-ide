@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "electron-app",
-  "version": "2.3.3",
+  "version": "2.3.5",
   "license": "AGPL-3.0-or-later",
   "main": "./src-gen/backend/electron-main.js",
   "dependencies": {
@@ -19,7 +19,7 @@
     "@theia/preferences": "1.46.1",
     "@theia/terminal": "1.46.1",
     "@theia/workspace": "1.46.1",
-    "arduino-ide-extension": "2.3.3"
+    "arduino-ide-extension": "2.3.5"
   },
   "devDependencies": {
     "@theia/cli": "1.46.1",
@@ -137,7 +137,8 @@
         "msi",
         "nsis",
         "zip"
-      ]
+      ],
+      "sign": "./scripts/windowsCustomSign.js"
     },
     "mac": {
       "darkModeSupport": true,

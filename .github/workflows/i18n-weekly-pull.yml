@@ -34,6 +34,12 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
 
+      - name: Install dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxkbfile-dev libsecret-1-dev
+
       - name: Install dependencies
         run: yarn install --immutable
 
@@ -46,7 +52,7 @@ jobs:
           TRANSIFEX_API_KEY: ${{ secrets.TRANSIFEX_API_KEY }}
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: Updated translation files
           title: Update translation files

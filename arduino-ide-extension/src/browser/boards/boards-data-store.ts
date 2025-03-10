@@ -222,6 +222,20 @@ export class BoardsDataStore
     return data;
   }
 
+  async reloadBoardData(fqbn: string | undefined): Promise<void> {
+    if (!fqbn) {
+      return;
+    }
+    const key = this.getStorageKey(fqbn);
+    const details = await this.loadBoardDetails(fqbn, true);
+    if (!details) {
+      return;
+    }
+    const data = createDataStoreEntry(details);
+    await this.storageService.setData(key, data);
+    this.fireChanged({ fqbn, data });
+  }
+
   async selectProgrammer({
     fqbn,
     selectedProgrammer,
@@ -299,9 +313,15 @@ export class BoardsDataStore
     return `.arduinoIDE-configOptions-${fqbn}`;
   }
 
-  async loadBoardDetails(fqbn: string): Promise<BoardDetails | undefined> {
+  async loadBoardDetails(
+    fqbn: string,
+    forceRefresh = false
+  ): Promise<BoardDetails | undefined> {
     try {
-      const details = await this.boardsService.getBoardDetails({ fqbn });
+      const details = await this.boardsService.getBoardDetails({
+        fqbn,
+        forceRefresh,
+      });
       return details;
     } catch (err) {
       if (

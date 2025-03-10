@@ -1,7 +1,6 @@
-import type { ClientReadableStream } from '@grpc/grpc-js';
+import { type ClientReadableStream } from '@grpc/grpc-js';
 import { ApplicationError } from '@theia/core/lib/common/application-error';
 import type { CancellationToken } from '@theia/core/lib/common/cancellation';
-import { CommandService } from '@theia/core/lib/common/command';
 import {
   Disposable,
   DisposableCollection,
@@ -11,7 +10,6 @@ import { nls } from '@theia/core/lib/common/nls';
 import type { Mutable } from '@theia/core/lib/common/types';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import * as jspb from 'google-protobuf';
-import { BoolValue } from 'google-protobuf/google/protobuf/wrappers_pb';
 import path from 'node:path';
 import { userAbort } from '../common/nls';
 import {
@@ -39,11 +37,13 @@ import { Instance } from './cli-protocol/cc/arduino/cli/commands/v1/common_pb';
 import {
   CompileRequest,
   CompileResponse,
+  InstanceNeedsReinitializationError,
 } from './cli-protocol/cc/arduino/cli/commands/v1/compile_pb';
 import { Port as RpcPort } from './cli-protocol/cc/arduino/cli/commands/v1/port_pb';
 import {
   BurnBootloaderRequest,
   BurnBootloaderResponse,
+  ProgrammerIsRequiredForUploadError,
   UploadRequest,
   UploadResponse,
   UploadUsingProgrammerRequest,
@@ -68,15 +68,13 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private readonly responseService: ResponseService;
   @inject(MonitorManager)
   private readonly monitorManager: MonitorManager;
-  @inject(CommandService)
-  private readonly commandService: CommandService;
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
 
   async compile(
     options: CoreService.Options.Compile,
     cancellationToken?: CancellationToken
-  ): Promise<void> {
+  ): Promise<CompileSummary | undefined> {
     const coreClient = await this.coreClient;
     const { client, instance } = coreClient;
     const request = this.compileRequest(options, instance);
@@ -89,86 +87,98 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compileSummaryHandler
     );
     const toDisposeOnFinally = new DisposableCollection(handler);
-    return new Promise<void>((resolve, reject) => {
-      const call = client.compile(request);
-      if (cancellationToken) {
-        toDisposeOnFinally.push(
-          cancellationToken.onCancellationRequested(() => call.cancel())
+
+    return new Promise<CompileSummary | undefined>((resolve, reject) => {
+      let hasRetried = false;
+
+      const handleUnexpectedError = (error: Error) => {
+        console.error(
+          'Unexpected error occurred while compiling the sketch.',
+          error
         );
-      }
-      call
-        .on('data', handler.onData)
-        .on('error', (error) => {
-          if (!ServiceError.is(error)) {
-            console.error(
-              'Unexpected error occurred while compiling the sketch.',
-              error
-            );
-            reject(error);
-            return;
-          }
-          if (ServiceError.isCancel(error)) {
-            console.log(userAbort);
-            reject(UserAbortApplicationError());
-            return;
-          }
-          const compilerErrors = tryParseError({
-            content: handler.content,
-            sketch: options.sketch,
+        reject(error);
+      };
+
+      const handleCancellationError = () => {
+        console.log(userAbort);
+        reject(UserAbortApplicationError());
+      };
+
+      const handleInstanceNeedsReinitializationError = async (
+        error: ServiceError & InstanceNeedsReinitializationError
+      ) => {
+        if (hasRetried) {
+          // If error persists, send the error message to the output
+          return parseAndSendErrorResponse(error);
+        }
+
+        hasRetried = true;
+        await this.refresh();
+        return startCompileStream();
+      };
+
+      const parseAndSendErrorResponse = (error: ServiceError) => {
+        const compilerErrors = tryParseError({
+          content: handler.content,
+          sketch: options.sketch,
+        });
+        const message = nls.localize(
+          'arduino/compile/error',
+          'Compilation error: {0}',
+          compilerErrors
+            .map(({ message }) => message)
+            .filter(notEmpty)
+            .shift() ?? error.details
+        );
+        this.sendResponse(
+          error.details + '\n\n' + message,
+          OutputMessage.Severity.Error
+        );
+        reject(CoreError.VerifyFailed(message, compilerErrors));
+      };
+
+      const handleError = async (error: Error) => {
+        if (!ServiceError.is(error)) return handleUnexpectedError(error);
+        if (ServiceError.isCancel(error)) return handleCancellationError();
+
+        if (
+          ServiceError.isInstanceOf(error, InstanceNeedsReinitializationError)
+        ) {
+          return await handleInstanceNeedsReinitializationError(error);
+        }
+
+        parseAndSendErrorResponse(error);
+      };
+
+      const startCompileStream = () => {
+        const call = client.compile(request);
+        if (cancellationToken) {
+          toDisposeOnFinally.push(
+            cancellationToken.onCancellationRequested(() => call.cancel())
+          );
+        }
+
+        call
+          .on('data', handler.onData)
+          .on('error', handleError)
+          .on('end', () => {
+            if (isCompileSummary(compileSummary)) {
+              resolve(compileSummary);
+            } else {
+              console.error(
+                `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
+                  compileSummary
+                )}`
+              );
+              resolve(undefined);
+            }
           });
-          const message = nls.localize(
-            'arduino/compile/error',
-            'Compilation error: {0}',
-            compilerErrors
-              .map(({ message }) => message)
-              .filter(notEmpty)
-              .shift() ?? error.details
-          );
-          this.sendResponse(
-            error.details + '\n\n' + message,
-            OutputMessage.Severity.Error
-          );
-          reject(CoreError.VerifyFailed(message, compilerErrors));
-        })
-        .on('end', resolve);
+      };
+
+      startCompileStream();
     }).finally(() => {
       toDisposeOnFinally.dispose();
-      if (!isCompileSummary(compileSummary)) {
-        if (cancellationToken && cancellationToken.isCancellationRequested) {
-          // NOOP
-          return;
-        }
-        console.error(
-          `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
-            compileSummary
-          )}`
-        );
-      } else {
-        this.fireBuildDidComplete(compileSummary);
-      }
     });
-  }
-
-  // This executes on the frontend, the VS Code extension receives it, and sends an `ino/buildDidComplete` notification to the language server.
-  private fireBuildDidComplete(compileSummary: CompileSummary): void {
-    const params = {
-      ...compileSummary,
-    };
-    console.info(
-      `Executing 'arduino.languageserver.notifyBuildDidComplete' with ${JSON.stringify(
-        params.buildOutputUri
-      )}`
-    );
-    this.commandService
-      .executeCommand('arduino.languageserver.notifyBuildDidComplete', params)
-      .catch((err) =>
-        console.error(
-          `Unexpected error when firing event on build did complete. ${JSON.stringify(
-            params.buildOutputUri
-          )}`,
-          err
-        )
-      );
   }
 
   private compileRequest(
@@ -195,9 +205,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     request.setVerbose(options.verbose);
     request.setQuiet(false);
     if (typeof options.exportBinaries === 'boolean') {
-      const exportBinaries = new BoolValue();
-      exportBinaries.setValue(options.exportBinaries);
-      request.setExportBinaries(exportBinaries);
+      request.setExportBinaries(options.exportBinaries);
     }
     this.mergeSourceOverrides(request, options);
     return request;
@@ -298,12 +306,24 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               reject(UserAbortApplicationError());
               return;
             }
+
+            if (
+              ServiceError.isInstanceOf(
+                error,
+                ProgrammerIsRequiredForUploadError
+              )
+            ) {
+              reject(CoreError.UploadRequiresProgrammer());
+              return;
+            }
+
             const message = nls.localize(
               'arduino/upload/error',
               '{0} error: {1}',
               firstToUpperCase(task),
               error.details
             );
+
             this.sendResponse(error.details, OutputMessage.Severity.Error);
             reject(
               errorCtor(

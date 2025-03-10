@@ -34,7 +34,7 @@
   }, '');
 
   const args = process.argv.slice(2);
-  if (args.length == 0) {
+  if (args.length === 0) {
     console.error('Missing argument to destination file');
     process.exit(1);
   }

@@ -67,7 +67,10 @@ export interface BoardsService
     skipPostInstall?: boolean;
   }): Promise<void>;
   getDetectedPorts(): Promise<DetectedPorts>;
-  getBoardDetails(options: { fqbn: string }): Promise<BoardDetails | undefined>;
+  getBoardDetails(options: {
+    fqbn: string;
+    forceRefresh?: boolean;
+  }): Promise<BoardDetails | undefined>;
   getBoardPackage(options: {
     id: string /* TODO: change to PlatformIdentifier type? */;
   }): Promise<BoardsPackage | undefined>;

@@ -1,7 +1,7 @@
-import { Emitter } from '@theia/core/lib/common/event';
+import { Emitter, Event } from '@theia/core/lib/common/event';
 import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
-import type { CoreService } from '../../common/protocol';
+import type { CompileSummary, CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
 import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
@@ -15,32 +15,57 @@ import {
 } from './contribution';
 import { CoreErrorHandler } from './core-error-handler';
 
+export const CompileSummaryProvider = Symbol('CompileSummaryProvider');
+export interface CompileSummaryProvider {
+  readonly compileSummary: CompileSummary | undefined;
+  readonly onDidChangeCompileSummary: Event<CompileSummary | undefined>;
+}
+
+export type VerifySketchMode =
+  /**
+   * When the user explicitly triggers the verify command from the primary UI: menu, toolbar, or keybinding. The UI shows the output, updates the toolbar items state, etc.
+   */
+  | 'explicit'
+  /**
+   * When the verify phase automatically runs as part of the upload but there is no UI indication of the command: the toolbar items do not update.
+   */
+  | 'auto'
+  /**
+   * The verify does not run. There is no UI indication of the command. For example, when the user decides to disable the auto verify (`'arduino.upload.autoVerify'`) to skips the code recompilation phase.
+   */
+  | 'dry-run';
+
 export interface VerifySketchParams {
   /**
    * Same as `CoreService.Options.Compile#exportBinaries`
    */
   readonly exportBinaries?: boolean;
   /**
-   * If `true`, there won't be any UI indication of the verify command in the toolbar. It's `false` by default.
+   * The mode specifying how verify should run. It's `'explicit'` by default.
    */
-  readonly silent?: boolean;
+  readonly mode?: VerifySketchMode;
 }
 
 /**
- *  - `"idle"` when neither verify, nor upload is running,
- *  - `"explicit-verify"` when only verify is running triggered by the user, and
- *  - `"automatic-verify"` is when the automatic verify phase is running as part of an upload triggered by the user.
+ *  - `"idle"` when neither verify, nor upload is running
  */
-type VerifyProgress = 'idle' | 'explicit-verify' | 'automatic-verify';
+type VerifyProgress = 'idle' | VerifySketchMode;
 
 @injectable()
-export class VerifySketch extends CoreServiceContribution {
+export class VerifySketch
+  extends CoreServiceContribution
+  implements CompileSummaryProvider
+{
   @inject(CoreErrorHandler)
   private readonly coreErrorHandler: CoreErrorHandler;
 
   private readonly onDidChangeEmitter = new Emitter<void>();
   private readonly onDidChange = this.onDidChangeEmitter.event;
+  private readonly onDidChangeCompileSummaryEmitter = new Emitter<
+    CompileSummary | undefined
+  >();
   private verifyProgress: VerifyProgress = 'idle';
+  private _compileSummary: CompileSummary | undefined;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH, {
@@ -54,10 +79,10 @@ export class VerifySketch extends CoreServiceContribution {
     registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR, {
       isVisible: (widget) =>
         ArduinoToolbar.is(widget) && widget.side === 'left',
-      isEnabled: () => this.verifyProgress !== 'explicit-verify',
+      isEnabled: () => this.verifyProgress !== 'explicit',
       // toggled only when verify is running, but not toggled when automatic verify is running before the upload
       // https://github.com/arduino/arduino-ide/pull/1750#pullrequestreview-1214762975
-      isToggled: () => this.verifyProgress === 'explicit-verify',
+      isToggled: () => this.verifyProgress === 'explicit',
       execute: () =>
         registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id),
     });
@@ -105,6 +130,21 @@ export class VerifySketch extends CoreServiceContribution {
     super.handleError(error);
   }
 
+  get compileSummary(): CompileSummary | undefined {
+    return this._compileSummary;
+  }
+
+  private updateCompileSummary(
+    compileSummary: CompileSummary | undefined
+  ): void {
+    this._compileSummary = compileSummary;
+    this.onDidChangeCompileSummaryEmitter.fire(this._compileSummary);
+  }
+
+  get onDidChangeCompileSummary(): Event<CompileSummary | undefined> {
+    return this.onDidChangeCompileSummaryEmitter.event;
+  }
+
   private async verifySketch(
     params?: VerifySketchParams
   ): Promise<CoreService.Options.Compile | undefined> {
@@ -113,20 +153,23 @@ export class VerifySketch extends CoreServiceContribution {
     }
 
     try {
-      this.verifyProgress = params?.silent
-        ? 'automatic-verify'
-        : 'explicit-verify';
+      this.verifyProgress = params?.mode ?? 'explicit';
       this.onDidChangeEmitter.fire();
       this.menuManager.update();
       this.clearVisibleNotification();
       this.coreErrorHandler.reset();
+      const dryRun = this.verifyProgress === 'dry-run';
 
       const options = await this.options(params?.exportBinaries);
       if (!options) {
         return undefined;
       }
 
-      await this.doWithProgress({
+      if (dryRun) {
+        return options;
+      }
+
+      const compileSummary = await this.doWithProgress({
         progressText: nls.localize(
           'arduino/sketch/compile',
           'Compiling sketch...'
@@ -145,6 +188,9 @@ export class VerifySketch extends CoreServiceContribution {
         nls.localize('arduino/sketch/doneCompiling', 'Done compiling.'),
         { timeout: 3000 }
       );
+
+      this.updateCompileSummary(compileSummary);
+
       // Returns with the used options for the compilation
       // so that follow-up tasks (such as upload) can reuse the compiled code.
       // Note that the `fqbn` is already decorated with the board settings, if any.

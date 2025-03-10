@@ -71,3 +71,4 @@ export interface IDEUpdaterClient {
 }
 
 export const SKIP_IDE_VERSION = 'skipIDEVersion';
+export const LAST_USED_IDE_VERSION = 'lastUsedIDEVersion';
