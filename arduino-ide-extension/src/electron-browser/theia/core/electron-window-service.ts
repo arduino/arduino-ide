@@ -1,8 +1,5 @@
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import type {
-  NewWindowOptions,
-  WindowSearchParams,
-} from '@theia/core/lib/common/window';
+import type { NewWindowOptions } from '@theia/core/lib/common/window';
 import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
 import { injectable, postConstruct } from '@theia/core/shared/inversify';
 import { WindowServiceExt } from '../../../browser/theia/core/window-service-ext';
@@ -10,6 +7,7 @@ import {
   hasStartupTasks,
   StartupTasks,
 } from '../../../electron-common/startup-task';
+import { WindowReloadOptions } from '@theia/core/lib/browser/window/window-service';
 
 @injectable()
 export class ElectronWindowService
@@ -45,7 +43,7 @@ export class ElectronWindowService
   }
 
   // Overridden to support optional task owner params and make `tsc` happy.
-  override reload(options?: StartupTasks | WindowSearchParams): void {
+  override reload(options?: StartupTasks | WindowReloadOptions): void {
     if (hasStartupTasks(options)) {
       window.electronArduino.requestReload(options);
     } else {
