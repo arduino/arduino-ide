@@ -779,7 +779,7 @@ export class CompilerErrors
       return undefined;
     } else {
       return this.editorManager
-        .getByUri(new URI(uriOrWidget))
+        .getByUri(new URI(uriOrWidget.toString()))
         .then((editor) => {
           if (editor) {
             return this.monacoEditor(editor);

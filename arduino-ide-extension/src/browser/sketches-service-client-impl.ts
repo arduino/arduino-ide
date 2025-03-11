@@ -288,7 +288,7 @@ export class SketchesServiceClientImpl
    * `true` if the `uri` is not contained in any of the opened workspaces. Otherwise, `false`.
    */
   isReadOnly(uri: URI | monaco.Uri | string): boolean {
-    const toCheck = uri instanceof URI ? uri : new URI(uri);
+    const toCheck = uri instanceof URI ? uri : new URI(uri.toString());
     if (toCheck.scheme === 'user-storage') {
       return false;
     }

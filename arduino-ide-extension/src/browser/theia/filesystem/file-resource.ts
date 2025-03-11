@@ -36,7 +36,7 @@ export class FileResourceResolver extends TheiaFileResourceResolver {
       );
     }
     return new WriteQueuedFileResource(uri, this.fileService, {
-      isReadonly: stat?.isReadonly ?? false,
+      readOnly: stat?.isReadonly ?? false,
       shouldOverwrite: () => this.shouldOverwrite(uri),
       shouldOpenAsText: (error) => this.shouldOpenAsText(uri, error),
     });

@@ -20,7 +20,7 @@ export class MonacoTextModelService extends TheiaMonacoTextModelService {
       .getContributions()
       .find(({ scheme }) => resource.uri.scheme === scheme);
     const readOnly =
-      Boolean(resource.isReadonly) ||
+      Boolean(resource.readOnly) ||
       this.sketchesServiceClient.isReadOnly(resource.uri);
     return factory
       ? factory.createModel(resource)
