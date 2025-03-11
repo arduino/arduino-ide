@@ -11,16 +11,16 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { isOSX } from '@theia/core/lib/common/os';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { isObject, MaybePromise, Mutable } from '@theia/core/lib/common/types';
 import { ElectronSecurityToken } from '@theia/core/lib/electron-common/electron-token';
 import {
-  ElectronMainExecutionParams,
+  ElectronMainCommandOptions,
   ElectronMainApplication as TheiaElectronMainApplication,
 } from '@theia/core/lib/electron-main/electron-main-application';
 import type { TheiaBrowserWindowOptions } from '@theia/core/lib/electron-main/theia-electron-window';
-import { FileUri } from '@theia/core/lib/node/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { URI } from '@theia/core/shared/vscode-uri';
 import { log as logToFile, setup as setupFileLog } from 'node-log-rotate';
@@ -28,6 +28,7 @@ import { fork } from 'node:child_process';
 import { promises as fs, readFileSync, rm, rmSync } from 'node:fs';
 import type { AddressInfo } from 'node:net';
 import { isAbsolute, join, resolve } from 'node:path';
+import type { Argv } from 'yargs';
 import { Sketch } from '../../common/protocol';
 import {
   AppInfo,
@@ -129,6 +130,11 @@ const APP_STARTED_WITH_CONTENT_TRACE =
   typeof process !== 'undefined' &&
   process.argv.indexOf('--content-trace') !== -1;
 
+const createYargs: (
+  argv?: string[],
+  cwd?: string
+) => Argv = require('yargs/yargs');
+
 @injectable()
 export class ElectronMainApplication extends TheiaElectronMainApplication {
   @inject(IsTempSketch)
@@ -171,29 +177,55 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   private readonly scheduledDeletions: Disposable[] = [];
 
   override async start(config: FrontendApplicationConfig): Promise<void> {
-    // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
-    // See: https://github.com/electron-userland/electron-builder/issues/2468
-    // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
-    console.log(`${config.applicationName} ${app.getVersion()}`);
-    app.on('ready', () => app.setName(config.applicationName));
-    const cwd = process.cwd();
-    this.attachFileAssociations(cwd);
-    this.useNativeWindowFrame = this.getTitleBarStyle(config) === 'native';
-    this._config = await updateFrontendApplicationConfigFromPackageJson(config);
-    this._appInfo = updateAppInfo(this._appInfo, this._config);
-    this.hookApplicationEvents();
-    const [port] = await Promise.all([this.startBackend(), app.whenReady()]);
-    this.startContentTracing();
-    this._backendPort.resolve(port);
-    await Promise.all([
-      this.attachElectronSecurityToken(port),
-      this.startContributions(),
-    ]);
-    return this.launch({
-      secondInstance: false,
-      argv: this.processArgv.getProcessArgvWithoutBin(process.argv),
-      cwd,
-    });
+    createYargs(this.argv, process.cwd())
+      .command(
+        '$0 [file]',
+        false,
+        (cmd) =>
+          cmd
+            .option('electronUserData', {
+              type: 'string',
+              describe:
+                'The area where the electron main process puts its data',
+            })
+            .positional('file', { type: 'string' }),
+        async (args) => {
+          if (args.electronUserData) {
+            console.info(
+              `using electron user data area : '${args.electronUserData}'`
+            );
+            await fs.mkdir(args.electronUserData, { recursive: true });
+            app.setPath('userData', args.electronUserData);
+          }
+          // Explicitly set the app name to have better menu items on macOS. ("About", "Hide", and "Quit")
+          // See: https://github.com/electron-userland/electron-builder/issues/2468
+          // Regression in Theia: https://github.com/eclipse-theia/theia/issues/8701
+          console.log(`${config.applicationName} ${app.getVersion()}`);
+          app.on('ready', () => app.setName(config.applicationName));
+          const cwd = process.cwd();
+          this.attachFileAssociations(cwd);
+          this.useNativeWindowFrame =
+            this.getTitleBarStyle(config) === 'native';
+          this._config = await updateFrontendApplicationConfigFromPackageJson(
+            config
+          );
+          this._appInfo = updateAppInfo(this._appInfo, this._config);
+          this.hookApplicationEvents();
+          this.showInitialWindow();
+          const port = await this.startBackend();
+          this.startContentTracing();
+          this._backendPort.resolve(port);
+          await app.whenReady();
+          await this.attachElectronSecurityToken(port);
+          await this.startContributions();
+          this.handleMainCommand({
+            file: args.file,
+            cwd,
+            secondInstance: false,
+          });
+        }
+      )
+      .parse();
   }
 
   private startContentTracing(): void {
@@ -284,8 +316,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
   }
 
-  protected override async launch(
-    params: ElectronMainExecutionParams
+  protected override async handleMainCommand(
+    options: ElectronMainCommandOptions
   ): Promise<void> {
     try {
       // When running on MacOS, we either have to wait until
@@ -300,7 +332,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       throw err;
     }
 
-    if (await this.launchFromArgs(params)) {
+    if (await this.launchFromArgs(options)) {
       // Application has received a file in its arguments and will skip the default application launch
       return;
     }
@@ -314,7 +346,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
         `Restoring workspace roots: ${workspaces.map(({ file }) => file)}`
       );
       for (const workspace of workspaces) {
-        const resolvedPath = await this.resolvePath(workspace.file, params.cwd);
+        const resolvedPath = await this.resolvePath(
+          workspace.file,
+          options.cwd
+        );
         if (!resolvedPath) {
           continue;
         }
@@ -337,15 +372,19 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
     this.startup = false;
     if (useDefault) {
-      super.launch(params);
+      super.handleMainCommand(options);
     }
   }
 
+  private get argv(): string[] {
+    return this.processArgv.getProcessArgvWithoutBin(process.argv).slice();
+  }
+
   private async launchFromArgs(
-    params: ElectronMainExecutionParams
+    params: ElectronMainCommandOptions
   ): Promise<boolean> {
     // Copy to prevent manipulation of original array
-    const argCopy = [...params.argv];
+    const argCopy = [...this.argv];
     let path: string | undefined;
     for (const maybePath of argCopy) {
       const resolvedPath = await this.resolvePath(maybePath, params.cwd);
@@ -383,7 +422,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
     const [uri, electronWindow] = await Promise.all([
       this.createWindowUri(),
-      this.createWindow(options),
+      this.reuseOrCreateWindow(options),
     ]);
     electronWindow.loadURL(uri.withFragment(encodeURI(file)).toString(true));
     return electronWindow;
@@ -483,7 +522,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     argv: string[],
     cwd: string
   ): Promise<void> {
-    if (await this.launchFromArgs({ cwd, argv, secondInstance: true })) {
+    if (await this.launchFromArgs({ cwd, secondInstance: true })) {
       // Application has received a file in its arguments
       return;
     }
@@ -779,7 +818,7 @@ class InterruptWorkspaceRestoreError extends Error {
 // but it's the `package.json` inside the `resources/app/` folder if it's the final bundled app.
 // See https://github.com/arduino/arduino-ide/pull/2144#pullrequestreview-1556343430.
 async function updateFrontendApplicationConfigFromPackageJson(
-  config: FrontendApplicationConfig
+  config: Mutable<FrontendApplicationConfig>
 ): Promise<FrontendApplicationConfig> {
   if (!isProductionMode) {
     console.debug(
@@ -846,7 +885,8 @@ const fallbackFrontendAppConfig: FrontendApplicationConfig = {
   defaultIconTheme: 'none',
   validatePreferencesSchema: false,
   defaultLocale: '',
-  electron: {},
+  electron: { showWindowEarly: true },
+  reloadOnReconnect: true,
 };
 
 // When the package.json must go from `./lib/backend/electron-main.js` to `./package.json` when the app is webpacked.

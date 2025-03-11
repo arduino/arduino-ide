@@ -9,10 +9,8 @@ import { CommandContribution } from '@theia/core/lib/common/command';
 import { bindViewContribution } from '@theia/core/lib/browser/shell/view-contribution';
 import { TabBarToolbarContribution } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { WebSocketConnectionProvider } from '@theia/core/lib/browser/messaging/ws-connection-provider';
-import {
-  FrontendApplicationContribution,
-  FrontendApplication as TheiaFrontendApplication,
-} from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplication as TheiaFrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { LibraryListWidget } from './library/library-list-widget';
 import { ArduinoFrontendContribution } from './arduino-frontend-contribution';
 import {
@@ -275,7 +273,7 @@ import {
   IDEUpdaterDialog,
   IDEUpdaterDialogProps,
 } from './dialogs/ide-updater/ide-updater-dialog';
-import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
+import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-source';
 import { MonitorModel } from './monitor-model';
 import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
@@ -295,10 +293,6 @@ import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-gen
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 import { AboutDialog } from './theia/core/about-dialog';
 import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
-import {
-  SurveyNotificationService,
-  SurveyNotificationServicePath,
-} from '../common/protocol/survey-service';
 import { WindowContribution } from './theia/core/window-contribution';
 import { WindowContribution as TheiaWindowContribution } from '@theia/core/lib/browser/window-contribution';
 import { CoreErrorHandler } from './contributions/core-error-handler';
@@ -394,6 +388,8 @@ import {
   VersionWelcomeDialog,
   VersionWelcomeDialogProps,
 } from './dialogs/version-welcome-dialog';
+import { TestViewContribution as TheiaTestViewContribution } from '@theia/test/lib/browser/view/test-view-contribution';
+import { TestViewContribution } from './theia/test/test-view-contribution';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -573,15 +569,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaWorkspaceVariableContribution).toService(
     WorkspaceVariableContribution
   );
-
-  bind(SurveyNotificationService)
-    .toDynamicValue((context) => {
-      return ElectronIpcConnectionProvider.createProxy(
-        context.container,
-        SurveyNotificationServicePath
-      );
-    })
-    .inSingletonScope();
 
   // Layout and shell customizations.
   rebind(TheiaOutlineViewContribution)
@@ -1113,6 +1100,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   );
 
   bindViewsWelcome_TheiaGH14309({ bind, widget: TreeViewWidget });
+
+  // Hides the Test Explorer from the side-bar
+  bind(TestViewContribution).toSelf().inSingletonScope();
+  rebind(TheiaTestViewContribution).toService(TestViewContribution);
 });
 
 // Align the viewsWelcome rendering with VS Code (https://github.com/eclipse-theia/theia/issues/14309)

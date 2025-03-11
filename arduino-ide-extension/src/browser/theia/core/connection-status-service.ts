@@ -1,10 +1,10 @@
 import {
-  ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution,
   ConnectionStatus,
+  ApplicationConnectionStatusContribution as TheiaApplicationConnectionStatusContribution,
   FrontendConnectionStatusService as TheiaFrontendConnectionStatusService,
 } from '@theia/core/lib/browser/connection-status-service';
-import type { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { WebSocketConnectionProvider } from '@theia/core/lib/browser/index';
+import type { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
+import { WebSocketConnectionSource } from '@theia/core/lib/browser/messaging/ws-connection-source';
 import { StatusBarAlignment } from '@theia/core/lib/browser/status-bar/status-bar';
 import { Disposable } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
@@ -114,8 +114,8 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
   private readonly daemonPort: DaemonPort;
   @inject(IsOnline)
   private readonly isOnline: IsOnline;
-  @inject(WebSocketConnectionProvider)
-  private readonly connectionProvider: WebSocketConnectionProvider;
+  @inject(WebSocketConnectionSource)
+  private readonly connectionSource: WebSocketConnectionSource;
 
   @postConstruct()
   protected override init(): void {
@@ -128,7 +128,7 @@ export class FrontendConnectionStatusService extends TheiaFrontendConnectionStat
   }
 
   protected override async performPingRequest(): Promise<void> {
-    if (!this.connectionProvider['socket'].connected) {
+    if (!this.connectionSource['socket'].connected) {
       this.updateStatus(false);
       return;
     }
@@ -171,8 +171,8 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
   private readonly notificationManager: NotificationManager;
   @inject(CreateFeatures)
   private readonly createFeatures: CreateFeatures;
-  @inject(WebSocketConnectionProvider)
-  private readonly connectionProvider: WebSocketConnectionProvider;
+  @inject(WebSocketConnectionSource)
+  private readonly connectionSource: WebSocketConnectionSource;
 
   private readonly offlineStatusDidChangeEmitter = new Emitter<
     OfflineConnectionStatus | undefined
@@ -202,7 +202,7 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
     const params = <OfflineMessageParams>{
       port: this.daemonPort.port,
       online: this.isOnline.online,
-      backendConnected: this.connectionProvider['socket'].connected, // https://github.com/arduino/arduino-ide/issues/2081
+      backendConnected: this.connectionSource['socket'].connected, // https://github.com/arduino/arduino-ide/issues/2081
     };
     this._offlineStatus = offlineConnectionStatusType(params);
     const { text, tooltip } = offlineMessage(params);

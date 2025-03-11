@@ -2,9 +2,9 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { isWindows } from '@theia/core/lib/common/os';
 import { URI } from '@theia/core/lib/common/uri';
-import { FileUri } from '@theia/core/lib/node/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import { rejects } from 'node:assert/strict';
