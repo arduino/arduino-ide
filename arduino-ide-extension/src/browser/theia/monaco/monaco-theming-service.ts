@@ -1,4 +1,4 @@
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { ThemeService } from '@theia/core/lib/browser/theming';
 import {
   Disposable,

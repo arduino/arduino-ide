@@ -1,5 +1,8 @@
 import { Deferred } from '@theia/core/lib/common/promise-util';
-import type { NewWindowOptions } from '@theia/core/lib/common/window';
+import type {
+  NewWindowOptions,
+  WindowSearchParams,
+} from '@theia/core/lib/common/window';
 import { ElectronWindowService as TheiaElectronWindowService } from '@theia/core/lib/electron-browser/window/electron-window-service';
 import { injectable, postConstruct } from '@theia/core/shared/inversify';
 import { WindowServiceExt } from '../../../browser/theia/core/window-service-ext';
@@ -17,8 +20,12 @@ export class ElectronWindowService
 
   @postConstruct()
   protected override init(): void {
-    // NOOP
+    // Overridden to avoid calling the zoom level listener in super.
     // IDE2 listens on the zoom level changes in `ArduinoFrontendContribution#onStart`
+
+    window.electronTheiaCore.onAboutToClose(() => {
+      this.connectionCloseService.markForClose(this.frontendIdProvider.getId());
+    });
   }
 
   async isFirstWindow(): Promise<boolean> {
@@ -38,11 +45,11 @@ export class ElectronWindowService
   }
 
   // Overridden to support optional task owner params and make `tsc` happy.
-  override reload(options?: StartupTasks): void {
+  override reload(options?: StartupTasks | WindowSearchParams): void {
     if (hasStartupTasks(options)) {
       window.electronArduino.requestReload(options);
     } else {
-      window.electronTheiaCore.requestReload();
+      super.reload(options);
     }
   }
 
