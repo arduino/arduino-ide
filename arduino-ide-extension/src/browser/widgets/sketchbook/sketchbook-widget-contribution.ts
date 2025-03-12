@@ -28,7 +28,10 @@ import {
 } from '../../sketches-service-client-impl';
 import { FileService } from '@theia/filesystem/lib/browser/file-service';
 import { URI } from '../../contributions/contribution';
-import { WorkspaceInput } from '@theia/workspace/lib/browser';
+import {
+  WorkspaceCommands,
+  WorkspaceInput,
+} from '@theia/workspace/lib/browser';
 
 export const SKETCHBOOK__CONTEXT = ['arduino-sketchbook--context'];
 
@@ -130,6 +133,21 @@ export class SketchbookWidgetContribution
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
     });
 
+    registry.registerCommand(SketchbookCommands.NEW_FOLDER, {
+      execute: async (arg) => {
+        if (arg.node.uri) {
+          return registry.executeCommand(
+            WorkspaceCommands.NEW_FOLDER.id,
+            arg.node.uri
+          );
+        }
+      },
+      isEnabled: (arg) =>
+        !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
+      isVisible: (arg) =>
+        !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
+    });
+
     registry.registerCommand(SketchbookCommands.OPEN_SKETCHBOOK_CONTEXT_MENU, {
       isEnabled: (arg) =>
         !!arg && 'node' in arg && SketchbookTree.SketchDirNode.is(arg.node),
@@ -205,6 +223,12 @@ export class SketchbookWidgetContribution
       commandId: SketchbookCommands.REVEAL_IN_FINDER.id,
       label: SketchbookCommands.REVEAL_IN_FINDER.label,
       order: '0',
+    });
+
+    registry.registerMenuAction(SKETCHBOOK__CONTEXT__MAIN_GROUP, {
+      commandId: SketchbookCommands.NEW_FOLDER.id,
+      label: SketchbookCommands.NEW_FOLDER.label,
+      order: '1',
     });
   }
 
