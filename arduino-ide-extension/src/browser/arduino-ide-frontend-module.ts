@@ -95,7 +95,6 @@ import {
   ArduinoDaemonPath,
   ArduinoDaemon,
 } from '../common/protocol/arduino-daemon';
-import { EditorCommandContribution as TheiaEditorCommandContribution } from '@theia/editor/lib/browser';
 import {
   FrontendConnectionStatusService,
   ApplicationConnectionStatusContribution,
@@ -184,7 +183,6 @@ import {
 import { About } from './contributions/about';
 import { IconThemeService } from '@theia/core/lib/browser/icon-theme-service';
 import { TabBarRenderer } from './theia/core/tab-bars';
-import { EditorCommandContribution } from './theia/editor/editor-command';
 import { NavigatorTabBarDecorator as TheiaNavigatorTabBarDecorator } from '@theia/navigator/lib/browser/navigator-tab-bar-decorator';
 import { NavigatorTabBarDecorator } from './theia/navigator/navigator-tab-bar-decorator';
 import { Debug, DebugDisabledStatusMessageSource } from './contributions/debug';
@@ -842,13 +840,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       corePreferences
     );
   });
-
-  // Workaround for https://github.com/eclipse-theia/theia/issues/8722
-  // Do not trigger a save on IDE startup if `"editor.autoSave": "on"` was set as a preference.
-  // Note: `"editor.autoSave" was renamed to `"files.autoSave" and `"on"` was replaced with three
-  // different cases, but we treat `!== 'off'` as auto save enabled. (https://github.com/eclipse-theia/theia/issues/10812)
-  bind(EditorCommandContribution).toSelf().inSingletonScope();
-  rebind(TheiaEditorCommandContribution).toService(EditorCommandContribution);
 
   // Silent the badge decoration in the Explorer view.
   bind(NavigatorTabBarDecorator).toSelf().inSingletonScope();
