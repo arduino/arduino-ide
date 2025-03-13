@@ -211,7 +211,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           );
           this._appInfo = updateAppInfo(this._appInfo, this._config);
           this.hookApplicationEvents();
-          this.showInitialWindow();
+          this.showInitialWindow(undefined);
           const [port] = await Promise.all([
             this.startBackend(),
             app.whenReady(),
@@ -889,7 +889,7 @@ const fallbackFrontendAppConfig: FrontendApplicationConfig = {
   defaultIconTheme: 'none',
   validatePreferencesSchema: false,
   defaultLocale: '',
-  electron: { showWindowEarly: true },
+  electron: { showWindowEarly: true, uriScheme: 'custom://arduino-ide' },
   reloadOnReconnect: true,
 };
 
