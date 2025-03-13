@@ -98,16 +98,12 @@
     color: var(--theia-textLink-foreground);
 }
 
-.account-icon {
+img.arduino-account-picture {
     width: var(--theia-private-sidebar-icon-size);
     height: var(--theia-private-sidebar-icon-size);
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.account-icon > img {
     max-width: 100%;
     max-height: 100%;
+    border-radius: 50%;
 }
 
 .connected-status-icon {
