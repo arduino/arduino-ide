@@ -1,6 +1,7 @@
 import { injectable } from '@theia/core/shared/inversify';
 import { DebugSessionConnection } from '@theia/debug/lib/browser/debug-session-connection';
 import { DefaultDebugSessionFactory as TheiaDefaultDebugSessionFactory } from '@theia/debug/lib/browser/debug-session-contribution';
+import { DebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
 import { DebugConfigurationSessionOptions } from '@theia/debug/lib/browser/debug-session-options';
 import {
   DebugAdapterPath,
@@ -12,6 +13,7 @@ import { DebugSession } from './debug-session';
 @injectable()
 export class DefaultDebugSessionFactory extends TheiaDefaultDebugSessionFactory {
   override get(
+    manager: DebugSessionManager,
     sessionId: string,
     options: DebugConfigurationSessionOptions,
     parentSession?: DebugSession
@@ -35,6 +37,9 @@ export class DefaultDebugSessionFactory extends TheiaDefaultDebugSessionFactory 
       sessionId,
       options,
       parentSession,
+      this.testService,
+      options.testRun,
+      manager,
       connection,
       this.terminalService,
       this.editorManager,
