@@ -2,7 +2,7 @@ import {
   CommonCommands,
   CommonFrontendContribution as TheiaCommonFrontendContribution,
 } from '@theia/core/lib/browser/common-frontend-contribution';
-import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application';
+import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application-contribution';
 import type { KeybindingRegistry } from '@theia/core/lib/browser/keybinding';
 import type { CommandRegistry } from '@theia/core/lib/common/command';
 import type { MenuModelRegistry } from '@theia/core/lib/common/menu';

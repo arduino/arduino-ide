@@ -1,7 +1,11 @@
+import { nls } from '@theia/core/lib/common';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { CommonCommands } from '@theia/core/lib/browser/common-frontend-contribution';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
-import { MonacoEditorService } from '@theia/monaco/lib/browser/monaco-editor-service';
+import { StandaloneServices } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneServices';
+import { ICodeEditorService } from '@theia/monaco-editor-core/esm/vs/editor/browser/services/codeEditorService';
+import type { ICodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/browser/editorBrowser';
+import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneCodeEditor';
 import {
   Contribution,
   Command,
@@ -10,17 +14,11 @@ import {
   CommandRegistry,
 } from './contribution';
 import { ArduinoMenus } from '../menu/arduino-menus';
-import { nls } from '@theia/core/lib/common';
-import type { ICodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/browser/editorBrowser';
-import type { StandaloneCodeEditor } from '@theia/monaco-editor-core/esm/vs/editor/standalone/browser/standaloneCodeEditor';
 
 // TODO: [macOS]: to remove `Start Dictation...` and `Emoji & Symbol` see this thread: https://github.com/electron/electron/issues/8283#issuecomment-269522072
 // Depends on https://github.com/eclipse-theia/theia/pull/7964
 @injectable()
 export class EditContributions extends Contribution {
-  @inject(MonacoEditorService)
-  private readonly codeEditorService: MonacoEditorService;
-
   @inject(ClipboardService)
   private readonly clipboardService: ClipboardService;
 
@@ -208,9 +206,10 @@ ${value}
   protected async current(): Promise<
     ICodeEditor | StandaloneCodeEditor | undefined
   > {
+    const codeEditorService = StandaloneServices.get(ICodeEditorService);
     return (
-      this.codeEditorService.getFocusedCodeEditor() ||
-      this.codeEditorService.getActiveCodeEditor() ||
+      codeEditorService.getFocusedCodeEditor() ||
+      codeEditorService.getActiveCodeEditor() ||
       undefined
     );
   }

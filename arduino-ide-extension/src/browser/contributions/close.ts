@@ -1,8 +1,6 @@
 import { Dialog } from '@theia/core/lib/browser/dialogs';
-import type {
-  FrontendApplication,
-  OnWillStopAction,
-} from '@theia/core/lib/browser/frontend-application';
+import type { FrontendApplication } from '@theia/core/lib/browser/frontend-application';
+import type { OnWillStopAction } from '@theia/core/lib/browser/frontend-application-contribution';
 import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shell';
 import { nls } from '@theia/core/lib/common/nls';
 import type { MaybePromise } from '@theia/core/lib/common/types';

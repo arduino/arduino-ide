@@ -1,11 +1,9 @@
-import { DisposableCollection } from '@theia/core/lib/common/disposable';
+import type { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { Emitter, Event } from '@theia/core/lib/common/event';
 import { injectable, interfaces } from '@theia/core/shared/inversify';
-import {
-  PluginContributions,
-  HostedPluginSupport as TheiaHostedPluginSupport,
-} from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
-import { HostedPluginSupport } from '../../hosted/hosted-plugin-support';
+import { HostedPluginSupport as TheiaHostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
+import type { PluginContributions } from '@theia/plugin-ext/lib/hosted/common/hosted-plugin';
+import type { HostedPluginSupport } from '../../hosted/hosted-plugin-support';
 
 @injectable()
 export class HostedPluginSupportImpl

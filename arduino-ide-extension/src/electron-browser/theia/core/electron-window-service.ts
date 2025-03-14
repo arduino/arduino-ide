@@ -7,6 +7,7 @@ import {
   hasStartupTasks,
   StartupTasks,
 } from '../../../electron-common/startup-task';
+import { WindowReloadOptions } from '@theia/core/lib/browser/window/window-service';
 
 @injectable()
 export class ElectronWindowService
@@ -17,8 +18,12 @@ export class ElectronWindowService
 
   @postConstruct()
   protected override init(): void {
-    // NOOP
+    // Overridden to avoid calling the zoom level listener in super.
     // IDE2 listens on the zoom level changes in `ArduinoFrontendContribution#onStart`
+
+    window.electronTheiaCore.onAboutToClose(() => {
+      this.connectionCloseService.markForClose(this.frontendIdProvider.getId());
+    });
   }
 
   async isFirstWindow(): Promise<boolean> {
@@ -38,11 +43,11 @@ export class ElectronWindowService
   }
 
   // Overridden to support optional task owner params and make `tsc` happy.
-  override reload(options?: StartupTasks): void {
+  override reload(options?: StartupTasks | WindowReloadOptions): void {
     if (hasStartupTasks(options)) {
       window.electronArduino.requestReload(options);
     } else {
-      window.electronTheiaCore.requestReload();
+      super.reload(options);
     }
   }
 

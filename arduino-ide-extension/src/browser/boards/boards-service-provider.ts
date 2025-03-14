@@ -1,4 +1,4 @@
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { StorageService } from '@theia/core/lib/browser/storage-service';
 import {
