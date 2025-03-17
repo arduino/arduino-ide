@@ -99,7 +99,7 @@
     "react-markdown": "^8.0.0",
     "react-perfect-scrollbar": "^1.5.8",
     "react-select": "^5.6.0",
-    "react-tabs": "^5.2.0",
+    "react-tabs": "^6.1.0",
     "react-window": "^1.8.6",
     "semver": "^7.3.2",
     "string-natural-compare": "^2.0.3",
