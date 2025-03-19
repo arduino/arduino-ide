@@ -20,5 +20,3 @@ electron-app/traces
 inols*.log
 # The electron-builder output.
 electron-app/dist
-
-build/
