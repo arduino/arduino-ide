@@ -10,7 +10,7 @@ import { expect } from 'chai';
 import { rejects } from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import path, { basename, join } from 'node:path';
-import { sync as rimrafSync } from 'rimraf';
+import { rimrafSync } from 'rimraf';
 import temp from 'temp';
 import { Sketch, SketchesError, SketchesService } from '../../common/protocol';
 import {
@@ -574,7 +574,7 @@ function disposeSketch(...sketch: Sketch[]): Disposable {
 function disposeFolder(...paths: string[]): Disposable {
   return new DisposableCollection(
     ...paths.map((path) =>
-      Disposable.create(() => rimrafSync(path, { maxBusyTries: 5 }))
+      Disposable.create(() => rimrafSync(path, { maxRetries: 5 }))
     )
   );
 }

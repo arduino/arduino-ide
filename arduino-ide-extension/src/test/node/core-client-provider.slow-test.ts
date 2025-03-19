@@ -6,7 +6,7 @@ import { expect } from 'chai';
 import { dump, load } from 'js-yaml';
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import { sync as deleteSync } from 'rimraf';
+import { rimrafSync } from 'rimraf';
 import {
   BoardsService,
   CoreService,
@@ -65,7 +65,7 @@ describe('core-client-provider', () => {
   it("should recover when the 'directories.data' folder is missing", async function () {
     this.timeout(timeout);
     const configDirPath = await prepareTestConfigDir();
-    deleteSync(join(configDirPath, 'data'));
+    rimrafSync(join(configDirPath, 'data'));
 
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(container, ({ coreClientProvider }) => {
@@ -84,7 +84,7 @@ describe('core-client-provider', () => {
       'Arduino15',
       'package_index.json'
     );
-    deleteSync(primaryPackageIndexPath);
+    rimrafSync(primaryPackageIndexPath);
 
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(container, ({ coreClientProvider }) => {
@@ -118,7 +118,7 @@ describe('core-client-provider', () => {
         'tools',
         tool
       );
-      deleteSync(builtinToolsPath);
+      rimrafSync(builtinToolsPath);
 
       const container = await startCli(configDirPath, toDispose);
       await assertFunctionalCli(container, ({ coreClientProvider }) => {
@@ -140,7 +140,7 @@ describe('core-client-provider', () => {
       'Arduino15',
       'library_index.json'
     );
-    deleteSync(libraryPackageIndexPath);
+    rimrafSync(libraryPackageIndexPath);
 
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(container, ({ coreClientProvider }) => {
@@ -176,7 +176,7 @@ describe('core-client-provider', () => {
       'Arduino15',
       'package_teensy_index.json'
     );
-    deleteSync(thirdPartyPackageIndexPath);
+    rimrafSync(thirdPartyPackageIndexPath);
 
     const container = await startCli(configDirPath, toDispose);
     await assertFunctionalCli(
@@ -193,7 +193,7 @@ describe('core-client-provider', () => {
   it("should recover when invalid 3rd package URL is defined in the CLI config and the 'directories.data' folder is missing", async function () {
     this.timeout(timeout);
     const configDirPath = await prepareTestConfigDir();
-    deleteSync(join(configDirPath, 'data'));
+    rimrafSync(join(configDirPath, 'data'));
 
     // set an invalid URL so the CLI will try to download it
     const cliConfigPath = join(configDirPath, 'arduino-cli.yaml');
