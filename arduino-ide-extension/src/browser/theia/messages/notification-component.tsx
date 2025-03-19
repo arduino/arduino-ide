@@ -2,6 +2,7 @@ import React from '@theia/core/shared/react';
 import { NotificationComponent as TheiaNotificationComponent } from '@theia/messages/lib/browser/notification-component';
 import { nls } from '@theia/core/lib/common';
 import { codicon } from '@theia/core/lib/browser';
+import { sanitize } from 'dompurify';
 
 export class NotificationComponent extends TheiaNotificationComponent {
   override render(): React.ReactNode {
@@ -20,7 +21,7 @@ export class NotificationComponent extends TheiaNotificationComponent {
             />
             <div className="theia-notification-message">
               <span
-                dangerouslySetInnerHTML={{ __html: message }}
+                dangerouslySetInnerHTML={{ __html: sanitize(message) }}
                 onClick={this.onMessageClick}
               />
             </div>
