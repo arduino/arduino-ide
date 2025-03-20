@@ -310,17 +310,12 @@ jobs:
     steps:
       - name: Symlink custom working directory (Window local runner)
         shell: cmd
-        if: runner.name == 'WINDOWS-SIGN-PC' && matrix.config.working-directory
+        if: runner.os == 'Windows' && matrix.config.working-directory
         run: |
           if not exist "${{ matrix.config.working-directory }}" mklink /d "${{ matrix.config.working-directory }}" "C:\actions-runner\_work\arduino-ide\arduino-ide"
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set Safe Directory (Window local runner)
-        if: runner.name == 'WINDOWS-SIGN-PC'
-        run: git config --global --add safe.directory C:/actions-runner/_work/arduino-ide/arduino-ide
-
 
       - name: Install Node.js
         if: runner.name != 'WINDOWS-SIGN-PC'
