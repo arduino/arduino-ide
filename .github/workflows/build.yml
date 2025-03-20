@@ -375,7 +375,6 @@ jobs:
             export CSC_FOR_PULL_REQUEST=true
           fi
 
-          npx node-gyp install
           yarn install
 
           yarn --cwd arduino-ide-extension build
