@@ -275,6 +275,9 @@
       "checkForUpdates": "Arduino IDE अपडेटहरूको लागि जाँच गर्नुहोस्",
       "closeAndInstallButton": "बन्द गरेर र स्थापना गर्नुहोस्",
       "closeToInstallNotice": "सफ्टवेयर बन्द गर्नुहोस् र आफ्नो मेसिनमा अपडेट स्थापना गर्नुहोस्।",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "डाउनलोड ",
       "downloadingNotice": "अर्डुइनो IDE को नवीनतम संस्करण डाउनलोड हुँदैछ।",
       "errorCheckingForUpdates": "अर्डुइनो IDE अपडेटहरूको लागि जाँच गर्दा त्रुटि भेटियो।\n{0}",
@@ -524,6 +527,14 @@
       "renameSketchFileTitle": "स्केच फाइलको नाम अमान्य छ",
       "renameSketchFolderMessage": "स्केच '{0}' प्रयोग गर्न सकिँदैन। {1} यो सन्देशबाट छुटकारा पाउन, स्केचको नाम बदल्नुहोस्। के तपाई अहिले स्केचको नाम परिवर्तन गर्न चाहनुहुन्छ?",
       "renameSketchFolderTitle": "स्केचको नाम अमान्य छ"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' पहिले नै अवस्थित छ।"
