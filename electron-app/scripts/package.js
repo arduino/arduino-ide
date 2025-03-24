@@ -18,7 +18,7 @@ async function run() {
     '--publish',
     'never',
     '-c.electronVersion',
-    electronVersion.slice(1), // removes the leading ^ from the version. TODO: user `semver` to clean it.
+    semver.clean(electronVersion.replace(/^\^/, '')),
     '-c.extraMetadata.version',
     version,
     // overrides the `name` in the `package.json` to keep the `localStorage` location. (https://github.com/arduino/arduino-ide/pull/2144#pullrequestreview-1554005028)
