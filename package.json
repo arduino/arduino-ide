@@ -44,7 +44,7 @@
     "rimraf": "^5.0.0",
     "semver": "^7.3.2",
     "style-dictionary": "^3.7.0",
-    "typescript": "^4.9.3",
+    "typescript": "^5.4.5",
     "xhr2": "^0.2.1"
   },
   "scripts": {
