@@ -294,6 +294,7 @@ jobs:
       SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
       WIN_CERT_PASSWORD: ${{ secrets[matrix.config.certificate-password-secret] }}
       WIN_CERT_CONTAINER_NAME: ${{ secrets[matrix.config.certificate-container] }}
+      PUPPETEER_SKIP_DOWNLOAD: true
 
     strategy:
       matrix:
