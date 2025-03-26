@@ -85,10 +85,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install Chromium
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser
+          sudo apt-get install -y chromium-browser python3-distutils build-essential libssl-dev
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -104,11 +104,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Install Python 3 Distutils
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y python3-distutils
-
 
       - name: Install Go
         uses: actions/setup-go@v5
@@ -123,14 +118,14 @@ jobs:
 
       - name: Set Chromium executable path for Puppeteer
         run: |
-          export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser)
+          echo "PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser)" >> $GITHUB_ENV
 
-      - name: Package
+      - name: Install Dependencies & Build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           export PUPPETEER_SKIP_DOWNLOAD=true
-          yarn install
+          yarn install --check-files
           yarn --cwd arduino-ide-extension build
           yarn --cwd electron-app rebuild
           yarn --cwd electron-app build
