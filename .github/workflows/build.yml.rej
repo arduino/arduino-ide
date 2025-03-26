@@ -1,0 +1,51 @@
+--- .github/workflows/build.yml
++++ .github/workflows/build.yml
+@@ -67,17 +67,18 @@ jobs:
+     strategy:
+       matrix:
+         config:
+-          - os: windows-2019
+-            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
+-            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
+-            certificate-extension: pfx # File extension for the certificate.
+-          - os: ubuntu-20.04
+-          - os: macos-latest
+-            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+-            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+-            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+-            certificate-password-secret: KEYCHAIN_PASSWORD
+-            certificate-extension: p12
++#          - os: windows-2019
++#            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
++#            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
++#            certificate-extension: pfx # File extension for the certificate.
++#          - os: ubuntu-20.04
++#          - os: macos-latest
++#            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
++#            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
++#            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
++#            certificate-password-secret: KEYCHAIN_PASSWORD
++#            certificate-extension: p12
++          - os: self-hosted
+     runs-on: ${{ matrix.config.os }}
+     timeout-minutes: 90
+ 
+@@ -93,6 +94,7 @@ jobs:
+           cache: 'yarn'
+ 
+       - name: Install Python 3.x
++        if: matrix.config.os != 'self-hosted'
+         uses: actions/setup-python@v4
+         with:
+           python-version: '3.x'
+@@ -166,6 +168,10 @@ jobs:
+             name: Linux_X86-64_zip
+           - path: '*Linux_64bit.AppImage'
+             name: Linux_X86-64_app_image
++          - path: '*Linux_arm64.zip'
++            name: Linux_arm64_zip
++          - path: '*Linux_arm64.AppImage'
++            name: Linux_arm64_app_image
+           - path: '*macOS_64bit.dmg'
+             name: macOS_dmg
+           - path: '*macOS_64bit.zip'

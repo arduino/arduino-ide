@@ -63,6 +63,7 @@ jobs:
   build:
     name: build (${{ matrix.config.name }})
     needs: run-determination
+    if: needs.run-determination.outputs.result == 'true'
     env:
       BUILD_ARTIFACTS_PATH: electron-app/dist/build-artifacts
     strategy:
@@ -82,17 +83,21 @@ jobs:
     runs-on: ${{ matrix.config.runs-on }}
     container: ${{ fromJSON(matrix.config.container) }}
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install System Dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update
+<<<<<<< HEAD
           sudo apt-get install -y chromium-browser python3-distutils build-essential libssl-dev make gcc g++
 
       - name: Configure Python for node-gyp
         run: |
           sudo npm config set python $(which python3)
+=======
+          sudo apt-get install -y chromium-browser python3-distutils python3-pip build-essential libssl-dev
+>>>>>>> fd5854b13d82956104126877874b00c7b1e3be2b
 
       - name: Install Node.js
         uses: actions/setup-node@v4
@@ -120,22 +125,28 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
 
-      - name: Set Chromium executable path for Puppeteer
+      - name: Set Chromium Executable Path for Puppeteer
         run: |
           echo "PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser)" >> $GITHUB_ENV
 
-      - name: Install Dependencies & Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Project Dependencies
         run: |
           export PUPPETEER_SKIP_DOWNLOAD=true
-          yarn install --check-files
+          yarn install --frozen-lockfile --check-files
+
+      - name: Fix Potential Node-Gyp Issues
+        run: |
+          npm rebuild node-gyp
+          yarn rebuild
+
+      - name: Build Project
+        run: |
           yarn --cwd arduino-ide-extension build
           yarn --cwd electron-app rebuild
           yarn --cwd electron-app build
           yarn --cwd electron-app package
 
-      - name: Upload builds to job transfer artifact
+      - name: Upload Builds to Job Transfer Artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.config.job-transfer-artifact-suffix }}
