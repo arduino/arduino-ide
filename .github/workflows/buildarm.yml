@@ -69,7 +69,7 @@ jobs:
       matrix:
         config:
           - name: Linux ARM64
-            runs-on: [self-hosted, arm64-runner]
+            runs-on: [self-hosted, ARM64]
             container: |
               null
             job-transfer-artifact-suffix: Linux_arm64
