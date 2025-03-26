@@ -140,7 +140,7 @@
     "reporter": "spec",
     "colors": true,
     "watch-extensions": "js",
-    "timeout": 20000
+    "timeout": 10000
   },
   "files": [
     "lib",

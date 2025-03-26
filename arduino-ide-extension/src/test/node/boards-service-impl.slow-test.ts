@@ -35,7 +35,6 @@ describe('boards-service-impl', () => {
 
   describe('search', () => {
     it('should run search', async function () {
-      this.timeout(20_000);
       const result = await boardService.search({});
       expect(result).is.not.empty;
     });

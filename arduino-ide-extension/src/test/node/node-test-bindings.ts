@@ -317,7 +317,7 @@ export async function startDaemon(
   configService.onStart();
   daemon.onStart();
   await Promise.all([
-    waitForEvent(daemon.onDaemonStarted, 20_000),
+    waitForEvent(daemon.onDaemonStarted, 10_000),
     coreClientProvider.client,
   ]);
   if (startCustomizations) {
