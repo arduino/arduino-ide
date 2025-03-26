@@ -1,0 +1,91 @@
+diff --git a/.github/workflows/build.yml b/.github/workflows/build.yml
+index 1c830648..ab6ac95a 100644
+--- a/.github/workflows/build.yml
++++ b/.github/workflows/build.yml
+@@ -67,17 +67,18 @@ jobs:
+     strategy:
+       matrix:
+         config:
+-          - os: windows-2019
+-            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
+-            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
+-            certificate-extension: pfx # File extension for the certificate.
+-          - os: ubuntu-20.04
+-          - os: macos-latest
+-            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
+-            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
+-            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
+-            certificate-password-secret: KEYCHAIN_PASSWORD
+-            certificate-extension: p12
++#          - os: windows-2019
++#            certificate-secret: WINDOWS_SIGNING_CERTIFICATE_PFX # Name of the secret that contains the certificate.
++#            certificate-password-secret: WINDOWS_SIGNING_CERTIFICATE_PASSWORD # Name of the secret that contains the certificate password.
++#            certificate-extension: pfx # File extension for the certificate.
++#          - os: ubuntu-20.04
++#          - os: macos-latest
++#            # APPLE_SIGNING_CERTIFICATE_P12 secret was produced by following the procedure from:
++#            # https://www.kencochrane.com/2020/08/01/build-and-sign-golang-binaries-for-macos-with-github-actions/#exporting-the-developer-certificate
++#            certificate-secret: APPLE_SIGNING_CERTIFICATE_P12
++#            certificate-password-secret: KEYCHAIN_PASSWORD
++#            certificate-extension: p12
++          - os: self-hosted
+     runs-on: ${{ matrix.config.os }}
+     timeout-minutes: 90
+ 
+@@ -93,6 +94,7 @@ jobs:
+           cache: 'yarn'
+ 
+       - name: Install Python 3.x
++        if: matrix.config.os != 'self-hosted'
+         uses: actions/setup-python@v4
+         with:
+           python-version: '3.x'
+@@ -166,6 +168,10 @@ jobs:
+             name: Linux_X86-64_zip
+           - path: '*Linux_64bit.AppImage'
+             name: Linux_X86-64_app_image
++          - path: '*Linux_arm64.zip'
++            name: Linux_arm64_zip
++          - path: '*Linux_arm64.AppImage'
++            name: Linux_arm64_app_image
+           - path: '*macOS_64bit.dmg'
+             name: macOS_dmg
+           - path: '*macOS_64bit.zip'
+diff --git a/arduino-ide-extension/src/test/node/boards-service-impl.slow-test.ts b/arduino-ide-extension/src/test/node/boards-service-impl.slow-test.ts
+index fbd5aeb4..a3b865bb 100644
+--- a/arduino-ide-extension/src/test/node/boards-service-impl.slow-test.ts
++++ b/arduino-ide-extension/src/test/node/boards-service-impl.slow-test.ts
+@@ -20,6 +20,7 @@ describe('boards-service-impl', () => {
+ 
+   describe('search', () => {
+     it('should run search', async function () {
++      this.timeout(20_000);
+       const result = await boardService.search({});
+       expect(result).is.not.empty;
+     });
+diff --git a/arduino-ide-extension/src/test/node/node-test-bindings.ts b/arduino-ide-extension/src/test/node/node-test-bindings.ts
+index 2b4c651f..c61b00f5 100644
+--- a/arduino-ide-extension/src/test/node/node-test-bindings.ts
++++ b/arduino-ide-extension/src/test/node/node-test-bindings.ts
+@@ -318,7 +318,7 @@ export async function startDaemon(
+   configService.onStart();
+   daemon.onStart();
+   await Promise.all([
+-    waitForEvent(daemon.onDaemonStarted, 10_000),
++    waitForEvent(daemon.onDaemonStarted, 20_000),
+     coreClientProvider.client,
+   ]);
+   if (startCustomizations) {
+diff --git a/arduino-ide-extension/package.json b/arduino-ide-extension/package.json
+index eccac3c5..d30a39e3 100644
+--- a/arduino-ide-extension/package.json
++++ b/arduino-ide-extension/package.json
+@@ -140,7 +140,7 @@
+     "reporter": "spec",
+     "colors": true,
+     "watch-extensions": "js",
+-    "timeout": 10000
++    "timeout": 20000
+   },
+   "files": [
+     "lib",
