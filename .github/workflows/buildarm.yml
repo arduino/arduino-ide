@@ -88,7 +88,11 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y chromium-browser python3-distutils build-essential libssl-dev
+          sudo apt-get install -y chromium-browser python3-distutils build-essential libssl-dev make gcc g++
+
+      - name: Configure Python for node-gyp
+        run: |
+          sudo npm config set python $(which python3)
 
       - name: Install Node.js
         uses: actions/setup-node@v4
