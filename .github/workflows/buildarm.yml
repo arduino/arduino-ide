@@ -85,6 +85,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Chromium
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
@@ -111,10 +116,15 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
 
+      - name: Set Chromium executable path for Puppeteer
+        run: |
+          export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser)
+
       - name: Package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          export PUPPETEER_SKIP_DOWNLOAD=true
           yarn install
           yarn --cwd arduino-ide-extension build
           yarn --cwd electron-app rebuild
