@@ -98,7 +98,7 @@ jobs:
       - name: Install Python 3.x
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11.x'
+          python-version: '3.x'
 
       - name: Install Go
         uses: actions/setup-go@v5
