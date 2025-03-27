@@ -158,9 +158,11 @@
       "frontend": "lib/browser/arduino-ide-frontend-module"
     },
     {
+      "frontend": "lib/browser/theia/core/browser-menu-module",
       "frontendElectron": "lib/electron-browser/theia/core/electron-menu-module"
     },
     {
+      "frontend": "lib/browser/theia/core/browser-window-module",
       "frontendElectron": "lib/electron-browser/theia/core/electron-window-module"
     },
     {

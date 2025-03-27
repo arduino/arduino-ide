@@ -14,6 +14,7 @@ module.exports = {
     '.browser_modules/*',
     'docs/*',
     'scripts/*',
+    'browser-app/*',
     'electron-app/lib/*',
     'electron-app/src-gen/*',
     'electron-app/gen-webpack*.js',

@@ -44,7 +44,7 @@
   },
   "scripts": {
     "prepare": "lerna run prepare",
-    "cleanup": "rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js",
+    "cleanup": "rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js ./browser-app/lib ./browser-app/src-gen ./browser-app/gen-webpack.config.js",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
     "start": "yarn --cwd ./electron-app start",
@@ -54,7 +54,7 @@
     "test": "lerna run test",
     "test:slow": "lerna run test:slow",
     "update:version": "node ./scripts/update-version.js",
-    "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
+    "i18n:generate": "theia nls-extract -e vscode -f \"+(arduino-ide-extension|browser-app|electron-app|plugins)/**/*.ts?(x)\" -o ./i18n/en.json",
     "i18n:check": "yarn i18n:generate && git add -N ./i18n && git diff --exit-code ./i18n",
     "i18n:push": "node ./scripts/i18n/transifex-push.js ./i18n/en.json",
     "i18n:pull": "node ./scripts/i18n/transifex-pull.js ./i18n/",
@@ -74,6 +74,7 @@
   },
   "workspaces": [
     "arduino-ide-extension",
-    "electron-app"
+    "electron-app",
+    "browser-app"
   ]
 }
