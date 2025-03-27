@@ -133,7 +133,7 @@ env:
           name: macOS_arm64_zip
     - config:
         name: ARM Ubuntu 22.04
-        runs-on: ubuntu-22.04-arm64
+        runs-on: ubuntu-22.04-arm
         container: |
           null
         job-transfer-artifact-suffix: ARM_64bit
