@@ -464,6 +464,7 @@
       "moving": "Moving",
       "movingMsg": "The file \"{0}\" needs to be inside a sketch folder named \"{1}\".\nCreate this folder, move the file, and continue?",
       "new": "New Sketch",
+      "newFolder": "New Folder",
       "noTrailingPeriod": "A filename cannot end with a dot",
       "openFolder": "Open Folder",
       "openRecent": "Open Recent",
@@ -562,7 +563,8 @@
       "deleteCurrentSketch": "The sketch '{0}' will be permanently deleted. This action is irreversible. Do you want to delete the current sketch?",
       "fileNewName": "Name for new file",
       "invalidExtension": ".{0} is not a valid extension",
-      "newFileName": "New name for file"
+      "newFileName": "New name for file",
+      "newFolderPlaceholder": "Folder Name"
     }
   }
 }

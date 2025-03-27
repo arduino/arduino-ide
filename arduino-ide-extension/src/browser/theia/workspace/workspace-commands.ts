@@ -58,6 +58,13 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
         execute: (uri) => this.newFile(uri),
       })
     );
+    registry.unregisterCommand(WorkspaceCommands.NEW_FOLDER);
+    registry.registerCommand(
+      WorkspaceCommands.NEW_FOLDER,
+      this.newWorkspaceRootUriAwareCommandHandler({
+        execute: (uri) => this.newFolder(uri),
+      })
+    );
     registry.unregisterCommand(WorkspaceCommands.FILE_RENAME);
     registry.registerCommand(
       WorkspaceCommands.FILE_RENAME,
@@ -70,6 +77,37 @@ export class WorkspaceCommandContribution extends TheiaWorkspaceCommandContribut
       WorkspaceCommands.FILE_DELETE,
       this.newMultiUriAwareCommandHandler(this.deleteHandler)
     );
+  }
+
+  private async newFolder(uri: URI | undefined): Promise<void> {
+    if (!uri) {
+      return;
+    }
+
+    const parent = await this.getDirectory(uri);
+    if (!parent) {
+      return;
+    }
+
+    const dialog = new WorkspaceInputDialog(
+      {
+        title: nls.localizeByDefault('New Folder...'),
+        parentUri: uri,
+        placeholder: nls.localize(
+          'theia/workspace/newFolderPlaceholder',
+          'Folder Name'
+        ),
+        validate: (name) => this.validateFileName(name, parent, true),
+      },
+      this.labelProvider
+    );
+    const name = await this.openDialog(dialog, uri);
+    if (!name) {
+      return;
+    }
+    const folderUri = uri.resolve(name);
+    await this.fileService.createFolder(folderUri);
+    this.fireCreateNewFile({ parent: uri, uri: folderUri });
   }
 
   private async newFile(uri: URI | undefined): Promise<void> {

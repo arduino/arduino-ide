@@ -389,21 +389,28 @@ export class CloudSketchbookTree extends SketchbookTree {
 
   private async sync(source: URI, dest: URI): Promise<void> {
     const { filesToWrite, filesToDelete } = await this.treeDiff(source, dest);
-    await Promise.all(
-      filesToWrite.map(async ({ source, dest }) => {
-        if ((await this.fileService.resolve(source)).isFile) {
-          const content = await this.fileService.read(source);
-          return this.fileService.write(dest, content.value);
-        }
-        return this.fileService.createFolder(dest);
-      })
+    // Sort by the URIs. The shortest comes first. It's to ensure creating the parent folder for nested resources, for example.
+    // When sorting the URIs, it does not matter whether on source or dest, only the URI path and its length matters; they're the same for a source+dest pair
+    const uriPathLengthComparator = (left: URI, right: URI) =>
+      left.path.toString().length - right.path.toString().length;
+    filesToWrite.sort((left, right) =>
+      uriPathLengthComparator(left.source, right.source)
     );
+    for (const { source, dest } of filesToWrite) {
+      const stat = await this.fileService.resolve(source);
+      if (stat.isFile) {
+        const content = await this.fileService.read(source);
+        await this.fileService.write(dest, content.value);
+      } else {
+        await this.fileService.createFolder(dest);
+      }
+    }
 
-    await Promise.all(
-      filesToDelete.map((file) =>
-        this.fileService.delete(file, { recursive: true })
-      )
-    );
+    // Longes URI paths come first to delete the most nested ones first.
+    filesToDelete.sort(uriPathLengthComparator).reverse();
+    for (const resource of filesToDelete) {
+      await this.fileService.delete(resource, { recursive: true });
+    }
   }
 
   override async resolveChildren(
