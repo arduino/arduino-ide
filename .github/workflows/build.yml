@@ -15,6 +15,8 @@ on:
       - '!scripts/merge-channel-files.js'
       - 'static/**'
       - '*.md'
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'   
   workflow_dispatch:
     inputs:
       paid-runners:
@@ -298,6 +300,7 @@ jobs:
       IS_WINDOWS_CONFIG: ${{ matrix.config.name == 'Windows' }}
       INSTALLER_CERT_WINDOWS_CER: "/tmp/cert.cer"
       # We are hardcoding the path for signtool because it is not present on the Windows PATH env var by default.
+      # Keep in mind that this path could change when upgrading to a new runner version
       SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
       WIN_CERT_PASSWORD: ${{ secrets[matrix.config.certificate-password-secret] }}
       WIN_CERT_CONTAINER_NAME: ${{ secrets[matrix.config.certificate-container] }}
@@ -334,6 +337,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
+          # Yarn is a prerequisite for the action's cache feature, so caching should be disabled when running in the
+          # container where Yarn is not pre-installed.
           cache: ${{ fromJSON(matrix.config.container) == null && 'yarn' || null }}
 
       - name: Install Yarn
