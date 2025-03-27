@@ -77,7 +77,6 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     return escapedMenu;
   }
 
-  // CHECK ME
   override async doSetMenuBar(): Promise<void> {
     // Avoid updating menu items when the app is not ready.
     // Getting the current electron window is not free and synchronous.
