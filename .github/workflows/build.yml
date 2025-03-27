@@ -139,10 +139,12 @@ env:
         container: |
           null
         job-transfer-artifact-suffix: ARM_64bit
-        mergeable-channel-file: 'false'
+        mergeable-channel-file: 'true'
       artifacts:
-        - path: '*ARM_64bit.tar.gz'
-          name: ARM_64bit_tarball
+        - path: '*Linux_arm64.zip'
+          name: Linux_arm64_zip
+        - path: '*Linux_arm64.AppImage'
+          name: Linux_arm64_app_image
   PAID_RUNNER_BUILD_DATA: |
     # This system was implemented to allow selective use of paid GitHub-hosted runners, due to the Apple Silicon runner
     # incurring a charge at that time. Free Apple Silicon runners are now available so the configuration was moved to
