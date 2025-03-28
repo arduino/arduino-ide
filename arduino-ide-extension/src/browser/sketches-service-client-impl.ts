@@ -9,7 +9,7 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import { Sketch, SketchesService } from '../common/protocol';
 import { ConfigServiceClient } from './config/config-service-client';
 import {
@@ -74,6 +74,7 @@ export class SketchesServiceClientImpl
     const sketchDirUri = this.configService.tryGetSketchDirUri();
     this.watchSketchbookDir(sketchDirUri);
     const refreshCurrentSketch = async () => {
+      await this.workspaceService.ready;
       const currentSketch = await this.loadCurrentSketch();
       const ideTempFolderUri = await this.getIdeTempFolderUriForSketch(
         currentSketch
@@ -287,7 +288,7 @@ export class SketchesServiceClientImpl
    * `true` if the `uri` is not contained in any of the opened workspaces. Otherwise, `false`.
    */
   isReadOnly(uri: URI | monaco.Uri | string): boolean {
-    const toCheck = uri instanceof URI ? uri : new URI(uri);
+    const toCheck = uri instanceof URI ? uri : new URI(uri.toString());
     if (toCheck.scheme === 'user-storage') {
       return false;
     }

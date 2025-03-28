@@ -1,5 +1,5 @@
 import { SidebarBottomMenuWidget as TheiaSidebarBottomMenuWidget } from '@theia/core/lib/browser/shell/sidebar-bottom-menu-widget';
-import type { SidebarMenu } from '@theia/core/lib/browser/shell/sidebar-menu-widget';
+import type { SidebarMenuItem } from '@theia/core/lib/browser/shell/sidebar-menu-widget';
 import type { MenuPath } from '@theia/core/lib/common/menu';
 import { nls } from '@theia/core/lib/common/nls';
 import {
@@ -46,46 +46,45 @@ export class SidebarBottomMenuWidget extends TheiaSidebarBottomMenuWidget {
     this.contextMenuRenderer.render(options);
   }
 
-  protected override render(): React.ReactNode {
-    return (
-      <React.Fragment>
-        {this.menus.map((menu) => this.renderMenu(menu))}
-      </React.Fragment>
-    );
-  }
-
-  private renderMenu(menu: SidebarMenu): React.ReactNode {
+  override renderItem(item: SidebarMenuItem): React.ReactNode {
     // Removes the _Settings_ (cog) icon from the left sidebar
-    if (menu.id === 'settings-menu') {
+    if (item.menu.id === 'settings-menu') {
       return undefined;
     }
-    const arduinoAccount = menu.id === accountMenu.id;
-    const picture =
+    const arduinoAccount = item.menu.id === accountMenu.id;
+    const arduinoAccountPicture =
       arduinoAccount &&
       this.connectionStatue.offlineStatus !== 'internet' &&
       this.createFeatures.session?.account.picture;
-    const className = typeof picture === 'string' ? undefined : menu.iconClass;
+
     return (
-      <i
-        key={menu.id}
-        className={className}
-        title={menu.title}
-        onClick={(e) => this.onClick(e, menu.menuPath)}
+      <div
+        key={item.menu.id}
+        className="theia-sidebar-menu-item"
+        title={item.menu.title}
+        onClick={(e) => this.onClick(e, item.menu.menuPath)}
         onMouseDown={this.onMouseDown}
+        onMouseEnter={(e) => this.onMouseEnter(e, item.menu.title)}
         onMouseOut={this.onMouseOut}
       >
-        {picture && (
-          <div className="account-icon">
+        {arduinoAccountPicture ? (
+          <i>
             <img
-              src={picture}
+              className="arduino-account-picture"
+              src={arduinoAccountPicture}
               alt={nls.localize(
                 'arduino/cloud/profilePicture',
                 'Profile picture'
               )}
             />
-          </div>
+          </i>
+        ) : (
+          <i className={item.menu.iconClass} />
         )}
-      </i>
+        {item.badge && (
+          <div className="theia-badge-decorator-sidebar">{item.badge}</div>
+        )}
+      </div>
     );
   }
 }

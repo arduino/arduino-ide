@@ -98,6 +98,7 @@ export class BoardsConfigDialog extends ReactDialog<BoardsConfigDialogState> {
   }
 
   override async open(
+    disposeOnResolve = true,
     params?: EditBoardsConfigActionParams
   ): Promise<BoardsConfig | undefined> {
     this._searchSet = undefined;
@@ -119,7 +120,7 @@ export class BoardsConfigDialog extends ReactDialog<BoardsConfigDialogState> {
         this._searchSet = params.searchSet.slice();
       }
     }
-    return super.open();
+    return super.open(disposeOnResolve);
   }
 
   protected override onAfterAttach(msg: Message): void {

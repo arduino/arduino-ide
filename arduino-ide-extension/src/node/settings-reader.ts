@@ -1,5 +1,5 @@
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { promises as fs } from 'node:fs';
 import {

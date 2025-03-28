@@ -105,14 +105,8 @@ import { ClangFormatter } from './clang-formatter';
 import { FormatterPath } from '../common/protocol/formatter';
 import { HostedPluginLocalizationService } from './theia/plugin-ext/hosted-plugin-localization-service';
 import { HostedPluginLocalizationService as TheiaHostedPluginLocalizationService } from '@theia/plugin-ext/lib/hosted/node/hosted-plugin-localization-service';
-import { SurveyNotificationServiceImpl } from './survey-service-impl';
-import {
-  SurveyNotificationService,
-  SurveyNotificationServicePath,
-} from '../common/protocol/survey-service';
 import { IsTempSketch } from './is-temp-sketch';
-import { rebindNsfwFileSystemWatcher } from './theia/filesystem/nsfw-bindings';
-import { MessagingContribution } from './theia/core/messaging-contribution';
+import { WebsocketEndpoint } from './theia/core/websocket-endpoint';
 import { MessagingService } from '@theia/core/lib/node/messaging/messaging-service';
 import { HostedPluginReader } from './theia/plugin-ext/plugin-reader';
 import { HostedPluginReader as TheiaHostedPluginReader } from '@theia/plugin-ext/lib/hosted/node/plugin-reader';
@@ -126,6 +120,7 @@ import {
 } from './theia/plugin-ext/plugin-deployer';
 import { SettingsReader } from './settings-reader';
 import { VsCodePluginScanner } from './theia/plugin-ext-vscode/scanner-vscode';
+import { rebindParcelFileSystemWatcher } from './theia/filesystem/parcel-bindings';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -305,7 +300,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
         )
     )
     .inSingletonScope();
-  rebindNsfwFileSystemWatcher(rebind);
+  rebindParcelFileSystemWatcher(rebind);
 
   // Output service per connection.
   bind(ConnectionContainerModule).toConstantValue(
@@ -383,23 +378,8 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     HostedPluginLocalizationService
   );
 
-  // Survey notification bindings
-  // It's currently unused. https://github.com/arduino/arduino-ide/pull/1150
-  bind(SurveyNotificationServiceImpl).toSelf().inSingletonScope();
-  bind(SurveyNotificationService).toService(SurveyNotificationServiceImpl);
-  bind(ConnectionHandler)
-    .toDynamicValue(
-      ({ container }) =>
-        new JsonRpcConnectionHandler(SurveyNotificationServicePath, () =>
-          container.get<SurveyNotificationService>(SurveyNotificationService)
-        )
-    )
-    .inSingletonScope();
-
   bind(IsTempSketch).toSelf().inSingletonScope();
-  rebind(MessagingService.Identifier)
-    .to(MessagingContribution)
-    .inSingletonScope();
+  rebind(MessagingService.Identifier).to(WebsocketEndpoint).inSingletonScope();
 
   // Removed undesired contributions from VS Code extensions
   // Such as the RTOS view from the `cortex-debug` extension

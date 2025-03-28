@@ -280,14 +280,6 @@ const properties: ArduinoPreferenceSchemaProperties = {
     ),
     default: 'https://auth.arduino.cc/login#/register',
   },
-  'arduino.survey.notification': {
-    type: 'boolean',
-    description: nls.localize(
-      'arduino/preferences/survey.notification',
-      'True if users should be notified if a survey is available. True by default.'
-    ),
-    default: true,
-  },
   'arduino.cli.daemon.debug': {
     type: 'boolean',
     description: nls.localize(
@@ -355,7 +347,6 @@ export interface ArduinoConfiguration {
   'arduino.auth.domain': string;
   'arduino.auth.audience': string;
   'arduino.auth.registerUri': string;
-  'arduino.survey.notification': boolean;
   'arduino.cli.daemon.debug': boolean;
   'arduino.sketch.inoBlueprint': string;
   'arduino.checkForUpdates': boolean;
