@@ -32,6 +32,7 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     boardList: IArduinoCoreServiceService_IBoardList;
     boardListAll: IArduinoCoreServiceService_IBoardListAll;
     boardSearch: IArduinoCoreServiceService_IBoardSearch;
+    boardIdentify: IArduinoCoreServiceService_IBoardIdentify;
     boardListWatch: IArduinoCoreServiceService_IBoardListWatch;
     compile: IArduinoCoreServiceService_ICompile;
     platformInstall: IArduinoCoreServiceService_IPlatformInstall;
@@ -194,6 +195,15 @@ interface IArduinoCoreServiceService_IBoardSearch extends grpc.MethodDefinition<
     requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest>;
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse>;
+}
+interface IArduinoCoreServiceService_IBoardIdentify extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardIdentify";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse>;
 }
 interface IArduinoCoreServiceService_IBoardListWatch extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest, cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse> {
     path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardListWatch";
@@ -528,6 +538,7 @@ export interface IArduinoCoreServiceServer extends grpc.UntypedServiceImplementa
     boardList: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardListRequest, cc_arduino_cli_commands_v1_board_pb.BoardListResponse>;
     boardListAll: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardListAllRequest, cc_arduino_cli_commands_v1_board_pb.BoardListAllResponse>;
     boardSearch: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse>;
+    boardIdentify: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse>;
     boardListWatch: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest, cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse>;
     compile: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_compile_pb.CompileRequest, cc_arduino_cli_commands_v1_compile_pb.CompileResponse>;
     platformInstall: grpc.handleServerStreamingCall<cc_arduino_cli_commands_v1_core_pb.PlatformInstallRequest, cc_arduino_cli_commands_v1_core_pb.PlatformInstallResponse>;
@@ -605,6 +616,9 @@ export interface IArduinoCoreServiceClient {
     boardSearch(request: cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse) => void): grpc.ClientUnaryCall;
     boardSearch(request: cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse) => void): grpc.ClientUnaryCall;
     boardSearch(request: cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse) => void): grpc.ClientUnaryCall;
+    boardIdentify(request: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse) => void): grpc.ClientUnaryCall;
+    boardIdentify(request: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse) => void): grpc.ClientUnaryCall;
+    boardIdentify(request: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse) => void): grpc.ClientUnaryCall;
     boardListWatch(request: cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse>;
     boardListWatch(request: cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse>;
     compile(request: cc_arduino_cli_commands_v1_compile_pb.CompileRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_compile_pb.CompileResponse>;
@@ -737,6 +751,9 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public boardSearch(request: cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse) => void): grpc.ClientUnaryCall;
     public boardSearch(request: cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse) => void): grpc.ClientUnaryCall;
     public boardSearch(request: cc_arduino_cli_commands_v1_board_pb.BoardSearchRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardSearchResponse) => void): grpc.ClientUnaryCall;
+    public boardIdentify(request: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse) => void): grpc.ClientUnaryCall;
+    public boardIdentify(request: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse) => void): grpc.ClientUnaryCall;
+    public boardIdentify(request: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse) => void): grpc.ClientUnaryCall;
     public boardListWatch(request: cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse>;
     public boardListWatch(request: cc_arduino_cli_commands_v1_board_pb.BoardListWatchRequest, metadata?: grpc.Metadata, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_board_pb.BoardListWatchResponse>;
     public compile(request: cc_arduino_cli_commands_v1_compile_pb.CompileRequest, options?: Partial<grpc.CallOptions>): grpc.ClientReadableStream<cc_arduino_cli_commands_v1_compile_pb.CompileResponse>;

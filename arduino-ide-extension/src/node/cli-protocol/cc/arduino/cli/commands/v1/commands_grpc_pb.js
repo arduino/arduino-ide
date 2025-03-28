@@ -74,6 +74,28 @@ function deserialize_cc_arduino_cli_commands_v1_BoardDetailsResponse(buffer_arg)
   return cc_arduino_cli_commands_v1_board_pb.BoardDetailsResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_cc_arduino_cli_commands_v1_BoardIdentifyRequest(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.BoardIdentifyRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_BoardIdentifyRequest(buffer_arg) {
+  return cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_cc_arduino_cli_commands_v1_BoardIdentifyResponse(arg) {
+  if (!(arg instanceof cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse)) {
+    throw new Error('Expected argument of type cc.arduino.cli.commands.v1.BoardIdentifyResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_cc_arduino_cli_commands_v1_BoardIdentifyResponse(buffer_arg) {
+  return cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_cc_arduino_cli_commands_v1_BoardListAllRequest(arg) {
   if (!(arg instanceof cc_arduino_cli_commands_v1_board_pb.BoardListAllRequest)) {
     throw new Error('Expected argument of type cc.arduino.cli.commands.v1.BoardListAllRequest');
@@ -1281,6 +1303,18 @@ boardSearch: {
     requestDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardSearchRequest,
     responseSerialize: serialize_cc_arduino_cli_commands_v1_BoardSearchResponse,
     responseDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardSearchResponse,
+  },
+  // Identify a board using the given properties.
+boardIdentify: {
+    path: '/cc.arduino.cli.commands.v1.ArduinoCoreService/BoardIdentify',
+    requestStream: false,
+    responseStream: false,
+    requestType: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyRequest,
+    responseType: cc_arduino_cli_commands_v1_board_pb.BoardIdentifyResponse,
+    requestSerialize: serialize_cc_arduino_cli_commands_v1_BoardIdentifyRequest,
+    requestDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardIdentifyRequest,
+    responseSerialize: serialize_cc_arduino_cli_commands_v1_BoardIdentifyResponse,
+    responseDeserialize: deserialize_cc_arduino_cli_commands_v1_BoardIdentifyResponse,
   },
   // List boards connection and disconnected events.
 boardListWatch: {
