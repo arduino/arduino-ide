@@ -265,17 +265,12 @@ import {
 } from './dialogs/user-fields/user-fields-dialog';
 import { nls } from '@theia/core/lib/common';
 import { IDEUpdaterCommands } from './ide-updater/ide-updater-commands';
-import {
-  IDEUpdater,
-  IDEUpdaterClient,
-  IDEUpdaterPath,
-} from '../common/protocol/ide-updater';
+import { IDEUpdater, IDEUpdaterClient } from '../common/protocol/ide-updater';
 import { IDEUpdaterClientImpl } from './ide-updater/ide-updater-client-impl';
 import {
   IDEUpdaterDialog,
   IDEUpdaterDialogProps,
 } from './dialogs/ide-updater/ide-updater-dialog';
-import { ElectronIpcConnectionProvider } from '@theia/core/lib/electron-browser/messaging/electron-ipc-connection-provider';
 import { MonitorModel } from './monitor-model';
 import { MonitorManagerProxyClientImpl } from './monitor-manager-proxy-client-impl';
 import { EditorManager as TheiaEditorManager } from '@theia/editor/lib/browser/editor-manager';
@@ -295,10 +290,7 @@ import { PreferenceTreeGenerator } from './theia/preferences/preference-tree-gen
 import { PreferenceTreeGenerator as TheiaPreferenceTreeGenerator } from '@theia/preferences/lib/browser/util/preference-tree-generator';
 import { AboutDialog } from './theia/core/about-dialog';
 import { AboutDialog as TheiaAboutDialog } from '@theia/core/lib/browser/about-dialog';
-import {
-  SurveyNotificationService,
-  SurveyNotificationServicePath,
-} from '../common/protocol/survey-service';
+import { SurveyNotificationService } from '../common/protocol/survey-service';
 import { WindowContribution } from './theia/core/window-contribution';
 import { WindowContribution as TheiaWindowContribution } from '@theia/core/lib/browser/window-contribution';
 import { CoreErrorHandler } from './contributions/core-error-handler';
@@ -394,6 +386,8 @@ import {
   VersionWelcomeDialog,
   VersionWelcomeDialogProps,
 } from './dialogs/version-welcome-dialog';
+import { DialogService } from './dialog-service';
+import { AppInfo, AppService } from './app-service';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -574,14 +568,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     WorkspaceVariableContribution
   );
 
-  bind(SurveyNotificationService)
-    .toDynamicValue((context) => {
-      return ElectronIpcConnectionProvider.createProxy(
-        context.container,
-        SurveyNotificationServicePath
-      );
-    })
-    .inSingletonScope();
+  bind(SurveyNotificationService).toConstantValue(
+    {} as SurveyNotificationService
+  );
+  //   return ElectronIpcConnectionProvider.createProxy(
+  //     context.container,
+  //     SurveyNotificationServicePath
+  //   );
+  // })
+  // .inSingletonScope();
 
   // Layout and shell customizations.
   rebind(TheiaOutlineViewContribution)
@@ -1039,16 +1034,16 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Frontend binding for the IDE Updater service
   bind(IDEUpdaterClientImpl).toSelf().inSingletonScope();
   bind(IDEUpdaterClient).toService(IDEUpdaterClientImpl);
-  bind(IDEUpdater)
-    .toDynamicValue((context) => {
-      const client = context.container.get(IDEUpdaterClientImpl);
-      return ElectronIpcConnectionProvider.createProxy(
-        context.container,
-        IDEUpdaterPath,
-        client
-      );
-    })
-    .inSingletonScope();
+  bind(IDEUpdater).toConstantValue({} as IDEUpdater);
+  // .toDynamicValue((context) => {
+  //   const client = context.container.get(IDEUpdaterClientImpl);
+  //   return ElectronIpcConnectionProvider.createProxy(
+  //     context.container,
+  //     IDEUpdaterPath,
+  //     client
+  //   );
+  // })
+  // .inSingletonScope();
 
   bind(HostedPluginSupportImpl).toSelf().inSingletonScope();
   bind(HostedPluginSupport).toService(HostedPluginSupportImpl);
@@ -1113,6 +1108,32 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   );
 
   bindViewsWelcome_TheiaGH14309({ bind, widget: TreeViewWidget });
+
+  bind(DialogService).toConstantValue(<DialogService>{});
+  bind(AppService).toConstantValue(<AppService>{
+    quit() {
+      console.log('Quitting application...');
+      // Implement quit logic here
+    },
+    async info() {
+      return {
+        name: 'MyApp',
+        version: '1.0.0',
+        description: 'An example application',
+        appVersion: '1.0.0',
+        cliVersion: '1.0.0',
+        buildDate: new Date().toISOString(),
+      } as AppInfo;
+    },
+    registerStartupTasksHandler(_) {
+      console.log('registerStartupTasksHandler', _);
+      return { dispose: () => {} };
+    },
+    scheduleDeletion(_) {
+      console.log(`Scheduled deletion for sketch}`, _);
+      // Implement deletion logic
+    },
+  });
 });
 
 // Align the viewsWelcome rendering with VS Code (https://github.com/eclipse-theia/theia/issues/14309)

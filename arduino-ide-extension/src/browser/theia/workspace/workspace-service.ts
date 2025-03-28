@@ -19,14 +19,13 @@ import {
   hasStartupTasks,
   StartupTask,
 } from '../../../electron-common/startup-task';
-import { WindowServiceExt } from '../core/window-service-ext';
 
 @injectable()
 export class WorkspaceService extends TheiaWorkspaceService {
   @inject(SketchesService)
   private readonly sketchesService: SketchesService;
-  @inject(WindowServiceExt)
-  private readonly windowServiceExt: WindowServiceExt;
+  // @inject(WindowServiceExt)
+  // private readonly windowServiceExt: WindowServiceExt;
   @inject(ContributionProvider)
   @named(StartupTaskProvider)
   private readonly providers: ContributionProvider<StartupTaskProvider>;
@@ -104,7 +103,8 @@ export class WorkspaceService extends TheiaWorkspaceService {
   protected override reloadWindow(options?: WorkspaceInput): void {
     const tasks = this.tasks(options);
     this.setURLFragment(this._workspace?.resource.path.toString() || '');
-    this.windowServiceExt.reload({ tasks });
+    console.log(tasks);
+    // this.windowServiceExt.reload({ tasks });
   }
 
   protected override openNewWindow(

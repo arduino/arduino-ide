@@ -7,11 +7,10 @@ import { ApplicationShell } from '@theia/core/lib/browser/shell/application-shel
 import { nls } from '@theia/core/lib/common/nls';
 import type { MaybePromise } from '@theia/core/lib/common/types';
 import { toArray } from '@theia/core/shared/@phosphor/algorithm';
-import { inject, injectable } from '@theia/core/shared/inversify';
+import { injectable } from '@theia/core/shared/inversify';
 import { MonacoEditor } from '@theia/monaco/lib/browser/monaco-editor';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
-import { WindowServiceExt } from '../theia/core/window-service-ext';
 import {
   Command,
   CommandRegistry,
@@ -28,8 +27,8 @@ import { SaveAsSketch } from './save-as-sketch';
  */
 @injectable()
 export class Close extends SketchContribution {
-  @inject(WindowServiceExt)
-  private readonly windowServiceExt: WindowServiceExt;
+  // @inject(WindowServiceExt)
+  // private readonly windowServiceExt: WindowServiceExt;
 
   private shell: ApplicationShell | undefined;
 
@@ -59,7 +58,7 @@ export class Close extends SketchContribution {
             }
           }
         }
-        return this.windowServiceExt.close();
+        // return this.windowServiceExt.close();
       },
     });
   }

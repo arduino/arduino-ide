@@ -27,7 +27,7 @@
     "scripts": {
       "build:dev": "theia build --config webpack.config.js --mode development",
       "prepare": "theia build --mode development",
-      "start": "theia start --plugins=local-dir:../plugins",
+      "start": "theia start",
       "watch": "theia build --watch --mode development"
     },
     "theia": {

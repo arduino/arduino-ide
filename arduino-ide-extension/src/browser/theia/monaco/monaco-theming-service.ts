@@ -22,7 +22,6 @@ import { MonacoThemeRegistry as TheiaMonacoThemeRegistry } from '@theia/monaco/l
 import type { ThemeMix } from '@theia/monaco/lib/browser/textmate/monaco-theme-types';
 import { HostedPluginSupport } from '../../hosted/hosted-plugin-support';
 import { ArduinoThemes, compatibleBuiltInTheme } from '../core/theming';
-import { WindowServiceExt } from '../core/window-service-ext';
 
 type MonacoThemeRegistrationSource =
   /**
@@ -156,8 +155,8 @@ export class CleanupObsoleteThemes implements FrontendApplicationContribution {
   private readonly themeService: ThemeService;
   @inject(MessageService)
   private readonly messageService: MessageService;
-  @inject(WindowServiceExt)
-  private readonly windowService: WindowServiceExt;
+  // @inject(WindowServiceExt)
+  // private readonly windowService: WindowServiceExt;
 
   onStart(): void {
     this.hostedPlugin.didStart.then(() => this.cleanupObsoleteThemes());
@@ -172,7 +171,7 @@ export class CleanupObsoleteThemes implements FrontendApplicationContribution {
     if (!obsoleteThemeIds.length) {
       return;
     }
-    const firstWindow = await this.windowService.isFirstWindow();
+    const firstWindow = true; // await this.windowService.isFirstWindow();
     if (firstWindow) {
       await this.removeObsoleteThemesFromIndexedDB(obsoleteThemeIds);
       this.unregisterObsoleteThemes(obsoleteThemeIds);

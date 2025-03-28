@@ -2,7 +2,6 @@ import { ColorContribution } from '@theia/core/lib/browser/color-application-con
 import { ColorRegistry } from '@theia/core/lib/browser/color-registry';
 import { CommonMenus } from '@theia/core/lib/browser/common-frontend-contribution';
 import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
-import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import {
   TabBarToolbarContribution,
   TabBarToolbarRegistry,
@@ -24,7 +23,6 @@ import {
 import { MessageService } from '@theia/core/lib/common/message-service';
 import { nls } from '@theia/core/lib/common/nls';
 import { isHighContrast } from '@theia/core/lib/common/theme';
-import { ElectronWindowPreferences } from '@theia/core/lib/electron-browser/window/electron-window-preferences';
 import {
   inject,
   injectable,
@@ -62,11 +60,11 @@ export class ArduinoFrontendContribution
   @inject(CommandRegistry)
   private readonly commandRegistry: CommandRegistry;
 
-  @inject(ElectronWindowPreferences)
-  private readonly electronWindowPreferences: ElectronWindowPreferences;
+  // @inject(ElectronWindowPreferences)
+  // private readonly electronWindowPreferences: ElectronWindowPreferences;
 
-  @inject(FrontendApplicationStateService)
-  private readonly appStateService: FrontendApplicationStateService;
+  // @inject(FrontendApplicationStateService)
+  // private readonly appStateService: FrontendApplicationStateService;
 
   @postConstruct()
   protected init(): void {
@@ -82,24 +80,24 @@ export class ArduinoFrontendContribution
   }
 
   onStart(): void {
-    this.electronWindowPreferences.onPreferenceChanged((event) => {
-      if (event.newValue !== event.oldValue) {
-        switch (event.preferenceName) {
-          case 'window.zoomLevel':
-            if (typeof event.newValue === 'number') {
-              window.electronTheiaCore.setZoomLevel(event.newValue || 0);
-            }
-            break;
-        }
-      }
-    });
-    this.appStateService.reachedState('ready').then(() =>
-      this.electronWindowPreferences.ready.then(() => {
-        const zoomLevel =
-          this.electronWindowPreferences.get('window.zoomLevel');
-        window.electronTheiaCore.setZoomLevel(zoomLevel);
-      })
-    );
+    // this.electronWindowPreferences.onPreferenceChanged((event) => {
+    //   if (event.newValue !== event.oldValue) {
+    //     switch (event.preferenceName) {
+    //       case 'window.zoomLevel':
+    //         if (typeof event.newValue === 'number') {
+    //           window.electronTheiaCore.setZoomLevel(event.newValue || 0);
+    //         }
+    //         break;
+    //     }
+    //   }
+    // });
+    // this.appStateService.reachedState('ready').then(() =>
+    //   this.electronWindowPreferences.ready.then(() => {
+    //     const zoomLevel =
+    //       this.electronWindowPreferences.get('window.zoomLevel');
+    //     window.electronTheiaCore.setZoomLevel(zoomLevel);
+    //   })
+    // );
   }
 
   registerToolbarItems(registry: TabBarToolbarRegistry): void {

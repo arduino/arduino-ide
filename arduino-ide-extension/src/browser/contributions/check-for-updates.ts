@@ -15,7 +15,6 @@ import { Installable } from '../../common/protocol/installable';
 import { ExecuteWithProgress } from '../../common/protocol/progressible';
 import { BoardsListWidgetFrontendContribution } from '../boards/boards-widget-frontend-contribution';
 import { LibraryListWidgetFrontendContribution } from '../library/library-widget-frontend-contribution';
-import { WindowServiceExt } from '../theia/core/window-service-ext';
 import type { ListWidget } from '../widgets/component-list/list-widget';
 import { Command, CommandRegistry, Contribution } from './contribution';
 
@@ -53,8 +52,8 @@ const Updatable = { type: 'Updatable' } as const;
 
 @injectable()
 export class CheckForUpdates extends Contribution {
-  @inject(WindowServiceExt)
-  private readonly windowService: WindowServiceExt;
+  // @inject(WindowServiceExt)
+  // private readonly windowService: WindowServiceExt;
   @inject(ResponseServiceClient)
   private readonly responseService: ResponseServiceClient;
   @inject(BoardsService)
@@ -72,16 +71,16 @@ export class CheckForUpdates extends Contribution {
     });
   }
 
-  override async onReady(): Promise<void> {
-    const checkForUpdates = this.preferences['arduino.checkForUpdates'];
-    if (checkForUpdates) {
-      this.windowService.isFirstWindow().then((firstWindow) => {
-        if (firstWindow) {
-          this.checkForUpdates();
-        }
-      });
-    }
-  }
+  // override async onReady(): Promise<void> {
+  //   const checkForUpdates = this.preferences['arduino.checkForUpdates'];
+  //   if (checkForUpdates) {
+  //     this.windowService.isFirstWindow().then((firstWindow) => {
+  //       if (firstWindow) {
+  //         this.checkForUpdates();
+  //       }
+  //     });
+  //   }
+  // }
 
   private async checkForUpdates(silent = true) {
     const [boardsPackages, libraryPackages] = await Promise.all([

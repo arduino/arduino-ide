@@ -3,13 +3,12 @@ import { nls } from '@theia/core/lib/common/nls';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { CoreService, IndexType } from '../../common/protocol';
 import { NotificationCenter } from '../notification-center';
-import { WindowServiceExt } from '../theia/core/window-service-ext';
 import { Command, CommandRegistry, Contribution } from './contribution';
 
 @injectable()
 export class UpdateIndexes extends Contribution {
-  @inject(WindowServiceExt)
-  private readonly windowService: WindowServiceExt;
+  // @inject(WindowServiceExt)
+  // private readonly windowService: WindowServiceExt;
   @inject(LocalStorageService)
   private readonly localStorage: LocalStorageService;
   @inject(CoreService)
@@ -53,30 +52,28 @@ export class UpdateIndexes extends Contribution {
       return;
     }
 
-    if (await this.windowService.isFirstWindow()) {
-      const summary = await this.coreService.indexUpdateSummaryBeforeInit();
-      if (summary.message) {
-        this.messageService.error(summary.message);
-      }
-      const typesToCheck = IndexType.All.filter((type) => !(type in summary));
-      if (Object.keys(summary).length) {
-        console.debug(
-          `[update-indexes]: Detected an index update summary before the core gRPC client initialization. Updating local storage with ${JSON.stringify(
-            summary
-          )}`
-        );
-      } else {
-        console.debug(
-          '[update-indexes]: No index update summary was available before the core gRPC client initialization. Checking the status of the all the index types.'
-        );
-      }
-      await Promise.allSettled([
-        ...Object.entries(summary).map(([type, updatedAt]) =>
-          this.setLastUpdateDateTime(type as IndexType, updatedAt)
-        ),
-        this.updateIndexes(typesToCheck),
-      ]);
+    const summary = await this.coreService.indexUpdateSummaryBeforeInit();
+    if (summary.message) {
+      this.messageService.error(summary.message);
     }
+    const typesToCheck = IndexType.All.filter((type) => !(type in summary));
+    if (Object.keys(summary).length) {
+      console.debug(
+        `[update-indexes]: Detected an index update summary before the core gRPC client initialization. Updating local storage with ${JSON.stringify(
+          summary
+        )}`
+      );
+    } else {
+      console.debug(
+        '[update-indexes]: No index update summary was available before the core gRPC client initialization. Checking the status of the all the index types.'
+      );
+    }
+    await Promise.allSettled([
+      ...Object.entries(summary).map(([type, updatedAt]) =>
+        this.setLastUpdateDateTime(type as IndexType, updatedAt)
+      ),
+      this.updateIndexes(typesToCheck),
+    ]);
   }
 
   private async updateIndexes(
