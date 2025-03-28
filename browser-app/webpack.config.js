@@ -5,8 +5,8 @@
 // @ts-check
 const config = require('./gen-webpack.config.js');
 
-config.resolve.fallback['http'] = false;
-config.resolve.fallback['fs'] = false;
+config[0].resolve.fallback['http'] = false;
+config[0].resolve.fallback['fs'] = false;
 
 /**
  * Expose bundled modules on window.theia.moduleName namespace, e.g.

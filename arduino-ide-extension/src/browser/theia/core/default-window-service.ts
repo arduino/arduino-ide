@@ -14,4 +14,8 @@ export class DefaultWindowService
   async isFirstWindow(): Promise<boolean> {
     return true;
   }
+
+  close() {
+    console.log('close');
+  }
 }
