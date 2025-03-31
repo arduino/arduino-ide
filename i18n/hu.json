@@ -275,6 +275,9 @@
       "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
       "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "SketchBook elérési helye ",
       "sketchbook.showAllFiles": "Kipipálva: az összes vázlatfájl/sketch megjelenítése a vázlaton/sketch-en belül. Alapértelmezés szerint: nincs kipipálva.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Kattints ide a nem hivatalos alaplapok fordítási URL-jeinek listájához ",
       "upload": "feltöltés",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
-    "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
-    },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

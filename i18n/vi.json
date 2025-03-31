@@ -275,6 +275,9 @@
       "checkForUpdates": "Kiểm tra bản cập nhật phần mềm",
       "closeAndInstallButton": "Đóng và cài đặt",
       "closeToInstallNotice": "Đóng ứng dụng và cài đặt bản cập nhật mới nhất lên máy bạn.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Tải về",
       "downloadingNotice": "Đang tải về bản mới nhất của Arduino IDE.",
       "errorCheckingForUpdates": "Có lỗi xảy ra trong quá trình kiểm tra cập nhật Arduino IDE.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Địa điểm chứa sketchbook",
       "sketchbook.showAllFiles": "'True' để hiển thị tất cả các tệp sketch trong sketch. Mặc định là 'false'.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Nhấp vào đây để hiển thị danh sách các URLs hỗ trợ các bo mạch không chính thức",
       "upload": "nạp ",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Bản phác thảo đám mây mới",
       "newSketch": "Bản phác thảo mới"
     },
-    "survey": {
-      "answerSurvey": "Trả lời khảo sát",
-      "dismissSurvey": "Không hiển thị lại",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
-    },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Tối",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Tên tệp phác thảo không hợp lệ",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Tên bản phác thảo không hợp lệ"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'đã tồn tại."

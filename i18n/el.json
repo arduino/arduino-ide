@@ -275,6 +275,9 @@
       "checkForUpdates": "Ελέγξτε για νέες ενημερώσεις Arduino IDE",
       "closeAndInstallButton": "Κλείσιμο και εγκατάσταση",
       "closeToInstallNotice": "Κλείστε το πρόγραμμα και εγκαταστήστε την ενημέρωση στον υπολογιστή σας.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Κατεβάστε",
       "downloadingNotice": "Λήψη της πιο πρόσφατης έκδοσης του Arduino IDE.",
       "errorCheckingForUpdates": "Σφάλμα κατά τον έλεγχο για ενημερώσεις του Arduino IDE.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Τοποθεσία σχεδίων",
       "sketchbook.showAllFiles": "Αληθές για εμφάνιση όλων των αρχείων σχεδίου μεσα στο σχέδιο. Είναι ψευδές απο προεπιλογή.",
-      "survey.notification": "Σωστό εάν οι χρήστες πρέπει να ειδοποιούνται εάν υπάρχει διαθέσιμη έρευνα. Αληθές από προεπιλογή.",
       "unofficialBoardSupport": "Κλικ για λίστα Συνδέσμων ανεπίσημης υποστήριξης πλακετών",
       "upload": "ανέβασμα",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Νέο σχέδιο Cloud ",
       "newSketch": "Νέο Σχέδιο"
     },
-    "survey": {
-      "answerSurvey": "Απάντηση στην έρευνα",
-      "dismissSurvey": "Να μην εμφανιστεί ξανά",
-      "surveyMessage": "Βοηθήστε μας να βελτιωθούμε απαντώντας σε αυτήν την εξαιρετικά σύντομη έρευνα. Εκτιμούμε την κοινότητά μας και θα θέλαμε να γνωρίσουμε λίγο καλύτερα τους υποστηρικτές μας."
-    },
     "theme": {
       "currentThemeNotFound": "Δεν ήταν δυνατή η εύρεση του τρέχοντος επιλεγμένου θέματος:{0} . Το Arduino IDE έχει επιλέξει ένα ενσωματωμένο θέμα συμβατό με αυτό που λείπει.",
       "dark": "Σκοτεινό",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Μη έγκυρο όνομα αρχείου σχεδίου",
       "renameSketchFolderMessage": "Το σχέδιο '{0}' δεν μπορεί να χρησιμοποιηθεί. {1}Για να απαλλαγείτε από αυτό το μήνυμα, μετονομάστε το σχέδιο. Θέλετε να μετονομάσετε το σχέδιο τώρα;",
       "renameSketchFolderTitle": "Μη έγκυρο όνομα σκίτσου"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' υπάρχει ήδη."
