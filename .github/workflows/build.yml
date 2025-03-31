@@ -172,6 +172,7 @@ jobs:
       is-nightly: ${{ steps.determination.outputs.is-nightly }}
       channel-name: ${{ steps.determination.outputs.channel-name }}
       publish-to-s3: ${{ steps.determination.outputs.publish-to-s3 }}
+    environment: production
     permissions: {}
     steps:
       - name: Determine the type of build
