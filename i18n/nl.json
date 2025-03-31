@@ -275,6 +275,9 @@
       "checkForUpdates": "Controleren op Arduino IDE-updates",
       "closeAndInstallButton": "Sluiten en installeren",
       "closeToInstallNotice": "Sluit de software en installeer de update op je machine.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Download de nieuwste versie van de Arduino IDE.",
       "errorCheckingForUpdates": "Fout bij het controleren op Arduino IDE updates.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Schetsboek locatie",
       "sketchbook.showAllFiles": "Waar om al de schets bestanden in de schets weer te geven. Standaard ingesteld op onwaar.",
-      "survey.notification": "Waar als gebruikers een melding moeten krijgen als er een enquête beschikbaar is. Standaard is dit waar.",
       "unofficialBoardSupport": "Klik voor een lijst met onofficiële borden ondersteuning URL's",
       "upload": "uploaden",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Nieuwe Cloud Sketch",
       "newSketch": "Nieuwe schets"
     },
-    "survey": {
-      "answerSurvey": "Antwoord enquête",
-      "dismissSurvey": "Niet meer tonen",
-      "surveyMessage": "Help ons alsjeblieft te verbeteren door deze super korte enquête te beantwoorden. We waarderen onze gemeenschap en willen onze supporters graag wat beter leren kennen."
-    },
     "theme": {
       "currentThemeNotFound": "Kan het huidig geselecteerde thema niet vinden: {0}. Arduino IDE heeft een ingebouwd thema gekozen dat compatibel is met het ontbrekende.",
       "dark": "Donker",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Ongeldige bestandsnaam van de schets",
       "renameSketchFolderMessage": "De schets '{0}' kan niet gebruikt worden. {1} Om van deze melding af  te komen, hernoem de schets. Wil je de schets nu hernoemen?",
       "renameSketchFolderTitle": "Ongeldige schetsnaam"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' bestaat al."

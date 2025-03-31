@@ -275,6 +275,9 @@
       "checkForUpdates": "Перевірка оновлень Arduino IDE",
       "closeAndInstallButton": "Закрити та Встановити",
       "closeToInstallNotice": "Закрийте програму та встановіть оновлення.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Завантажити",
       "downloadingNotice": "Завантажити останню версію Arduino IDE.",
       "errorCheckingForUpdates": "Помилка під час перевірки оновлень Arduino IDE {0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Шлях до книги скетчів",
       "sketchbook.showAllFiles": "\"Так\" для відображення усіх файлів скетчу в середені скетчу. \"Ні\" за замовчуванням.",
-      "survey.notification": "\"Так\", якщо треба повідомляти про доступні опитування користувачів. \"Так\" за замовчуванням.",
       "unofficialBoardSupport": "Клацніть, щоб переглянути список неофіційних форумів підтримки",
       "upload": "завантажити",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Новий хмарний скетч",
       "newSketch": "Новий скетч"
     },
-    "survey": {
-      "answerSurvey": "Відповідь на опитування",
-      "dismissSurvey": "Більше не показувати",
-      "surveyMessage": "Будь ласка, допоможіть нам покращитися, відповівши на це надкоротке опитування. Ми цінуємо нашу спільноту і хочемо ближче познайомитися з нашими прихильниками."
-    },
     "theme": {
       "currentThemeNotFound": "Не вдалося знайти поточну вибрану тему: {0}. Arduino IDE вибрала вбудовану тему, сумісну з відсутньою.",
       "dark": "Темна",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Помилка в імені файла скетча ",
       "renameSketchFolderMessage": "Скетч '{0}' не може бути використаний. {1} Щоб позбутися цього повідомлення, перейменуйте скетч. Бажаєте перейменувати скетч зараз?",
       "renameSketchFolderTitle": "Помилка в назві скетча"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' вже існує."

@@ -275,6 +275,9 @@
       "checkForUpdates": "جار التحقق من التحديثات لـ Arduino IDE",
       "closeAndInstallButton": "قم بالاغلاق و التحديث",
       "closeToInstallNotice": "اغلق البرمجية و حّدث الجهاز الخاص بك ",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "حمّل",
       "downloadingNotice": "يتم تحميل اخر نسخة من Arduino IDE",
       "errorCheckingForUpdates": "حدث خطأ اثناء البحث عن تحديثات للـ Arduino IDE \n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "موقع ملف المشاريع",
       "sketchbook.showAllFiles": "True لعرض كل مجلدات مشاريع داخل المشروع . False افتراضيا",
-      "survey.notification": "مفعل اذا اراد المستخدم ان يتم تبليغه في حالوجود استطلاع راي . مفعل بشكل افتراضي",
       "unofficialBoardSupport": "انقر لعرض قائمة عناوين URL للوحات المدعومة بشكل غير رسمي",
       "upload": "الرفع",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "مشروع سحابي جديد",
       "newSketch": "مشروع جديد"
     },
-    "survey": {
-      "answerSurvey": "الاجابة على الاستبيان",
-      "dismissSurvey": "لا تظهر مرة اخرى",
-      "surveyMessage": "يرجى ان تساعدنا لنحسن ادائنا من خلال الاجابة على هذا الاستبيان القصير جدا . نحن نحترم المجتمع الخاص بنا و نريد ان نتعرف بشكل افضل على داعمينا "
-    },
     "theme": {
       "currentThemeNotFound": "تعذر الحصول على السمة التي تم اختيارها : {0} . Arduino IDE اختار سمات موجودة مسبقا و متوافقة مع السمة الغير متوفرة",
       "dark": "غامق",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "اسم المشروع غير صالح",
       "renameSketchFolderMessage": "لا يمكن استخدام المشروع '{0}' , {1} قم باعادة تسمية المشروع للتخلص من هذه الرسالة . هل تريد اعادة تسمية المشروع الان؟",
       "renameSketchFolderTitle": "اسم المشروع غير صالح"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' موجود مسبقا"

@@ -275,6 +275,9 @@
       "checkForUpdates": "檢查 Arduino IDE 更新",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉本程式後安裝更新。",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "下載",
       "downloadingNotice": "正在下載最新版本的Arduino IDE。",
       "errorCheckingForUpdates": "檢查 Arduino IDE 更新時發生錯誤。\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "sketchbook 位置",
       "sketchbook.showAllFiles": "顯示 sketch 內全部檔案。預設: false。",
-      "survey.notification": "有新問卷時會通知使用者, 預設為: true。",
       "unofficialBoardSupport": "點擊來取得非官方開發版的支援網址",
       "upload": "上傳",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "新增雲 sketch",
       "newSketch": "新增 sketch"
     },
-    "survey": {
-      "answerSurvey": "填寫問卷",
-      "dismissSurvey": "不要再顯示",
-      "surveyMessage": "請回答超短的問卷來協助我們改善。 我們重視本社群, 希望能更了解我們的支持者。 "
-    },
     "theme": {
       "currentThemeNotFound": "找不到目前選擇的主題：{0} 。 Arduino IDE 挑選了一個內建的相容主題。",
       "dark": "暗色",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "無效的 sketch 檔名",
       "renameSketchFolderMessage": "Sketch '{0}' 無法被使用。 {1} 要擺脫這則訊息，請更改 sketch 檔名。要現在更改檔名嗎？",
       "renameSketchFolderTitle": "無效的 sketch 檔名"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'已存在。"
