@@ -384,8 +384,9 @@ import('@theia/core/lib/browser/common-frontend-contribution.js').then(
     theiaCommonContribution['supportPaste'] = true;
   }
 );
-
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
+  console.log('Triggering full build');
+
   // Commands, colors, theme adjustments, and toolbar items
   bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
   bind(CommandContribution).toService(ArduinoFrontendContribution);

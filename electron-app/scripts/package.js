@@ -8,6 +8,12 @@ async function run() {
   /** @type {string} */
   const electronVersion =
     require('../package.json').devDependencies['electron'];
+  const cleanElectronVersion = semver.clean(electronVersion.replace(/^\^/, ''));
+  if (!cleanElectronVersion) {
+    throw new Error(
+      `Electron semver validation failed for version: '${electronVersion}'.`
+    );
+  }
   const platform = electronPlatform();
   const version = await getVersion();
   /** @type {string|unknown} */
@@ -18,7 +24,7 @@ async function run() {
     '--publish',
     'never',
     '-c.electronVersion',
-    semver.clean(electronVersion.replace(/^\^/, '')),
+    cleanElectronVersion,
     '-c.extraMetadata.version',
     version,
     // overrides the `name` in the `package.json` to keep the `localStorage` location. (https://github.com/arduino/arduino-ide/pull/2144#pullrequestreview-1554005028)
@@ -45,7 +51,11 @@ async function run() {
     //   updateChannel
     // );
   }
-  const cp = exec('electron-builder', args, { stdio: 'inherit' });
+  const cp = exec(
+    'DEBUG=* DEBUG_DMG=true ELECTRON_BUILDER_VERBOSE=true electron-builder',
+    args,
+    { stdio: 'inherit' }
+  );
   await cp;
 }
 
