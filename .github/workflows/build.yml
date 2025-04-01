@@ -172,6 +172,7 @@ jobs:
       is-nightly: ${{ steps.determination.outputs.is-nightly }}
       channel-name: ${{ steps.determination.outputs.channel-name }}
       publish-to-s3: ${{ steps.determination.outputs.publish-to-s3 }}
+    environment: production
     permissions: {}
     steps:
       - name: Determine the type of build
@@ -589,7 +590,7 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read 
+      contents: read
 
     steps:
       - name: Download all job transfer artifacts
@@ -602,8 +603,8 @@ jobs:
       - name: Configure AWS Credentials for Nightly [S3]
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
-          aws-region: us-east-1 
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
 
       - name: Publish Nightly [S3]
         run: |
@@ -661,8 +662,8 @@ jobs:
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
-          aws-region: us-east-1 
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
 
       - name: Publish Release [S3]
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
