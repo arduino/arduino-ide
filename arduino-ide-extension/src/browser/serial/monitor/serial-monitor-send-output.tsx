@@ -26,6 +26,9 @@ export class SerialMonitorOutput extends React.Component<
       lines: [],
       timestamp: this.props.monitorModel.timestamp,
       charCount: 0,
+      lineIndex: null,
+      cursorPosition: 0,
+      overflow: null
     };
   }
 
@@ -57,22 +60,32 @@ export class SerialMonitorOutput extends React.Component<
     this.scrollToBottom();
     this.toDisposeBeforeUnmount.pushAll([
       this.props.monitorManagerProxy.onMessagesReceived(({ messages }) => {
-        const [newLines, totalCharCount] = messagesToLines(
-          messages,
-          this.state.lines,
-          this.state.charCount
-        );
-        const [lines, charCount] = truncateLines(newLines, totalCharCount);
-        this.setState(
-          {
-            lines,
-            charCount,
-          },
-          () => this.scrollToBottom()
-        );
+        if(Symbol.iterator in Object(messages)) {
+          if (this.state.overflow) {
+            messages[0] = this.state.overflow + messages[0];
+          }
+          const [newLines, totalCharCount, cLineIndex, cCursorPosition, overflow] = messagesToLines(
+              messages,
+              this.state.lines,
+              this.state.charCount,
+              this.state.lineIndex,
+              this.state.cursorPosition,
+          );
+          const [lines, charCount, lineIndex, cursorPosition] = truncateLines(newLines, totalCharCount, cLineIndex, cCursorPosition);
+          this.setState(
+              {
+                lines,
+                charCount,
+                lineIndex,
+                cursorPosition,
+                overflow
+              },
+              () => this.scrollToBottom()
+          );
+        }
       }),
       this.props.clearConsoleEvent(() =>
-        this.setState({ lines: [], charCount: 0 })
+        this.setState({ lines: [], charCount: 0, lineIndex: null, cursorPosition: 0, overflow: null })
       ),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
@@ -137,6 +150,9 @@ export namespace SerialMonitorOutput {
     lines: Line[];
     timestamp: boolean;
     charCount: number;
+    lineIndex: number | null;
+    cursorPosition: number;
+    overflow: string | null;
   }
 
   export interface SelectOption<T> {
