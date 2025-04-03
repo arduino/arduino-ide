@@ -1,6 +1,6 @@
 {
   "name": "arduino-ide",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "description": "Arduino IDE",
   "repository": "https://github.com/arduino/arduino-ide.git",
   "author": "Arduino SA",
