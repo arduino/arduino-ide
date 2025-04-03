@@ -801,6 +801,15 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     }
     return super.config;
   }
+
+  /**
+   * "Gently" close all windows, application will not stop if a `beforeunload` handler returns `false`.
+   */
+  requestStop(): void {
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  }
 }
 
 class InterruptWorkspaceRestoreError extends Error {
