@@ -329,7 +329,10 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       // 2. A short timeout resolves the promise automatically, falling back to the usual app launch
       await this.openFilePromise.promise;
     } catch (err) {
-      if (err instanceof InterruptWorkspaceRestoreError) {
+      if (
+        err &&
+        (err as InterruptWorkspaceRestoreError).isInterruptWorkspaceRestoreError
+      ) {
         // Application has received the `open-file` event and will skip the default application launch
         return;
       }
@@ -804,6 +807,8 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
 }
 
 class InterruptWorkspaceRestoreError extends Error {
+  public readonly isInterruptWorkspaceRestoreError = true;
+
   constructor() {
     super(
       "Received 'open-file' event. Interrupting the default launch workflow."
