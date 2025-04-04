@@ -2,7 +2,7 @@ import {
   Disposable,
   DisposableCollection,
 } from '@theia/core/lib/common/disposable';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { expect } from 'chai';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';

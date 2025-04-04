@@ -70,7 +70,7 @@ export class CheckForIDEUpdates extends Contribution {
           SKIP_IDE_VERSION
         );
         if (versionToSkip === updateInfo.version) return;
-        this.updaterDialog.open(updateInfo);
+        this.updaterDialog.open(true, updateInfo);
       })
       .catch((e) => {
         this.messageService.error(

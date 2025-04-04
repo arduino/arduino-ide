@@ -3,7 +3,7 @@ import { Emitter } from '@theia/core/lib/common/event';
 import { JsonRpcProxy } from '@theia/core/lib/common/messaging/proxy-factory';
 import { WindowService } from '@theia/core/lib/browser/window/window-service';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application';
+import { FrontendApplicationContribution } from '@theia/core/lib/browser/frontend-application-contribution';
 import {
   CommandRegistry,
   CommandContribution,

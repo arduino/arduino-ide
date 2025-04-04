@@ -30,9 +30,9 @@ backend.config.plugins.unshift(
 );
 
 // Override the default entry from Theia as IDE2 has a customization of the module.
-backend.config.entry['nsfw-watcher'] = {
+backend.config.entry['parcel-watcher'] = {
   import: require.resolve(
-    'arduino-ide-extension/lib/node/theia/filesystem/nsfw-watcher'
+    'arduino-ide-extension/lib/node/theia/filesystem/parcel-watcher'
   ),
   library: {
     type: 'commonjs2',

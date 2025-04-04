@@ -275,6 +275,9 @@
       "checkForUpdates": "Comprova si hi ha actualitzacions de l'IDE d'Arduino",
       "closeAndInstallButton": "Tanca i instal·la",
       "closeToInstallNotice": "Tanqueu el programari i instal·leu l'actualització a la vostra màquina.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Descarrega",
       "downloadingNotice": "Descarregant de l'última versió de l'IDE d'Arduino.",
       "errorCheckingForUpdates": "S'ha produït un error en comprovar si hi ha actualitzacions de l'IDE d'Arduino.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Ubicació del quadern de programes",
       "sketchbook.showAllFiles": "Si està activat es mostraran els fitxers dins del programa. Per defecte està desactivat.",
-      "survey.notification": "Si està activat els usuaris seran notificats si hi ha una enquesta disponible. Per defecte està activat.",
       "unofficialBoardSupport": "Fes clic per obtenir una llista d'URLs de suport de plaques no oficials",
       "upload": "carrega",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Programa del núvol nou",
       "newSketch": "Programa nou"
     },
-    "survey": {
-      "answerSurvey": "Contesta l'enquesta",
-      "dismissSurvey": "No ho tornes a mostrar",
-      "surveyMessage": "Ajuda'ns a millorar contestant aquesta enquesta súper curta. Valorem la nostra comunitat i volem conéixer els nostres usuaris un poc millor."
-    },
     "theme": {
       "currentThemeNotFound": "No s'ha trobat el nom seleccionat: {0}. L'IDE d'Arduino ha agafat un tema compatible amb el que falta.",
       "dark": "Fosc",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "El nom del fitxer del programa no és vàlid",
       "renameSketchFolderMessage": "El programa \"{0}\" no es pot usar. {1} Per obtindre detalls del missatge, reanomena el programa. Vols reanomenar-lo ara?",
       "renameSketchFolderTitle": "El nom del programa no és vàlid"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "\"{0}\" ja existeix."

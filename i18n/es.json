@@ -5,7 +5,7 @@
       "label": "Acerca de {0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
+      "goToCloudEditor": "Ir a Arduino Cloud",
       "goToIoTCloud": "Go to IoT Cloud",
       "goToProfile": "Ir al Perfil",
       "menuTitle": "Arduino Cloud"
@@ -275,6 +275,9 @@
       "checkForUpdates": "Comprobar actualizaciones para Arduino IDE",
       "closeAndInstallButton": "Cerrar e instalar",
       "closeToInstallNotice": "Cierra el programa e instala la actualización en tu máquina.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Descargar",
       "downloadingNotice": "Descargando la última versión del Arduino IDE.",
       "errorCheckingForUpdates": "Error al comprobar las actualizaciones del IDE de Arduino.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Ruta del Sketchbook",
       "sketchbook.showAllFiles": "Verdadero para mostrar todos los archivos de bocetos dentro del boceto. Por defecto es falso.",
-      "survey.notification": "Verdadero si usuarios deberían ser notificados cuando una encuesta esté disponible. Verdadero es predeterminado.",
       "unofficialBoardSupport": "Pulsa para listar las URLs de las tarjetas no oficiales",
       "upload": "Carga",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Nuevo Sketch en la Nube",
       "newSketch": "New Sketch"
     },
-    "survey": {
-      "answerSurvey": "Completar encuesta",
-      "dismissSurvey": "No volver a mostrar",
-      "surveyMessage": "Por favor ayudenos mejorar completando esta breve encuesta. Valoramos nuestra comunidad y nos gustaría conocer algo mejor a los que nos apoyan."
-    },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' ya existe."

@@ -12,12 +12,12 @@
     },
     "board": {
       "board": "Board{0}",
-      "boardConfigDialogTitle": " Anderes Board und anderen Ports wählen",
-      "boardDataReloaded": "Board data reloaded.",
+      "boardConfigDialogTitle": "Andere Boards und Ports wählen",
+      "boardDataReloaded": "Board Daten neu gelesen.",
       "boardInfo": "Board-Informationen",
       "boards": "Boards",
       "configDialog1": " Wähle  ein Board und einen Port, wenn du den Sketch hochladen möchtest.",
-      "configDialog2": "Wenn Sie nur ein Board auswählen, werden Sie den Sketch nur kompilieren können, jedoch nicht hochladen.",
+      "configDialog2": " Wenn du nur das Board und keinen Port wählst, kannst du den Sketch kompilieren, aber nicht hochladen.",
       "couldNotFindPreviouslySelected": " Das vorher gewählte Board '{0}' gehört nicht zur installierten Plattform '{1}'. Möchtest du das Board neu auswählen?",
       "editBoardsConfig": "Board und Port ändern...",
       "getBoardInfo": "Board-Infos abrufen",
@@ -32,12 +32,12 @@
       "port": "Port{0}",
       "ports": "Ports",
       "programmer": "Programmer",
-      "reloadBoardData": "Reload Board Data",
+      "reloadBoardData": "Board Daten neuladen",
       "reselectLater": "Später auswählen",
       "revertBoardsConfig": "'{0}' an '{1}' verwenden",
       "searchBoard": "Board suchen",
       "selectBoard": "Board wählen",
-      "selectBoardToReload": "Please select a board first.",
+      "selectBoardToReload": "Bitte erst ein Board auswählen.",
       "selectPortForInfo": " Wähle einen Port, um Infos über das Board zu erhalten.",
       "showAllAvailablePorts": " Alle verfügbaren Ports anzeigen, wenn aktiviert.",
       "showAllPorts": "Alle Ports anzeigen",
@@ -275,6 +275,9 @@
       "checkForUpdates": "Arduino IDE Updates suchen",
       "closeAndInstallButton": "Schließen und Installieren",
       "closeToInstallNotice": "Software beenden und Update auf deinem Computer installieren",
+      "donateLinkIconTitle": "Öffne die Spenden Seite",
+      "donateLinkText": "Spenden um uns zu Unterstützen",
+      "donateText": "Open Source ist Liebe, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Die neueste Version der Arduino IDE wird heruntergeladen.",
       "errorCheckingForUpdates": "Fehler bei der Suche nach IDE Updates{0}",
@@ -371,7 +374,7 @@
       "cloud.pull.warn": "Wenn diese Option aktiviert ist, werden Nutzer vor dem Herunterladen eines Sketches aus der Cloud gewarnt. Standardmäßig aktiviert.",
       "cloud.push.warn": "Wenn diese Option aktiviert ist, werden Nutzer vor dem Hochladen eines Sketches in die Cloud gewarnt. Standardmäßig aktiviert. ",
       "cloud.pushpublic.warn": "Wenn diese Option aktiviert ist, werden Nutzer vor dem Hochladen eines öffentlichen Sketches in die Cloud gewarnt. Standardmäßig aktiviert. ",
-      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
+      "cloud.sharedSpaceId": "Die ID der Arduino-Cloud 'shared space' von welchem die Sketchbooks geladen werden sollen. Wenn leer, wird dein privater Bereich verwendet.",
       "cloud.sketchSyncEndpoint": "Endpunkt, um Sketches zu/von einem Backend zu laden. Standardeinstellung ist die Arduino Cloud API.",
       "compile": "Kompilieren",
       "compile.experimental": "Wenn diese Option aktiviert, werden mehrere Compiler-Fehler in der IDE gleichzeitig behandelt. Standardmäßig deaktiviert.",
@@ -412,12 +415,11 @@
       },
       "sketchbook.location": "Pfad für Sketchbook",
       "sketchbook.showAllFiles": "Wenn diese Option aktiviert ist, werden alle Sketch-Dateien innerhalb des Sketches angezeigt. Standardmäßig deaktiviert. ",
-      "survey.notification": "Wenn diese Option aktiviert ist, werden Nutzer über eine verfügbare Umfrage informiert. Standardmäßig aktiviert.",
       "unofficialBoardSupport": "Klicke hier, um eine URL-Liste von inoffiziell unterstützten Boards anzuzeigen.",
       "upload": "Hochladen",
-      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
+      "upload.autoVerify": "Wahr wenn die IDE automatisch den Code vor dem Hochladen verifizieren soll. Standard: Wahr. Wenn der Wert Falsch ist, wird die IDE den Code vor dem Upload der Binärdaten nicht noch einmal Kompilieren . Wirklich nur auf Falsch setzen wenn du genau weißt warum und was du tust!",
       "upload.verbose": "Wenn die Option aktiviert ist, werden ausführliche Compiler-Meldungen angezeigt. Standardmäßig deaktiviert.",
-      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
+      "upload.verify": "Verifiziere das hochzuladende Binary nach dem Hochladen im Speicher des Boards identisch ist.",
       "verifyAfterUpload": "Code nach Hochladen überprüfen ",
       "window.autoScale": "Wenn die Option aktiviert ist, skaliert die Nutzeroberfläche automatisch mit der Schriftgröße.",
       "window.zoomLevel": {
@@ -487,11 +489,6 @@
       "newCloudSketch": "Neuer Cloud-Sketch",
       "newSketch": "Neu"
     },
-    "survey": {
-      "answerSurvey": "Umfrage beantworten",
-      "dismissSurvey": "Nicht erneut anzeigen",
-      "surveyMessage": "Helfen Sie uns, uns zu verbessern, indem Sie diese kurze Umfrage ausfüllen. Wir wissen unsere Community wertzuschätzen und möchten unsere Unterstützer gerne ein wenig besser kennenlernen."
-    },
     "theme": {
       "currentThemeNotFound": "Das aktuell ausgewählte Theme konnte nicht gefunden werden: {0}. Die Arduino IDE hat ein eingebautes Theme ausgewählt, welches kompatibel mit dem fehlenden Theme ist.",
       "dark": "Dunkel",
@@ -525,8 +522,16 @@
       "renameSketchFolderMessage": "Der Sketch '{0}' kann nicht verwendet werden. {1} Um diese Meldung loszuwerden, muss der Sketch umbenannt werden. Möchtest du den Sketch jetzt umbenennen?",
       "renameSketchFolderTitle": "Ungültiger Sketch-Name"
     },
+    "versionWelcome": {
+      "cancelButton": "Vielleicht später",
+      "donateButton": "Spende Jetzt",
+      "donateMessage": "Arduino verpflichtet sich die Software frei und quell-offen für alle zu bewahren. Deine Spende hilft uns neue Funktionalitäten, verbesserte Bibliotheken zu entwickeln, und hilft Millionen Benutzern Welt Weit.",
+      "donateMessage2": "Bitte denke über einen Unterstützung unserer Arbeit an der freien und quell-offenen Arduino IDE nach.",
+      "title": "Willkommen zu einer neuen Version der Arduino IDE!",
+      "titleWithVersion": "Willkommen zur neuen Arduino IDE {0}!"
+    },
     "workspace": {
-      "alreadyExists": "{0} existiert bereits."
+      "alreadyExists": "'{0}' existiert bereits."
     }
   },
   "theia": {

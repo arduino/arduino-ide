@@ -275,6 +275,9 @@
       "checkForUpdates": "Праверыць наяўнасць абнаўленняў Arduino IDE",
       "closeAndInstallButton": "Зачыніць і ўсталяваць",
       "closeToInstallNotice": "Зачыніце праграмнае забеспячэнне і ўсталюйце абнаўленне на свой кампутар.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Спампаваць",
       "downloadingNotice": "Пампуе апошнюю версію Arduino IDE.",
       "errorCheckingForUpdates": "Памылка пры праверцы абнаўленняў Arduino IDE.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Месцазнаходжанне альбому з сцэнарамі",
       "sketchbook.showAllFiles": "Калі true, адлюстроўваюцца ўсе файлы сцэнараў унутры сцэнара.\nПершапачаткова false.",
-      "survey.notification": "Калі true, карыстальнікі павінны атрымліваць апавяшчэнні аб даступнасці апытання.\nПершапачаткова true.",
       "unofficialBoardSupport": "Пстрыкніце, каб праглядзець спіс адрасоў URL падтрымкі неафіцыйных плат",
       "upload": "выгрузіць",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Новы сцэнар у воблаку",
       "newSketch": "Новы сцэнар"
     },
-    "survey": {
-      "answerSurvey": "Апытанне з адказамі",
-      "dismissSurvey": "Болей не адлюстроўваць",
-      "surveyMessage": "Калі ласка, дапамажыце нам стаць лепш, адказаўшы на гэтае звышкароткае апытанне.\nМы цэнім нашу супольнасць і хацелі б даведацца нашых прыхільнікаў трохі лепш."
-    },
     "theme": {
       "currentThemeNotFound": "Не атрымалася знайсці абраную ў дадзены момант тэму: {0}.\nArduino IDE абрала ўбудаваную тэму, якая сумяшчальная з адсутнай.",
       "dark": "Цёмная",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Хібнае імя файлу сцэнара",
       "renameSketchFolderMessage": "Сцэнар '{0}' не можа быць ужыты.\n{1} Каб пазбавіцца ад гэтага паведамлення, пераназавіце сцэнар.\nЦі жадаеце вы пераназваць сцэнар?",
       "renameSketchFolderTitle": "Хібная назва сцэнара"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "{0}' ужо існуе."

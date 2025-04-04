@@ -4,6 +4,7 @@ import {
   TabBarToolbarRegistry,
   TabBarToolbarItem,
   ReactTabBarToolbarItem,
+  RenderedToolbarItem,
 } from '@theia/core/lib/browser/shell/tab-bar-toolbar';
 import { CommandRegistry } from '@theia/core/lib/common/command';
 import { ReactWidget } from '@theia/core/lib/browser';
@@ -14,7 +15,7 @@ export const ARDUINO_TOOLBAR_ITEM_CLASS = 'arduino-tool-item';
 export namespace ArduinoToolbarComponent {
   export interface Props {
     side: 'left' | 'right';
-    items: (TabBarToolbarItem | ReactTabBarToolbarItem)[];
+    items: TabBarToolbarItem[];
     commands: CommandRegistry;
     labelParser: LabelParser;
     commandIsEnabled: (id: string) => boolean;
@@ -34,7 +35,7 @@ export class ArduinoToolbarComponent extends React.Component<
     this.state = { tooltip: '' };
   }
 
-  protected renderItem = (item: TabBarToolbarItem) => {
+  protected renderItem = (item: RenderedToolbarItem) => {
     let innerText = '';
     let className = `arduino-tool-icon ${item.id}-icon`;
     if (item.text) {
@@ -46,7 +47,8 @@ export class ArduinoToolbarComponent extends React.Component<
         }
       }
     }
-    const command = this.props.commands.getCommand(item.command);
+    const command =
+      item.command && this.props.commands.getCommand(item.command);
     const cls = `${ARDUINO_TOOLBAR_ITEM_CLASS} ${
       TabBarToolbar.Styles.TAB_BAR_TOOLBAR_ITEM
     } ${command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''} ${
@@ -80,7 +82,9 @@ export class ArduinoToolbarComponent extends React.Component<
     const items = [
       <React.Fragment key={this.props.side + '-arduino-toolbar-tooltip'}>
         {[...this.props.items].map((item) =>
-          TabBarToolbarItem.is(item) ? this.renderItem(item) : item.render()
+          ReactTabBarToolbarItem.is(item)
+            ? item.render()
+            : this.renderItem(item)
         )}
       </React.Fragment>,
     ];
@@ -94,10 +98,7 @@ export class ArduinoToolbarComponent extends React.Component<
 }
 
 export class ArduinoToolbar extends ReactWidget {
-  protected items = new Map<
-    string,
-    TabBarToolbarItem | ReactTabBarToolbarItem
-  >();
+  protected items = new Map<string, TabBarToolbarItem>();
 
   constructor(
     protected readonly tabBarToolbarRegistry: TabBarToolbarRegistry,
@@ -112,9 +113,7 @@ export class ArduinoToolbar extends ReactWidget {
     this.tabBarToolbarRegistry.onDidChange(() => this.updateToolbar());
   }
 
-  protected updateItems(
-    items: Array<TabBarToolbarItem | ReactTabBarToolbarItem>
-  ): void {
+  protected updateItems(items: Array<TabBarToolbarItem>): void {
     this.items.clear();
     const revItems = items
       .sort(TabBarToolbarItem.PRIORITY_COMPARATOR)
@@ -163,7 +162,7 @@ export class ArduinoToolbar extends ReactWidget {
 
   protected executeCommand = (e: React.MouseEvent<HTMLElement>) => {
     const item = this.items.get(e.currentTarget.id);
-    if (TabBarToolbarItem.is(item)) {
+    if (item && item.command) {
       this.commands.executeCommand(item.command, this, e.target);
     }
   };

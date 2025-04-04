@@ -38,33 +38,33 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
     this.preferencesService.onPreferenceChanged(
       debounce((e) => {
         if (e.preferenceName === 'window.menuBarVisibility') {
-          this.setMenuBar();
+          this.doSetMenuBar();
         }
-        if (this._menu) {
-          for (const cmd of this._toggledCommands) {
-            const menuItem = this.findMenuById(this._menu, cmd);
+        if (this.menu) {
+          for (const cmd of this.toggledCommands) {
+            const menuItem = this.findMenuById(this.menu, cmd);
             if (menuItem) {
               menuItem.checked = this.commandRegistry.isToggled(cmd);
             }
           }
-          window.electronArduino.setMenu(this._menu); // calls the IDE2-specific implementation
+          window.electronArduino.setMenu(this.menu); // calls the IDE2-specific implementation
         }
       }, 10)
     );
     this.keybindingRegistry.onKeybindingsChanged(() => {
-      this.setMenuBar();
+      this.doSetMenuBar();
     });
     // #endregion Theia `postConstruct`
     this.appStateService.reachedState('ready').then(() => {
       this.appReady = true;
       if (this.updateWhenReady) {
-        this.setMenuBar();
+        this.doSetMenuBar();
       }
     });
   }
 
   override createElectronMenuBar(): MenuDto[] {
-    this._toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
+    this.toggledCommands.clear(); // https://github.com/eclipse-theia/theia/issues/8977
     const menuModel = this.menuProvider.getMenu(MAIN_MENU_BAR);
     const menu = this.fillMenuTemplate([], menuModel, [], {
       rootMenuPath: MAIN_MENU_BAR,
@@ -73,11 +73,11 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       menu.unshift(this.createOSXMenu());
     }
     const escapedMenu = this.escapeAmpersand(menu);
-    this._menu = escapedMenu;
+    this.menu = escapedMenu;
     return escapedMenu;
   }
 
-  override async setMenuBar(): Promise<void> {
+  override async doSetMenuBar(): Promise<void> {
     // Avoid updating menu items when the app is not ready.
     // Getting the current electron window is not free and synchronous.
     // Here, we defer all menu update requests, and fire one when the app is ready.
@@ -124,17 +124,17 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
           ...args
         );
         if (
-          this._menu &&
+          this.menu &&
           this.menuCommandExecutor.isVisible(menuPath, commandId, ...args)
         ) {
-          const item = this.findMenuById(this._menu, commandId);
+          const item = this.findMenuById(this.menu, commandId);
           if (item) {
             item.checked = this.menuCommandExecutor.isToggled(
               menuPath,
               commandId,
               ...args
             );
-            window.electronArduino.setMenu(this._menu); // overridden to call the IDE2-specific implementation.
+            window.electronArduino.setMenu(this.menu); // overridden to call the IDE2-specific implementation.
           }
         }
       }
@@ -342,7 +342,7 @@ export class ElectronMainMenuFactory extends TheiaElectronMainMenuFactory {
       parentItems.push(menuItem);
 
       if (this.commandRegistry.getToggledHandler(commandId, ...args)) {
-        this._toggledCommands.add(commandId);
+        this.toggledCommands.add(commandId);
       }
     }
     return parentItems;

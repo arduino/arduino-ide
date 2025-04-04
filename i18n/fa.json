@@ -275,6 +275,9 @@
       "checkForUpdates": "به روز رسانی آردوینو IDE را بررسی کنید",
       "closeAndInstallButton": "بستن و نصب",
       "closeToInstallNotice": "نرم افزار را ببندید و به روز رسانی را روی دستگاه خود نصب کنید.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "دانلود",
       "downloadingNotice": "در حال بارگیری آخرین نسخه از آردوینو",
       "errorCheckingForUpdates": "خطا در حلقه بررسی برای وجود بروزرسانی برای آردوینو رخ داد. {0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "مکان منبع طرح ها",
       "sketchbook.showAllFiles": "همه فایل‌های طرح را در داخل طرح نشان دهد درست است. به طور پیش فرض نادرست است.",
-      "survey.notification": "درست است اگر در صورت وجود نظرسنجی به کاربران اطلاع داده شود. به طور پیش فرض درست است.",
       "unofficialBoardSupport": "برای لیستی از آدرس های اینترنتی پشتیبانی هیئت مدیره غیررسمی کلیک کنید",
       "upload": "بارگذاری",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "طرح جدید روی فضای ابری",
       "newSketch": "طرح جدید"
     },
-    "survey": {
-      "answerSurvey": "به نظرسنجی پاسخ دهید",
-      "dismissSurvey": "دیگر نشان نده",
-      "surveyMessage": "لطفاً با پاسخ دادن به این نظرسنجی فوق العاده کوتاه ما را در پیشرفت خود یاری کنید. ما برای جامعه خود ارزش قائلیم و دوست داریم حامیان خود را کمی بهتر بشناسیم."
-    },
     "theme": {
       "currentThemeNotFound": "طرح زمینه انتخابی فعلی یافت نشد:«{0}».  پس Arduino IDE یک طرح زمینه داخلی سازگار با طرح زمینه یافت نشده انتخاب کرده است.",
       "dark": "تاریک",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "نام فایل طرح نامعتبر است",
       "renameSketchFolderMessage": "طرح«{0}»  قابل استفاده نیست. «{1}» برای خلاص شدن از  این پیام، نام طرح را تغییر دهید. اکنون می خواهید نام طرح را تغییر دهید؟",
       "renameSketchFolderTitle": "نام طرح بی‌اعتبار است"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'  از قبل وجود دارد."

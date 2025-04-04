@@ -275,6 +275,9 @@
       "checkForUpdates": "Checar atualizações da Arduino IDE",
       "closeAndInstallButton": "Fechar e instalar ",
       "closeToInstallNotice": "Feche o software e instale a atualização em sua máquina. ",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Baixar",
       "downloadingNotice": "Baixando a versão mais recente do IDE do Arduino.",
       "errorCheckingForUpdates": "Erro ao verificar as atualizações do IDE do Arduino. {0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Localização do Caderno de Esboços",
       "sketchbook.showAllFiles": "Verdadeiro para mostrar todos os arquivos de esboço dentro do esboço. O padrão é falso.",
-      "survey.notification": "Verdadeiro se o usuário deve ser notificado se uma pesquisa estiver disponível. Verdadeiro por padrão",
       "unofficialBoardSupport": "Clique para obter uma lista de URLs de placas não oficiais suportadas",
       "upload": "enviar",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Novo Esboço na Nuvem",
       "newSketch": "Novo Esboço"
     },
-    "survey": {
-      "answerSurvey": "Responder a pesquisa",
-      "dismissSurvey": "Não mostrar novamente",
-      "surveyMessage": "Por favor, ajude-nos a melhorar respondendo essa pequena pesquisa. Nós valorizamos nossa comunidade  e gostaríamos de conhecer nossos colaboradores um pouco melhor."
-    },
     "theme": {
       "currentThemeNotFound": "Não foi possível encontrar o tema selecionado atualmente: {0}. A IDE Arduino escolheu um tema embutido compatível com o que está faltando. ",
       "dark": "Escuro",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Nome de arquivo de esboço inválido.",
       "renameSketchFolderMessage": "O esboço '{0}' não pode ser usado. {1} Para se livrar dessa mensagem, renomeie o esboço. Você quer renomear o esboço agora?",
       "renameSketchFolderTitle": "Nome de esboço inválido."
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' já existe."

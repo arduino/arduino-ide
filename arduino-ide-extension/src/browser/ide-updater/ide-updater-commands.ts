@@ -30,7 +30,7 @@ export class IDEUpdaterCommands implements CommandContribution {
     try {
       const updateInfo = await this.updater.checkForUpdates(initialCheck);
       if (!!updateInfo) {
-        this.updaterDialog.open(updateInfo);
+        this.updaterDialog.open(true, updateInfo);
       } else {
         this.messageService.info(
           nls.localize(

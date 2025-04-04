@@ -275,6 +275,9 @@
       "checkForUpdates": "Arduino IDE Güncellemelerini kontrol et",
       "closeAndInstallButton": "Kapat ve Kur",
       "closeToInstallNotice": "Yazılımı kapatın ve güncellemeyi makinanıza yükleyin.",
+      "donateLinkIconTitle": "bağış sayfasını aç",
+      "donateLinkText": "bizi desteklemek için bağış yap",
+      "donateText": "Açık kaynak aşktır, {0}",
       "downloadButton": "İndir",
       "downloadingNotice": "Arduino IDE'nin son sürümü indiriliyor.",
       "errorCheckingForUpdates": "Arduino IDE güncellemelerini kontrol ederken hata oluştu.{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Eskiz Defteri konumu",
       "sketchbook.showAllFiles": "Tüm eskiz dosyalarını eskiz içinde görüntülemek için açın. Varsayılan: kapalı.",
-      "survey.notification": "Bir anket bulunduğunda kullanıcılara gösterilecekse açın. Varsayılan olarak açıktır.",
       "unofficialBoardSupport": "Desteklenmeyen kart destek URL'leri listesi için tıklayın",
       "upload": "yükle",
       "upload.autoVerify": "Açıldığında IDE yükleme öncesinde kodu otomatik olarak doğrular. Varsayılan olarak açıktır. Bu değer kapalı olduğunda, IDE ikili dosyayı karta yüklemeden önce tekrar derlemez. Bu ayarı sadece gerçekten ne yaptığınızı biliyor olduğunuz durumlarda kapatmanız önerilir.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "Yeni Bulut Eskiz",
       "newSketch": "Yeni Eskiz"
     },
-    "survey": {
-      "answerSurvey": "Anketi yanıtla",
-      "dismissSurvey": "Tekrar gösterme",
-      "surveyMessage": "Lütfen bu çok kısa anketi yanıtlayarak gelişmemize yardım edin. Topluluğumuza değer veriyoruz e destekçilerimizi biraz daha iyi tanımak isteriz."
-    },
     "theme": {
       "currentThemeNotFound": "Mevcut seçili tema bulunamadı: {0}. Arduino IDE kayıp olanın yerine uyumlu dahili bir tane seçti.",
       "dark": "Koyu",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Hatalı eskiz dosya adı",
       "renameSketchFolderMessage": "'{0}' eskizi kullanılamaz. {1} Bu mesajdan kurtulmak için eskizi yeniden adlandırın. Eskizi şimdi yeniden adlandırmak istiyor musunuz?",
       "renameSketchFolderTitle": "Hatalı eskiz adı"
+    },
+    "versionWelcome": {
+      "cancelButton": "Belki sonra",
+      "donateButton": "Şimdi bağış yap",
+      "donateMessage": "Arduino, yazılımı herkes için ücretsiz ve açık kaynaklı tutmaya adanmıştır. Bağışınız yeni özellikler geliştirmemize, kütüphaneleri daha iyi yapmamıza ve dünya çapındaki milyonlarca kullanıcıyı desteklememize yardım eder.",
+      "donateMessage2": "Lütfen özgür açık kaynaklı Arduino IDE üzerindeki çalışmalarımızı desteklemeyi gözden geçirin.",
+      "title": "Arduino IDE'nin yeni sürümüne hoş geldiniz!",
+      "titleWithVersion": "Yeni Arduino IDE'ye hoş geldin {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' zaten mevcut."

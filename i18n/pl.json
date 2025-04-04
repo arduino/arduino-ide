@@ -5,8 +5,8 @@
       "label": "O {0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
-      "goToIoTCloud": "Go to IoT Cloud",
+      "goToCloudEditor": "Przejdź do Edytora w Chmurze",
+      "goToIoTCloud": "Przejdź do IoT Cloud",
       "goToProfile": "Przejdź do profilu",
       "menuTitle": "Arduino Cloud"
     },
@@ -91,14 +91,14 @@
     },
     "cloud": {
       "chooseSketchVisibility": "Wybierz widoczność swojego Szkicu:",
-      "cloudSketchbook": "Cloud Sketchbook",
+      "cloudSketchbook": "Szkic w Chmurze",
       "connected": "Połączony",
       "continue": "Kontynuuj",
       "donePulling": "Done pulling '{0}'.",
       "donePushing": "Done pushing '{0}'.",
       "embed": "Osadzić:",
       "emptySketchbook": "Twój Szkicownik jest pusty",
-      "goToCloud": "Go to Cloud",
+      "goToCloud": "Przejdź do Chmury",
       "learnMore": "Dowiedz się więcej",
       "link": "Odnośnik:",
       "notYetPulled": "Nie można wysłać do chmury. Nie jest jeszcze wyciągnięty.",
@@ -129,7 +129,7 @@
     "cloudSketch": {
       "alreadyExists": "Cloud sketch '{0}' already exists.",
       "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
+      "new": "Nowy szkic w Chmurze",
       "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
       "pulling": "Synchronizing sketchbook, pulling '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
@@ -206,7 +206,7 @@
       "copyError": "Kopiuj komunikat błędu",
       "noBoardSelected": "Nie wybrano płytki. Proszę wybierz płytkę z Narzędzia > Lista płytek"
     },
-    "createCloudCopy": "Push Sketch to Cloud",
+    "createCloudCopy": "Wrzuć szkic do Chmury",
     "daemon": {
       "restart": "Restartuj Daemon",
       "start": "Start Daemon",
@@ -215,7 +215,7 @@
     "debug": {
       "debugWithMessage": "Debuguj - {0}",
       "debuggingNotSupported": "Debugowanie nie jest wspierane przez '{0}'",
-      "getDebugInfo": "Getting debug info...",
+      "getDebugInfo": "Pobieranie informacji debugowania",
       "noPlatformInstalledFor": "Platforma nie jest zainstalowana dla '{0}'",
       "optimizeForDebugging": "Optymalizuj pod kątem debugowania",
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
@@ -275,6 +275,9 @@
       "checkForUpdates": "Sprawdź uaktualnienia dla Arduino IDE.",
       "closeAndInstallButton": "Wyjdź i instaluj",
       "closeToInstallNotice": "Zamknij aplikacje i zainstaluj aktualizacje.",
+      "donateLinkIconTitle": "Otwórz stronę pomocy dla projektu",
+      "donateLinkText": "Wesprzyj nasz projekt",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Pobierz",
       "downloadingNotice": "Pobieranie najnowszej wersji Arduino IDE.",
       "errorCheckingForUpdates": "Błąd podczas sprawdzania aktualizacji Arduino IDE.\n{0}",
@@ -339,7 +342,7 @@
     },
     "monitor": {
       "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
-      "baudRate": "{0} baud",
+      "baudRate": "1{0} baud",
       "connectionFailedError": "Could not connect to {0} {1} port.",
       "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
       "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Lokalizacja szkicownika",
       "sketchbook.showAllFiles": "Prawda, aby wyświetlać wszystkie pliki ze szkicu. Fałsz jest wartością domyślną.",
-      "survey.notification": "Prawdziwy, jeśli użytkownicy powinni być powiadamiani o dostępności ankiety. Domyślnie prawdwdziwy.",
       "unofficialBoardSupport": "Kliknij, aby przejść do listy linków nieoficjalnego wsparcia dla płytek.",
       "upload": "przesyłanie",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -484,13 +486,8 @@
       "verifyOrCompile": "Weryfikuj/Kompiluj"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
+      "newCloudSketch": "Nowy szkic w Chmurze",
       "newSketch": "New Sketch"
-    },
-    "survey": {
-      "answerSurvey": "Odpowiedz na ankietę",
-      "dismissSurvey": "Pomóż nam się rozwijać wypełniając tą super krótką ankietę. Cenimy naszą społeczność i chcielibyśmy lepiej poznać tych którzy nas wspierają.",
-      "surveyMessage": "Pomóż nam się rozwijać wypełniając tą super krótką ankietę. Cenimy naszą społeczność i chcielibyśmy lepiej poznać tych którzy nas wspierają."
     },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
@@ -502,7 +499,7 @@
       "user": "{0} (user)"
     },
     "title": {
-      "cloud": "Cloud"
+      "cloud": "Chmura"
     },
     "updateIndexes": {
       "updateIndexes": "Aktualizuj indeksy",
@@ -519,11 +516,19 @@
     },
     "validateSketch": {
       "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
-      "abortFixTitle": "Invalid sketch",
+      "abortFixTitle": "Nieprawidłowy szkic",
       "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "versionWelcome": {
+      "cancelButton": "Może później",
+      "donateButton": "Wspomóż projekt teraz",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Witaj w nowej wersji Arduino IDE!",
+      "titleWithVersion": "Witaj w Arduino IDE1{0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

@@ -275,6 +275,9 @@
       "checkForUpdates": "檢查 Arduino IDE 更新",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉本程式後安裝更新。",
+      "donateLinkIconTitle": "開啟捐款頁面",
+      "donateLinkText": "捐款來支持我們",
+      "donateText": "公開程式碼就是愛， {0}",
       "downloadButton": "下載",
       "downloadingNotice": "正在下載最新版本的Arduino IDE。",
       "errorCheckingForUpdates": "檢查Arduino IDE更新時發生錯誤。\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "sketchbook 位置",
       "sketchbook.showAllFiles": "顯示 sketch 內全部檔案。預設: false。",
-      "survey.notification": "有新問卷時會通知使用者, 預設為: true。",
       "unofficialBoardSupport": "點擊來取得非官方開發板的支援網址",
       "upload": "上傳",
       "upload.autoVerify": "預設為是，IDE會在上載前自動驗証。如選否，IDE在上載前不會重編譯程式碼。強烈建議除非你知道自己在幹嘛才這麼做。",
@@ -487,11 +489,6 @@
       "newCloudSketch": "新增雲 sketch",
       "newSketch": "新增 sketch"
     },
-    "survey": {
-      "answerSurvey": "填寫問卷",
-      "dismissSurvey": "不要再顯示",
-      "surveyMessage": "請回答超短的問卷來協助我們改善。 我們重視本社群, 希望能更了解我們的支持者。 "
-    },
     "theme": {
       "currentThemeNotFound": "找不到目前選擇的主題：{0} 。 Arduino IDE 挑選了一個內建的相容主題。",
       "dark": "暗",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "無效的 sketch 檔名",
       "renameSketchFolderMessage": "Sketch '{0}' 無法被使用。 {1} 要擺脫這則訊息，請更改 sketch 檔名。要現在更改檔名嗎？",
       "renameSketchFolderTitle": "無效的 sketch 檔名"
+    },
+    "versionWelcome": {
+      "cancelButton": "讓我考慮一下",
+      "donateButton": "現在捐",
+      "donateMessage": "Arduino 致力讓軟體保持自由並對大家開放程式碼，您的捐款可以幫助我們開發新功能、改善程式庫及對全球數百萬用戶的支持。",
+      "donateMessage2": "期盼您考慮支持我們對自由軟體 Arduino IDE 所做的努力。",
+      "title": "歡迎使用新版 Arduino IDE !",
+      "titleWithVersion": "歡迎使用新版 Arduino IDE  {0} !"
     },
     "workspace": {
       "alreadyExists": "'{0}'已存在。"

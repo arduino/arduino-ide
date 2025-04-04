@@ -184,6 +184,7 @@ jobs:
       is-nightly: ${{ steps.determination.outputs.is-nightly }}
       channel-name: ${{ steps.determination.outputs.channel-name }}
       publish-to-s3: ${{ steps.determination.outputs.publish-to-s3 }}
+    environment: production
     permissions: {}
     steps:
       - name: Determine the type of build
@@ -306,6 +307,7 @@ jobs:
       SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
       WIN_CERT_PASSWORD: ${{ secrets[matrix.config.certificate-password-secret] }}
       WIN_CERT_CONTAINER_NAME: ${{ secrets[matrix.config.certificate-container] }}
+      PUPPETEER_SKIP_DOWNLOAD: true
 
     strategy:
       matrix:
@@ -486,6 +488,12 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           version: 3.x
 
+      - name: Install dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxkbfile-dev libsecret-1-dev
+
       - name: Install dependencies
         run: yarn
 
@@ -603,7 +611,7 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read 
+      contents: read
 
     steps:
       - name: Download all job transfer artifacts
@@ -616,8 +624,8 @@ jobs:
       - name: Configure AWS Credentials for Nightly [S3]
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
-          aws-region: us-east-1 
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
 
       - name: Publish Nightly [S3]
         run: |
@@ -646,7 +654,7 @@ jobs:
 
     permissions:
       id-token: write
-      contents: read
+      contents: write
 
     steps:
       - name: Download all job transfer artifacts
@@ -675,8 +683,8 @@ jobs:
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
-          aws-region: us-east-1 
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
 
       - name: Publish Release [S3]
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
