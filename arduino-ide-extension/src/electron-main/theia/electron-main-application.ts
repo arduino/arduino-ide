@@ -805,17 +805,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 }
 
-class InterruptWorkspaceRestoreError extends Error {
-  public readonly isInterruptWorkspaceRestoreError = true;
-
-  constructor() {
-    super(
-      "Received 'open-file' event. Interrupting the default launch workflow."
-    );
-    Object.setPrototypeOf(this, InterruptWorkspaceRestoreError.prototype);
-  }
-}
-
 // This is a workaround for a limitation with the Theia CLI and `electron-builder`.
 // It is possible to run the `electron-builder` with `-c.extraMetadata.foo.bar=36` option.
 // On the fly, a `package.json` file will be generated for the final bundled application with the additional `{ "foo": { "bar": 36 } }` metadata.
