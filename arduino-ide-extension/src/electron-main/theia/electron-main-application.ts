@@ -291,7 +291,9 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
             true
           );
           if (sketchFolderPath) {
-            this.openFilePromise.reject(new InterruptWorkspaceRestoreError());
+            this.openFilePromise.reject({
+              name: 'InterruptWorkspaceRestoreError',
+            });
             await this.openSketch(sketchFolderPath);
           }
         }
@@ -329,7 +331,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       // 2. A short timeout resolves the promise automatically, falling back to the usual app launch
       await this.openFilePromise.promise;
     } catch (err) {
-      if (err instanceof InterruptWorkspaceRestoreError) {
+      if (err && (err as any).name === 'InterruptWorkspaceRestoreError') {
         // Application has received the `open-file` event and will skip the default application launch
         return;
       }
@@ -801,15 +803,6 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       return this._fallbackConfig;
     }
     return super.config;
-  }
-}
-
-class InterruptWorkspaceRestoreError extends Error {
-  constructor() {
-    super(
-      "Received 'open-file' event. Interrupting the default launch workflow."
-    );
-    Object.setPrototypeOf(this, InterruptWorkspaceRestoreError.prototype);
   }
 }
 
