@@ -385,10 +385,11 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
   }
 
   private async launchFromArgs(
-    params: ElectronMainCommandOptions
+    params: ElectronMainCommandOptions,
+    argv?: string[]
   ): Promise<boolean> {
     // Copy to prevent manipulation of original array
-    const argCopy = [...this.argv];
+    const argCopy = [...(argv || this.argv)];
     let path: string | undefined;
     for (const maybePath of argCopy) {
       const resolvedPath = await this.resolvePath(maybePath, params.cwd);
@@ -526,7 +527,7 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     argv: string[],
     cwd: string
   ): Promise<void> {
-    if (await this.launchFromArgs({ cwd, secondInstance: true })) {
+    if (await this.launchFromArgs({ cwd, secondInstance: true }, argv)) {
       // Application has received a file in its arguments
       return;
     }
