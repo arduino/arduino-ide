@@ -67,7 +67,8 @@
         "defaultIconTheme": "none",
         "validatePreferencesSchema": false,
         "electron": {
-          "showWindowEarly": true
+          "showWindowEarly": true,
+          "uriScheme": "arduino-ide"
         },
         "reloadOnReconnect": true,
         "preferences": {
