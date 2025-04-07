@@ -13,7 +13,7 @@
     "board": {
       "board": "Плата{0}",
       "boardConfigDialogTitle": "Абярыце іншую плату і порт",
-      "boardDataReloaded": "Board data reloaded.",
+      "boardDataReloaded": "Дадзеныя на плату былі загружаныя нанова.",
       "boardInfo": "Інфармацыя пра плату",
       "boards": "платы",
       "configDialog1": "Абярыце як плату, так і порт, калі вы жадаеце загрузіць сцэнар.",
@@ -32,12 +32,12 @@
       "port": "Порт{0}",
       "ports": "порты",
       "programmer": "Сродак праграмавання",
-      "reloadBoardData": "Reload Board Data",
+      "reloadBoardData": "Загрузіць дадзеныя на плату нанова",
       "reselectLater": "Абярыце паўторна пазней",
       "revertBoardsConfig": "Ужыта '{0}' выяўлена ў '{1}'",
       "searchBoard": "Знайсці плату",
       "selectBoard": "Знайсці плату",
-      "selectBoardToReload": "Please select a board first.",
+      "selectBoardToReload": "Калі ласка, спачатку абярыце плату.",
       "selectPortForInfo": "Калі ласка, абярыце порт, каб атрымаць інфармацыю пра плату.",
       "showAllAvailablePorts": "Паказвае ўсе даступныя порты, калі яны ўключаныя",
       "showAllPorts": "Паказаць усе порты",
@@ -275,9 +275,9 @@
       "checkForUpdates": "Праверыць наяўнасць абнаўленняў Arduino IDE",
       "closeAndInstallButton": "Зачыніць і ўсталяваць",
       "closeToInstallNotice": "Зачыніце праграмнае забеспячэнне і ўсталюйце абнаўленне на свой кампутар.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
+      "donateLinkIconTitle": "адчыніць старонку ахвяраванняў",
+      "donateLinkText": "ахвяраваць, каб падтрымаць нас",
+      "donateText": "Адкрыты зыходны код - гэта любоў, {0}",
       "downloadButton": "Спампаваць",
       "downloadingNotice": "Пампуе апошнюю версію Arduino IDE.",
       "errorCheckingForUpdates": "Памылка пры праверцы абнаўленняў Arduino IDE.\n{0}",
@@ -417,9 +417,9 @@
       "sketchbook.showAllFiles": "Калі true, адлюстроўваюцца ўсе файлы сцэнараў унутры сцэнара.\nПершапачаткова false.",
       "unofficialBoardSupport": "Пстрыкніце, каб праглядзець спіс адрасоў URL падтрымкі неафіцыйных плат",
       "upload": "выгрузіць",
-      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
+      "upload.autoVerify": "True, калі IDE павінна аўтаматычна правяраць код перад загрузкай.\nПершапачаткова значэнне роўнае true.\nКалі false, IDE не кампілюе код нанова перад загрузкай двайковага файла на плату.\nНастойліва рэкамендуецца ўсталяваць false толькі калі вы ведаеце, што робіце.",
       "upload.verbose": "Калі true, каб быў падрабязны вывад пры загрузцы.\nПершапачаткова false.",
-      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
+      "upload.verify": "Пасля загрузкі пераканайцеся, што змест памяці на плаце адпавядае загружанаму двайковаму файлу.",
       "verifyAfterUpload": "Праверыць код пасля выгрузкі",
       "window.autoScale": "Калі true, карыстальніцкі інтэрфейс аўтаматычна маштабуецца ў адпаведнасці з памерам шрыфту.",
       "window.zoomLevel": {
@@ -523,12 +523,12 @@
       "renameSketchFolderTitle": "Хібная назва сцэнара"
     },
     "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
+      "cancelButton": "Можа, пазней",
+      "donateButton": "Ахвераваць зараз",
+      "donateMessage": "Arduino імкнецца захаваць праграмнае забеспячэнне бясплатным і з адкрытым зыходным кодам для ўсіх.\nВашыя ахвяраванні дапамагаюць нам распрацоўваць новыя функцыі, удасканальваць бібліятэкі і падтрымліваць мільёны карыстальнікаў па ўсім свеце.",
+      "donateMessage2": "Калі ласка, падумайце пра падтрымку нашай працы над бясплатнай Arduino IDE з адкрытым зыходным кодам.",
+      "title": "Сардэчна запрашаем у новую версію Arduino IDE!",
+      "titleWithVersion": "Сардэчна запрашаем у новае асяроддзе распрацоўкі Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "{0}' ужо існуе."
