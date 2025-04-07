@@ -890,7 +890,10 @@ const fallbackFrontendAppConfig: FrontendApplicationConfig = {
   defaultIconTheme: 'none',
   validatePreferencesSchema: false,
   defaultLocale: '',
-  electron: { showWindowEarly: true, uriScheme: 'custom://arduino-ide' },
+  electron: {
+    showWindowEarly: true,
+    uriScheme: 'arduino-ide',
+  },
   reloadOnReconnect: true,
 };
 
