@@ -30,6 +30,7 @@ import type { AddressInfo } from 'node:net';
 import { isAbsolute, join, resolve } from 'node:path';
 import type { Argv } from 'yargs';
 import { Sketch } from '../../common/protocol';
+import { poolWhile } from '../../common/utils';
 import {
   AppInfo,
   appInfoPropertyLiterals,
@@ -292,6 +293,16 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
           );
           if (sketchFolderPath) {
             this.openFilePromise.reject(new InterruptWorkspaceRestoreError());
+
+            // open-file event is triggered before the app is ready and initialWindow is created.
+            // Wait for initialWindow to be set before opening the sketch on the first instance.
+            // See https://github.com/arduino/arduino-ide/pull/2693
+            try {
+              await app.whenReady();
+              if (!this.firstWindowId) {
+                await poolWhile(() => !this.initialWindow, 100, 3000);
+              }
+            } catch {}
             await this.openSketch(sketchFolderPath);
           }
         }
@@ -890,7 +901,10 @@ const fallbackFrontendAppConfig: FrontendApplicationConfig = {
   defaultIconTheme: 'none',
   validatePreferencesSchema: false,
   defaultLocale: '',
-  electron: { showWindowEarly: true, uriScheme: 'custom://arduino-ide' },
+  electron: {
+    showWindowEarly: true,
+    uriScheme: 'arduino-ide',
+  },
   reloadOnReconnect: true,
 };
 

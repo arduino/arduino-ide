@@ -1,5 +1,5 @@
-import { ConnectionHandler } from '@theia/core/lib/common/messaging/handler';
-import { JsonRpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
+import { ElectronConnectionHandler } from '@theia/core/lib/electron-main/messaging/electron-connection-handler';
+import { RpcConnectionHandler } from '@theia/core/lib/common/messaging/proxy-factory';
 import { ElectronMainWindowService } from '@theia/core/lib/electron-common/electron-main-window-service';
 import { TheiaMainApi } from '@theia/core/lib/electron-main/electron-api-main';
 import {
@@ -33,18 +33,15 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(IDEUpdaterImpl).toSelf().inSingletonScope();
   bind(IDEUpdater).toService(IDEUpdaterImpl);
   bind(ElectronMainApplicationContribution).toService(IDEUpdater);
-  bind(ConnectionHandler)
+  bind(ElectronConnectionHandler)
     .toDynamicValue(
       (context) =>
-        new JsonRpcConnectionHandler<IDEUpdaterClient>(
-          IDEUpdaterPath,
-          (client) => {
-            const server = context.container.get<IDEUpdater>(IDEUpdater);
-            server.setClient(client);
-            client.onDidCloseConnection(() => server.disconnectClient(client));
-            return server;
-          }
-        )
+        new RpcConnectionHandler<IDEUpdaterClient>(IDEUpdaterPath, (client) => {
+          const server = context.container.get<IDEUpdater>(IDEUpdater);
+          server.setClient(client);
+          client.onDidCloseConnection(() => server.disconnectClient(client));
+          return server;
+        })
     )
     .inSingletonScope();
 
