@@ -16,7 +16,7 @@ on:
       - 'static/**'
       - '*.md'
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+*'   
+      - '[0-9]+.[0-9]+.[0-9]+*'
   workflow_dispatch:
     inputs:
       paid-runners:
@@ -133,16 +133,6 @@ env:
           name: macOS_arm64_dmg
         - path: '*macOS_arm64.zip'
           name: macOS_arm64_zip
-    - config:
-        name: ARM Ubuntu 22.04
-        runs-on: ubuntu-22.04-arm
-        container: |
-          null
-        job-transfer-artifact-suffix: ARM_64bit
-        mergeable-channel-file: 'false'
-      artifacts:
-        - path: '*ARM_64bit.tar.gz'
-          name: ARM_64bit_tarball
   PAID_RUNNER_BUILD_DATA: |
     # This system was implemented to allow selective use of paid GitHub-hosted runners, due to the Apple Silicon runner
     # incurring a charge at that time. Free Apple Silicon runners are now available so the configuration was moved to
@@ -300,7 +290,7 @@ jobs:
       # to skip passing signing credentials to electron-builder
       IS_WINDOWS_CONFIG: ${{ matrix.config.name == 'Windows' }}
       INSTALLER_CERT_WINDOWS_CER: "/tmp/cert.cer"
-      # We are hardcoding the path for signtool because it is not present on the Windows PATH env var by default.
+      # We are hardcoding the path for signtool because is not present on the windows PATH env var by default.
       # Keep in mind that this path could change when upgrading to a new runner version
       SIGNTOOL_PATH: "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x86/signtool.exe"
       WIN_CERT_PASSWORD: ${{ secrets[matrix.config.certificate-password-secret] }}
@@ -320,10 +310,6 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      - name: Install Chromium (ARM only)
-        if: matrix.config.name == 'ARM Ubuntu 22.04'
-        run: sudo apt-get update && sudo apt-get install -y chromium-browser
-
       - name: Symlink custom working directory
         shell: cmd
         if: runner.os == 'Windows' && matrix.config.working-directory
@@ -332,6 +318,7 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
 
       - name: Install Node.js
         if: runner.name != 'WINDOWS-SIGN-PC'
