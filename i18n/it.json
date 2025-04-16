@@ -107,14 +107,14 @@
       "options": "Opzioni...",
       "privateVisibility": "Privato. Solo tu potrai vedere lo sketch.",
       "profilePicture": "Immagine profilo",
-      "publicVisibility": "Pubblico. Chiunque abbia il link può vedere lo Sketch.",
+      "publicVisibility": "Pubblico. Chiunque abbia il link può vedere lo sketch.",
       "pull": "Richiedi",
       "pullFirst": "Nel Cloud devi prima effettuare il Pull per poi poter eseguire il Push.",
-      "pullSketch": "Richiedi lo Sketch",
-      "pullSketchMsg": "Richiedendo questo Sketch tramite il Cloud, lo stesso sovrascriverà quello presente in locale. Sei sicuro di dover continuare?",
+      "pullSketch": "Richiedi lo sketch",
+      "pullSketchMsg": "Richiedendo questo sketch tramite il cloud, lo stesso sovrascriverà quello presente in locale. Sei sicuro di voler continuare?",
       "push": "Push",
-      "pushSketch": "Invia lo Sketch",
-      "pushSketchMsg": "Questo è uno sketch pubblico. Prima di inviarlo, verifica che tutte le informazioni sensibili siano all'interno di arduino_secrets.h. Eventualmente puoi rendere lo sketch privato dal Pannello di Condivisione.",
+      "pushSketch": "Invia lo sketch",
+      "pushSketchMsg": "Questo è uno sketch pubblico. Prima di inviarlo, verifica che tutte le informazioni sensibili siano all'interno di arduino_secrets.h. Eventualmente, puoi rendere lo sketch privato dal pannello della condivisione.",
       "remote": "Remoto",
       "share": "Condividi...",
       "shareSketch": "Condividi sketch",
@@ -123,8 +123,8 @@
       "signInToCloud": "Effettua la registrazione su Arduino Cloud",
       "signOut": "Disconnetti",
       "sync": "Sincronizza",
-      "syncEditSketches": "Sincronizza e modifica la tua raccolta di Sketches sul Cloud Arduino",
-      "visitArduinoCloud": "Visita Arduino Cloud per creare Cloud Sketch "
+      "syncEditSketches": "Sincronizza e modifica la tua raccolta degli sketch sul cloud di Arduino",
+      "visitArduinoCloud": "Visita il cloud di Arduino per creare gli sketch."
     },
     "cloudSketch": {
       "alreadyExists": "Lo sketch remoto '{0}' è già presente.",
@@ -217,7 +217,7 @@
       "debuggingNotSupported": "Il debug non è supportato da '{0}'",
       "getDebugInfo": "Acquisizione delle informazioni di debug in corso...",
       "noPlatformInstalledFor": "La piattaforma non è ancora stata installata per '{0}'",
-      "optimizeForDebugging": "Ottimizzato per il Debug.",
+      "optimizeForDebugging": "Ottimizzato per il debug",
       "sketchIsNotCompiled": "Lo sketch '{0}' deve essere verificato prima di avviare una sessione di debug. Verificare lo sketch e avviare nuovamente il debug. Si desidera verificare lo sketch adesso?"
     },
     "developer": {
@@ -275,6 +275,9 @@
       "checkForUpdates": "Controlla gli aggiornamenti dell'IDE di Arduino",
       "closeAndInstallButton": "Chiudi e Installa",
       "closeToInstallNotice": "Chiudi il software e installa l’aggiornamento sulla tua macchina",
+      "donateLinkIconTitle": "apri la pagina delle donazioni",
+      "donateLinkText": "dona per sostenerci",
+      "donateText": "L'open source è amore, {0}",
       "downloadButton": "Scarica",
       "downloadingNotice": "Stai scaricando l’ultima versione dell’Arduino IDE",
       "errorCheckingForUpdates": "Si è verificato un errore durante il controllo degli aggiornamenti per Arduino IDE {0}.",
@@ -382,7 +385,7 @@
       "editorFontSize": "Dimensione del carattere dell'editor",
       "editorQuickSuggestions": "Suggerimenti rapidi dell'editor",
       "enterAdditionalURLs": "Aggiungi degli URLs aggiuntivi, uno per ogni riga",
-      "files.inside.sketches": "Mostra i file all'interno degli Sketch",
+      "files.inside.sketches": "Mostra i file all'interno degli sketch",
       "ide.updateBaseUrl": "L'URL base da cui scaricare gli aggiornamenti. Il valore predefinito è 'https://downloads.arduino.cc/arduino-ide'",
       "ide.updateChannel": "Canale di rilascio per le versioni aggiornate. 'stable' è per le versioni stabili, 'nightly' è per l'ultima versione in sviluppo.",
       "interfaceScale": "Scalabilità dell'interfaccia",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Percorso della cartella degli sketch",
       "sketchbook.showAllFiles": "Vero per mostrare tutti i file relativi contenuti all'interno dello sketch. L'opzione predefinita è falso.",
-      "survey.notification": "Vero se gli utenti devono essere avvisati quando è disponibile un sondaggio. Vero per impostazione predefinita.",
       "unofficialBoardSupport": "Clicca per ottenere la lista di collegamenti per le schede di terze parti, non schede ufficiali.",
       "upload": "caricamento",
       "upload.autoVerify": "Vero se l'IDE deve verificare automaticamente il codice prima del caricamento. Vero per impostazione predefinita. Quando questo valore è falso, l'IDE non ricompila il codice prima di caricare il binario sulla scheda. Si consiglia di impostare questo valore su false solo se si sa cosa si sta facendo.",
@@ -446,7 +448,7 @@
       "archiveSketch": "Archivia sketch",
       "cantOpen": "Una cartella di nome \"{0}\" esiste già. Impossibile aprire lo sketch.",
       "compile": "Compilazione dello sketch in corso...",
-      "configureAndUpload": "Configura e Carica",
+      "configureAndUpload": "Configura e carica",
       "createdArchive": "Creato l'archivio '{0}'.",
       "doneCompiling": "Compilazione completata.",
       "doneUploading": "Caricamento terminato.",
@@ -464,12 +466,12 @@
       "noTrailingPeriod": "Il nome di un file non può terminare con un punto",
       "openFolder": "Apri Cartella",
       "openRecent": "Apri recenti",
-      "openSketchInNewWindow": "Apri lo sketch in una Nuova Finestra",
+      "openSketchInNewWindow": "Apri lo sketch in una nuova finestra",
       "reservedFilename": "'{0}' è il nome di un file riservato.",
       "saveFolderAs": "Salva la cartella sketch come...",
       "saveSketch": "Salva il tuo sketch per riaprirlo in seguito.",
       "saveSketchAs": "Salva la cartella dello sketch come...",
-      "showFolder": "Mostra la cartella dello Sketch",
+      "showFolder": "Mostra la cartella dello sketch",
       "sketch": "Sketch",
       "sketchAlreadyContainsThisFileError": "Lo sketch contiene già un file denominato '{0}'",
       "sketchAlreadyContainsThisFileMessage": "Impossibile salvare lo sketch \"{0}\" come \"{1}\". {2}",
@@ -477,7 +479,7 @@
       "titleLocalSketchbook": "Cartella degli sketch locali",
       "titleSketchbook": "Sketchbook",
       "upload": "Carica",
-      "uploadUsingProgrammer": "Carica tramite Programmatore",
+      "uploadUsingProgrammer": "Carica tramite programmatore",
       "uploading": "Caricamento in corso...",
       "userFieldsNotFoundError": "Non è possibile trovare i campi utente per connettere la scheda",
       "verify": "Verifica",
@@ -485,12 +487,7 @@
     },
     "sketchbook": {
       "newCloudSketch": "Nuovo sketch remoto",
-      "newSketch": "Nuovo Sketch"
-    },
-    "survey": {
-      "answerSurvey": "Rispondi al questionario",
-      "dismissSurvey": "Non mostrare più",
-      "surveyMessage": "Aiutaci a migliorare rispondendo a questo brevissimo questionario. Abbiamo a cuore la nostra comunità e vorremmo conoscere meglio chi ci supporta!"
+      "newSketch": "Nuovo sketch"
     },
     "theme": {
       "currentThemeNotFound": "Impossibile trovare il tema attualmente selezionato: {0}. Arduino IDE ha selezionato un tema integrato compatibile con quello mancante.",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Il nome del file dello sketch non è valido",
       "renameSketchFolderMessage": "Lo sketch '{0}' non può essere usato. {1} Per eliminare questo messaggio, rinomina lo sketch. Vuoi rinominare adesso lo sketch?",
       "renameSketchFolderTitle": "Il nome dello sketch non è valido"
+    },
+    "versionWelcome": {
+      "cancelButton": "Forse in seguito",
+      "donateButton": "Dona adesso",
+      "donateMessage": "Arduino si impegna a mantenere il software libero e open-source per tutti. La tua donazione ci aiuta a sviluppare nuove funzionalità, a migliorare le librerie e a supportare milioni di utenti in tutto il mondo.",
+      "donateMessage2": "Considera l'opportunità di sostenere il nostro lavoro sull'IDE open source gratuito di Arduino.",
+      "title": "Benvenuto nella nuova versione dell'IDE di Arduino!",
+      "titleWithVersion": "Benvenuto nel nuovo IDE di Arduino! {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' è già presente."

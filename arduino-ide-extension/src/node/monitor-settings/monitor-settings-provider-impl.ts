@@ -6,7 +6,7 @@ import {
   postConstruct,
 } from '@theia/core/shared/inversify';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { promisify } from 'util';
 import { MonitorSettingsProvider } from './monitor-settings-provider';
 import { Deferred } from '@theia/core/lib/common/promise-util';

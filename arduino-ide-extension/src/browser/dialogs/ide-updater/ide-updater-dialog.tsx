@@ -261,6 +261,7 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
   }
 
   override async open(
+    disposeOnResolve = true,
     data: UpdateInfo | undefined = undefined
   ): Promise<UpdateInfo | undefined> {
     if (data && data.version) {
@@ -271,7 +272,7 @@ export class IDEUpdaterDialog extends ReactDialog<UpdateInfo | undefined> {
         error: undefined,
       });
       this.updateInfo = data;
-      return super.open();
+      return super.open(disposeOnResolve);
     }
   }
 

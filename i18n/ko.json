@@ -275,6 +275,9 @@
       "checkForUpdates": "Arduino IDE 업데이트 확인",
       "closeAndInstallButton": "닫고 설치하기",
       "closeToInstallNotice": "소프트웨어를 닫고 장치에 업데이트를 설치해주세요.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "다운로드",
       "downloadingNotice": "최신 버전의 Arduino IDE를 다운로드하고 있습니다.",
       "errorCheckingForUpdates": "Arduino IDE의 업데이트를 확인하던 중에 오류가 발생했어요.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "스케치북 위치",
       "sketchbook.showAllFiles": "스케치 내부의 모든 스케치 파일을 표시하려면 True입니다. 기본은 false입니다.",
-      "survey.notification": "설문조사를 사용할 수 있는 경우 사용자에게 알림을 보내야 하는 경우 True입니다. 기본은 True입니다.",
       "unofficialBoardSupport": "비공식 보드 지원 URL 목록을 보려면 클릭하십시오.",
       "upload": "업로드",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
-    "survey": {
-      "answerSurvey": "설문조사 응답",
-      "dismissSurvey": "다시보지 않기",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
-    },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "유효하지 않은 스케치 이름"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

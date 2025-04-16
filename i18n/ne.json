@@ -275,6 +275,9 @@
       "checkForUpdates": "Arduino IDE अपडेटहरूको लागि जाँच गर्नुहोस्",
       "closeAndInstallButton": "बन्द गरेर र स्थापना गर्नुहोस्",
       "closeToInstallNotice": "सफ्टवेयर बन्द गर्नुहोस् र आफ्नो मेसिनमा अपडेट स्थापना गर्नुहोस्।",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "डाउनलोड ",
       "downloadingNotice": "अर्डुइनो IDE को नवीनतम संस्करण डाउनलोड हुँदैछ।",
       "errorCheckingForUpdates": "अर्डुइनो IDE अपडेटहरूको लागि जाँच गर्दा त्रुटि भेटियो।\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "स्केचबुकको स्थान",
       "sketchbook.showAllFiles": "स्केच भित्र सबै स्केच फाइलहरू देखाउन सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित रूपमा असक्षम छ।",
-      "survey.notification": "यदि सर्वेक्षण उपलब्ध छ भने प्रयोगकर्ताहरूलाई सूचित गरिनुपर्छ भने सही संकेत गर्नुहोस्। यो पूर्वनिर्धारित रूपमा सही छ।",
       "unofficialBoardSupport": "अनौपचारिक बोर्ड समर्थन गर्ने URL को सूचीको लागि क्लिक गर्नुहोस्",
       "upload": "अपलोड ",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "नयाँ क्लाउड स्केच",
       "newSketch": "नयाँ स्केच"
     },
-    "survey": {
-      "answerSurvey": "सर्वेक्षणमा जवाफ दिनुहोस ",
-      "dismissSurvey": "फेरि नदेखाउनुहोस्",
-      "surveyMessage": "कृपया हामीलाई यो छोटो सर्वेक्षणको जवाफ दिएर सुधार गर्न मद्दत गर्नुहोस्। हामी हाम्रो समुदायको कदर गर्छौं र हाम्रा समर्थकहरूलाई अझ राम्रोसँग चिन्न चाहन्छौं।"
-    },
     "theme": {
       "currentThemeNotFound": "हाल चयन गरिएको विषयवस्तु फेला पार्न सकेन: {0}। अर्डुइनो IDE ले नभएको विषयवस्तु सँग मिल्दो बिल्ट-इन थिम छनोट गरेको छ।",
       "dark": "गाढा ",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "स्केच फाइलको नाम अमान्य छ",
       "renameSketchFolderMessage": "स्केच '{0}' प्रयोग गर्न सकिँदैन। {1} यो सन्देशबाट छुटकारा पाउन, स्केचको नाम बदल्नुहोस्। के तपाई अहिले स्केचको नाम परिवर्तन गर्न चाहनुहुन्छ?",
       "renameSketchFolderTitle": "स्केचको नाम अमान्य छ"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' पहिले नै अवस्थित छ।"

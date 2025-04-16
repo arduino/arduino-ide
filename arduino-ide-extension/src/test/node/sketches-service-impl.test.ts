@@ -1,5 +1,5 @@
 import type { Mutable } from '@theia/core/lib/common/types';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import stableJsonStringify from 'fast-json-stable-stringify';
 import assert from 'node:assert/strict';
 import { basename, join } from 'node:path';

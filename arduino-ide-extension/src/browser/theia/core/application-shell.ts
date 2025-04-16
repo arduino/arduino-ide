@@ -13,6 +13,8 @@ import { MessageService } from '@theia/core/lib/common/message-service';
 import { inject, injectable } from '@theia/core/shared/inversify';
 import { ApplicationConnectionStatusContribution } from './connection-status-service';
 import { ToolbarAwareTabBar } from './tab-bars';
+import { find } from '@theia/core/shared/@phosphor/algorithm';
+import { OutputWidget } from '@theia/output/lib/browser/output-widget';
 
 @injectable()
 export class ApplicationShell extends TheiaApplicationShell {
@@ -46,6 +48,38 @@ export class ApplicationShell extends TheiaApplicationShell {
       }
     }
     return super.addWidget(widget, { ...options, ref });
+  }
+
+  override doRevealWidget(id: string): Widget | undefined {
+    let widget = find(this.mainPanel.widgets(), (w) => w.id === id);
+    if (!widget) {
+      widget = find(this.bottomPanel.widgets(), (w) => w.id === id);
+      if (widget) {
+        this.expandBottomPanel();
+      }
+    }
+    if (widget) {
+      const tabBar = this.getTabBarFor(widget);
+      if (tabBar) {
+        tabBar.currentTitle = widget.title;
+      }
+    }
+    if (!widget) {
+      widget = this.leftPanelHandler.expand(id);
+    }
+    if (!widget) {
+      widget = this.rightPanelHandler.expand(id);
+    }
+    if (widget) {
+      // Prevent focusing the output widget when is updated
+      // See https://github.com/arduino/arduino-ide/issues/2679
+      if (!(widget instanceof OutputWidget)) {
+        this.windowService.focus();
+      }
+      return widget;
+    } else {
+      return this.secondaryWindowHandler.revealWidget(id);
+    }
   }
 
   override handleEvent(): boolean {

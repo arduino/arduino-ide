@@ -117,7 +117,7 @@ export function maybeUpdateReadOnlyState(
   const model = editor.document;
   const oldReadOnly = model.readOnly;
   const resource = model['resource'];
-  const newReadOnly = Boolean(resource.isReadonly) || isReadOnly(resource.uri);
+  const newReadOnly = Boolean(resource.readOnly) || isReadOnly(resource.uri);
   if (oldReadOnly !== newReadOnly) {
     editor.getControl().updateOptions({ readOnly: newReadOnly });
     if (newReadOnly) {

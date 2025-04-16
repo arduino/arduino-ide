@@ -12,7 +12,7 @@ export class OpenBoardsConfig extends Contribution {
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(OpenBoardsConfig.Commands.OPEN_DIALOG, {
       execute: async (params?: EditBoardsConfigActionParams) =>
-        this.boardsConfigDialog.open(params),
+        this.boardsConfigDialog.open(true, params),
     });
   }
 }

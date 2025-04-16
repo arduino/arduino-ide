@@ -360,6 +360,8 @@ export class BoardListRequest extends jspb.Message {
     setTimeout(value: number): BoardListRequest;
     getFqbn(): string;
     setFqbn(value: string): BoardListRequest;
+    getSkipCloudApiForBoardDetection(): boolean;
+    setSkipCloudApiForBoardDetection(value: boolean): BoardListRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListRequest.AsObject;
@@ -376,6 +378,7 @@ export namespace BoardListRequest {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
         timeout: number,
         fqbn: string,
+        skipCloudApiForBoardDetection: boolean,
     }
 }
 
@@ -493,6 +496,8 @@ export class BoardListWatchRequest extends jspb.Message {
     clearInstance(): void;
     getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
     setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardListWatchRequest;
+    getSkipCloudApiForBoardDetection(): boolean;
+    setSkipCloudApiForBoardDetection(value: boolean): BoardListWatchRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): BoardListWatchRequest.AsObject;
@@ -507,6 +512,7 @@ export class BoardListWatchRequest extends jspb.Message {
 export namespace BoardListWatchRequest {
     export type AsObject = {
         instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        skipCloudApiForBoardDetection: boolean,
     }
 }
 
@@ -617,6 +623,59 @@ export class BoardSearchResponse extends jspb.Message {
 }
 
 export namespace BoardSearchResponse {
+    export type AsObject = {
+        boardsList: Array<BoardListItem.AsObject>,
+    }
+}
+
+export class BoardIdentifyRequest extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): BoardIdentifyRequest;
+
+    getPropertiesMap(): jspb.Map<string, string>;
+    clearPropertiesMap(): void;
+    getUseCloudApiForUnknownBoardDetection(): boolean;
+    setUseCloudApiForUnknownBoardDetection(value: boolean): BoardIdentifyRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BoardIdentifyRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardIdentifyRequest): BoardIdentifyRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BoardIdentifyRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardIdentifyRequest;
+    static deserializeBinaryFromReader(message: BoardIdentifyRequest, reader: jspb.BinaryReader): BoardIdentifyRequest;
+}
+
+export namespace BoardIdentifyRequest {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+
+        propertiesMap: Array<[string, string]>,
+        useCloudApiForUnknownBoardDetection: boolean,
+    }
+}
+
+export class BoardIdentifyResponse extends jspb.Message { 
+    clearBoardsList(): void;
+    getBoardsList(): Array<BoardListItem>;
+    setBoardsList(value: Array<BoardListItem>): BoardIdentifyResponse;
+    addBoards(value?: BoardListItem, index?: number): BoardListItem;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): BoardIdentifyResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: BoardIdentifyResponse): BoardIdentifyResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: BoardIdentifyResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): BoardIdentifyResponse;
+    static deserializeBinaryFromReader(message: BoardIdentifyResponse, reader: jspb.BinaryReader): BoardIdentifyResponse;
+}
+
+export namespace BoardIdentifyResponse {
     export type AsObject = {
         boardsList: Array<BoardListItem.AsObject>,
     }

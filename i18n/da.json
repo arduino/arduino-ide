@@ -2,28 +2,28 @@
   "arduino": {
     "about": {
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
-      "label": "About {0}"
+      "label": "Om 1{0}"
     },
     "account": {
-      "goToCloudEditor": "Go to Cloud Editor",
-      "goToIoTCloud": "Go to IoT Cloud",
-      "goToProfile": "Go to Profile",
+      "goToCloudEditor": "Gå til Cloud Editor",
+      "goToIoTCloud": "Gå til IoT Cloud",
+      "goToProfile": "Gå til Profil",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "Board{0}",
-      "boardConfigDialogTitle": "Select Other Board and Port",
-      "boardDataReloaded": "Board data reloaded.",
-      "boardInfo": "Board Info",
-      "boards": "boards",
-      "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
-      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
-      "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
-      "editBoardsConfig": "Edit Board and Port...",
-      "getBoardInfo": "Get Board Info",
-      "inSketchbook": " (in Sketchbook)",
-      "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
-      "noBoardsFound": "No boards found for \"{0}\"",
+      "boardConfigDialogTitle": "Vælg andet Board og Port",
+      "boardDataReloaded": "Board data genhentet",
+      "boardInfo": "Board info",
+      "boards": "Boards",
+      "configDialog1": "Vælg både et Board og en Port, hvis du ønsker at oploade en skitse",
+      "configDialog2": "Hvis du kun vælger et Board, vil du kunne kompilere, men ikke uploade din skitse.",
+      "couldNotFindPreviouslySelected": "Kunne ikke finde tidligere valgte board '1 {0}' i installerede platform '2 {1}'. Vælg venligst det board du ønsker at anvende. Ønsker du at vælge det nu?",
+      "editBoardsConfig": "Ret Board og Port...",
+      "getBoardInfo": "Hent Board info",
+      "inSketchbook": "(I skitsebog)",
+      "installNow": "\" 1 {0} 2 {1} \" kerne skal installeres for det nuværende valgte \" 3 {2}\" board. Vil du installere det nu?",
+      "noBoardsFound": "Intet board fundet for  \" 1 {0} \"",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
       "nonSerialPort": "Non-serial port, can't obtain info.",
@@ -275,6 +275,9 @@
       "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
+      "donateLinkIconTitle": "open donation page",
+      "donateLinkText": "donate to support us",
+      "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
       "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
@@ -412,7 +415,6 @@
       },
       "sketchbook.location": "Sketchbook location",
       "sketchbook.showAllFiles": "True to show all sketch files inside the sketch. It is false by default.",
-      "survey.notification": "True if users should be notified if a survey is available. True by default.",
       "unofficialBoardSupport": "Click for a list of unofficial board support URLs",
       "upload": "upload",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
@@ -487,11 +489,6 @@
       "newCloudSketch": "New Cloud Sketch",
       "newSketch": "New Sketch"
     },
-    "survey": {
-      "answerSurvey": "Answer survey",
-      "dismissSurvey": "Don't show again",
-      "surveyMessage": "Please help us improve by answering this super short survey. We value our community and would like to get to know our supporters a little better."
-    },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
@@ -524,6 +521,14 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
+    },
+    "versionWelcome": {
+      "cancelButton": "Maybe later",
+      "donateButton": "Donate now",
+      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
+      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
+      "title": "Welcome to a new version of the Arduino IDE!",
+      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

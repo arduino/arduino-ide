@@ -1,6 +1,6 @@
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { isWindows } from '@theia/core/lib/common/os';
-import { FileUri } from '@theia/core/lib/node/file-uri';
+import { FileUri } from '@theia/core/lib/common/file-uri';
 import { Container } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
 import {

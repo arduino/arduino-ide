@@ -1,7 +1,8 @@
-import { MessagingContribution as TheiaMessagingContribution } from '@theia/core/lib/node/messaging/messaging-contribution';
+import { WebsocketEndpoint as TheiaWebsocketEndpoint } from '@theia/core/lib/node/messaging/websocket-endpoint';
 import { injectable } from '@theia/core/shared/inversify';
+
 @injectable()
-export class MessagingContribution extends TheiaMessagingContribution {
+export class WebsocketEndpoint extends TheiaWebsocketEndpoint {
   // https://github.com/eclipse-theia/theia/discussions/11543
   protected override checkAliveTimeout = process.argv.includes(
     '--no-ping-timeout'

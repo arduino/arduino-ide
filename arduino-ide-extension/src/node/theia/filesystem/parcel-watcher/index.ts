@@ -1,6 +1,6 @@
 import * as yargs from '@theia/core/shared/yargs';
 import { JsonRpcProxyFactory } from '@theia/core/lib/common/messaging/proxy-factory';
-import { NoDelayDisposalTimeoutNsfwFileSystemWatcherService } from './nsfw-filesystem-service';
+import { NoDelayDisposalTimeoutParcelFileSystemWatcherService } from './parcel-filesystem-service';
 import type { IPCEntryPoint } from '@theia/core/lib/node/messaging/ipc-protocol';
 import type { FileSystemWatcherServiceClient } from '@theia/filesystem/lib/common/filesystem-watcher-protocol';
 
@@ -20,7 +20,7 @@ const options: {
   }).argv as any;
 
 export default <IPCEntryPoint>((connection) => {
-  const server = new NoDelayDisposalTimeoutNsfwFileSystemWatcherService(
+  const server = new NoDelayDisposalTimeoutParcelFileSystemWatcherService(
     options
   );
   const factory = new JsonRpcProxyFactory<FileSystemWatcherServiceClient>(

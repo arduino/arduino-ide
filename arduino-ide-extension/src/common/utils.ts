@@ -38,3 +38,26 @@ export function uint8ArrayToString(uint8Array: Uint8Array): string {
 export function stringToUint8Array(text: string): Uint8Array {
   return Uint8Array.from(text, (char) => char.charCodeAt(0));
 }
+
+export function poolWhile(
+  whileCondition: () => boolean,
+  intervalMs: number,
+  timeoutMs: number
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!whileCondition) {
+      resolve();
+    }
+
+    const start = Date.now();
+    const interval = setInterval(() => {
+      if (!whileCondition()) {
+        clearInterval(interval);
+        resolve();
+      } else if (Date.now() - start > timeoutMs) {
+        clearInterval(interval);
+        reject(new Error('Timed out while polling.'));
+      }
+    }, intervalMs);
+  });
+}
