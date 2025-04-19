@@ -103,7 +103,7 @@ env:
         - path: '*Linux_64bit.AppImage'
           name: Linux_X86-64_app_image
         - path: '*Linux_64bit.deb'
-          name: Linux_64bit_deb
+          name: Linux_X86-64_deb
 
     - config:
         name: macOS x86
@@ -138,7 +138,7 @@ env:
           name: macOS_arm64_dmg
         - path: '*macOS_arm64.zip'
           name: macOS_arm64_zip
-          
+
     - config:
         name: ARM Ubuntu 22.04
         runs-on: ubuntu-22.04-arm
