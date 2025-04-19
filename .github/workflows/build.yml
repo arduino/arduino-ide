@@ -315,6 +315,14 @@ jobs:
         if: matrix.config.name == 'ARM Ubuntu 22.04'
         run: sudo apt-get update && sudo apt-get install -y chromium-browser
 
+      - name: Ensure fpm works on ARM64
+        if: matrix.config.name == 'ARM Ubuntu 22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev
+          sudo gem install fpm
+          echo "USE_SYSTEM_FPM=true" >> $GITHUB_ENV
+
       - name: Symlink custom working directory
         shell: cmd
         if: runner.os == 'Windows' && matrix.config.working-directory
