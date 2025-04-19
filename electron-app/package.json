@@ -154,7 +154,8 @@
     "linux": {
       "target": [
         "zip",
-        "AppImage"
+        "AppImage",
+        "deb"
       ],
       "category": "Development",
       "icon": "resources/icons"
