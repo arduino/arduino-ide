@@ -87,6 +87,7 @@ env:
           name: Windows_X86-64_MSI
         - path: '*Windows_64bit.zip'
           name: Windows_X86-64_zip
+
     - config:
         name: Linux
         runs-on: ubuntu-latest
@@ -103,6 +104,7 @@ env:
           name: Linux_X86-64_app_image
         - path: '*Linux_64bit.deb'
           name: Linux_64bit_deb
+
     - config:
         name: macOS x86
         runs-on: macos-13
@@ -120,6 +122,7 @@ env:
           name: macOS_X86-64_dmg
         - path: '*macOS_64bit.zip'
           name: macOS_X86-64_zip
+
     - config:
         name: macOS ARM
         runs-on: macos-latest
@@ -135,6 +138,7 @@ env:
           name: macOS_arm64_dmg
         - path: '*macOS_arm64.zip'
           name: macOS_arm64_zip
+          
     - config:
         name: ARM Ubuntu 22.04
         runs-on: ubuntu-22.04-arm
