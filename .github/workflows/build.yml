@@ -323,6 +323,13 @@ jobs:
           sudo apt-get install -y ruby ruby-dev
           sudo gem install fpm
           echo "USE_SYSTEM_FPM=true" >> $GITHUB_ENV
+          
+      - name: Install RPM Build Tools (Linux only)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm
+
       - name: Symlink custom working directory
         shell: cmd
         if: runner.os == 'Windows' && matrix.config.working-directory
