@@ -101,6 +101,8 @@ env:
           name: Linux_X86-64_zip
         - path: '*Linux_64bit.AppImage'
           name: Linux_X86-64_app_image
+        - path: '*Linux_64bit.rpm'
+          name: Linux_X86-64_rpm
     - config:
         name: macOS x86
         runs-on: macos-13
@@ -145,6 +147,8 @@ env:
           name: Linux_arm64_zip
         - path: '*Linux_arm64.AppImage'
           name: Linux_arm64_app_image
+        - path: '*Linux_arm64.rpm'
+          name: Linux_arm64_rpm
   PAID_RUNNER_BUILD_DATA: |
     # This system was implemented to allow selective use of paid GitHub-hosted runners, due to the Apple Silicon runner
     # incurring a charge at that time. Free Apple Silicon runners are now available so the configuration was moved to
@@ -311,7 +315,14 @@ jobs:
       - name: Install Chromium (ARM only)
         if: matrix.config.name == 'ARM Ubuntu 22.04'
         run: sudo apt-get update && sudo apt-get install -y chromium-browser
-
+        
+      - name: Ensure fpm works on ARM64
+        if: matrix.config.name == 'ARM Ubuntu 22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev
+          sudo gem install fpm
+          echo "USE_SYSTEM_FPM=true" >> $GITHUB_ENV
       - name: Symlink custom working directory
         shell: cmd
         if: runner.os == 'Windows' && matrix.config.working-directory
