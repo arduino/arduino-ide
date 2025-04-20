@@ -312,21 +312,17 @@ jobs:
     timeout-minutes: 90
 
     steps:
-      - name: Install Chromium (ARM only)
-        if: matrix.config.name == 'ARM Ubuntu 22.04'
-        run: sudo apt-get update && sudo apt-get install -y chromium-browser
-        
-      - name: Ensure fpm works on ARM64
+      - name: Install Chromium and ensure fpm works (ARM only)
         if: matrix.config.name == 'ARM Ubuntu 22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ruby ruby-dev
+          sudo apt-get install -y chromium-browser ruby ruby-dev
           sudo gem install fpm
           echo "USE_SYSTEM_FPM=true" >> $GITHUB_ENV
-          
       - name: Install RPM Build Tools (Linux only)
         if: runner.os == 'Linux'
         run: |
+          apt update && apt install sudo
           sudo apt-get update
           sudo apt-get install -y rpm
 
