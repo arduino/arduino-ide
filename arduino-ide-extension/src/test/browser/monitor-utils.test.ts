@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
   messagesToLines,
   truncateLines,
+  linesToMergedStr,
 } from '../../browser/serial/monitor/monitor-utils';
 import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
@@ -15,6 +16,7 @@ type TestLine = {
     charCount: number;
     maxCharacters?: number;
   };
+  expectedMerged?: string;
 };
 
 const date = new Date();
@@ -22,6 +24,7 @@ const testLines: TestLine[] = [
   {
     messages: ['Hello'],
     expected: { lines: [{ message: 'Hello', lineLen: 5 }], charCount: 5 },
+    expectedMerged: 'Hello',
   },
   {
     messages: ['Hello', 'Dog!'],
@@ -36,6 +39,7 @@ const testLines: TestLine[] = [
       ],
       charCount: 10,
     },
+    expectedMerged: 'Hello\nDog!'
   },
   {
     messages: ['Dog!'],
@@ -67,6 +71,7 @@ const testLines: TestLine[] = [
         { message: "You're a good boy!", lineLen: 8 },
       ],
     },
+    expectedMerged: "Hello Dog!\n Who's a good boy?\nYou're a good boy!",
   },
   {
     messages: ['boy?\n', "You're a good boy!"],
@@ -116,6 +121,7 @@ const testLines: TestLine[] = [
         { message: 'Yo', lineLen: 2 },
       ],
     },
+    expectedMerged: "Hello Dog!\nWho's a good boy?\nYo",
   },
 ];
 
@@ -164,6 +170,10 @@ describe('Monitor Utils', () => {
             charCount += line.message.length;
           });
           expect(totalCharCount).to.equal(charCount);
+        }
+        if (testLine.expectedMerged) {
+          const merged_str = linesToMergedStr(testLine.expected.lines);
+          expect(merged_str).to.equal(testLine.expectedMerged);
         }
       });
     });
