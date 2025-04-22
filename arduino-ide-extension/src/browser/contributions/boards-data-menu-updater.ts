@@ -7,7 +7,8 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import PQueue from 'p-queue';
 import {
   BoardIdentifier,
-  ConfigOption,
+  // Produces Error: src/browser/contributions/boards-data-menu-updater.ts(10,3): error TS6133: 'ConfigOption' is declared but its value is never read.
+  // ConfigOption,
   isBoardIdentifierChangeEvent,
   Programmer,
 } from '../../common/protocol';
