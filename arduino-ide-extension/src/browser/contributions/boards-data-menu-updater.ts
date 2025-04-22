@@ -71,9 +71,7 @@ export class BoardsDataMenuUpdater extends Contribution {
               ...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP,
               'z01_boardsConfig',
             ]; // `z_` is for ordering.
-            for (const { label, option, values } of configOptions.sort(
-              ConfigOption.LABEL_COMPARATOR
-            )) {
+            for (const { label, option, values } of configOptions ) {
               const menuPath = [...boardsConfigMenuPath, `${option}`];
               const commands = new Map<
                 string,
