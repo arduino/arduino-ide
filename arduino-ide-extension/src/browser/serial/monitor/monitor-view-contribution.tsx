@@ -52,6 +52,14 @@ export namespace SerialMonitor {
       },
       'vscode/output.contribution/clearOutput.label'
     );
+    export const COPY_OUTPUT = Command.toLocalizedCommand(
+      {
+        id: 'serial-monitor-copy-output',
+        label: 'Copy Output',
+        iconClass: codicon('copy'),
+      },
+      'arduino/serial/copyOutput'
+    );
   }
 }
 
@@ -149,6 +157,14 @@ export class MonitorViewContribution
         'Clear Output'
       ),
     });
+    registry.registerItem({
+      id: SerialMonitor.Commands.COPY_OUTPUT.id,
+      command: SerialMonitor.Commands.COPY_OUTPUT.id,
+      tooltip: nls.localize(
+        'arduino/serial/copyOutput',
+        'Copy Output'
+      ),
+    });
   }
 
   override registerCommands(commands: CommandRegistry): void {
@@ -158,6 +174,15 @@ export class MonitorViewContribution
       execute: (widget) => {
         if (widget instanceof MonitorWidget) {
           widget.clearConsole();
+        }
+      },
+    });
+    commands.registerCommand(SerialMonitor.Commands.COPY_OUTPUT, {
+      isEnabled: (widget) => widget instanceof MonitorWidget,
+      isVisible: (widget) => widget instanceof MonitorWidget,
+      execute: (widget) => {
+        if (widget instanceof MonitorWidget) {
+          widget.copyOutput();
         }
       },
     });

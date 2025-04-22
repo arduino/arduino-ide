@@ -28,6 +28,7 @@ import {
 import { MonitorModel } from '../../monitor-model';
 import { FrontendApplicationStateService } from '@theia/core/lib/browser/frontend-application-state';
 import { serialMonitorWidgetLabel } from '../../../common/nls';
+import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
 
 @injectable()
 export class MonitorWidget extends ReactWidget {
@@ -47,6 +48,7 @@ export class MonitorWidget extends ReactWidget {
    */
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
+  protected readonly copyOutputEmitter = new Emitter<void>();
 
   @inject(MonitorModel)
   private readonly monitorModel: MonitorModel;
@@ -56,6 +58,8 @@ export class MonitorWidget extends ReactWidget {
   private readonly boardsServiceProvider: BoardsServiceProvider;
   @inject(FrontendApplicationStateService)
   private readonly appStateService: FrontendApplicationStateService;
+  @inject(ClipboardService)
+  private readonly clipboardService: ClipboardService;
 
   private readonly toDisposeOnReset: DisposableCollection;
 
@@ -100,6 +104,11 @@ export class MonitorWidget extends ReactWidget {
 
   clearConsole(): void {
     this.clearOutputEmitter.fire(undefined);
+    this.update();
+  }
+  
+  copyOutput(): void {
+    this.copyOutputEmitter.fire();
     this.update();
   }
 
@@ -247,6 +256,8 @@ export class MonitorWidget extends ReactWidget {
             monitorModel={this.monitorModel}
             monitorManagerProxy={this.monitorManagerProxy}
             clearConsoleEvent={this.clearOutputEmitter.event}
+            copyOutputEvent={this.copyOutputEmitter.event}
+            clipboardService={this.clipboardService}
             height={Math.floor(this.widgetHeight - 50)}
           />
         </div>
