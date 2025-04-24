@@ -7,8 +7,6 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import PQueue from 'p-queue';
 import {
   BoardIdentifier,
-  // Produces Error: src/browser/contributions/boards-data-menu-updater.ts(10,3): error TS6133: 'ConfigOption' is declared but its value is never read.
-  // ConfigOption,
   isBoardIdentifierChangeEvent,
   Programmer,
 } from '../../common/protocol';
@@ -72,8 +70,11 @@ export class BoardsDataMenuUpdater extends Contribution {
               ...ArduinoMenus.TOOLS__BOARD_SETTINGS_GROUP,
               'z01_boardsConfig',
             ]; // `z_` is for ordering.
-            for (const { label, option, values } of configOptions ) {
-              const menuPath = [...boardsConfigMenuPath, `${option}`];
+            let i:number = 0;
+            for (const { label, option, values } of configOptions) {
+              // We want Menu Entries in order of configOptions
+              const order = String(i++).padStart(4)
+              const menuPath = [...boardsConfigMenuPath, `${order}`];
               const commands = new Map<
                 string,
                 Disposable & { label: string }
