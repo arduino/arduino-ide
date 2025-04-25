@@ -77,7 +77,7 @@
       "uploadingCertificates": "සහතික උඩුගත වෙමින්."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
+      "checkForUpdates": "Check for board and library updates",
       "installAll": "සියල්ල ස්ථාපනය",
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",

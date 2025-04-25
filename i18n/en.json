@@ -77,7 +77,7 @@
       "uploadingCertificates": "Uploading certificates."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
+      "checkForUpdates": "Check for board and library updates",
       "installAll": "Install All",
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
