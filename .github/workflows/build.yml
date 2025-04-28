@@ -1,5 +1,4 @@
 name: Arduino IDE
-
 on:
   create:
   push:
