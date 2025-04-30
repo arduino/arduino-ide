@@ -10,7 +10,7 @@ on:
   create:
   push:
     paths:
-      - '.github/workflows/check-javascript.yaml'
+      - '.github/workflows/check-javascript.ya?ml'
       - '**/.eslintignore'
       - '**/.eslintrc*'
       - '**/.npmrc'
