@@ -68,6 +68,6 @@ export function truncateLines(
   return [lines, charCount];
 }
 
-export function linesToMergedStr(lines: Line[]) : string {
-  return lines.map((line: Line) => {return line.message}).join("");
+export function linesToMergedStr(lines: Line[]): string {
+  return lines.map((line: Line) => line.message).join('');
 }
