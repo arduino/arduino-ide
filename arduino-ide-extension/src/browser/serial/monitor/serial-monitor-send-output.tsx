@@ -3,7 +3,7 @@ import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
 import dateFormat from 'dateformat';
-import { messagesToLines, truncateLines, linesToMergedStr } from './monitor-utils';
+import { messagesToLines, truncateLines, joinLines } from './monitor-utils';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
@@ -76,7 +76,7 @@ export class SerialMonitorOutput extends React.Component<
         this.setState({ lines: [], charCount: 0 })
       ),
       this.props.copyOutputEvent(() => 
-        this.props.clipboardService.writeText(linesToMergedStr(this.state.lines))
+        this.props.clipboardService.writeText(joinLines(this.state.lines))
       ),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import {
   messagesToLines,
   truncateLines,
-  linesToMergedStr,
+  joinLines,
 } from '../../browser/serial/monitor/monitor-utils';
 import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
@@ -16,7 +16,7 @@ type TestLine = {
     charCount: number;
     maxCharacters?: number;
   };
-  expectedMerged?: string;
+  expectedJoined?: string;
 };
 
 const date = new Date();
@@ -24,7 +24,7 @@ const testLines: TestLine[] = [
   {
     messages: ['Hello'],
     expected: { lines: [{ message: 'Hello', lineLen: 5 }], charCount: 5 },
-    expectedMerged: 'Hello',
+    expectedJoined: 'Hello',
   },
   {
     messages: ['Hello', 'Dog!'],
@@ -39,7 +39,7 @@ const testLines: TestLine[] = [
       ],
       charCount: 10,
     },
-    expectedMerged: 'Hello\nDog!'
+    expectedJoined: 'Hello\nDog!'
   },
   {
     messages: ['Dog!'],
@@ -71,7 +71,7 @@ const testLines: TestLine[] = [
         { message: "You're a good boy!", lineLen: 8 },
       ],
     },
-    expectedMerged: "Hello Dog!\n Who's a good boy?\nYou're a good boy!",
+    expectedJoined: "Hello Dog!\n Who's a good boy?\nYou're a good boy!",
   },
   {
     messages: ['boy?\n', "You're a good boy!"],
@@ -121,7 +121,7 @@ const testLines: TestLine[] = [
         { message: 'Yo', lineLen: 2 },
       ],
     },
-    expectedMerged: "Hello Dog!\nWho's a good boy?\nYo",
+    expectedJoined: "Hello Dog!\nWho's a good boy?\nYo",
   },
 ];
 
@@ -171,9 +171,9 @@ describe('Monitor Utils', () => {
           });
           expect(totalCharCount).to.equal(charCount);
         }
-        if (testLine.expectedMerged) {
-          const merged_str = linesToMergedStr(testLine.expected.lines);
-          expect(merged_str).to.equal(testLine.expectedMerged);
+        if (testLine.expectedJoined) {
+          const joined_str = joinLines(testLine.expected.lines);
+          expect(joined_str).to.equal(testLine.expectedJoined);
         }
       });
     });
