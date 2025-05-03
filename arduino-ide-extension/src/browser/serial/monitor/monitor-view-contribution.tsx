@@ -52,14 +52,9 @@ export namespace SerialMonitor {
       },
       'vscode/output.contribution/clearOutput.label'
     );
-    export const COPY_OUTPUT = Command.toLocalizedCommand(
-      {
-        id: 'serial-monitor-copy-output',
-        label: 'Copy Output',
-        iconClass: codicon('copy'),
-      },
-      'arduino/serial/copyOutput'
-    );
+    export const COPY_OUTPUT = {
+      id: 'serial-monitor-copy-output',
+    };
   }
 }
 
@@ -160,10 +155,8 @@ export class MonitorViewContribution
     registry.registerItem({
       id: SerialMonitor.Commands.COPY_OUTPUT.id,
       command: SerialMonitor.Commands.COPY_OUTPUT.id,
-      tooltip: nls.localize(
-        'arduino/serial/copyOutput',
-        'Copy Output'
-      ),
+      icon: codicon('copy'),
+      tooltip: nls.localize('arduino/serial/copyOutput', 'Copy Output'),
     });
   }
 
