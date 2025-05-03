@@ -109,7 +109,6 @@ export class MonitorWidget extends ReactWidget {
   
   copyOutput(): void {
     this.copyOutputEmitter.fire();
-    this.update();
   }
 
   override dispose(): void {
