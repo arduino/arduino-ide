@@ -1,4 +1,4 @@
-name: Arduino IDE
+name: Arduino2 IDE (Linux-Build)
 on:
   workflow_dispatch:
 env:
