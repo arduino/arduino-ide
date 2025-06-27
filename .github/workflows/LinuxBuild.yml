@@ -87,5 +87,7 @@ jobs:
 
           echo Test
           echo "BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA }}"
-          echo cache: ${{ fromJSON($build_matrix.config.container) == null && 'yarn' || null }}
+          echo "build_matrix: ${{ build_matrix }}"
+          #echo $build_matrix.config.container
+          #echo cache: ${{ fromJSON($build_matrix.config.container) == null && 'yarn' || null }}
 
