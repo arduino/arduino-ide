@@ -70,7 +70,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Show
-        if: runner.name != 'WINDOWS-SIGN-PC'
         run: |
           set -x
           set -v
