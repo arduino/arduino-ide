@@ -19,12 +19,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Check for AppImage
-      run: |
-        set -x
-        set -v
-        find / -iname "*.AppImage"
-        echo Done
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
@@ -55,6 +49,7 @@ jobs:
         yarn --cwd electron-app build
         yarn --cwd electron-app package
         find / -iname "*.AppImage"
+        cp /__w/arduino-ide/arduino-ide/electron-app/dist/*.AppImage .
     - name: Install gh and jq
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
