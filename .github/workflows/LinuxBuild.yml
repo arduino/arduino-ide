@@ -75,7 +75,7 @@ jobs:
         TAG_List=$(gh release list -R "$GITHUB_REPOSITORY" --json tagName | jq -r 'map(select(true))[] | (.tagName)')
         TAG="${GITHUB_REF#refs/tags/}"
         for i in $TAG_List; do
-          if [[ "$i" = "$TAG"; then
+          if [ "$i" = "$TAG" ]; then
             gh release delete "$TAG" -y
           fi
         done
