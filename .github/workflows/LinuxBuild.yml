@@ -69,11 +69,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          # Yarn is a prerequisite for the action's cache feature, so caching should be disabled when running in the
+          # container where Yarn is not pre-installed.
+          cache: ${{ "x" == "y" && 'yarn' || null }}
       - name: Show
         run: |
           set -x
           set -v
-          echo BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA.config.container }}
-          #echo cache: ${{ env.BASE_BUILD_DATA.config.container == null && 'yarn' || null }}
-          #echo cache: ${{ fromJSON(env.BASE_BUILD_DATA.config.container) == null && 'yarn' || null }}
+          echo Test
+          echo BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA }}
 
