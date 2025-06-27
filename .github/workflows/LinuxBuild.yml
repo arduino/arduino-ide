@@ -19,6 +19,11 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Check for AppImage
+      run: |
+        set -x
+        set -v
+        find / -iname "*.AppImage"
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
@@ -42,19 +47,13 @@ jobs:
       run: |
         set -x
         set -v
-        mkdir -p /etc/apt/keyrings/
-        mkdir -p /etc/apt/sources.list.d/
-        cp .github/tools/githubcli-archive-keyring.gpg /etc/apt/keyrings/githubcli-archive-keyring.gpg
-        cp .github/tools/github-cli.sources /etc/apt/sources.list.d/github-cli.sources
-        apt update
-        apt install -y gh jq
         npx node-gyp install
         yarn install
         yarn --cwd arduino-ide-extension build
         yarn --cwd electron-app rebuild
         yarn --cwd electron-app build
         yarn --cwd electron-app package
-        find . -iname "*.AppImage"
+        find / -iname "*.AppImage"
     - name: Install gh and jq
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
