@@ -24,6 +24,7 @@ jobs:
         set -x
         set -v
         find / -iname "*.AppImage"
+        echo Done
     - name: Install Node.js
       uses: actions/setup-node@v4
       with:
