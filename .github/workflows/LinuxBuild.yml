@@ -74,5 +74,7 @@ jobs:
         run: |
           set -x
           set -v
-          echo cache: ${{ fromJSON(env.BASE_BUILD_DATA.config.container) == null && 'yarn' || null }}
+          echo BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA.config.container }}
+          #echo cache: ${{ env.BASE_BUILD_DATA.config.container == null && 'yarn' || null }}
+          #echo cache: ${{ fromJSON(env.BASE_BUILD_DATA.config.container) == null && 'yarn' || null }}
 
