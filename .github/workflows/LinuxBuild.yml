@@ -1,5 +1,6 @@
 name: Arduino2 IDE (Linux-Build)
 on:
+  push:
   workflow_dispatch:
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
