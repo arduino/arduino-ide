@@ -82,9 +82,10 @@ jobs:
         run: |
           set -x
           set -v
+          build_matrix="$( echo "${{ env.BASE_BUILD_DATA }}" | yq --output-format json '[.[].config]' )"
+          artifact_matrix="$( echo "${{ env.BASE_BUILD_DATA }}" | yq --output-format json 'map(.artifacts[] + (.config | pick(["job-transfer-artifact-suffix"])))' )"
+
           echo Test
           echo "BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA }}"
-          #echo "BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA.config.container }}"
-          #echo cache: ${{ env.BASE_BUILD_DATA.config.container == null && 'yarn' || null }}
-          #echo cache: ${{ fromJSON(env.BASE_BUILD_DATA.config.container) == null && 'yarn' || null }}
+          echo cache: ${{ fromJSON($build_matrix.config.container) == null && 'yarn' || null }}
 
