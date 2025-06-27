@@ -76,7 +76,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           # Yarn is a prerequisite for the action's cache feature, so caching should be disabled when running in the
           # container where Yarn is not pre-installed.
-          cache: ${{ "x" == "y" && 'yarn' || null }}
+          cache: ${{ false && 'yarn' || null }}
       - name: Show
         run: |
           set -x
