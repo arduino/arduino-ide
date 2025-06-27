@@ -27,7 +27,6 @@ env:
           name: Linux_X86-64_app_image
 jobs:
   build-type-determination:
-    needs: run-determination
     runs-on: ubuntu-latest
     outputs:
       is-release: ${{ steps.determination.outputs.is-release }}
