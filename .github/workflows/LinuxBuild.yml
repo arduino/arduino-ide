@@ -82,5 +82,5 @@ jobs:
           set -x
           set -v
           echo Test
-          echo BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA }}
+          echo "BASE_BUILD_DATA: ${{ env.BASE_BUILD_DATA }}"
 
