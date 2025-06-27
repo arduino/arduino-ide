@@ -70,8 +70,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Show
+        if: runner.name != 'WINDOWS-SIGN-PC'
         run: |
           set -x
           set -v
-          echo cache: ${{ fromJSON(matrix.config.container) == null && 'yarn' || null }}
+          echo cache: ${{ fromJSON(env.BASE_BUILD_DATA.config.container) == null && 'yarn' || null }}
 
