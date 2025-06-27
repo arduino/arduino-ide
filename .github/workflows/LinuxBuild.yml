@@ -41,6 +41,8 @@ jobs:
       run: |
         set -x
         set -v
+        mkdir -p /etc/apt/keyrings/
+        mkdir -p /etc/apt/sources.list.d/
         cp .github/tools/githubcli-archive-keyring.gpg /etc/apt/keyrings/githubcli-archive-keyring.gpg
         cp .github/tools/github-cli.sources /etc/apt/sources.list.d/github-cli.sources
         apt update
