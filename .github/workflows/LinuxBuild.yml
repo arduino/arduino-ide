@@ -52,6 +52,8 @@ jobs:
       run: |
         set -x
         set -v
+        sudo apt update
+        sudo apt install -y gh jq
         TAG_List=$(gh release list -R "$GITHUB_REPOSITORY" --json tagName | jq -r 'map(select(true))[] | (.tagName)')
         TAG="${GITHUB_REF#refs/tags/}"
         for i in $TAG_List; do
