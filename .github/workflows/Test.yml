@@ -11,14 +11,23 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: Setup Env
+      run: |
+        #set -x
+        #set -v
+        THIS_REPO_DIR=${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY##*/}
+        TOOLS_DIR=${THIS_REPO_DIR}/.github/tools
+
+        for i in THIS_REPO_DIR TOOLS_DIR; do
+          eval "r=\"\$$i\""
+          echo "$i=$r" >> $GITHUB_ENV
+        done
     - name: Checkout
       uses: actions/checkout@v4
     - name: Mod AppImage to use chrome-sandbox of local os
       run: |
         set -x
         set -v
-        THIS_REPO_DIR=${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY##*/}
-        TOOLS_DIR=${THIS_REPO_DIR}/.github/tools
         mkdir t
         cd t
         mkdir squashfs-root
