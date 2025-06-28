@@ -65,7 +65,7 @@ jobs:
         rm chrome-sandbox
         ln -s /opt/google/chrome/chrome-sandbox chrome-sandbox
         cd ..
-        TOOL=".github/tools/appimagetool-x86_64_2019-05-01.AppImage"
+        TOOL="${GITHUB_WORKSPACE}/.github/tools/appimagetool-x86_64.AppImage"
         ARCH=x86_64 ${TOOL} squashfs-root
         rm -r squashfs-root/
         rm "${EXE}"
