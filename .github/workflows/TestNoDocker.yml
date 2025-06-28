@@ -9,7 +9,6 @@ jobs:
     defaults:
       run:
         shell: bash
-    timeout-minutes: 90
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -17,13 +16,15 @@ jobs:
       run: |
         set -x
         set -v
+        THIS_REPO_DIR=${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY##*/}
+        TOOLS_DIR=${THIS_REPO_DIR}/.github/tools
         mkdir t
         cd t
         mkdir squashfs-root
         echo "Test" >squashfs-root/Test.txt
-        TOOL=".github/tools/appimagetool-x86_64_2019-05-01.AppImage"
+        TOOL="$TOOLS_DIR/appimagetool-x86_64_2019-05-01.AppImage"
         ls -la ${TOOL}
-        ARCH=x86_64 ${TOOL} squashfs-root
+        ARCH=x86_64 "{TOOL}" squashfs-root
         rm -r squashfs-root/
         rm "${EXE}"
         mv *.AppImage ../
