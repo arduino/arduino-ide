@@ -20,7 +20,7 @@ jobs:
         git remote add upstream https://github.com/arduino/arduino-ide.git
         git fetch upstream
     - name: Check for relevant changes (skip merge if only .github/ etc.)
-      id: check
+      id: Check
       run: |
         git checkout main
         git fetch upstream
@@ -29,19 +29,19 @@ jobs:
         DIFF_FILES=$(git diff --name-only $BASE upstream/main | grep -Ev '^(\.github/|\.git/|^[^/]+$)' || true)
         echo "DIFF_FILES: $DIFF_FILES"
         if [ -z "$DIFF_FILES" ]; then
-          echo "❎ Relevant files changed."
-          echo "skip=false" >> $GITHUB_OUTPUT
-         else
           echo "❌ Only ignored files changed. Exiting."
           echo "skip=true" >> $GITHUB_OUTPUT
+         else
+          echo "❎ Relevant files changed."
+          echo "skip=false" >> $GITHUB_OUTPUT
         fi
     - name: Merge upstream/main into local main
-      if: steps.Check_Releases.outputs.skip == 'false'
+      if: steps.Check.outputs.skip == 'false'
       run: |
         git merge upstream/main --no-edit
       continue-on-error: true  # erlaubt Fehler z. B. bei Konflikten
     - name: Check for merge conflicts
-      if: steps.Check_Releases.outputs.skip == 'false'
+      if: steps.Check.outputs.skip == 'false'
       run: |
         if git ls-files -u | grep .; then
           echo "❌ Merge conflicts detected!"
@@ -49,10 +49,10 @@ jobs:
         fi
         echo "✅ No merge conflicts"
     - name: Install GitHub CLI
-      if: ${{ success() && steps.Check_Releases.outputs.skip == 'false' }}
+      if: ${{ success() && steps.Check.outputs.skip == 'false' }}
       run: sudo apt-get install gh -y
     - name: Create branch, push and open PR
-      if: ${{ success() && steps.Check_Releases.outputs.skip == 'false' }}
+      if: ${{ success() && steps.Check.outputs.skip == 'false' }}
       env:
         GH_TOKEN: ${{ secrets.PAT }}
       run: |
@@ -66,10 +66,10 @@ jobs:
         git push origin $BRANCH
         gh pr create --title "Merge from upstream" --body "Automatisch erstellter PR" --base main --head $BRANCH
     - name: Trigger BuildLinux workflow
-      if: ${{ false && success() && steps.Check_Releases.outputs.skip == 'false' }}
+      if: ${{ false && success() && steps.Check.outputs.skip == 'false' }}
       uses: benc-uk/workflow-dispatch@v1
       with:
         workflow: LinuxBuild.yml
         ref: main
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PAT }}
        
