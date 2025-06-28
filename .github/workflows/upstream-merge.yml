@@ -25,7 +25,8 @@ jobs:
         git checkout main
         git fetch upstream
         #ROOT_FILES=$(grep -Ev '^\.github/|^\.git/|^[^/]+$')
-        DIFF_FILES=$(git diff --name-only upstream/main HEAD | grep -Ev '^(\.github/|\.git/|^[^/]+$)' || true)
+        BASE=$(git merge-base HEAD upstream/main)
+        DIFF_FILES=$(git diff --name-only $BASE upstream/main | grep -Ev '^(\.github/|\.git/|^[^/]+$)' || true)
         echo "DIFF_FILES: $DIFF_FILES"
         if [ -z "$DIFF_FILES" ]; then
           echo "no_relevant_changes=true" >> $GITHUB_OUTPUT
@@ -50,25 +51,26 @@ jobs:
         echo "✅ No merge conflicts"
     - name: Install GitHub CLI
       run: sudo apt-get install gh -y
-    - name: Commit and push merge (optional PR instead)
+    - name: Create branch, push and open PR
       if: ${{ success() }}
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.PAT }}
       run: |
         # 🟢 Option 1: Direkt pushen (Standard)
         #git push origin main
 
         # 🟡 Option 2: PR statt direktem Merge (kommentieren, falls gewünscht)
+        echo $GH_TOKEN | gh auth login --with-token
         BRANCH="upstream-merge-$(date +%s)"
         git checkout -b $BRANCH
         git push origin $BRANCH
         gh pr create --title "Merge from upstream" --body "Automatisch erstellter PR" --base main --head $BRANCH
     
     - name: Trigger BuildLinux workflow
-      if: false && ${{ success() }}
+      if: ${{ false && success() }}
       uses: benc-uk/workflow-dispatch@v1
       with:
-        workflow: BuildLinux.yml
+        workflow: LinuxBuild.yml
         ref: main
         token: ${{ secrets.GITHUB_TOKEN }}
        

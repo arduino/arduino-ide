@@ -41,21 +41,20 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       working-directory: './'
       run: |
-        set -x
-        set -v
+        #set -x
+        #set -v
         npx node-gyp install
         yarn install
         yarn --cwd arduino-ide-extension build
         yarn --cwd electron-app rebuild
         yarn --cwd electron-app build
         yarn --cwd electron-app package
-        find / -iname "*.AppImage"
         cp /__w/arduino-ide/arduino-ide/electron-app/dist/*.AppImage .
     - name: Mod AppImage to use chrome-sandbox of local os
       if: ${{ success() }}
       run: |
-        set -x
-        set -v
+        #set -x
+        #set -v
         EXE=$(readlink -f *.AppImage)
         chmod a+x "${EXE}"
         mkdir t
@@ -78,8 +77,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       working-directory: './'
       run: |
-        set -x
-        set -v
+        #set -x
+        #set -v
         mkdir -p /etc/apt/keyrings/
         mkdir -p /etc/apt/sources.list.d/
         cp .github/tools/githubcli-archive-keyring.gpg /etc/apt/keyrings/githubcli-archive-keyring.gpg
