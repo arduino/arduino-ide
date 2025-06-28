@@ -13,8 +13,8 @@ jobs:
     steps:
     - name: Setup Env
       run: |
-        set -x
-        set -v
+        #set -x
+        #set -v
         echo "pwd: $(pwd)"
         echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
         echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
@@ -25,12 +25,17 @@ jobs:
           eval "r=\"\$$i\""
           echo "$i=$r" >> $GITHUB_ENV
         done
-        
-        find / -iname "*.AppImage" 2>/dev/null
-        
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Check AppImage exist
+      run: |
+        set -x
+        set -v
+        ls -la "$TOOLS_DIR/appimagetool-x86_64.AppImage" 
+        #find / -iname "*.AppImage" 2>/dev/null
+        
     - name: Mod AppImage to use chrome-sandbox of local os
+      if: ${{ success() }}
       run: |
         set -x
         set -v
