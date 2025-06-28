@@ -1,4 +1,4 @@
-name: Test
+name: TestNoDocker
 on:
   push:
   workflow_dispatch:
@@ -6,7 +6,6 @@ jobs:
   build:
     name: build Linux
     runs-on: ubuntu-latest
-    container: { "image": "ghcr.io/arduino/arduino-ide/linux:main" }
     defaults:
       run:
         shell: bash
