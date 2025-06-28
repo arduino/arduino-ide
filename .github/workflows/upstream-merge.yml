@@ -29,20 +29,19 @@ jobs:
         DIFF_FILES=$(git diff --name-only $BASE upstream/main | grep -Ev '^(\.github/|\.git/|^[^/]+$)' || true)
         echo "DIFF_FILES: $DIFF_FILES"
         if [ -z "$DIFF_FILES" ]; then
-          echo "no_relevant_changes=true" >> $GITHUB_OUTPUT
+          echo "❎ Relevant files changed."
+          echo "skip=false" >> $GITHUB_OUTPUT
          else
-          echo "no_relevant_changes=false" >> $GITHUB_OUTPUT
+          echo "❌ Only ignored files changed. Exiting."
+          echo "skip=true" >> $GITHUB_OUTPUT
         fi
-    - name: Exit if no relevant changes
-      if: steps.check.outputs.no_relevant_changes == 'true'
-      run: |
-        echo "❎ Only ignored files changed. Exiting."
-        exit 0
     - name: Merge upstream/main into local main
+      if: steps.Check_Releases.outputs.skip == 'false'
       run: |
         git merge upstream/main --no-edit
       continue-on-error: true  # erlaubt Fehler z. B. bei Konflikten
     - name: Check for merge conflicts
+      if: steps.Check_Releases.outputs.skip == 'false'
       run: |
         if git ls-files -u | grep .; then
           echo "❌ Merge conflicts detected!"
@@ -50,9 +49,10 @@ jobs:
         fi
         echo "✅ No merge conflicts"
     - name: Install GitHub CLI
+      if: ${{ success() && steps.Check_Releases.outputs.skip == 'false' }}
       run: sudo apt-get install gh -y
     - name: Create branch, push and open PR
-      if: ${{ success() }}
+      if: ${{ success() && steps.Check_Releases.outputs.skip == 'false' }}
       env:
         GH_TOKEN: ${{ secrets.PAT }}
       run: |
@@ -60,14 +60,13 @@ jobs:
         #git push origin main
 
         # 🟡 Option 2: PR statt direktem Merge (kommentieren, falls gewünscht)
-        echo $GH_TOKEN | gh auth login --with-token
+        #echo $GH_TOKEN | gh auth login --with-token
         BRANCH="upstream-merge-$(date +%s)"
         git checkout -b $BRANCH
         git push origin $BRANCH
         gh pr create --title "Merge from upstream" --body "Automatisch erstellter PR" --base main --head $BRANCH
-    
     - name: Trigger BuildLinux workflow
-      if: ${{ false && success() }}
+      if: ${{ false && success() && steps.Check_Releases.outputs.skip == 'false' }}
       uses: benc-uk/workflow-dispatch@v1
       with:
         workflow: LinuxBuild.yml
