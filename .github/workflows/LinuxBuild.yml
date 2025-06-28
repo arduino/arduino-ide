@@ -67,13 +67,9 @@ jobs:
         cd ..
         TOOL="${GITHUB_WORKSPACE}/.github/tools/appimagetool-x86_64.AppImage"
         APPIMAGE_EXTRACT_AND_RUN=1 ARCH=x86_64 "${TOOL}" squashfs-root
-        #Error: No suitable fusermount binary found on the $PATH
-        #fuse: device not found, try 'modprobe fuse' first
-        #modprobe fuse
-        #ARCH=x86_64 ${TOOL} squashfs-root
         rm -r squashfs-root/
         rm "${EXE}"
-        mv *.AppImage ../
+        mv *.AppImage "${EXE}"
         cd ..
         rm -r t
     - name: Install gh and jq
