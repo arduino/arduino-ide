@@ -52,6 +52,7 @@ jobs:
         find / -iname "*.AppImage"
         cp /__w/arduino-ide/arduino-ide/electron-app/dist/*.AppImage .
     - name: Mod AppImage to use chrome-sandbox of local os
+      if: ${{ success() }}
       run: |
         set -x
         set -v
@@ -72,6 +73,7 @@ jobs:
         cd ..
         rm -r t
     - name: Install gh and jq
+      if: ${{ success() }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       working-directory: './'
@@ -85,6 +87,7 @@ jobs:
         apt update
         apt install -y gh jq
     - name: Upload to GitHub Releases
+      if: ${{ success() }}
       run: |
         set -x
         set -v

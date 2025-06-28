@@ -1,0 +1,44 @@
+name: Test
+on:
+  push:
+  workflow_dispatch:
+env:
+  NODE_VERSION: '18.17'
+  YARN_VERSION: '1.22'
+  GO_VERSION: '1.21'
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  build:
+    name: build Linux
+    runs-on: ubuntu-latest
+    container: { "image": "ghcr.io/arduino/arduino-ide/linux:main" }
+    defaults:
+      run:
+        shell: bash
+    timeout-minutes: 90
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Mod AppImage to use chrome-sandbox of local os
+      run: |
+        set -x
+        set -v
+        touch Test.AppImage
+        EXE=$(readlink -f *.AppImage)
+        chmod a+x "${EXE}"
+        mkdir t
+        cd t
+        "${EXE}" --appimage-extract
+        cd squashfs-root/
+        rm chrome-sandbox
+        ln -s /opt/google/chrome/chrome-sandbox chrome-sandbox
+        cd ..
+        TOOL=".github/tools/appimagetool-x86_64_2019-05-01.AppImage"
+        ARCH=x86_64 ${TOOL} squashfs-root
+        rm -r squashfs-root/
+        rm "${EXE}"
+        mv *.AppImage ../
+        cd ..
+        rm -r t
+
+
