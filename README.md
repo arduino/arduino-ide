@@ -3,8 +3,12 @@
 ### Preface
 
 This repository is a fork of the official [Arduino IDE](https://github.com/arduino/arduino-ide).
-It seams that this project is currently inactive (2 Month no commit), because my PR [Order custom board option menus as defined in platform configuration](https://github.com/arduino/arduino-ide/pull/2717) ist still not merged.
-So this repo will generate only the AppImage whith my PR.
+It seams that this project is currently inactive (2 Month no commit).
+- My PR [Order custom board option menus as defined in platform configuration](https://github.com/arduino/arduino-ide/pull/2717) ist still not merged.
+- There is an additional BUG inside the original AppImage: It fails to run if not started with "--no-sandbxox" (on newer Linux systems).
+So this repo will generate only the AppImage that:
+- includes my PR
+- replaces the executable "chrome-sandbox" included inside the AppImage with a symlink to /opt/google/chrome/chrome-sandbox, that should be exist on most newer Linux systems.
  
 ### Download
 

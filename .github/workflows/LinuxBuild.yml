@@ -51,6 +51,26 @@ jobs:
         yarn --cwd electron-app package
         find / -iname "*.AppImage"
         cp /__w/arduino-ide/arduino-ide/electron-app/dist/*.AppImage .
+    - name: Mod AppImage to use chrome-sandbox of local os
+      run: |
+        set -x
+        set -v
+        EXE=$(readlink -f *.AppImage)
+        chmod a+x "${EXE}"
+        mkdir t
+        cd t
+        "${EXE}" --appimage-extract
+        cd squashfs-root/
+        rm chrome-sandbox
+        ln -s /opt/google/chrome/chrome-sandbox chrome-sandbox
+        cd ..
+        TOOL=".github/tools/appimagetool-x86_64_2019-05-01.AppImage"
+        ARCH=x86_64 ${TOOL} squashfs-root
+        rm -r squashfs-root/
+        rm "${EXE}"
+        mv *.AppImage ../
+        cd ..
+        rm -r t
     - name: Install gh and jq
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
