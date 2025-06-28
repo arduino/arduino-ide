@@ -1,3 +1,20 @@
+# Arduino IDE 2.x (Special build)
+
+### Preface
+
+This repository is a fork of the official [Arduino IDE](https://github.com/arduino/arduino-ide).
+It seams that this project is currently inactive (2 Month no commit), because my PR (Order custom board option menus as defined in platform configuration) ist still not merged.
+So this repo will generate only the AppImage whith my PR.
+ 
+### Download
+
+Latest: [Download](/../../releases/latest)
+
+All Releases: [Releases](/../../releases)
+
+[![Arduino2 IDE (Linux-AppImage-Build)](https://github.com/gneiss15/arduino-ide/actions/workflows/LinuxBuild.yml/badge.svg)](https://github.com/gneiss15/arduino-ide/actions/workflows/LinuxBuild.yml)
+## All Below is from the original Arduino IDE Repo
+
 <img src="https://content.arduino.cc/website/Arduino_logo_teal.svg" height="100" align="right" />
 
 # Arduino IDE 2.x
