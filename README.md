@@ -3,7 +3,7 @@
 ### Preface
 
 This repository is a fork of the official [Arduino IDE](https://github.com/arduino/arduino-ide).
-It seams that this project is currently inactive (2 Month no commit), because my PR (Order custom board option menus as defined in platform configuration) ist still not merged.
+It seams that this project is currently inactive (2 Month no commit), because my PR [Order custom board option menus as defined in platform configuration](https://github.com/arduino/arduino-ide/pull/2717) ist still not merged.
 So this repo will generate only the AppImage whith my PR.
  
 ### Download
@@ -13,8 +13,9 @@ Latest: [Download](/../../releases/latest)
 All Releases: [Releases](/../../releases)
 
 [![Arduino2 IDE (Linux-AppImage-Build)](https://github.com/gneiss15/arduino-ide/actions/workflows/LinuxBuild.yml/badge.svg)](https://github.com/gneiss15/arduino-ide/actions/workflows/LinuxBuild.yml)
-## All Below is from the original Arduino IDE Repo
-
+## All Below is from the original "Arduino IDE" Repo
+<details>
+  <summary>Show</summary>
 <img src="https://content.arduino.cc/website/Arduino_logo_teal.svg" height="100" align="right" />
 
 # Arduino IDE 2.x
@@ -70,3 +71,5 @@ This open source code was written by the Arduino team and is maintained on a dai
 ## License
 
 The code contained in this repository and the executable distributions are licensed under the terms of the GNU AGPLv3. The executable distributions contain third-party code licensed under other compatible licenses such as GPLv2, MIT and BSD-3. If you have questions about licensing please contact us at [license@arduino.cc](mailto:license@arduino.cc).
+</details>
+
