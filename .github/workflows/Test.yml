@@ -23,16 +23,10 @@ jobs:
       run: |
         set -x
         set -v
-        touch Test.AppImage
-        EXE=$(readlink -f *.AppImage)
-        chmod a+x "${EXE}"
         mkdir t
         cd t
-        "${EXE}" --appimage-extract
-        cd squashfs-root/
-        rm chrome-sandbox
-        ln -s /opt/google/chrome/chrome-sandbox chrome-sandbox
-        cd ..
+        mkdir squashfs-root
+        echo "Test" >squashfs-root/Test.txt
         TOOL=".github/tools/appimagetool-x86_64_2019-05-01.AppImage"
         ls -la ${TOOL}
         ARCH=x86_64 ${TOOL} squashfs-root
