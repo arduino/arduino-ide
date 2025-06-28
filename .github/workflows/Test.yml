@@ -15,7 +15,7 @@ jobs:
       run: |
         set -x
         set -v
-        pwd
+        echo "pwd: $(pwd)"
         echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
         echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
         THIS_REPO_DIR=${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY##*/}
@@ -25,6 +25,9 @@ jobs:
           eval "r=\"\$$i\""
           echo "$i=$r" >> $GITHUB_ENV
         done
+        
+        find / -iname "appimagetool-x86_64_2019-05-01.AppImage"
+        
     - name: Checkout
       uses: actions/checkout@v4
     - name: Mod AppImage to use chrome-sandbox of local os
