@@ -42,7 +42,7 @@ jobs:
         cd t
         mkdir squashfs-root
         echo "Test" >squashfs-root/Test.txt
-        TOOL="$TOOLS_DIR/appimagetool-x86_64_2019-05-01.AppImage"
+        TOOL="$TOOLS_DIR/appimagetool-x86_64.AppImage"
         ls -la ${TOOL}
         ARCH=x86_64 "{TOOL}" squashfs-root
         rm -r squashfs-root/
