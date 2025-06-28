@@ -44,7 +44,7 @@ jobs:
         echo "Test" >squashfs-root/Test.txt
         TOOL="$TOOLS_DIR/appimagetool-x86_64.AppImage"
         ls -la ${TOOL}
-        ARCH=x86_64 "{TOOL}" squashfs-root
+        ARCH=x86_64 "${TOOL}" squashfs-root
         rm -r squashfs-root/
         rm "${EXE}"
         mv *.AppImage ../
