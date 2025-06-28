@@ -27,7 +27,7 @@ jobs:
           echo "$i=$r" >> $GITHUB_ENV
         done
 
-        find / -iname "appimagetool-x86_64_2019-05-01.AppImage"
+        find / -iname "*.AppImage" 2>/dev/null
         
     - name: Checkout
       uses: actions/checkout@v4
