@@ -13,8 +13,11 @@ jobs:
     steps:
     - name: Setup Env
       run: |
-        #set -x
-        #set -v
+        set -x
+        set -v
+        pwd
+        echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+        echo "GITHUB_REPOSITORY: $GITHUB_REPOSITORY"
         THIS_REPO_DIR=${GITHUB_WORKSPACE}/${GITHUB_REPOSITORY##*/}
         TOOLS_DIR=${THIS_REPO_DIR}/.github/tools
 
