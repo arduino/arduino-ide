@@ -369,7 +369,7 @@ jobs:
         working-directory: ${{ matrix.config.working-directory || './' }}
         run: |
           # See: https://www.electron.build/code-signing
-          if [ $CAN_SIGN = false ] || [ $IS_WINDOWS_CONFIG = true ]; then
+          if [[ $CAN_SIGN = false ]] || [[ $IS_WINDOWS_CONFIG = true ]]; then
             echo "Skipping the app signing: certificate not provided."
           else
             export CSC_LINK="${{ runner.temp }}/signing_certificate.${{ matrix.config.certificate-extension }}"
@@ -544,11 +544,11 @@ jobs:
         run: |
           export LATEST_TAG=$(git describe --abbrev=0)
           export GIT_LOG=$(git log --pretty=" - %s [%h]" $LATEST_TAG..HEAD | sed 's/ *$//g')
-          if [ "$IS_RELEASE" = true ]; then
+          if [[ "$IS_RELEASE" = true ]]; then
             export BODY=$(echo -e "$GIT_LOG")
           else
             export LATEST_TAG_WITH_LINK=$(echo "[$LATEST_TAG](https://github.com/arduino/arduino-ide/releases/tag/$LATEST_TAG)")
-            if [ -z "$GIT_LOG" ]; then
+            if [[ -z "$GIT_LOG" ]]; then
                 export BODY="There were no changes since version $LATEST_TAG_WITH_LINK."
             else
                 export BODY=$(echo -e "Changes since version $LATEST_TAG_WITH_LINK:\n$GIT_LOG")

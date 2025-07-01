@@ -28,7 +28,7 @@ jobs:
         BASE=$(git merge-base HEAD upstream/main)
         DIFF_FILES=$(git diff --name-only $BASE upstream/main | grep -Ev '^(\.github/|\.git/|^[^/]+$)' || true)
         echo "DIFF_FILES: $DIFF_FILES"
-        if [ -z "$DIFF_FILES" ]; then
+        if [[ -z "$DIFF_FILES" ]]; then
           echo "❌ Only ignored files changed. Exiting."
           echo "skip=true" >> $GITHUB_OUTPUT
          else
