@@ -1,12 +1,40 @@
 # Translator Guide
 
-The text of the Arduino IDE interface is translated into several languages. The language can be selected in the dialog opened via **File > Preferences** in the Arduino IDE menus (**Arduino IDE > Preferences** for macOS users).
+The text of the Arduino IDE user interface is translated into several languages. The language can be selected in the dialog opened via **File > Preferences** in the Arduino IDE menus (**Arduino IDE > Preferences** for macOS users).
 
 Translating text and improving on existing translations is a valuable contribution to the project, helping make Arduino accessible to everyone.
 
-The translations for the text found in the Arduino IDE come from several sources:
+The translations for the text found in Arduino IDE come from several sources:
 
 ## Arduino IDE Text
+
+The text of the Arduino IDE application can be translated to the following languages:
+
+- čeština (Czech)
+- Deutsch (German)
+- Dutch
+- español (Spanish)
+- français (French)
+- italiano (Italian)
+- magyar (Hungarian)
+- polski (Polish)
+- português (Portuguese)
+- Türkçe (Turkish)
+- български (Bulgarian)
+- русский (Russian)
+- українська (Ukrainian)
+- 한국어 (Korean)
+- 中文(简体) (Chinese Simplified)
+- 中文(繁體) (Chinese Traditional)
+- 日本語 (Japanese)
+
+---
+
+⚠ Unfortunately the 3rd party localization system used by the Arduino IDE application imposes a technical limitation to that set of languages. For this reason, we are unable to add support to Arduino IDE for additional languages (see [`arduino/arduino-ide#1447`](https://github.com/arduino/arduino-ide/issues/1447) for details).
+
+There is no technical limitation on the set of languages to which **Arduino CLI** can be translated. If you would like to contribute translations for a language not on the above list, you are welcome to [contribute to the **Arduino CLI** project](#arduino-cli-text).
+
+---
 
 Translations of Arduino IDE's text is done in the "**Arduino IDE 2.0**" project on the **Transifex** localization platform:
 
