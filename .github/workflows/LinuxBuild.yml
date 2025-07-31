@@ -1,6 +1,6 @@
 name: Arduino2 IDE (Linux-AppImage-Build)
 on:
-  push:
+  #push:
   workflow_dispatch:
 env:
   NODE_VERSION: '18.17'
