@@ -1,8 +1,9 @@
 name: Merge upstream/main into local main
 on:
-  schedule:
-    - cron: '0 3 * * *'  # täglich um 03:00 UTC
   workflow_dispatch:
+  schedule:
+    - cron: '30 0 1/7 * *' # every every 7th Day of Month at 00:30
+    #- cron: '30 0 * * *' # every Day at 00:30
 jobs:
   merge-upstream:
     runs-on: ubuntu-latest
