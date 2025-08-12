@@ -317,7 +317,7 @@ jobs:
           if not exist "${{ matrix.config.working-directory }}" mklink /d "${{ matrix.config.working-directory }}" "C:\actions-runner\_work\arduino-ide\arduino-ide"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
 
       - name: Install Node.js
@@ -441,7 +441,7 @@ jobs:
           echo "CHANNEL_FILES_PATH=${{ runner.temp }}/channel-files" >> "$GITHUB_ENV"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download staged-for-merge channel file artifacts
         uses: actions/download-artifact@v5
@@ -533,7 +533,7 @@ jobs:
       BODY: ${{ steps.changelog.outputs.BODY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # To fetch all history for all branches and tags.
 
