@@ -67,3 +67,7 @@ export function truncateLines(
   }
   return [lines, charCount];
 }
+
+export function joinLines(lines: Line[]): string {
+  return lines.map((line: Line) => line.message).join('');
+}
