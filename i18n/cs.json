@@ -14,14 +14,14 @@
       "board": "Deska {0}",
       "boardConfigDialogTitle": "Zvolit jinou desku a port",
       "boardDataReloaded": "Informace o desce znovunačteny",
-      "boardInfo": "Info o desce",
+      "boardInfo": "Informace o desce",
       "boards": "Desky",
       "configDialog1": "Pokud chcete nahrát projekt do desky, musíte zvolit jak desku, tak i port.",
       "configDialog2": "Pokud zvolíte pouze desku, budete schopni projekt kompilovat, ale nebudete jej moci nahrát do desky.",
       "couldNotFindPreviouslySelected": "Dříve zvolená deska '{0}' v instalované platformě '{1}' nebyla nalezena. Zvolte prosím manuálně desku, kterou chcete použít. Chcete tuto desku zvolit nyní? ",
       "editBoardsConfig": "Editovat Desku a Port",
       "getBoardInfo": "Získat info o desce",
-      "inSketchbook": "(v projektech)",
+      "inSketchbook": " (v projektech)",
       "installNow": "Jádro \"{0}{1}\" musí být instalováno pro aktuálně zvolenou \"{2}\" desku. Chcete ho nyní nainstalovat?",
       "noBoardsFound": "Nenalezeny žádné desky pro \"{0}\"",
       "noNativeSerialPort": "Fyzický sériový port, nemohu získat informace.",
@@ -49,7 +49,7 @@
     },
     "boardsManager": "Manažér desek",
     "boardsType": {
-      "arduinoCertified": "Certifikováno Arduinem"
+      "arduinoCertified": "Certifikované Arduinem"
     },
     "bootloader": {
       "burnBootloader": "Vypálit zavaděč",
@@ -138,22 +138,22 @@
     },
     "common": {
       "all": "Vše",
-      "contributed": "Přispěl",
+      "contributed": "Od přispěvatelů",
       "installManually": "Instalovat ručně",
       "later": "Později",
-      "noBoardSelected": "Nebyla zvolena deska",
+      "noBoardSelected": "Žádná deska zvolena",
       "noSketchOpened": "Žádný otevřený projekt",
       "notConnected": "[nepřipojen]",
       "offlineIndicator": "Nejspíše jste offline. Bez Internetového připojení není Arduino CLI schopno stáhnout potřebné zdroje, a to může způsobit chybu. Prosím připojte se k internetu a restartujte aplikaci.",
-      "oldFormat": "{0}používá stále starý formát `.pde`. Chcete ho převést na soubor s příponou `.ino`?",
-      "partner": "Partner",
+      "oldFormat": "'{0}' používá stále starý formát `.pde`. Chcete ho převést na soubor s příponou `.ino`?",
+      "partner": "Od partnerů",
       "processing": "Zpracovávám",
       "recommended": "Doporučené",
-      "retired": "Zastaralý",
+      "retired": "Zastaralé",
       "selectManually": "Zvolit ručně",
-      "selectedOn": "zapnuto{0}",
+      "selectedOn": "zapnuto {0}",
       "serialMonitor": "Seriový monitor",
-      "type": "typ",
+      "type": "Typ",
       "unknown": "Neznámý",
       "updateable": "Aktualizovatelné",
       "userAbort": "Přerušení uživatelem"
@@ -199,7 +199,7 @@
         "all": "Vše",
         "default": "Výchozí",
         "more": "Více",
-        "none": "Žádný"
+        "none": "Žádná"
       }
     },
     "coreContribution": {
@@ -213,11 +213,11 @@
       "stop": "Zastavit Daemon"
     },
     "debug": {
-      "debugWithMessage": "Debug - {0}",
-      "debuggingNotSupported": "Debugging není podporován s  '{0}'",
+      "debugWithMessage": "Debug – {0}",
+      "debuggingNotSupported": "'{0}' nepodporuje ladění",
       "getDebugInfo": "Získat informace o ladění…",
       "noPlatformInstalledFor": "Platforma není nainstalována pro '{0}'",
-      "optimizeForDebugging": "optimalizovat pro Debugging",
+      "optimizeForDebugging": "Optimalizovat pro ladění",
       "sketchIsNotCompiled": "Projekt '{0}' musí být ověřený před zahájením relace ladění. Ověřte projekt a zahajte ladění znovu. Přejete si ověřit projekt rovnou?"
     },
     "developer": {
@@ -230,7 +230,7 @@
     },
     "editor": {
       "autoFormat": "Automatické formátování",
-      "commentUncomment": "Komentovat/Odkomentovat",
+      "commentUncomment": "Přidat/odstranit komentář",
       "copyForForum": "Kopírovat pro forum (Markdown)",
       "decreaseFontSize": "Zmenšit velikost písma",
       "decreaseIndent": "Zmenšit odrážku",
@@ -241,7 +241,7 @@
       "revealError": "Zobrazit Chybu"
     },
     "examples": {
-      "builtInExamples": "Vestavěné příklady.",
+      "builtInExamples": "Vestavěné příklady",
       "couldNotInitializeExamples": "Nebylo možné inicializovat vestavěné příklady.",
       "customLibrary": "Příklady pro vlastní knihovny",
       "for": "Příklady pro {0}",
@@ -257,7 +257,7 @@
       "selectBoard": "Zvolit desku",
       "selectVersion": "Zvolit verzi firmwaru",
       "successfullyInstalled": "Firmware byl úspěšně nainstalován. ",
-      "updater": "aktualizační program firmwaru"
+      "updater": "Aktualizační program firmwaru"
     },
     "help": {
       "environment": "Prostředí",
@@ -274,20 +274,20 @@
     "ide-updater": {
       "checkForUpdates": "Zkontrolovat aktualizace",
       "closeAndInstallButton": "Zavřít a nainstalovat",
-      "closeToInstallNotice": "Vypněte program a nainstalujte update na Váš stroj. ",
+      "closeToInstallNotice": "Zavřete program a nainstalujte aktualizaci.",
       "donateLinkIconTitle": "otevřít stránku pro darování",
       "donateLinkText": "darujte, abyste nás podpořili",
       "donateText": "Open source is láska, {0}",
       "downloadButton": "Stáhnout",
-      "downloadingNotice": "Stahuji poslední verzi Arduino IDE.",
-      "errorCheckingForUpdates": "Nastala chyba při kontrole aktualizací Arduino IDE{0}",
-      "goToDownloadButton": "přejit do stažených",
-      "goToDownloadPage": "Je dostupná aktualizace pro Arduino IDE, ale nepodařilo se jej stáhnout a nainstalovat automaticky. Prosím navštivte stránku pro stažení a stáhněte prosím jeho poslední verzi ručně. ",
-      "ideUpdaterDialog": "Softwarová aktualizace",
-      "newVersionAvailable": "Je k dispozici nová verze Arduino IDE ({0}).",
-      "noUpdatesAvailable": "Nejsou k dispozici žádné aktualizace pro Arduino ID",
+      "downloadingNotice": "Stahuji poslední verzi Arduina IDE.",
+      "errorCheckingForUpdates": "Nastala chyba při kontrole aktualizací Arduino IDE\n{0}",
+      "goToDownloadButton": "Přejít do stažených",
+      "goToDownloadPage": "Je dostupná aktualizace pro Arduino IDE, avšak nepodařilo se ji stáhnout a nainstalovat automaticky. Prosím navštivte stránku pro stažení a stáhněte odtamtud poslední verzi. ",
+      "ideUpdaterDialog": "Aktualizace softwaru",
+      "newVersionAvailable": "Je k dispozici nová verze Arduina IDE ({0}).",
+      "noUpdatesAvailable": "Nejsou k dispozici žádné aktualizace pro Arduino IDE",
       "notNowButton": "Nyní ne",
-      "skipVersionButton": "přeskočit verzi",
+      "skipVersionButton": "Přeskočit verzi",
       "updateAvailable": "Je dostupná aktualizace",
       "versionDownloaded": "Arduino IDE {0}bylo staženo."
     },
@@ -298,7 +298,7 @@
     "library": {
       "addZip": "Přidat .ZIP knihovnu...",
       "arduinoLibraries": "Arduino knihovny",
-      "contributedLibraries": "Přispěné knihovny",
+      "contributedLibraries": "Knihovny od přispěvatelů",
       "include": "Zahrnout knihovnu",
       "installAll": "Instalovat vše",
       "installLibraryDependencies": "Instalovat závislosti knihovny",
@@ -308,11 +308,11 @@
       "installedSuccessfully": "Knihovna {0}:{1}byla úspěšně nainstalována",
       "libraryAlreadyExists": "Knihovna již existuje. Chcete jí přepsat?",
       "manageLibraries": "Spravovat knihovny...",
-      "namedLibraryAlreadyExists": "Knihovna s názvem {0}již existuje. Chcete jí přepsat? ",
+      "namedLibraryAlreadyExists": "Složka knihovny s názvem {0}již existuje. Chcete ji přepsat? ",
       "needsMultipleDependencies": "Knihovna <b>{0}:{1}</b>vyžaduje další jinou závislost která není nainstalovaná:",
-      "needsOneDependency": "Knihovna <b>{0}:{1}</b>vyžaduje další závislost která není nainstalovaná:",
+      "needsOneDependency": "Knihovna <b>{0}:{1}</b>vyžaduje další závislost, jež není momentálně nainstalovaná:",
       "overwriteExistingLibrary": "Chcete přepsat existující knihovnu? ",
-      "successfullyInstalledZipLibrary": "Knihovna byla úspěšně nainstalována z archívu {0}",
+      "successfullyInstalledZipLibrary": "Knihovna byla úspěšně nainstalována z archivu {0}",
       "title": "Manažér knihoven",
       "uninstalledSuccessfully": "Knihovna {0}:{1}byla úspěšně odinstalována",
       "zipLibrary": "Knihovna"
@@ -333,7 +333,7 @@
       "uncategorized": "Nezařazeno"
     },
     "libraryType": {
-      "installed": "Nainstalováno"
+      "installed": "Nainstalováné"
     },
     "menu": {
       "advanced": "Pokročilé",
@@ -356,7 +356,7 @@
     },
     "portProtocol": {
       "network": "Síť",
-      "serial": "Sériový"
+      "serial": "Sériové "
     },
     "preferences": {
       "additionalManagerURLs": "Další URL pro manager desek",
@@ -376,13 +376,13 @@
       "cloud.pushpublic.warn": "Zapnout, pokud uživatelé mají být varováni před odesláním veřejného projektu do cloudu. Ve výchozím nastavení zapnuto. ",
       "cloud.sharedSpaceId": "ID sdíleného prostoru Arduino Cloud, z nějž se načítají projekty. Pokud je prázdné, je vybrán váš soukromý prostor.",
       "cloud.sketchSyncEndpoint": "Koncový bod používaný k odesílání a stahování projektů ze vzdáleného úložiště. Ve výchozím nastavení směřuje na API Arduino Cloud.",
-      "compile": "kompilovat",
+      "compile": "kompilace",
       "compile.experimental": "Zapnout, pokud má IDE zpracovávat více chyb kompilátoru. Ve výchozím nastavení vypnuto.",
       "compile.revealRange": "Upravuje způsob, jakým jsou chyby kompilátoru zobrazeny v editoru po neúspěšném ověření/nahrání. Možné hodnoty: „auto\": Posune zobrazení svisle podle potřeby a zobrazí řádek. „center\": Posune zobrazení svisle podle potřeby a zobrazí řádek ve středu. „top\": Posune zobrazení svisle podle potřeby a zobrazí řádek blízko horní části okna, optimalizováno pro zobrazení definice kódu. „centerIfOutsideViewport\": Posune zobrazení svisle podle potřeby a zobrazí řádek ve středu pouze pokud je mimo aktuální zobrazení. Výchozí hodnota je '{0}'.",
       "compile.verbose": "Ano pro podrobný výstup při kompilaci. Ne je výchozí hodnota.  ",
       "compile.warnings": "Řekne gcc který stupeň varování se má použít. \"Žádný\" je výchozí hodnota. ",
       "compilerWarnings": "Varování kompileru",
-      "editorFontSize": "Editor velikosti fontu",
+      "editorFontSize": "Velikost fontu v editoru",
       "editorQuickSuggestions": "Rychlá nápověda v editoru",
       "enterAdditionalURLs": "Vložte další URL, jednu pro každý řádek",
       "files.inside.sketches": "Zobrazit soubory uvnitř projektů",
@@ -416,7 +416,7 @@
       "sketchbook.location": "Umístění projektu",
       "sketchbook.showAllFiles": "Zapnout zobrazování všech projektů uvnitř projektu. Ve výchozím nastavení vypnuto.",
       "unofficialBoardSupport": "Zde klikněte pro seznam adres neoficiálně podporovaných desek",
-      "upload": "nahrát",
+      "upload": "nahrávání",
       "upload.autoVerify": "Zapnout, pokud má IDE automaticky ověřit kód před nahráním. Ve výchozím nastavení zapnuto. Pokud je tato hodnota vypnuta, IDE nekompiluje kód znovu před nahráním binárního souboru na desku. Nanejvýš důrazně se doporučuje nastavit tuto hodnotu na vypnuto pouze, pokud jste si naprosto jisti tím, že víte, co děláte.",
       "upload.verbose": "Ano pro podrobný výstup při nahrávání. Ne je výchozí hodnota.  ",
       "upload.verify": "Po nahrání ověřte, že obsah paměti na desce odpovídá nahranému binárnímu souboru.",
@@ -528,7 +528,7 @@
       "donateMessage": "Arduino se zavázalo udržovat software zdarma a s otevřeným zdrojovým kódem pro všechny. Váš příspěvek nám pomáhá vyvíjet nové funkce, vylepšovat knihovny a podporovat miliony uživatelů po celém světě.",
       "donateMessage2": "Zvažte prosím podporu naší práce na bezplatném a open source Arduino IDE.",
       "title": "Vítejte v nové verzi Arduina IDE!",
-      "titleWithVersion": "Vítejte v novém Arduino IDE  {0}!"
+      "titleWithVersion": "Vítejte v novém Arduinu IDE  {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' již existuje."
@@ -542,7 +542,7 @@
       "daemonOffline": "CLI Daemon nepřipojen",
       "offline": "Nepřipojen",
       "offlineText": "Nepřipojen",
-      "quitTitle": "Jste si jisti že chcete odejít"
+      "quitTitle": "Jste si jisti, že chcete odejít?"
     },
     "editor": {
       "unsavedTitle": "Neuloženo – {0}"
