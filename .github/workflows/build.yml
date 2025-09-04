@@ -322,7 +322,7 @@ jobs:
 
       - name: Install Node.js
         if: runner.name != 'WINDOWS-SIGN-PC'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
@@ -456,7 +456,7 @@ jobs:
           name: ${{ env.STAGED_CHANNEL_FILE_ARTIFACT_PREFIX }}*
 
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
