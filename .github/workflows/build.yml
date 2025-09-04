@@ -346,7 +346,7 @@ jobs:
 
       - name: Install Go
         if: runner.name != 'WINDOWS-SIGN-PC'
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
 
@@ -463,7 +463,7 @@ jobs:
           cache: 'yarn'
 
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
 
