@@ -1,0 +1,14 @@
+name: Keep Workflows alive
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    - cron: '0 1 1 * *' # every first Day of Month at 01:00
+jobs:
+  workflow-keepalive:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+    - name: keepalive
+      uses: gneiss15/WorkflowKeepAliveByGhEnable@v1
