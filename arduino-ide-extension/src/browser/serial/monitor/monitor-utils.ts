@@ -1,47 +1,82 @@
-import { Line, SerialMonitorOutput } from './serial-monitor-send-output';
+import {Line, SerialMonitorOutput} from './serial-monitor-send-output';
+
+function writeOverLine(line: Line, insert: string, cursorPosition: number, charCount: number): [number, number] {
+  const lenBefore = line.message.length;
+  line.message = line.message.substring(0, cursorPosition) + insert + line.message.substring(cursorPosition + insert.length)
+  cursorPosition = cursorPosition + insert.length;
+  line.lineLen = line.message.length;
+  return [charCount + (line.lineLen - lenBefore), cursorPosition];
+}
+
+const escape = '\x1B';
+const escapeSequenceGoHome = escape+'[H';
+const escapeSequenceClearScreen = escape+'[2J';
 
 export function messagesToLines(
   messages: string[],
   prevLines: Line[] = [],
   charCount = 0,
-  separator = '\n'
-): [Line[], number] {
-  const linesToAdd: Line[] = prevLines.length
-    ? [prevLines[prevLines.length - 1]]
-    : [{ message: '', lineLen: 0 }];
-  if (!(Symbol.iterator in Object(messages))) return [prevLines, charCount];
+  currentLineIndex: number | null,
+  currentCursorPosition: number,
+  separator = '\n',
+): [Line[], number, number | null, number, string | null] {
+  if (!prevLines.length) {
+    prevLines = [{message: '', lineLen: 0, timestamp: new Date()}];
+  }
 
-  for (const message of messages) {
-    const messageLen = message.length;
-    charCount += messageLen;
-    const lastLine = linesToAdd[linesToAdd.length - 1];
+  currentLineIndex = currentLineIndex || 0;
 
-    // if the previous messages ends with "separator" add a new line
-    if (lastLine.message.charAt(lastLine.message.length - 1) === separator) {
-      linesToAdd.push({
-        message,
-        timestamp: new Date(),
-        lineLen: messageLen,
-      });
-    } else {
-      // concatenate to the last line
-      linesToAdd[linesToAdd.length - 1].message += message;
-      linesToAdd[linesToAdd.length - 1].lineLen += messageLen;
-      if (!linesToAdd[linesToAdd.length - 1].timestamp) {
-        linesToAdd[linesToAdd.length - 1].timestamp = new Date();
+  let allMessages = messages.join('');
+  let overflow = null;
+
+  let goHomeSequenceIndex = allMessages.indexOf(escapeSequenceGoHome);
+  let clearScreenSequenceIndex = allMessages.indexOf(escapeSequenceClearScreen);
+  let lastEscapeIndex = allMessages.lastIndexOf(escape);
+
+  if (goHomeSequenceIndex >= 0) {
+    const before = allMessages.substring(0, goHomeSequenceIndex);
+    const after = allMessages.substring(goHomeSequenceIndex + escapeSequenceGoHome.length);
+    const [updatedLines, updatedCharCount] = messagesToLines([before], prevLines, charCount, currentLineIndex, currentCursorPosition, separator);
+    return messagesToLines([after], updatedLines, updatedCharCount, 0, 0, separator);
+  } else if (clearScreenSequenceIndex >= 0) {
+    const after = allMessages.substring(allMessages.lastIndexOf(escapeSequenceClearScreen) + escapeSequenceClearScreen.length);
+    return messagesToLines([after], [], 0, 0, 0, separator);
+  } else if (lastEscapeIndex >= 0) {
+    overflow = allMessages.substring(lastEscapeIndex);
+    const result = messagesToLines([allMessages.substring(0, lastEscapeIndex)], prevLines, charCount, currentLineIndex, currentCursorPosition, separator);
+    result[4] = overflow;
+    return result;
+  }
+
+  const chunks = allMessages.split(separator);
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i];
+    if (chunk !== '') {
+      if (prevLines[currentLineIndex].message[currentCursorPosition - 1] === '\n') {
+        currentLineIndex++;
+        currentCursorPosition = 0;
       }
+      if (currentLineIndex > prevLines.length - 1) {
+        prevLines.push({message: '', lineLen: 0, timestamp: new Date()});
+      }
+      [charCount, currentCursorPosition] = writeOverLine(prevLines[currentLineIndex], chunk, currentCursorPosition, charCount)
+    }
+
+    if (i < chunks.length - 1) {
+      [charCount, currentCursorPosition] = writeOverLine(prevLines[currentLineIndex], separator, currentCursorPosition, charCount)
     }
   }
 
-  prevLines.splice(prevLines.length - 1, 1, ...linesToAdd);
-  return [prevLines, charCount];
+  return [prevLines, charCount, currentLineIndex, currentCursorPosition, overflow]
 }
 
 export function truncateLines(
   lines: Line[],
   charCount: number,
+  currentLineIndex: number | null,
+  currentCursorPosition: number,
   maxCharacters: number = SerialMonitorOutput.MAX_CHARACTERS
-): [Line[], number] {
+): [Line[], number, number | null, number] {
   let charsToDelete = charCount - maxCharacters;
   let lineIndex = 0;
   while (charsToDelete > 0 || lineIndex > 0) {
@@ -65,5 +100,5 @@ export function truncateLines(
     charsToDelete -= deletedCharsCount;
     lines[0].message = newFirstLine;
   }
-  return [lines, charCount];
+  return [lines, charCount, currentLineIndex, currentCursorPosition];
 }
