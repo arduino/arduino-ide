@@ -317,7 +317,7 @@ jobs:
           if not exist "${{ matrix.config.working-directory }}" mklink /d "${{ matrix.config.working-directory }}" "C:\actions-runner\_work\arduino-ide\arduino-ide"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
 
       - name: Install Node.js
@@ -441,10 +441,10 @@ jobs:
           echo "CHANNEL_FILES_PATH=${{ runner.temp }}/channel-files" >> "$GITHUB_ENV"
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download staged-for-merge channel file artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           merge-multiple: true
           path: ${{ env.CHANNEL_FILES_PATH }}
@@ -513,7 +513,7 @@ jobs:
 
     steps:
       - name: Download job transfer artifact that contains ${{ matrix.artifact.name }} tester build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.artifact.job-transfer-artifact-suffix }}
           path: ${{ env.BUILD_ARTIFACTS_FOLDER }}
@@ -533,7 +533,7 @@ jobs:
       BODY: ${{ steps.changelog.outputs.BODY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # To fetch all history for all branches and tags.
 
@@ -600,7 +600,7 @@ jobs:
 
     steps:
       - name: Download all job transfer artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           merge-multiple: true
           path: ${{ env.ARTIFACTS_FOLDER }}
@@ -643,7 +643,7 @@ jobs:
 
     steps:
       - name: Download all job transfer artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           merge-multiple: true
           path: ${{ env.ARTIFACTS_FOLDER }}
