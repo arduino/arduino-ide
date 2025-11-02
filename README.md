@@ -2,10 +2,6 @@
 
 # CognifyEV AI-Powered Arduino IDE
 
-[![Build status](https://github.com/CognifyEVOrg/arduino-ide/actions/workflows/build.yml/badge.svg)](https://github.com/CognifyEVOrg/arduino-ide/actions/workflows/build.yml)
-[![Check JavaScript status](https://github.com/CognifyEVOrg/arduino-ide/actions/workflows/check-javascript.yml/badge.svg)](https://github.com/CognifyEVOrg/arduino-ide/actions/workflows/check-javascript.yml)
-[![Test JavaScript status](https://github.com/CognifyEVOrg/arduino-ide/actions/workflows/test-javascript.yml/badge.svg)](https://github.com/CognifyEVOrg/arduino-ide/actions/workflows/test-javascript.yml)
-
 > **⚠️ This is a fork of [Arduino IDE 2.x](https://github.com/arduino/arduino-ide)** - An AI-powered agentic IDE for embedded computers, built upon the excellent foundation of the Arduino IDE 2.x.
 
 This repository is a fork of the Arduino IDE 2.x, enhanced with AI capabilities to create an intelligent, agentic development environment for embedded systems. 
