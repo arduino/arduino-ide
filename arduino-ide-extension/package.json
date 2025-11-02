@@ -1,7 +1,7 @@
 {
-  "name": "arduino-ide-extension",
+  "name": "cognifyev-arduino-ide-extension",
   "version": "2.3.7",
-  "description": "An extension for Theia building the Arduino IDE",
+  "description": "An extension for Theia building the CognifyEV AI-Powered Arduino IDE",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "prepare": "yarn download-cli && yarn download-fwuploader && yarn download-ls && yarn copy-i18n && yarn download-examples",

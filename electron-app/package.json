@@ -102,8 +102,8 @@
       }
     }
   },
-  "author": "Arduino SA",
-  "description": "Arduino IDE",
+  "author": "CognifyEV",
+  "description": "CognifyEV AI-Powered Arduino IDE",
   "build": {
     "appId": "cc.arduino.IDE2",
     "productName": "Arduino IDE",

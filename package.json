@@ -1,9 +1,12 @@
 {
-  "name": "arduino-ide",
+  "name": "cognifyev-arduino-ide",
   "version": "2.3.7",
-  "description": "Arduino IDE",
-  "repository": "https://github.com/arduino/arduino-ide.git",
-  "author": "Arduino SA",
+  "description": "CognifyEV AI-Powered Arduino IDE - An agentic IDE for embedded computers",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CognifyEVOrg/arduino-ide.git"
+  },
+  "author": "CognifyEV",
   "license": "AGPL-3.0-or-later",
   "private": true,
   "engines": {
