@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
   messagesToLines,
   truncateLines,
+  joinLines,
 } from '../../browser/serial/monitor/monitor-utils';
 import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
@@ -15,6 +16,7 @@ type TestLine = {
     charCount: number;
     maxCharacters?: number;
   };
+  expectedJoined?: string;
 };
 
 const date = new Date();
@@ -22,6 +24,7 @@ const testLines: TestLine[] = [
   {
     messages: ['Hello'],
     expected: { lines: [{ message: 'Hello', lineLen: 5 }], charCount: 5 },
+    expectedJoined: 'Hello',
   },
   {
     messages: ['Hello', 'Dog!'],
@@ -36,6 +39,7 @@ const testLines: TestLine[] = [
       ],
       charCount: 10,
     },
+    expectedJoined: 'Hello\nDog!'
   },
   {
     messages: ['Dog!'],
@@ -67,6 +71,7 @@ const testLines: TestLine[] = [
         { message: "You're a good boy!", lineLen: 8 },
       ],
     },
+    expectedJoined: "Hello Dog!\n Who's a good boy?\nYou're a good boy!",
   },
   {
     messages: ['boy?\n', "You're a good boy!"],
@@ -116,6 +121,7 @@ const testLines: TestLine[] = [
         { message: 'Yo', lineLen: 2 },
       ],
     },
+    expectedJoined: "Hello Dog!\nWho's a good boy?\nYo",
   },
 ];
 
@@ -164,6 +170,10 @@ describe('Monitor Utils', () => {
             charCount += line.message.length;
           });
           expect(totalCharCount).to.equal(charCount);
+        }
+        if (testLine.expectedJoined) {
+          const joined_str = joinLines(testLine.expected.lines);
+          expect(joined_str).to.equal(testLine.expectedJoined);
         }
       });
     });
