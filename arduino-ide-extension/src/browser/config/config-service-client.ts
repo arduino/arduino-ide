@@ -44,6 +44,7 @@ export class ConfigServiceClient implements FrontendApplicationContribution {
   }
 
   onStart(): void {
+    console.log('just a test');
     this.notificationCenter.onConfigDidChange((config) => this.use(config));
   }
 
