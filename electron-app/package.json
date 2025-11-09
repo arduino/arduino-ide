@@ -4,6 +4,7 @@
   "version": "2.3.7",
   "license": "AGPL-3.0-or-later",
   "main": "./src-gen/backend/electron-main.js",
+  "homepage": "https://arduino.cc/en/software",
   "dependencies": {
     "@theia/core": "1.57.0",
     "@theia/debug": "1.57.0",
@@ -102,7 +103,7 @@
       }
     }
   },
-  "author": "Arduino SA",
+  "author": "Arduino SA (https://arduino.cc/) <security@arduino.cc>",
   "description": "Arduino IDE",
   "build": {
     "appId": "cc.arduino.IDE2",
@@ -154,7 +155,8 @@
     "linux": {
       "target": [
         "zip",
-        "AppImage"
+        "AppImage",
+        "rpm"
       ],
       "category": "Development",
       "icon": "resources/icons"
