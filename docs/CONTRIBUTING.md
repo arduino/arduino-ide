@@ -16,12 +16,12 @@ There are several ways you can get involved:
 | Monetary                                  | [Buy official products][store]                                   |
 
 [forum]: https://forum.arduino.cc
-[issues]: contributor-guide/issues.md#issue-report-guide
-[beta-testing]: contributor-guide/beta-testing.md#beta-testing-guide
-[translate]: contributor-guide/translation.md#translator-guide
-[prs]: contributor-guide/pull-requests.md#pull-request-guide
+[issues]: /docs/contributor-guide/issues.md#issue-report-guide
+[beta-testing]: /docs/contributor-guide/beta-testing.md#beta-testing-guide
+[translate]: /docs/contributor-guide/translation.md#translator-guide
+[prs]: /docs/contributor-guide/pull-requests.md#pull-request-guide
 [store]: https://store.arduino.cc
 
 ## Resources
 
-- [**Development Guide**](development.md#development-guide)
+- [**Development Guide**](/docs/development.md#development-guide)
