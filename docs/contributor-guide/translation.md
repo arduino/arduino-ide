@@ -30,7 +30,7 @@ The text of the Arduino IDE application can be translated to the following langu
 
 ---
 
-⚠ Unfortunately the 3rd party localization framework used by the Arduino IDE application imposes a technical restriction to that set of languages. Unless a language is supported by that framework it cannot be supported in the Arduino IDE. For this reason, we are currently unable to add support to Arduino IDE for additional languages (see [`arduino/arduino-ide#1447`](https://github.com/arduino/arduino-ide/issues/1447) for details).
+⚠ Unfortunately the 3rd party localization framework used by the Arduino IDE application imposes a technical restriction to that set of languages. Unless a language is supported by that framework, it cannot be supported in the Arduino IDE. For this reason, we are currently unable to add support to Arduino IDE for additional languages (see [`arduino/arduino-ide#1447`](https://github.com/arduino/arduino-ide/issues/1447) for details).
 Once a new language becomes available through the said framework it will be added to the above list. When that happens we may consider adding support for that language to Arduino IDE once the additional translations required for the Arduino IDE are complete.
 Meanwhile we will continue to accept contributions for other languages, but be aware that we cannot say if and when those languages will become available in the Arduino IDE.
 
