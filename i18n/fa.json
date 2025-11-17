@@ -435,6 +435,7 @@
       "autoscroll": "پیمایش خودکار",
       "carriageReturn": "رفتن به سر سطر",
       "connecting": "برقراری ارتباط '{0}' روی '{1}'",
+      "copyOutput": "Copy Output",
       "message": "پیام (برای ارسال پیام به '' د{0}ر '' وارد شوید{1})",
       "newLine": "خط جدید",
       "newLineCarriageReturn": "هم NL و هم CR",
