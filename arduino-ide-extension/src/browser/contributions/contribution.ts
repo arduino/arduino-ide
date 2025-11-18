@@ -280,6 +280,7 @@ export abstract class CoreServiceContribution extends SketchContribution {
           'No board selected. Please select your Arduino board from the Tools > Board menu.'
         );
       }
+      message = message.replace(/[*]/g, '\\*');
       const copyAction = nls.localize(
         'arduino/coreContribution/copyError',
         'Copy error messages'
