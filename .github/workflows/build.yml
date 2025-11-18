@@ -607,7 +607,7 @@ jobs:
           pattern: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}*
 
       - name: Configure AWS Credentials for Nightly [S3]
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-1
@@ -666,7 +666,7 @@ jobs:
 
       - name: Configure AWS Credentials for Release [S3]
         if: needs.build-type-determination.outputs.publish-to-s3 == 'true'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-1
