@@ -8,6 +8,7 @@ import {
   Partner,
   Type as TypeLabel,
   Updatable,
+  Installed
 } from '../nls';
 import type { Defined } from '../types';
 import { naturalCompare } from './../utils';
@@ -113,6 +114,7 @@ export namespace BoardSearch {
   export const TypeLiterals = [
     'All',
     'Updatable',
+    'Installed',
     'Arduino',
     'Contributed',
     'Arduino Certified',
@@ -128,6 +130,7 @@ export namespace BoardSearch {
   export const TypeLabels: Record<Type, string> = {
     All: All,
     Updatable: Updatable,
+    Installed: Installed,
     Arduino: 'Arduino',
     Contributed: Contributed,
     'Arduino Certified': nls.localize(
