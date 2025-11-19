@@ -435,6 +435,7 @@
       "autoscroll": "Автоматично превъртане",
       "carriageReturn": "Carriage Return",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Нов ред",
       "newLineCarriageReturn": "Както NL, така и CR",

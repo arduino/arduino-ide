@@ -435,6 +435,7 @@
       "autoscroll": "Αυτόματη κύλιση",
       "carriageReturn": "Μεταφορά Επιστροφή",
       "connecting": "Σύνδεση από '{0}' στο '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Μήνυμα (Εισαγάγετε για να στείλετε μήνυμα από '{0}' στο '{1}')",
       "newLine": "Νέα γραμμή",
       "newLineCarriageReturn": "Και τα δύο NL και CR",

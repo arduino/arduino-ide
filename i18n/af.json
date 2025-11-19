@@ -435,6 +435,7 @@
       "autoscroll": "Autoscroll",
       "carriageReturn": "Wagterugkeer",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nuwe lyn",
       "newLineCarriageReturn": "Beide NL & CR",
