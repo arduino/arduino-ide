@@ -73,6 +73,8 @@ import {
 } from '../common/protocol/config-service';
 import { MonitorWidget } from './serial/monitor/monitor-widget';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
+import { ChatWidget } from './widgets/chat/chat-widget';
+import { ChatViewContribution } from './widgets/chat/chat-view-contribution';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
@@ -546,6 +548,14 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(MonitorManagerProxyClient)
     .to(MonitorManagerProxyClientImpl)
     .inSingletonScope();
+
+  // Chat widget
+  bind(ChatWidget).toSelf();
+  bindViewContribution(bind, ChatViewContribution);
+  bind(WidgetFactory).toDynamicValue((context) => ({
+    id: ChatWidget.ID,
+    createWidget: () => context.container.get(ChatWidget),
+  }));
 
   bind(WorkspaceService).toSelf().inSingletonScope();
   rebind(TheiaWorkspaceService).toService(WorkspaceService);

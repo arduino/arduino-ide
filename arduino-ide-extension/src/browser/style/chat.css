@@ -1,0 +1,524 @@
+.chat-tab-icon {
+    -webkit-mask: url("../icons/chat-tab-icon.svg");
+    mask: url("../icons/chat-tab-icon.svg");
+}
+
+/* Ensure chat widget panel has a good minimum width for better UX */
+.p-DockPanel-widget[data-id="arduino-chat-widget"],
+.p-DockPanel-widget:has(.chat-widget-container) {
+    min-width: 350px !important;
+}
+
+/* When the chat widget is in the left sidebar, ensure it has proper width */
+.p-DockPanel.p-mod-left .p-DockPanel-widget:has(.chat-widget-container) {
+    min-width: 350px !important;
+    width: 350px;
+}
+
+.chat-widget-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-width: 350px;
+}
+
+.chat-widget {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--theia-editor-background);
+}
+
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--theia-panel-border);
+    background-color: var(--theia-panel-background);
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--theia-foreground);
+}
+
+.chat-header-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat-settings-button,
+.chat-clear-button {
+    padding: 4px 12px;
+    font-size: 12px;
+    min-width: auto;
+}
+
+.chat-settings-button {
+    font-size: 16px;
+    padding: 4px 8px;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.chat-message {
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-message-user {
+    align-self: flex-end;
+}
+
+.chat-message-assistant {
+    align-self: flex-start;
+}
+
+.chat-message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 11px;
+    color: var(--theia-descriptionForeground);
+}
+
+.chat-message-role {
+    font-weight: 500;
+}
+
+.chat-message-time {
+    opacity: 0.7;
+    margin-left: 10px;
+}
+
+.chat-message-content {
+    padding: 10px 15px;
+    border-radius: 8px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.chat-message-content p {
+    margin: 0.5em 0;
+}
+
+.chat-message-content p:first-child {
+    margin-top: 0;
+}
+
+.chat-message-content p:last-child {
+    margin-bottom: 0;
+}
+
+.chat-message-content ul,
+.chat-message-content ol {
+    margin: 0.5em 0;
+    padding-left: 1.5em;
+}
+
+.chat-message-content li {
+    margin: 0.25em 0;
+}
+
+.chat-message-content h1,
+.chat-message-content h2,
+.chat-message-content h3,
+.chat-message-content h4,
+.chat-message-content h5,
+.chat-message-content h6 {
+    margin: 0.75em 0 0.5em 0;
+    font-weight: 600;
+}
+
+.chat-message-content h1:first-child,
+.chat-message-content h2:first-child,
+.chat-message-content h3:first-child,
+.chat-message-content h4:first-child,
+.chat-message-content h5:first-child,
+.chat-message-content h6:first-child {
+    margin-top: 0;
+}
+
+.chat-message-content code {
+    background-color: var(--theia-textBlockQuote-background);
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: var(--theia-code-font-family);
+    font-size: 0.9em;
+}
+
+.chat-code-block-wrapper {
+    margin: 0.75em 0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.chat-code-block {
+    margin: 0;
+    padding: 12px;
+    background-color: var(--theia-textBlockQuote-background);
+    border: 1px solid var(--theia-panel-border);
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: var(--theia-code-font-family);
+    font-size: 0.9em;
+    line-height: 1.4;
+}
+
+.chat-code-block code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    color: var(--theia-foreground);
+}
+
+.chat-message-content blockquote {
+    margin: 0.75em 0;
+    padding-left: 1em;
+    border-left: 3px solid var(--theia-panel-border);
+    color: var(--theia-descriptionForeground);
+    font-style: italic;
+}
+
+.chat-message-content a {
+    color: var(--theia-textLink-foreground);
+    text-decoration: none;
+}
+
+.chat-message-content a:hover {
+    text-decoration: underline;
+}
+
+.chat-message-content table {
+    border-collapse: collapse;
+    margin: 0.75em 0;
+    width: 100%;
+}
+
+.chat-message-content th,
+.chat-message-content td {
+    border: 1px solid var(--theia-panel-border);
+    padding: 6px 12px;
+    text-align: left;
+}
+
+.chat-message-content th {
+    background-color: var(--theia-textBlockQuote-background);
+    font-weight: 600;
+}
+
+.chat-message-content hr {
+    border: none;
+    border-top: 1px solid var(--theia-panel-border);
+    margin: 1em 0;
+}
+
+.chat-markdown-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.chat-markdown-loading .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--theia-panel-border);
+    border-top-color: var(--theia-textLink-foreground);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.chat-message-user .chat-message-content {
+    background-color: var(--theia-button-background);
+    color: var(--theia-button-foreground);
+    border-bottom-right-radius: 2px;
+}
+
+.chat-message-assistant .chat-message-content {
+    background-color: var(--theia-input-background);
+    color: var(--theia-foreground);
+    border-bottom-left-radius: 2px;
+}
+
+.chat-typing-indicator {
+    display: inline-block;
+    color: var(--theia-descriptionForeground);
+    font-style: italic;
+}
+
+.chat-typing-indicator::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% {
+        content: '.';
+    }
+    40% {
+        content: '..';
+    }
+    60%, 100% {
+        content: '...';
+    }
+}
+
+.chat-input-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    padding: 15px;
+    border-top: 1px solid var(--theia-panel-border);
+    background-color: var(--theia-panel-background);
+    gap: 10px;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--theia-input-border);
+    border-radius: 4px;
+    background-color: var(--theia-input-background);
+    color: var(--theia-input-foreground);
+    font-family: var(--theia-ui-font-family);
+    font-size: 13px;
+    resize: vertical;
+    min-height: 60px;
+    max-height: 150px;
+}
+
+.chat-input:focus {
+    outline: none;
+    border-color: var(--theia-focusBorder);
+}
+
+.chat-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.chat-send-button {
+    padding: 8px 20px;
+    font-size: 13px;
+    min-width: 80px;
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.chat-send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.chat-send-button:not(:disabled) {
+    cursor: pointer;
+}
+
+/* Scrollbar styling */
+.chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--theia-scrollbarSlider-background);
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--theia-scrollbarSlider-hoverBackground);
+    border-radius: 4px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--theia-scrollbarSlider-activeBackground);
+}
+
+/* Settings Dialog */
+.chat-settings-dialog {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.chat-settings-content {
+    background-color: var(--theia-panel-background);
+    border: 1px solid var(--theia-panel-border);
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 400px;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.chat-settings-content h4 {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--theia-foreground);
+}
+
+.chat-settings-field {
+    margin-bottom: 20px;
+}
+
+.chat-settings-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--theia-foreground);
+}
+
+.chat-api-key-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.chat-api-key-input {
+    width: 100%;
+    padding: 8px 40px 8px 8px;
+    border: 1px solid var(--theia-input-border);
+    border-radius: 4px;
+    background-color: var(--theia-input-background);
+    color: var(--theia-input-foreground);
+    font-family: var(--theia-ui-font-family);
+    font-size: 13px;
+}
+
+.chat-api-key-input:focus {
+    outline: none;
+    border-color: var(--theia-focusBorder);
+}
+
+.chat-api-key-toggle {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--theia-descriptionForeground);
+    font-size: 16px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.chat-api-key-toggle:hover {
+    opacity: 1;
+}
+
+.chat-api-key-toggle:focus {
+    outline: none;
+    opacity: 1;
+}
+
+.chat-api-key-link {
+    font-size: 12px;
+    color: var(--theia-textLink-foreground);
+    text-decoration: none;
+}
+
+.chat-api-key-link:hover {
+    text-decoration: underline;
+}
+
+.chat-model-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--theia-input-border);
+    border-radius: 4px;
+    background-color: var(--theia-input-background);
+    color: var(--theia-input-foreground);
+    font-family: var(--theia-ui-font-family);
+    font-size: 13px;
+}
+
+.chat-model-select:focus {
+    outline: none;
+    border-color: var(--theia-focusBorder);
+}
+
+.chat-settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* API Key Warning */
+.chat-api-key-warning {
+    padding: 15px;
+    margin: 15px;
+    background-color: var(--theia-warningBackground);
+    color: var(--theia-warningForeground);
+    border-radius: 4px;
+    border: 1px solid var(--theia-warningBorder);
+}
+
+.chat-api-key-warning p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Code Insert Actions */
+.chat-code-insert-actions {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--theia-panel-border);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-insert-code-button {
+    padding: 6px 12px;
+    font-size: 12px;
+    min-width: auto;
+    align-self: flex-start;
+}
+

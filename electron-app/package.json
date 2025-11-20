@@ -59,7 +59,7 @@
     "target": "electron",
     "frontend": {
       "config": {
-        "applicationName": "Arduino IDE",
+        "applicationName": "Cognify IDE",
         "defaultTheme": {
           "light": "arduino-theme",
           "dark": "arduino-theme-dark"
@@ -103,10 +103,10 @@
     }
   },
   "author": "CognifyEV",
-  "description": "CognifyEV AI-Powered Arduino IDE",
+  "description": "Cognify AI-Powered Arduino IDE",
   "build": {
     "appId": "cc.arduino.IDE2",
-    "productName": "Arduino IDE",
+    "productName": "Cognify IDE",
     "asar": false,
     "detectUpdateChannel": false,
     "generateUpdatesFilesForAllChannels": true,
