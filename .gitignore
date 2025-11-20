@@ -20,7 +20,7 @@ electron-app/traces
 inols*.log
 # The electron-builder output.
 electron-app/dist
-# Documentation files (kept locally, not tracked in git)
+# Documentation files
 CLI_FORK_SETUP.md
 CHAT_LLM_INTEGRATION.md
 ROADMAP_UPDATED.md
