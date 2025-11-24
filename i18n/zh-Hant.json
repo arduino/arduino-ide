@@ -435,6 +435,7 @@
       "autoscroll": "自動捲動",
       "carriageReturn": "內有 CR",
       "connecting": "連接到 '{1}' 上的 '{0}'  ...",
+      "copyOutput": "Copy Output",
       "message": "訊息 (按 Enter 鍵將訊息發送到 {1} 上的 {0})",
       "newLine": "換行",
       "newLineCarriageReturn": "NL和CR字元",

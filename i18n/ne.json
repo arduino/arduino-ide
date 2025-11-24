@@ -435,6 +435,7 @@
       "autoscroll": "स्वत: स्क्रोल",
       "carriageReturn": "क्यारिएज रिटर्न ",
       "connecting": "'{1}' मा '{0}' सँग जडान गर्दै...",
+      "copyOutput": "Copy Output",
       "message": "सन्देश ('{1}' मा '{0}' लाई सन्देश पठाउन प्रविष्ट गर्नुहोस्)",
       "newLine": "नयाँ लाइन",
       "newLineCarriageReturn": "NL र CR दुबै",

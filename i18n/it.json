@@ -8,7 +8,7 @@
       "goToCloudEditor": "Vai all'editor del cloud",
       "goToIoTCloud": "Vai al cloud IoT",
       "goToProfile": "Vai al profilo",
-      "menuTitle": "Cloud di Arduino"
+      "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "Scheda{0}",
@@ -435,8 +435,9 @@
       "autoscroll": "Scorrimento automatico",
       "carriageReturn": "Ritorno carrello (CR)",
       "connecting": "Connessione in corso di '{0}' su '{1}'...",
+      "copyOutput": "Copia output",
       "message": "Messaggio (premi Enter per inviare il messaggio a '{0}' on '{1}')",
-      "newLine": "A capo (NL)",
+      "newLine": "A capo",
       "newLineCarriageReturn": "Entrambi NL & CR",
       "noLineEndings": "Nessun fine riga",
       "notConnected": "Non collegato. Scegli una scheda e la porta di comunicazione per una connessione automatica.",

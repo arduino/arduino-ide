@@ -435,6 +435,7 @@
       "autoscroll": "自动滚屏",
       "carriageReturn": "回车",
       "connecting": "在 '{1}' 上连接至 '{0}' 中……",
+      "copyOutput": "Copy Output",
       "message": "消息（按回车将消息发送到“{1}”上的“{0}”）",
       "newLine": "换行",
       "newLineCarriageReturn": "换行 和 回车 两者都是",

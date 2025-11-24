@@ -435,6 +435,7 @@
       "autoscroll": "Avanço automático de linha",
       "carriageReturn": "Retorno de linha",
       "connecting": "Conectando a '{0}' em '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Mensagem ({0} + Enter para enviar mensagem para '{1}' em '{2}'",
       "newLine": "Nova linha",
       "newLineCarriageReturn": "Nova linha e retorno de linha",
