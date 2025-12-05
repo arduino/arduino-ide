@@ -8652,7 +8652,8 @@ proto.cc.arduino.cli.commands.v1.LibraryLocation = {
   LIBRARY_LOCATION_USER: 1,
   LIBRARY_LOCATION_PLATFORM_BUILTIN: 2,
   LIBRARY_LOCATION_REFERENCED_PLATFORM_BUILTIN: 3,
-  LIBRARY_LOCATION_UNMANAGED: 4
+  LIBRARY_LOCATION_UNMANAGED: 4,
+  LIBRARY_LOCATION_PROFILE: 5
 };
 
 goog.object.extend(exports, proto.cc.arduino.cli.commands.v1);
