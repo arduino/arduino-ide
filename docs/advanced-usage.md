@@ -66,3 +66,53 @@ If you later decide you would like to remove a 3rd party theme you installed, it
 1. If Arduino IDE is running, select **File > Quit** from the Arduino IDE menus to exit all windows.
 1. Delete the theme's `.vsix` file from [the location you installed it to](#installation). <br />
    ⚠ Please be careful when deleting things from your computer. When in doubt, back up!
+
+## Troubleshooting
+
+### Linux: Wayland Display Server Issues
+
+Arduino IDE is built on [Electron](https://www.electronjs.org/), which attempts to use native Wayland rendering on Linux systems with Wayland display servers. However, some Wayland compositors (particularly Hyprland, Sway, and some configurations of KDE Plasma and GNOME) may experience crashes or initialization failures with errors such as:
+
+```
+Failed to connect to Wayland display
+Failed to initialize Wayland platform
+The platform failed to initialize. Exiting.
+```
+
+Or segmentation faults immediately after launching.
+
+#### Workaround: Force X11/XWayland Backend
+
+If you encounter Wayland-related crashes, you can force Arduino IDE to use the X11/XWayland backend instead of native Wayland rendering:
+
+**Method 1: Environment Variable (Recommended)**
+
+Set the `ELECTRON_OZONE_PLATFORM_HINT` environment variable before launching Arduino IDE:
+
+```bash
+export ELECTRON_OZONE_PLATFORM_HINT=x11
+arduino-ide
+```
+
+To make this permanent, add the export line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, or equivalent).
+
+**Method 2: Command Line Flag**
+
+Launch Arduino IDE with the `--ozone-platform=x11` flag:
+
+```bash
+arduino-ide --ozone-platform=x11
+```
+
+You can create a wrapper script or shell alias for convenience:
+
+```bash
+# Add to ~/.bashrc or ~/.zshrc
+alias arduino-ide='arduino-ide --ozone-platform=x11'
+```
+
+#### Related Issues
+
+For more information and updates on native Wayland support, see:
+- [Issue #2759: Segmentation fault when launching Arduino IDE](https://github.com/arduino/arduino-ide/issues/2759)
+- [Issue #2107: IDE crashes with segmentation fault when run under native Wayland](https://github.com/arduino/arduino-ide/issues/2107)
