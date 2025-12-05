@@ -127,6 +127,7 @@
       "resources/icons/512x512.png",
       "!**node_modules/**"
     ],
+    "extraFiles": "PATENT_DISCLAIMER",
     "extraResources": [
       {
         "from": "plugins",
