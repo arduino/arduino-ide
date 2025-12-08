@@ -435,6 +435,7 @@
       "autoscroll": "Аутоматско скроловање",
       "carriageReturn": "Carriage Return",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Нова линија",
       "newLineCarriageReturn": "И нова линија и CR",

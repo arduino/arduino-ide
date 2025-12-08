@@ -435,6 +435,7 @@
       "autoscroll": "Tự động cuộn",
       "carriageReturn": "Về đầu dòng",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Dòng mới",
       "newLineCarriageReturn": "Vừa xuống dòng & về đầu dòng",
