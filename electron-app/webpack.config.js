@@ -1,5 +1,7 @@
 const path = require('node:path');
+const fs = require('fs');
 const webpack = require('webpack');
+const TheiaNativeWebpackPlugin = require('@theia/native-webpack-plugin');
 const frontend = require('./gen-webpack.config');
 const backend = require('./gen-webpack.node.config');
 const {
@@ -38,6 +40,27 @@ backend.config.entry['parcel-watcher'] = {
     type: 'commonjs2',
   },
 };
+
+// Override Theia native dependency bundler to assign stricter file permissions (chmod 755)
+// https://github.com/eclipse-theia/theia/blob/9a52544fb4c1ea1d3d0d6bcbe106b97184279030/dev-packages/native-webpack-plugin/src/native-webpack-plugin.ts#L149
+class NativeWebpackPlugin extends TheiaNativeWebpackPlugin {
+  // Override the method that writes/copies files
+  async copyExecutable(source, target) {
+    const targetDirectory = path.dirname(target);
+    await fs.promises.mkdir(targetDirectory, { recursive: true });
+    await fs.promises.copyFile(source, target);
+    await fs.promises.chmod(target, 0o755);
+  }
+}
+backend.config.plugins.push(new NativeWebpackPlugin({
+  out: 'native',
+  trash: true,
+  ripgrep: true,
+  pty: true,
+  nativeBindings: {
+    drivelist: 'drivelist/build/Release/drivelist.node',
+  },
+}));
 
 // Use a customized backend main that can enable the file logger in bundled mode.
 backend.config.entry['main'] = require.resolve('./arduino-ide-backend-main.js');
