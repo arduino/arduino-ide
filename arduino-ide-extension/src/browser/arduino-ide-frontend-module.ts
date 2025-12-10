@@ -368,10 +368,6 @@ import { DebugConfigurationWidget } from './theia/debug/debug-configuration-widg
 import { DebugConfigurationWidget as TheiaDebugConfigurationWidget } from '@theia/debug/lib/browser/view/debug-configuration-widget';
 import { DebugToolBar } from '@theia/debug/lib/browser/view/debug-toolbar-widget';
 
-import {
-  VersionWelcomeDialog,
-  VersionWelcomeDialogProps,
-} from './dialogs/version-welcome-dialog';
 import { TestViewContribution as TheiaTestViewContribution } from '@theia/test/lib/browser/view/test-view-contribution';
 import { TestViewContribution } from './theia/test/test-view-contribution';
 
@@ -985,11 +981,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(IDEUpdaterDialog).toSelf().inSingletonScope();
   bind(IDEUpdaterDialogProps).toConstantValue({
     title: 'IDEUpdater',
-  });
-
-  bind(VersionWelcomeDialog).toSelf().inSingletonScope();
-  bind(VersionWelcomeDialogProps).toConstantValue({
-    title: 'VersionWelcomeDialog',
   });
 
   bind(UserFieldsDialog).toSelf().inSingletonScope();
