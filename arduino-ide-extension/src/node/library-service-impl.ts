@@ -306,7 +306,7 @@ export class LibraryServiceImpl
     item: LibraryPackage;
     progressId?: string;
     version?: Installable.Version;
-    installDependencies?: boolean;
+    noDeps?: boolean;
     noOverwrite?: boolean;
     installLocation?: LibraryLocation.BUILTIN | LibraryLocation.USER;
   }): Promise<void> {
@@ -321,7 +321,7 @@ export class LibraryServiceImpl
     req.setInstance(instance);
     req.setName(item.name);
     req.setVersion(version);
-    req.setNoDeps(!options.installDependencies);
+    req.setNoDeps(Boolean(options.noDeps));
     req.setNoOverwrite(Boolean(options.noOverwrite));
     if (options.installLocation === LibraryLocation.BUILTIN) {
       req.setInstallLocation(

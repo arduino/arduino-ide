@@ -27,7 +27,7 @@ export interface LibraryService
     item: LibraryPackage;
     progressId?: string;
     version?: Installable.Version;
-    installDependencies?: boolean;
+    noDeps?: boolean;
     noOverwrite?: boolean;
     installLocation?: LibraryLocation.BUILTIN | LibraryLocation.USER;
   }): Promise<void>;

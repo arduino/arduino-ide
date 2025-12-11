@@ -61,7 +61,6 @@ export class FirstStartupInstaller extends Contribution {
         try {
           await this.libraryService.install({
             item: builtInLibrary,
-            installDependencies: true,
             noOverwrite: true, // We don't want to automatically replace custom libraries the user might already have in place
             installLocation: LibraryLocation.BUILTIN,
           });
