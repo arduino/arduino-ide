@@ -167,23 +167,21 @@ export class LibraryListWidget extends ListWidget<
       installDependencies = false;
     }
 
-    if (typeof installDependencies === 'boolean') {
-      await this.service.install({
-        item,
-        version,
-        progressId,
-        installDependencies,
-      });
-      this.messageService.info(
-        nls.localize(
-          'arduino/library/installedSuccessfully',
-          'Successfully installed library {0}:{1}',
-          item.name,
-          version
-        ),
-        { timeout: 3000 }
-      );
-    }
+    await this.service.install({
+      item,
+      version,
+      progressId,
+      noDeps: !installDependencies,
+    });
+    this.messageService.info(
+      nls.localize(
+        'arduino/library/installedSuccessfully',
+        'Successfully installed library {0}:{1}',
+        item.name,
+        version
+      ),
+      { timeout: 3000 }
+    );
   }
 
   protected override async uninstall({
