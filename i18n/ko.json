@@ -435,6 +435,7 @@
       "autoscroll": "자동스크롤",
       "carriageReturn": "캐리지 리턴",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "새 줄",
       "newLineCarriageReturn": "Both NL & CR",

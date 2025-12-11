@@ -435,6 +435,7 @@
       "autoscroll": "自動スクロール",
       "carriageReturn": "CRのみ",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "メッセージ（'{1}'の{0}にメッセージを送信するにはEnter）",
       "newLine": "LFのみ",
       "newLineCarriageReturn": "CRおよびLF",

@@ -435,6 +435,7 @@
       "autoscroll": "Desplaçament automàtic",
       "carriageReturn": "Retorn de carro",
       "connecting": "Connectant a \"{0}\" en \"{1}\"...",
+      "copyOutput": "Copy Output",
       "message": "Missatge (escriu per enviar un missatge a \"{0}\" en \"{1}\")",
       "newLine": "Línia nova",
       "newLineCarriageReturn": "Ambdós NL & CR",
