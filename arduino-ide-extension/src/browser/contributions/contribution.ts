@@ -264,6 +264,10 @@ export abstract class CoreServiceContribution extends SketchContribution {
     let message: undefined | string = undefined;
     if (CoreError.is(error)) {
       message = error.message;
+
+      if (error.code === CoreError.Codes.Verify) {
+        message = message.replace(/[*]/g, '\\*');
+      }
     } else if (error instanceof Error) {
       message = error.message;
     } else if (typeof error === 'string') {
@@ -280,7 +284,6 @@ export abstract class CoreServiceContribution extends SketchContribution {
           'No board selected. Please select your Arduino board from the Tools > Board menu.'
         );
       }
-      message = message.replace(/[*]/g, '\\*');
       const copyAction = nls.localize(
         'arduino/coreContribution/copyError',
         'Copy error messages'
