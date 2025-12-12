@@ -264,7 +264,6 @@ export abstract class CoreServiceContribution extends SketchContribution {
     let message: undefined | string = undefined;
     if (CoreError.is(error)) {
       message = error.message;
-
       if (error.code === CoreError.Codes.Verify) {
         message = message.replace(/[*]/g, '\\*');
       }
