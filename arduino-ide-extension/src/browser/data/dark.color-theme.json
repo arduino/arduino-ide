@@ -1,167 +1,124 @@
 {
-  "name": "Arduino dark",
+  "name": "Neon Night",
   "type": "dark",
   "colors": {
-    "list.highlightForeground": "#0ca1a6",
-    "list.activeSelectionForeground": "#dae3e3",
-    "list.activeSelectionBackground": "#0ca1a64d",
-    "list.inactiveSelectionForeground": "#dae3e3",
-    "list.inactiveSelectionBackground": "#434f54",
-    "list.hoverBackground": "#1f272a",
-    "list.activeSelectionIconForeground": "#0ca1a6",
-    "progressBar.background": "#005c5f",
-    "editor.background": "#1f272a",
-    "editor.foreground": "#dae3e3",
-    "editor.lineHighlightBackground": "#434f5410",
-    "editor.selectionBackground": "#00818480",
-    "editorCursor.foreground": "#dae3e3",
-    "editorWhitespace.foreground": "#bfbfbf",
-    "editorWidget.background": "#171e21",
-    "editorWidget.foreground": "#dae3e3",
-    "focusBorder": "#dae3e3",
-    "menubar.selectionBackground": "#ffffff",
-    "menubar.selectionForeground": "#212121",
-    "menu.selectionBackground": "#dae3e3",
-    "menu.selectionForeground": "#212121",
-    "editorGroupHeader.tabsBackground": "#171e21",
-    "button.background": "#0ca1a6",
-    "button.foreground": "#101618",
-    "button.hoverBackground": "#7fcbcd",
-    "titleBar.activeBackground": "#171e21",
-    "titleBar.activeForeground": "#dae3e3",
-    "terminal.background": "#000000",
-    "terminal.foreground": "#ffffff",
-    "dropdown.border": "#7fcbcd",
-    "dropdown.background": "#2c353a",
-    "dropdown.foreground": "#dae3e3",
-    "activityBar.background": "#171e21",
-    "activityBar.foreground": "#dae3e3",
-    "activityBar.inactiveForeground": "#4e5b61",
-    "activityBar.activeBorder": "#0ca1a6",
-    "statusBar.background": "#171e21",
+    "list.highlightForeground": "#00ffff",
+    "list.activeSelectionForeground": "#ffffff",
+    "list.activeSelectionBackground": "#00ffff33",
+    "list.inactiveSelectionForeground": "#ffffff",
+    "list.inactiveSelectionBackground": "#1a1a2e",
+    "list.hoverBackground": "#16213e",
+    "list.activeSelectionIconForeground": "#00ffff",
+    "progressBar.background": "#00ffff",
+    "editor.background": "#0a0e14",
+    "editor.foreground": "#ffffff",
+    "editor.lineHighlightBackground": "#16213e40",
+    "editor.selectionBackground": "#00ffff40",
+    "editorCursor.foreground": "#00ffff",
+    "editorWhitespace.foreground": "#1a1a2e",
+    "editorWidget.background": "#0f1419",
+    "editorWidget.foreground": "#ffffff",
+    "focusBorder": "#00ffff",
+    "menubar.selectionBackground": "#16213e",
+    "menubar.selectionForeground": "#00ffff",
+    "menu.selectionBackground": "#16213e",
+    "menu.selectionForeground": "#00ffff",
+    "editorGroupHeader.tabsBackground": "#0f1419",
+    "button.background": "#00ffff",
+    "button.foreground": "#0a0e14",
+    "button.hoverBackground": "#00cccc",
+    "titleBar.activeBackground": "#0f1419",
+    "titleBar.activeForeground": "#00ffff",
+    "terminal.background": "#0a0e14",
+    "terminal.foreground": "#00ff00",
+    "dropdown.border": "#00ffff",
+    "dropdown.background": "#0f1419",
+    "dropdown.foreground": "#ffffff",
+    "activityBar.background": "#0a0e14",
+    "activityBar.foreground": "#00ffff",
+    "activityBar.inactiveForeground": "#666666",
+    "activityBar.activeBorder": "#00ffff",
+    "statusBar.background": "#0f1419",
+    "statusBar.foreground": "#00ffff",
     "secondaryButton.background": "#ff000000",
-    "secondaryButton.foreground": "#dae3e3",
-    "secondaryButton.hoverBackground": "#ffffff1a",
-    "arduino.branding.primary": "#0ca1a6",
-    "arduino.branding.secondary": "#b5c8c9",
-    "arduino.foreground": "#edf1f1",
-    "arduino.output.foreground": "#ffffff",
-    "arduino.output.background": "#000000",
-    "arduino.toolbar.button.hoverBackground": "#dae3e3",
-    "arduino.toolbar.button.secondary.label": "#dae3e3",
-    "arduino.toolbar.button.secondary.hoverBackground": "#dae3e366",
-    "arduino.toolbar.button.background": "#0ca1a6",
-    "arduino.toolbar.dropdown.border": "#7fcbcd",
-    "arduino.toolbar.dropdown.borderActive": "#0ca1a6",
-    "arduino.toolbar.dropdown.background": "#2c353a",
-    "arduino.toolbar.dropdown.label": "#dae3e3",
-    "arduino.toolbar.dropdown.iconSelected": "#3fae98",
-    "arduino.toolbar.dropdown.option.backgroundHover": "#374146",
-    "arduino.toolbar.dropdown.option.backgroundSelected": "#4e5b61",
-    "arduino.toolbar.toggleBackground": "#f1c40f",
-    "sideBar.background": "#101618",
-    "sideBar.foreground": "#dae3e3",
-    "input.background": "#000000",
-    "foreground": "#dae3e3",
-    "settings.headerForeground": "#dae3e3",
-    "tree.indentGuidesStroke": "#374146",
-    "tab.unfocusedActiveForeground": "#dae3e3",
-    "tab.inactiveBackground": "#171e21",
-    "textLink.foreground": "#0ca1a6",
-    "errorForeground": "#df7365"
+    "secondaryButton.foreground": "#00ffff",
+    "secondaryButton.hoverBackground": "#00ffff1a",
+    "arduino.branding.primary": "#00ffff",
+    "arduino.branding.secondary": "#ff00ff",
+    "arduino.foreground": "#ffffff",
+    "arduino.output.foreground": "#00ff00",
+    "arduino.output.background": "#0a0e14",
+    "arduino.toolbar.button.hoverBackground": "#16213e",
+    "arduino.toolbar.button.secondary.label": "#ffffff",
+    "arduino.toolbar.button.secondary.hoverBackground": "#00ffff33",
+    "arduino.toolbar.button.background": "#00ffff",
+    "arduino.toolbar.dropdown.border": "#00ffff",
+    "arduino.toolbar.dropdown.borderActive": "#ff00ff",
+    "arduino.toolbar.dropdown.background": "#0f1419",
+    "arduino.toolbar.dropdown.label": "#ffffff",
+    "arduino.toolbar.dropdown.iconSelected": "#00ffff",
+    "arduino.toolbar.dropdown.option.backgroundHover": "#16213e",
+    "arduino.toolbar.dropdown.option.backgroundSelected": "#1a1a2e",
+    "arduino.toolbar.toggleBackground": "#ffff00",
+    "sideBar.background": "#0f1419",
+    "sideBar.foreground": "#ffffff",
+    "input.background": "#0a0e14",
+    "input.foreground": "#ffffff",
+    "input.border": "#00ffff",
+    "foreground": "#ffffff",
+    "settings.headerForeground": "#00ffff",
+    "tree.indentGuidesStroke": "#1a1a2e",
+    "tab.unfocusedActiveForeground": "#666666",
+    "tab.inactiveBackground": "#0f1419",
+    "tab.activeBackground": "#0a0e14",
+    "tab.activeForeground": "#00ffff",
+    "textLink.foreground": "#00ffff",
+    "errorForeground": "#ff0066"
   },
   "tokenColors": [
     {
-      "name": "",
-      "settings": {
-        "foreground": "#dae3e3"
-      }
+      "name": "Default text",
+      "settings": { "foreground": "#d4d4d4" }
     },
     {
       "name": "Comments",
       "scope": "comment",
-      "settings": {
-        "foreground": "#7f8c8d"
-      }
+      "settings": { "foreground": "#6A9955", "fontStyle": "italic" }
     },
     {
-      "name": "Keywords Attributes",
-      "scope": [
-        "storage",
-        "support",
-        "string.quoted.single.c"
-      ],
-      "settings": {
-        "foreground": "#0ca1a6"
-      }
+      "name": "Keywords",
+      "scope": ["keyword", "storage.type", "storage.modifier"],
+      "settings": { "foreground": "#569CD6", "fontStyle": "bold" }
     },
     {
-      "name": "literal",
-      "scope": [
-        "meta.function.c",
-        "entity.name.function",
-        "meta.function-call.c",
-        "variable.other"
-      ],
-      "settings": {
-        "foreground": "#F39C12"
-      }
+      "name": "Functions",
+      "scope": ["entity.name.function", "meta.function-call.c", "meta.function.c"],
+      "settings": { "foreground": "#DCDCAA" }
     },
     {
-      "name": "punctuation",
-      "scope": [
-        "punctuation.section",
-        "meta.function-call.c",
-        "meta.block.c",
-        "meta.function.c",
-        "variable",
-        "variable.name"
-      ],
-      "settings": {
-        "foreground": "#dae3e3"
-      }
+      "name": "Variables",
+      "scope": ["variable", "variable.name", "variable.other"],
+      "settings": { "foreground": "#9CDCFE" }
     },
     {
-      "name": "function preprocessor",
-      "scope": [
-        "entity.name.function.preprocessor.c",
-        "meta.preprocessor.macro.c"
-      ],
-      "settings": {
-        "foreground": "#569CD6"
-      }
+      "name": "Strings",
+      "scope": ["string", "string.quoted.double", "string.quoted.single"],
+      "settings": { "foreground": "#CE9178" }
     },
     {
-      "name": "constants",
-      "scope": [
-        "string.quoted.double",
-        "string.quoted.other.lt-gt",
-        "constant"
-      ],
-      "settings": {
-        "foreground": "#7fcbcd"
-      }
+      "name": "Numbers",
+      "scope": ["constant.numeric", "constant.language"],
+      "settings": { "foreground": "#B5CEA8" }
     },
     {
-      "name": "meta keywords",
-      "scope": [
-        "keyword.control",
-        "meta.preprocessor.c"
-      ],
-      "settings": {
-        "foreground": "#C586C0"
-      }
+      "name": "Types",
+      "scope": ["entity.name.type", "support.type"],
+      "settings": { "foreground": "#4EC9B0", "fontStyle": "italic" }
     },
     {
-      "name": "numeric preprocessor",
-      "scope": [
-        "meta.preprocessor.macro.c",
-        "constant.numeric.preprocessor.c",
-        "meta.preprocessor.c"
-      ],
-      "settings": {
-        "foreground": "#434f54"
-      }
+      "name": "Punctuation/Operators",
+      "scope": ["punctuation", "keyword.operator"],
+      "settings": { "foreground": "#d4d4d4" }
     }
   ]
 }

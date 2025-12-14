@@ -1,12 +1,17 @@
 #arduino-settings-dialog-container > .dialogBlock {
     height: 531px;
-    max-width: 740px !important;
+    max-width: 800px !important;
     width: calc(100% - 96px);
+    background-color: var(--theia-editorWidget-background);
+    border: 1px solid var(--theia-panel-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 #arduino-settings-dialog-container > .dialogBlock > .dialogContent {
     justify-content: flex-start;
     overflow: auto;
+    background-color: var(--theia-editorWidget-background);
 }
 
 #arduino-settings-dialog-container > .dialogBlock > .dialogControl {
@@ -14,7 +19,10 @@
 }
 
 .arduino-settings-dialog .content {
-    padding: 5px;
+    padding: 20px;
+    background-color: var(--theia-editorWidget-background);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .arduino-settings-dialog .flex-line {
@@ -58,6 +66,13 @@
     margin: 3px !important;
 }
 
+.arduino-settings-dialog input[type="checkbox"] {
+    accent-color: var(--theia-button-background);
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
 .arduino-settings-dialog .theia-input.small {
     max-width: 50px;
     width: 50px;
@@ -97,4 +112,9 @@
     overflow: hidden;
     padding: 0 1px;
     margin: 0 -1px;
+}
+
+/* Ensure Select dropdowns appear above dialog overlays */
+[data-radix-portal] {
+    z-index: 9999 !important;
 }

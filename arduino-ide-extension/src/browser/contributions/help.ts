@@ -13,7 +13,6 @@ import {
   KeybindingRegistry,
 } from './contribution';
 import { nls } from '@theia/core/lib/common';
-import { IDEUpdaterCommands } from '../ide-updater/ide-updater-commands';
 import { ElectronCommands } from '@theia/core/lib/electron-browser/menu/electron-menu-contribution';
 import * as monaco from '@theia/monaco-editor-core';
 
@@ -85,10 +84,6 @@ export class Help extends Contribution {
       createOpenHandler('https://support.arduino.cc/hc/en-us')
     );
     registry.registerCommand(
-      Help.Commands.VISIT_ARDUINO,
-      createOpenHandler('https://www.arduino.cc/')
-    );
-    registry.registerCommand(
       Help.Commands.PRIVACY_POLICY,
       createOpenHandler('https://www.arduino.cc/en/privacy-policy')
     );
@@ -125,16 +120,8 @@ export class Help extends Contribution {
       order: '5',
     });
     registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
-      commandId: Help.Commands.VISIT_ARDUINO.id,
-      order: '6',
-    });
-    registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
       commandId: Help.Commands.PRIVACY_POLICY.id,
-      order: '7',
-    });
-    registry.registerMenuAction(ArduinoMenus.HELP__FIND_GROUP, {
-      commandId: IDEUpdaterCommands.CHECK_FOR_UPDATES.id,
-      order: '8',
+      order: '6',
     });
   }
 
@@ -176,11 +163,6 @@ export namespace Help {
     export const FAQ: Command = {
       id: 'arduino-faq',
       label: nls.localize('arduino/help/faq', 'Frequently Asked Questions'),
-      category: 'Arduino',
-    };
-    export const VISIT_ARDUINO: Command = {
-      id: 'arduino-visit-arduino',
-      label: nls.localize('arduino/help/visit', 'Visit Arduino.cc'),
       category: 'Arduino',
     };
     export const PRIVACY_POLICY: Command = {

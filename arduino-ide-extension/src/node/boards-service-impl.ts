@@ -49,6 +49,7 @@ import {
 import { CoreClientAware } from './core-client-provider';
 import { ExecuteWithProgress } from './grpc-progressible';
 import { ServiceError } from './service-error';
+import safeLogger from './safe-logger';
 
 @injectable()
 export class BoardsServiceImpl
@@ -199,7 +200,7 @@ export class BoardsServiceImpl
       );
       return debugFqbn;
     } catch (err) {
-      console.error(`Failed to get debug config: ${fqbn}, ${programmer}`, err);
+      safeLogger.error(`Failed to get debug config: ${fqbn}, ${programmer}`, err);
       throw err;
     }
   }

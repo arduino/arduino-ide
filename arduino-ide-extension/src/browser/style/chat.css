@@ -9,10 +9,10 @@
     min-width: 350px !important;
 }
 
-/* When the chat widget is in the left sidebar, ensure it has proper width */
+/* When the chat widget is in the left sidebar, allow resizing */
 .p-DockPanel.p-mod-left .p-DockPanel-widget:has(.chat-widget-container) {
     min-width: 350px !important;
-    width: 350px;
+    /* Don't set fixed width - allow user to resize */
 }
 
 .chat-widget-container {
@@ -20,6 +20,7 @@
     display: flex;
     flex-direction: column;
     min-width: 350px;
+    /* Allow resizing - no max-width constraint */
 }
 
 .chat-widget {
@@ -51,16 +52,72 @@
     align-items: center;
 }
 
-.chat-settings-button,
 .chat-clear-button {
     padding: 4px 12px;
     font-size: 12px;
     min-width: auto;
 }
 
-.chat-settings-button {
+.chat-settings-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    padding: 0;
+    transition: opacity 0.2s;
+    border: none;
+}
+
+.chat-settings-icon:hover {
+    opacity: 0.8;
+}
+
+.chat-settings-icon:active {
+    opacity: 0.6;
+}
+
+.chat-settings-symbol {
+    color: black;
     font-size: 16px;
-    padding: 4px 8px;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 1;
+    font-family: Arial, sans-serif;
+}
+
+.chat-info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: white;
+    padding: 0;
+    transition: opacity 0.2s;
+    border: none;
+}
+
+.chat-info-icon:hover {
+    opacity: 0.8;
+}
+
+.chat-info-icon:active {
+    opacity: 0.6;
+}
+
+.chat-info-letter {
+    color: black;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: normal;
+    line-height: 1;
+    font-family: Arial, sans-serif;
 }
 
 .chat-messages {
@@ -366,7 +423,7 @@
     background: var(--theia-scrollbarSlider-activeBackground);
 }
 
-/* Settings Dialog */
+/* Settings Dialog - Overlay with card styling */
 .chat-settings-dialog {
     position: absolute;
     top: 0;
@@ -380,21 +437,36 @@
     z-index: 1000;
 }
 
-.chat-settings-content {
+/* Settings Card - shadcn UI style (same as help card) */
+.chat-settings-card {
     background-color: var(--theia-panel-background);
     border: 1px solid var(--theia-panel-border);
     border-radius: 8px;
-    padding: 20px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
     min-width: 400px;
     max-width: 500px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
-.chat-settings-content h4 {
-    margin: 0 0 20px 0;
-    font-size: 16px;
-    font-weight: 500;
+.chat-settings-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.chat-settings-card-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--theia-panel-border);
+    background-color: var(--theia-editorWidget-background);
+    font-size: 14px;
+    font-weight: 600;
     color: var(--theia-foreground);
+}
+
+.chat-settings-card-content {
+    padding: 16px;
 }
 
 .chat-settings-field {
@@ -483,11 +555,13 @@
     border-color: var(--theia-focusBorder);
 }
 
-.chat-settings-actions {
+.chat-settings-card-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--theia-panel-border);
 }
 
 /* API Key Warning */
@@ -520,5 +594,70 @@
     font-size: 12px;
     min-width: auto;
     align-self: flex-start;
+}
+
+/* Help Card - shadcn UI style */
+.chat-help-card {
+    margin: 12px 15px;
+    background-color: var(--theia-panel-background);
+    border: 1px solid var(--theia-panel-border);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.chat-help-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.chat-help-card-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--theia-panel-border);
+    background-color: var(--theia-editorWidget-background);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--theia-foreground);
+}
+
+.chat-help-card-content {
+    padding: 16px;
+}
+
+.chat-help-card-section {
+    margin-bottom: 16px;
+}
+
+.chat-help-card-section:last-of-type {
+    margin-bottom: 0;
+}
+
+.chat-help-card-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--theia-foreground);
+    margin-bottom: 8px;
+}
+
+.chat-help-card-code {
+    margin: 0;
+    padding: 12px;
+    background-color: var(--theia-textBlockQuote-background);
+    border: 1px solid var(--theia-panel-border);
+    border-radius: 6px;
+    font-family: var(--theia-code-font-family);
+    font-size: 12px;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: var(--theia-foreground);
+}
+
+.chat-help-card-note {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--theia-panel-border);
+    font-size: 12px;
+    color: var(--theia-descriptionForeground);
+    line-height: 1.5;
 }
 

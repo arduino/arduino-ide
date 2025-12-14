@@ -10,7 +10,24 @@ const path = require('node:path');
  */
 function resolvePackagePath(target, baseDir = __dirname) {
   const resolvePackageJsonPath = require('resolve-package-path');
-  const packageJsonPath = resolvePackageJsonPath(target, baseDir);
+  
+  // Try to resolve the package with the given name
+  let packageJsonPath = resolvePackageJsonPath(target, baseDir);
+  
+  // If not found and target is 'arduino-ide-extension', try 'cognifyev-arduino-ide-extension'
+  if (!packageJsonPath && target === 'arduino-ide-extension') {
+    packageJsonPath = resolvePackageJsonPath('cognifyev-arduino-ide-extension', baseDir);
+  }
+  
+  // If still not found, try resolving as a workspace package (relative to baseDir)
+  if (!packageJsonPath && target === 'arduino-ide-extension') {
+    const workspacePath = path.resolve(baseDir, '..', 'arduino-ide-extension', 'package.json');
+    const fs = require('fs');
+    if (fs.existsSync(workspacePath)) {
+      packageJsonPath = workspacePath;
+    }
+  }
+  
   if (!packageJsonPath) {
     throw new Error(
       `Could not resolve package '${target}'. Base dir: ${baseDir}`

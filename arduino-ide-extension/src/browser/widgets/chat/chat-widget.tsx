@@ -28,8 +28,9 @@ import {
   extractExplicitCodeBlocks,
 } from './chat-context';
 import { BoardsServiceProvider } from '../../boards/boards-service-provider';
-import { parseEditsFromMultipleBlocks, EditOperation } from './chat-edits';
 import { compactChatHistory, getHistoryStats } from './chat-history';
+import { AgentRegistry } from './agent-registry';
+import { UserRequest } from './agent-types';
 import URI from '@theia/core/lib/common/uri';
 
 const ReactMarkdown = React.lazy<React.ComponentType<Options>>(
@@ -68,6 +69,8 @@ export class ChatWidget extends ReactWidget {
   private serialMonitorBuffer: string[] = [];
   private static readonly SERIAL_BUFFER_MAX_CHARS = 8000;
   private showEditHelp: boolean = false;
+  private hasBeenManuallyResized: boolean = false;
+  private initialWidthSet: boolean = false;
 
   @inject(EditorManager)
   private readonly editorManager: EditorManager;
@@ -96,6 +99,9 @@ export class ChatWidget extends ReactWidget {
   @inject(BoardsServiceProvider)
   private readonly boardsServiceProvider: BoardsServiceProvider;
 
+  @inject(AgentRegistry)
+  private readonly agentRegistry: AgentRegistry;
+
   constructor() {
     super();
     this.id = ChatWidget.ID;
@@ -103,8 +109,8 @@ export class ChatWidget extends ReactWidget {
     this.title.iconClass = 'chat-tab-icon';
     this.title.closable = false; // Make chat panel always visible
     this.addClass('chat-widget-container');
-    // Set minimum width for better UX
-    this.node.style.minWidth = '350px';
+    // Don't set fixed width here - let it be resizable
+    // Only set initial width when first opened/activated
   }
 
   @postConstruct()
@@ -141,13 +147,32 @@ export class ChatWidget extends ReactWidget {
     }
   }
 
+  protected override onAfterAttach(msg: Message): void {
+    super.onAfterAttach(msg);
+    // Don't set fixed width here - allow resizing
+  }
+
   protected override onActivateRequest(msg: Message): void {
     super.onActivateRequest(msg);
     this.node.focus();
+    // Set initial width only when first activated (user clicks on AI Chat or chat icon)
+    if (!this.initialWidthSet && !this.hasBeenManuallyResized) {
+      this.node.style.width = '420px';
+      this.node.style.minWidth = '350px'; // Allow minimum resizing
+      this.node.style.maxWidth = 'none'; // Allow maximum resizing
+      this.initialWidthSet = true;
+    }
   }
 
   protected override onAfterShow(msg: Message): void {
     super.onAfterShow(msg);
+    // Set initial width only when first shown (user clicks on AI Chat or chat icon)
+    if (!this.initialWidthSet && !this.hasBeenManuallyResized) {
+      this.node.style.width = '420px';
+      this.node.style.minWidth = '350px'; // Allow minimum resizing
+      this.node.style.maxWidth = 'none'; // Allow maximum resizing
+      this.initialWidthSet = true;
+    }
     this.scrollToBottom();
   }
 
@@ -218,6 +243,8 @@ export class ChatWidget extends ReactWidget {
       const codeBlocks = extractExplicitCodeBlocks(response);
 
       // Add assistant response
+      // Always include codeBlocks array if any were found, even if empty after filtering
+      // This ensures buttons appear when corrections are suggested
       this.addMessage({
         id: `assistant-${Date.now()}`,
         role: 'assistant',
@@ -282,37 +309,69 @@ When providing code:
 - Provide complete, compilable code when asked to complete or generate code
 - Keep comments inside the code minimal and essential only (e.g., non-obvious rationale or invariants). Do not add line-by-line or verbose explanatory comments.
 - Prefer putting explanations outside the code block in plain text, not as comments inside the code.
-- Do not include file headers, author banners, or boilerplate comment blocks.`;
+- Do not include file headers, author banners, or boilerplate comment blocks.
+
+IMPORTANT: When explaining errors or showing compiler output:
+- DO NOT put error messages or compiler output in code blocks (triple-backtick cpp blocks)
+- Instead, describe errors in plain text or use plain text formatting
+- Only use code blocks (triple-backtick cpp) for ACTUAL CODE that should be inserted/applied
+- If you need to show an error for context, describe it in text like: "The error shows 'undefined reference to functionX' at line 15"
+- Code blocks should only contain fixable, actionable code - not error messages or diagnostic output`;
     // Encourage structured edit output for agent-style fixes
     const editGuidance = `
-When you intend the assistant to APPLY A FIX automatically, choose the simplest appropriate format:
+CRITICAL RULES FOR CODE CORRECTIONS:
 
-FOR SIMPLE FIXES (missing values, single line changes, small corrections):
-- Use a SINGLE code block with REPLACE-IN format containing ONLY the minimal change needed
-- Example for missing variable values:
+1. NEVER PROVIDE FULL FILES - Only show the SPECIFIC LINES that need to change
+2. NEVER DUPLICATE CODE - Each code block should be unique and minimal
+3. USE REPLACE-IN format for ALL corrections - it shows only what changes
+
+When providing corrections, you MUST use this format:
+
+\`\`\`cpp
+REPLACE-IN: filename.ino
+FIND:
+<exact existing code that needs to change - keep this MINIMAL, 1-5 lines max>
+REPLACE-WITH:
+<only the corrected version of those lines>
+\`\`\`
+
+EXAMPLE - Fixing missing values:
 \`\`\`cpp
 REPLACE-IN: sketchTest5.ino
 FIND:
-const int MEDIUM_THRESHOLD = ;  // Distance for 2 LEDs ON
-const int CLOSE_THRESHOLD = ;   // Distance for 3 LEDs ON
+const int MEDIUM_THRESHOLD = ;
+const int CLOSE_THRESHOLD = ;
 REPLACE-WITH:
-const int MEDIUM_THRESHOLD = 50;  // Distance for 2 LEDs ON
-const int CLOSE_THRESHOLD = 20;   // Distance for 3 LEDs ON
+const int MEDIUM_THRESHOLD = 50;
+const int CLOSE_THRESHOLD = 20;
 \`\`\`
-- Keep the FIND section as small as possible - only include the exact lines that need changing
-- Do NOT include large code blocks in FIND/REPLACE-WITH unless absolutely necessary
 
-FOR COMPLEX FIXES (multiple sections, refactoring, large changes):
-- Use REPLACE-IN format with the specific sections that need changing
-- Use FILE: format only when replacing an entire file
+EXAMPLE - Removing duplicate code:
+\`\`\`cpp
+REPLACE-IN: hello.ino
+FIND:
+#include <Servo.h>
+// ... (duplicate code block) ...
+#include <Servo.h>
+REPLACE-WITH:
+#include <Servo.h>
+\`\`\`
 
-IMPORTANT RULES:
-- Use ONLY ONE directive per code block (either FILE: OR REPLACE-IN:, never both)
-- For simple fixes, use a SINGLE code block - do not split into multiple blocks
-- Keep FIND sections minimal - only the exact text that needs to be found and replaced
-- Do not include directive lines (FILE:, REPLACE-IN:, FIND:, REPLACE-WITH:) in the actual code content
-- Do not mix unrelated files in the same fence; use multiple fences for multiple files
-- When the fix is just missing values or simple corrections, make it ONE concise code block
+ABSOLUTE PROHIBITIONS:
+- DO NOT provide entire file contents in code blocks
+- DO NOT repeat the same code block multiple times
+- DO NOT include code that doesn't need to change
+- DO NOT use FILE: format unless explicitly replacing an entire file (almost never)
+- DO NOT put function definitions AND their usage in the same correction block
+- DO NOT include multiple #include statements for the same library
+
+WHEN CLEANING CODE:
+- Identify the EXACT duplicate or problematic section
+- Show ONLY that section in FIND
+- Show ONLY the cleaned version in REPLACE-WITH
+- If there are multiple issues, use SEPARATE code blocks for each fix
+
+REMEMBER: The user can see their current code. You only need to show what CHANGES, not what stays the same.
 `;
 
     // Build messages array for Gemini
@@ -482,86 +541,18 @@ IMPORTANT RULES:
 
   // extraction moved to chat-context.ts (extractExplicitCodeBlocks)
 
-  private handleInsertCode = async (code: string, messageId: string): Promise<void> => {
-    try {
-      const activeEditor = this.editorManager.currentEditor;
-      if (!activeEditor) {
-        this.addMessage({
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: 'Error: No active editor to insert code into.',
-        });
-        return;
-      }
+  private handleViewCodeBlock = (messageId: string, codeIndex: number): void => {
+    // Find the message element
+    const messageElement = this.node.querySelector(`[data-message-id="${messageId}"]`);
+    if (!messageElement) {
+      return;
+    }
 
-      const editor = activeEditor.editor;
-      if (!(editor instanceof MonacoEditor)) {
-        this.addMessage({
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: 'Error: Code insertion is only supported in Monaco editors.',
-        });
-        return;
-      }
-
-      const monacoEditor = editor.getControl();
-      const textModel = monacoEditor.getModel();
-      if (!textModel) {
-        this.addMessage({
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: 'Error: Could not access editor model.',
-        });
-        return;
-      }
-
-      // Get current cursor position or selection
-      const selections = monacoEditor.getSelections() || [];
-      const selection = selections[0] || new monaco.Selection(1, 1, 1, 1);
-      const position = selection.getEndPosition();
-      
-      // Insert code at cursor position
-      const eol = textModel.getEOL();
-      const textToInsert = code + eol;
-      
-      textModel.pushStackElement(); // Start a fresh operation
-      textModel.pushEditOperations(
-        selections,
-        [
-          {
-            range: new monaco.Range(
-              position.lineNumber,
-              position.column,
-              position.lineNumber,
-              position.column
-            ),
-            text: textToInsert,
-            forceMoveMarkers: true,
-          },
-        ],
-        () => selections
-      );
-      textModel.pushStackElement(); // Make it undoable
-      
-      // Move cursor after inserted code
-      const lines = code.split('\n');
-      const newLine = position.lineNumber + lines.length;
-      const newColumn = lines.length > 0 ? lines[lines.length - 1].length + 1 : position.column;
-      monacoEditor.setPosition({ lineNumber: newLine, column: newColumn });
-      monacoEditor.revealLineInCenter(newLine);
-
-      // Show success message
-      this.addMessage({
-        id: `success-${Date.now()}`,
-        role: 'assistant',
-        content: '✅ Code inserted successfully!',
-      });
-    } catch (error) {
-      this.addMessage({
-        id: `error-${Date.now()}`,
-        role: 'assistant',
-        content: `Error inserting code: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      });
+    // Find all code blocks in this message
+    const codeBlocks = messageElement.querySelectorAll('.chat-code-block-wrapper');
+    if (codeBlocks.length > codeIndex) {
+      const targetBlock = codeBlocks[codeIndex];
+      targetBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -577,151 +568,262 @@ IMPORTANT RULES:
         return;
       }
 
+      // Build agent context
+      const currentUriStr = activeEditor.editor.uri.toString();
+      const sketch = await this.sketchesService.maybeLoadSketch(currentUriStr);
+      
       const editor = activeEditor.editor;
-      if (!(editor instanceof MonacoEditor)) {
-        this.addMessage({
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: 'Error: Fix application is only supported in Monaco editors.',
-        });
-        return;
-      }
-
-      const monacoEditor = editor.getControl();
-      const textModel = monacoEditor.getModel();
-      if (!textModel) {
-        this.addMessage({
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: 'Error: Could not access editor model.',
-        });
-        return;
-      }
-
-      // Try to interpret the code as structured edits (agent mode)
-      const candidateBlocks = [code];
-      const edits: EditOperation[] = parseEditsFromMultipleBlocks(candidateBlocks);
-
-      if (edits.length > 0) {
-        // Determine base directory (sketch root)
-        let baseDirUri: URI | undefined;
-        try {
-          const currentUriStr = activeEditor.editor.uri.toString();
-          const sketch = await this.sketchesService.maybeLoadSketch(currentUriStr);
-          if (sketch) {
-            baseDirUri = new URI(sketch.uri);
-          } else {
-            baseDirUri = activeEditor.editor.uri.parent || undefined;
+      let cursorPosition: { line: number; column: number } | undefined;
+      let selection: { start: { line: number; column: number }; end: { line: number; column: number } } | undefined;
+      
+      if (editor instanceof MonacoEditor) {
+        const monacoEditor = editor.getControl();
+        const selections = monacoEditor.getSelections() || [];
+        const sel = selections[0];
+        if (sel) {
+          const startPos = sel.getStartPosition();
+          const endPos = sel.getEndPosition();
+          cursorPosition = { line: startPos.lineNumber, column: startPos.column };
+          if (!sel.isEmpty()) {
+            selection = {
+              start: { line: startPos.lineNumber, column: startPos.column },
+              end: { line: endPos.lineNumber, column: endPos.column },
+            };
           }
-        } catch {
-          baseDirUri = activeEditor.editor.uri.parent || undefined;
+        }
+      }
+
+      const sketchFiles = sketch
+        ? [
+            sketch.mainFileUri,
+            ...sketch.otherSketchFileUris,
+            ...sketch.additionalFileUris,
+          ]
+        : undefined;
+
+      const context = {
+        sketchUri: sketch?.uri,
+        activeFileUri: currentUriStr,
+        cursorPosition,
+        selection,
+        sketchFiles,
+      };
+
+      // Create user request for agent
+      const userRequest: UserRequest = {
+        text: code,
+        intent: 'apply-fix',
+        context,
+      };
+
+      // Execute using agent registry
+      const result = await this.agentRegistry.executeRequest(userRequest, context);
+
+      if (result.success) {
+        // Agents write files directly via FileService.write()
+        // Theia detects this as an external file change and shows a reload dialog
+        // To prevent the dialog, we sync ALL editor models immediately after the write
+        // by reading files and updating models before Theia's file watcher triggers
+        
+        // Get list of files that were modified from the result
+        const modifiedFiles: string[] = [];
+        if (result.data?.filePath) {
+          modifiedFiles.push(result.data.filePath);
+        } else if (result.data?.filesEdited && result.data?.results) {
+          // Multi-file edit - get all successfully edited files
+          modifiedFiles.push(...result.data.results
+            .filter((r: any) => r.success)
+            .map((r: any) => {
+              // Try to find the full URI from the file name
+              if (context.sketchUri && r.file) {
+                try {
+                  const baseUri = new URI(context.sketchUri);
+                  return baseUri.resolve(r.file).toString();
+                } catch {
+                  return r.file;
+                }
+              }
+              return r.file;
+            }));
+        }
+        
+        // Sync all modified editors to prevent "file changed externally" dialogs
+        // We need to update the editor models IMMEDIATELY after the write to prevent
+        // Theia's file watcher from showing the dialog
+        if (modifiedFiles.length > 0) {
+          try {
+            // Sync all files in parallel for speed - this must complete before Theia's watcher processes
+            await Promise.all(
+              modifiedFiles.map(async (fileUri) => {
+                try {
+                  const uri = fileUri.startsWith('file:') ? new URI(fileUri) : new URI(context.sketchUri || '').resolve(fileUri);
+                  const editor = this.editorManager.all.find(e => e.editor.uri.toString() === uri.toString());
+                  
+                  if (editor && editor.editor instanceof MonacoEditor) {
+                    const monacoEditor = editor.editor.getControl();
+                    const model = monacoEditor.getModel();
+                    
+                    if (model) {
+                      // Read the file that was just written
+                      const fileContent = await this.fileService.read(uri);
+                      const newContent = fileContent.value;
+                      const currentContent = model.getValue();
+                      
+                      // Update model if different to sync with disk
+                      if (newContent !== currentContent) {
+                        // Store cursor/selection before update
+                        const selection = monacoEditor.getSelection();
+                        const cursorPosition = selection ? selection.getStartPosition() : undefined;
+                        const selections = monacoEditor.getSelections() || [];
+                        
+                        // Use pushEditOperations to properly update the model
+                        // This prevents Theia from showing the "file changed externally" dialog
+                        model.pushStackElement();
+                        model.pushEditOperations(
+                          selections,
+                          [
+                            {
+                              range: new monaco.Range(
+                                1,
+                                1,
+                                model.getLineCount(),
+                                model.getLineMaxColumn(model.getLineCount())
+                              ),
+                              text: newContent,
+                              forceMoveMarkers: true,
+                            },
+                          ],
+                          () => selections
+                        );
+                        model.pushStackElement();
+                        
+                        // Restore cursor position
+                        if (cursorPosition) {
+                          monacoEditor.setPosition(cursorPosition);
+                        }
+                      }
+                    }
+                  }
+                } catch (fileSyncError) {
+                  // Continue with other files if one fails
+                  console.warn(`Failed to sync editor for ${fileUri}:`, fileSyncError);
+                }
+              })
+            );
+          } catch (syncError) {
+            console.warn('Failed to sync editors after agent write:', syncError);
+          }
         }
 
-        for (const edit of edits) {
-          const baseForRel =
-            baseDirUri?.toString() ||
-            (activeEditor.editor.uri.parent
-              ? activeEditor.editor.uri.parent!.toString()
-              : '');
-          const targetUri =
-            edit.filePath.startsWith('file:') || edit.filePath.startsWith('/')
-              ? new URI(edit.filePath)
-              : new URI(baseForRel.replace(/\/$/, '') + '/' + edit.filePath);
+        // Note: We don't call save() here because agents already write files directly
+        // The editor models are synced above to prevent dialogs
 
-          if (edit.kind === 'overwrite') {
-            await this.fileService.write(targetUri, edit.content);
-          } else if (edit.kind === 'replace') {
-            // Read, replace first occurrence, write back
-            const original = await this.fileService.read(targetUri);
-            const originalText = original.value;
-            const idx = originalText.indexOf(edit.find);
-            if (idx === -1) {
-              // If not found, append a note to chat but continue
+        this.addMessage({
+          id: `success-${Date.now()}`,
+          role: 'assistant',
+          content: result.message || '⚡ Fix applied and file(s) saved.',
+        });
+
+        // Automatically check for missing libraries if code contains #include
+        if (code.includes('#include')) {
+          try {
+            const libraryRequest: UserRequest = {
+              text: 'check libraries',
+              intent: 'check-and-install',
+              context,
+            };
+            const libraryResult = await this.agentRegistry.executeRequest(libraryRequest, context);
+            
+            if (libraryResult.success && libraryResult.data?.librariesInstalled > 0) {
               this.addMessage({
-                id: `warn-${Date.now()}`,
+                id: `library-${Date.now()}`,
                 role: 'assistant',
-                content: `⚠️ Could not find target text in ${targetUri.path.base}; skipped replace.`,
+                content: libraryResult.message || '✅ Libraries checked and installed',
               });
-            } else {
-              const updated =
-                originalText.slice(0, idx) +
-                edit.replaceWith +
-                originalText.slice(idx + edit.find.length);
-              await this.fileService.write(targetUri, updated);
+            } else if (libraryResult.success && libraryResult.data?.librariesChecked > 0) {
+              // Libraries are already installed, no need to show message
             }
+          } catch (e) {
+            // Library check failed, but don't fail the whole operation
+            console.warn('Library check failed:', e);
+          }
+        }
+
+        // Trigger Verify automatically (compile only)
+        let compilationSuccessful = false;
+        try {
+          this.addMessage({
+            id: `info-${Date.now()}`,
+            role: 'assistant',
+            content: '🛠️ Verifying the sketch...',
+          });
+          await this.commandService.executeCommand('arduino-verify-sketch');
+          compilationSuccessful = true;
+        } catch (e) {
+          // The verify command itself will surface errors in the Output; we only annotate the chat.
+          this.addMessage({
+            id: `error-${Date.now()}`,
+            role: 'assistant',
+            content: `Verification failed to start: ${e instanceof Error ? e.message : String(e)}`,
+          });
+        }
+
+        // Run Code Analysis after fix to verify quality and check for issues
+        // NOTE: This is NOT redundant with compilation. Here's why:
+        // - Compilation checks: syntax errors, linker errors, missing includes
+        // - Code Analysis checks: code quality, smells, patterns, optimizations, best practices
+        // So code analysis adds value by catching quality issues that compilation doesn't catch
+        if (compilationSuccessful) {
+          try {
+            const analysisRequest: UserRequest = {
+              text: 'analyze code quality after fix',
+              intent: 'code-analysis',
+              context,
+            };
+            
+            const analysisResult = await this.agentRegistry.executeRequest(analysisRequest, context);
+            
+            if (analysisResult.success && analysisResult.data) {
+              const summary = analysisResult.data.summary;
+              if (summary && (summary.errorCount > 0 || summary.warningCount > 0)) {
+                // Only show message if there are issues to report
+                const message = summary.errorCount > 0
+                  ? `⚠️ Code analysis found ${summary.errorCount} error(s) and ${summary.warningCount} warning(s) after the fix.`
+                  : `ℹ️ Code analysis found ${summary.warningCount} warning(s) after the fix.`;
+                
+                this.addMessage({
+                  id: `analysis-${Date.now()}`,
+                  role: 'assistant',
+                  content: `${message} Review the suggestions below.`,
+                });
+
+                // Add suggestions if available
+                if (analysisResult.suggestions && analysisResult.suggestions.length > 0) {
+                  const suggestions = analysisResult.suggestions.slice(0, 3).join('\n- ');
+                  this.addMessage({
+                    id: `suggestions-${Date.now()}`,
+                    role: 'assistant',
+                    content: `💡 Suggestions:\n- ${suggestions}`,
+                  });
+                }
+              }
+              // If no issues found, silently pass (don't spam with "all good" messages)
+            }
+          } catch (e) {
+            // Code analysis failed, but don't fail the whole operation
+            console.warn('Code analysis after fix failed:', e);
+            // Optionally, you could add a non-intrusive message here
           }
         }
       } else {
-        // Fallback: Replace current selection or insert at cursor in active file
-        const selections = monacoEditor.getSelections() || [];
-        const selection = selections[0] || new monaco.Selection(1, 1, 1, 1);
-        const isSelectionEmpty =
-          selection.startLineNumber === selection.endLineNumber &&
-          selection.startColumn === selection.endColumn;
-
-        const eol = textModel.getEOL();
-        const textToInsert = code + eol;
-
-        textModel.pushStackElement();
-        textModel.pushEditOperations(
-          selections,
-          [
-            {
-              range: isSelectionEmpty
-                ? new monaco.Range(
-                    selection.endLineNumber,
-                    selection.endColumn,
-                    selection.endLineNumber,
-                    selection.endColumn
-                  )
-                : new monaco.Range(
-                    selection.startLineNumber,
-                    selection.startColumn,
-                    selection.endLineNumber,
-                    selection.endColumn
-                  ),
-              text: textToInsert,
-              forceMoveMarkers: true,
-            },
-          ],
-          () => selections
-        );
-        textModel.pushStackElement();
-
-        // Move cursor after applied fix
-        const lines = code.split('\n');
-        const newLine = isSelectionEmpty
-          ? selection.endLineNumber + lines.length
-          : selection.startLineNumber + lines.length;
-        const newColumn =
-          lines.length > 0 ? lines[lines.length - 1].length + 1 : selection.endColumn;
-        monacoEditor.setPosition({ lineNumber: newLine, column: newColumn });
-        monacoEditor.revealLineInCenter(newLine);
-      }
-
-      // Save file
-      await activeEditor.editor.document.save();
-
-      this.addMessage({
-        id: `success-${Date.now()}`,
-        role: 'assistant',
-        content: '⚡ Fix applied and file(s) saved.',
-      });
-
-      // Trigger Verify automatically (compile only)
-      try {
-        this.addMessage({
-          id: `info-${Date.now()}`,
-          role: 'assistant',
-          content: '🛠️ Verifying the sketch...',
-        });
-        await this.commandService.executeCommand('arduino-verify-sketch');
-      } catch (e) {
-        // The verify command itself will surface errors in the Output; we only annotate the chat.
+        // Show errors from agent
+        const errorMessage = result.errors && result.errors.length > 0
+          ? result.errors.join('\n')
+          : 'Failed to apply fix';
         this.addMessage({
           id: `error-${Date.now()}`,
           role: 'assistant',
-          content: `Verification failed to start: ${e instanceof Error ? e.message : String(e)}`,
+          content: `Error: ${errorMessage}`,
         });
       }
     } catch (error) {
@@ -741,23 +843,23 @@ IMPORTANT RULES:
         <div className="chat-header">
           <h3>{ChatWidget.LABEL}</h3>
           <div className="chat-header-actions">
-            <button
-              className="theia-button secondary chat-help-button"
+            <div
+              className="chat-info-icon"
               onClick={() => {
                 this.showEditHelp = !this.showEditHelp;
                 this.update();
               }}
               title={this.showEditHelp ? 'Hide edit formats' : 'Show edit formats'}
             >
-              ❓
-            </button>
-            <button
-              className="theia-button secondary chat-settings-button"
+              <span className="chat-info-letter">i</span>
+            </div>
+            <div
+              className="chat-settings-icon"
               onClick={this.handleOpenSettings}
               title="Settings"
             >
-              ⚙️
-            </button>
+              <span className="chat-settings-symbol">⚙</span>
+            </div>
             <button
               className="theia-button secondary chat-clear-button"
               onClick={this.handleClear}
@@ -768,32 +870,37 @@ IMPORTANT RULES:
           </div>
         </div>
         {this.showEditHelp && (
-          <div className="chat-help callout">
-            <div>
-              <strong>Agent edit formats</strong> (used by “Apply Fix”):
+          <div className="chat-help-card">
+            <div className="chat-help-card-header">
+              <strong>Agent edit formats</strong> (used by "Update Code")
             </div>
-            <div style={{ marginTop: 6 }}>
-              <div>1) Overwrite a file:</div>
-              <pre>{`FILE: path/from/sketch-root.ino
+            <div className="chat-help-card-content">
+              <div className="chat-help-card-section">
+                <div className="chat-help-card-label">1) Overwrite a file:</div>
+                <pre className="chat-help-card-code">{`FILE: path/from/sketch-root.ino
 <new full file content>`}</pre>
-            </div>
-            <div style={{ marginTop: 6 }}>
-              <div>2) Replace within a file:</div>
-              <pre>{`REPLACE-IN: path/from/sketch-root.ino
+              </div>
+              <div className="chat-help-card-section">
+                <div className="chat-help-card-label">2) Replace within a file:</div>
+                <pre className="chat-help-card-code">{`REPLACE-IN: path/from/sketch-root.ino
 FIND:
 <exact text to find>
 REPLACE-WITH:
 <replacement text>`}</pre>
-            </div>
-            <div style={{ marginTop: 6 }}>
-              Return multiple fences to edit multiple files. Prefer REPLACE-IN for small changes.
+              </div>
+              <div className="chat-help-card-note">
+                Return multiple fences to edit multiple files. Prefer REPLACE-IN for small changes.
+              </div>
             </div>
           </div>
         )}
         {this.showApiKeyDialog && (
           <div className="chat-settings-dialog">
-            <div className="chat-settings-content">
-              <h4>Gemini API Settings</h4>
+            <div className="chat-settings-card">
+              <div className="chat-settings-card-header">
+                <strong>Gemini API Settings</strong>
+              </div>
+              <div className="chat-settings-card-content">
               <div className="chat-settings-field">
                 <label htmlFor="gemini-api-key">API Key:</label>
                 <div className="chat-api-key-input-wrapper">
@@ -845,7 +952,7 @@ REPLACE-WITH:
                   </optgroup>
                 </select>
               </div>
-              <div className="chat-settings-actions">
+              <div className="chat-settings-card-actions">
                 <button
                   className="theia-button primary"
                   onClick={this.handleSaveApiKey}
@@ -861,6 +968,7 @@ REPLACE-WITH:
               </div>
             </div>
           </div>
+          </div>
         )}
         {!apiKey && !this.showApiKeyDialog && (
           <div className="chat-api-key-warning">
@@ -871,6 +979,7 @@ REPLACE-WITH:
           {this.messages.map((message) => (
             <div
               key={message.id}
+              data-message-id={message.id}
               className={`chat-message chat-message-${message.role}`}
             >
               <div className="chat-message-header">
@@ -917,6 +1026,26 @@ REPLACE-WITH:
                         }
                         return <pre>{children}</pre>;
                       },
+                      p: ({ children, ...props }) => {
+                        // Filter out standalone FILE: or REPLACE-IN: lines that appear before code blocks
+                        // These are often duplicates of what's inside the code block
+                        const childArray = React.Children.toArray(children);
+                        const filtered = childArray.filter((child) => {
+                          if (typeof child === 'string') {
+                            const trimmed = child.trim();
+                            // Don't render standalone FILE: or REPLACE-IN: lines
+                            if (/^(FILE:|REPLACE-IN:)\s*[^\s]+\s*$/.test(trimmed)) {
+                              return false;
+                            }
+                          }
+                          return true;
+                        });
+                        
+                        if (filtered.length === 0) {
+                          return null;
+                        }
+                        return <p {...props}>{filtered}</p>;
+                      },
                     }}
                   >
                     {message.content}
@@ -928,10 +1057,10 @@ REPLACE-WITH:
                       <button
                         key={codeIndex}
                         className="theia-button secondary chat-insert-code-button"
-                        onClick={() => this.handleInsertCode(code, message.id)}
-                        title="Insert this code into the active editor"
+                        onClick={() => this.handleViewCodeBlock(message.id, codeIndex)}
+                        title="Scroll to this code block in the chat"
                       >
-                        📋 Insert Code Block {codeIndex + 1}
+                        View Code Block {codeIndex + 1}
                       </button>
                     ))}
                     {message.codeBlocks.length === 1 && (
@@ -940,7 +1069,7 @@ REPLACE-WITH:
                         onClick={() => this.handleApplyFix(message.codeBlocks![0])}
                         title="Apply this fix directly (replaces selection or inserts at cursor)"
                       >
-                        ⚡ Apply Fix
+                        Update Code
                       </button>
                     )}
                     {message.codeBlocks.length > 1 && (
@@ -949,7 +1078,7 @@ REPLACE-WITH:
                         onClick={() => this.handleApplyFix(message.codeBlocks!.join('\n\n'))}
                         title="Apply all fixes directly (concatenated)"
                       >
-                        ⚡ Apply All Fixes
+                        Update All Code
                       </button>
                     )}
                   </div>

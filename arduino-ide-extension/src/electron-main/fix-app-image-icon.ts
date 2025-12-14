@@ -24,7 +24,7 @@ export class FixAppImageIcon implements ElectronMainApplicationContribution {
         '..',
         'resources',
         'icons',
-        '512x512.png'
+        'cognify-ide.png'
       );
     }
   }

@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import tempDir from 'temp-dir';
 import { isWindows, isOSX } from '@theia/core/lib/common/os';
 import { injectable } from '@theia/core/shared/inversify';
+import safeLogger from './safe-logger';
 import { firstToLowerCase } from '../common/utils';
 
 export const Win32DriveRegex = /^[a-zA-Z]:\\/;
@@ -30,7 +31,11 @@ export class IsTempSketch {
     const result =
       normalizedSketchPath.startsWith(this.tempDirRealpath) &&
       normalizedSketchPath.includes(TempSketchPrefix);
-    console.debug(`isTempSketch: ${result}. Input was ${normalizedSketchPath}`);
+    // Avoid writing to stdout/stderr directly in production code because
+    // Electron main process can have closed stdio causing write EPIPE errors.
+    // Wrap debug logging in a try/catch so it won't crash the main process.
+  // Use centralized safe logger to avoid throwing when stdio is closed
+  safeLogger.debug(`isTempSketch: ${result}. Input was ${normalizedSketchPath}`);
     return result;
   }
 }

@@ -51,3 +51,27 @@
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
+
+/* Scoped Radix select portal styling: avoid global selectors that break other portals */
+.arduino-radix-select-content {
+    background-color: var(--theia-sideBar-background) !important;
+    border-color: var(--theia-panel-border) !important;
+    color: var(--theia-foreground) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.12) !important;
+}
+
+.arduino-radix-select-content [data-radix-select-viewport] {
+    background-color: var(--theia-sideBar-background) !important;
+    color: var(--theia-foreground) !important;
+}
+
+.arduino-radix-select-content .\!p-1, /* account for Tailwind generated p-1 class on viewport */
+.arduino-radix-select-content .pl-8,
+.arduino-radix-select-content .pr-2,
+.arduino-radix-select-content .text-sm {
+    color: var(--theia-foreground) !important;
+}
+
+.arduino-radix-select-content .focus\:bg-\[var\(--theia-list-hoverBackground\)\] {
+    background-color: var(--theia-list-hoverBackground) !important;
+}

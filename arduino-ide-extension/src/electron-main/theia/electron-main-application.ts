@@ -610,19 +610,69 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
       );
       console.log(`Starting backend process. PID: ${backendProcess.pid}`);
       return new Promise((resolve, reject) => {
+        let resolved = false;
+        // Add timeout to prevent infinite waiting for backend deployment
+        // 60 seconds should be enough for normal startup, but prevents hanging indefinitely
+        const BACKEND_STARTUP_TIMEOUT = 60_000; // 60 seconds
+        const timeoutId = setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            const error = new Error(
+              `Backend deployment timeout after ${BACKEND_STARTUP_TIMEOUT / 1000} seconds. ` +
+              `The backend process may be hung or taking too long to start. ` +
+              `PID: ${backendProcess.pid}. ` +
+              `Try restarting the application or check for port conflicts/Arduino CLI issues.`
+            );
+            console.error(error.message);
+            // Try to kill the hung backend process
+            try {
+              if (backendProcess.pid) {
+                process.kill(backendProcess.pid, 'SIGTERM');
+                console.log(`Terminated hung backend process (PID: ${backendProcess.pid})`);
+              }
+            } catch (killError) {
+              console.error(`Failed to terminate hung backend process:`, killError);
+            }
+            reject(error);
+          }
+        }, BACKEND_STARTUP_TIMEOUT);
+
         // The forked backend process sends the resolved http(s) server port via IPC, and forwards the log messages.
         backendProcess.on('message', (arg: unknown) => {
           if (isConsoleLogParams(arg)) {
             const { message, severity } = arg;
             console[severity](message);
           } else if (isAddressInfo(arg)) {
-            resolve(arg.port);
+            if (!resolved) {
+              resolved = true;
+              clearTimeout(timeoutId);
+              resolve(arg.port);
+            }
           }
         });
         backendProcess.on('error', (error) => {
-          reject(error);
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(timeoutId);
+            reject(error);
+          }
+        });
+        // Handle backend process exit before port is sent
+        backendProcess.on('exit', (code, signal) => {
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(timeoutId);
+            reject(
+              new Error(
+                `Backend process exited unexpectedly before deployment. ` +
+                `Exit code: ${code}, Signal: ${signal}, PID: ${backendProcess.pid}. ` +
+                `Check the backend logs for error details.`
+              )
+            );
+          }
         });
         app.on('quit', () => {
+          clearTimeout(timeoutId);
           try {
             // If we forked the process for the clusters, we need to manually terminate it.
             // See: https://github.com/eclipse-theia/theia/issues/835

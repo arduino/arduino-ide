@@ -19,7 +19,7 @@
     "@theia/preferences": "1.57.0",
     "@theia/terminal": "1.57.0",
     "@theia/workspace": "1.57.0",
-    "arduino-ide-extension": "2.3.7"
+    "cognifyev-arduino-ide-extension": "2.3.7"
   },
   "devDependencies": {
     "@theia/cli": "1.57.0",
@@ -68,12 +68,13 @@
         "validatePreferencesSchema": false,
         "electron": {
           "showWindowEarly": true,
-          "uriScheme": "arduino-ide"
+          "uriScheme": "cognify-ide"
         },
         "reloadOnReconnect": true,
         "preferences": {
           "window.title": "${rootName}${activeEditorShort}${appName}",
           "files.autoSave": "afterDelay",
+          "editor.fontFamily": "'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace",
           "editor.minimap.enabled": false,
           "editor.tabSize": 2,
           "editor.scrollBeyondLastLine": false,
@@ -92,7 +93,7 @@
     },
     "backend": {
       "config": {
-        "configDirName": ".arduinoIDE",
+        "configDirName": ".cognifyIDE",
         "singleInstance": true
       }
     },
@@ -103,9 +104,9 @@
     }
   },
   "author": "CognifyEV",
-  "description": "Cognify AI-Powered Arduino IDE",
+  "description": "Cognify AI-Powered IDE",
   "build": {
-    "appId": "cc.arduino.IDE2",
+    "appId": "cc.cognifyev.ide",
     "productName": "Cognify IDE",
     "asar": false,
     "detectUpdateChannel": false,
@@ -124,7 +125,7 @@
       "arduino-ide-electron-main.js",
       "src-gen",
       "lib",
-      "resources/icons/512x512.png",
+      "resources/icons/**/*",
       "!**node_modules/**"
     ],
     "extraResources": [

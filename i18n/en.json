@@ -77,7 +77,7 @@
       "uploadingCertificates": "Uploading certificates."
     },
     "checkForUpdates": {
-      "checkForUpdates": "Check for Arduino Updates",
+      "checkForUpdates": "Check for Cognify IDE Updates",
       "installAll": "Install All",
       "noUpdates": "There are no recent updates available.",
       "promptUpdateBoards": "Updates are available for some of your boards.",
@@ -272,24 +272,24 @@
       "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
-      "checkForUpdates": "Check for Arduino IDE Updates",
+      "checkForUpdates": "Check for Cognify IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
       "donateLinkIconTitle": "open donation page",
       "donateLinkText": "donate to support us",
       "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
-      "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
-      "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
+      "downloadingNotice": "Downloading the latest version of Cognify IDE.",
+      "errorCheckingForUpdates": "Error while checking for Cognify IDE updates.\n{0}",
       "goToDownloadButton": "Go To Download",
-      "goToDownloadPage": "An update for the Arduino IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
+      "goToDownloadPage": "An update for Cognify IDE is available, but we're not able to download and install it automatically. Please go to the download page and download the latest version from there.",
       "ideUpdaterDialog": "Software Update",
-      "newVersionAvailable": "A new version of Arduino IDE ({0}) is available for download.",
-      "noUpdatesAvailable": "There are no recent updates available for the Arduino IDE",
+      "newVersionAvailable": "A new version of Cognify IDE ({0}) is available for download.",
+      "noUpdatesAvailable": "There are no recent updates available for Cognify IDE",
       "notNowButton": "Not now",
       "skipVersionButton": "Skip Version",
       "updateAvailable": "Update Available",
-      "versionDownloaded": "Arduino IDE {0} has been downloaded."
+      "versionDownloaded": "Cognify IDE {0} has been downloaded."
     },
     "installable": {
       "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
@@ -490,7 +490,7 @@
       "newSketch": "New Sketch"
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Cognify IDE has picked a built-in theme compatible with the missing one.",
       "dark": "Dark",
       "deprecated": "{0} (deprecated)",
       "hc": "Dark High Contrast",
@@ -527,8 +527,8 @@
       "donateButton": "Donate now",
       "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
       "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
+      "title": "Welcome to a new version of Cognify IDE!",
+      "titleWithVersion": "Welcome to the new Cognify IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

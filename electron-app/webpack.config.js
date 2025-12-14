@@ -11,6 +11,20 @@ const {
 const mainWindowConfig = frontend[0];
 mainWindowConfig.resolve.extensions.push('.ts');
 mainWindowConfig.resolve.fallback['util'] = require.resolve('util/');
+// Ensure webpack can resolve the workspace package
+if (!mainWindowConfig.resolve.alias) {
+  mainWindowConfig.resolve.alias = {};
+}
+mainWindowConfig.resolve.alias['arduino-ide-extension'] = path.resolve(__dirname, '..', 'arduino-ide-extension');
+// Ensure symlinks are followed
+mainWindowConfig.resolve.symlinks = true;
+// Add workspace root to module resolution
+if (!mainWindowConfig.resolve.modules) {
+  mainWindowConfig.resolve.modules = ['node_modules'];
+}
+if (!mainWindowConfig.resolve.modules.includes(path.resolve(__dirname, '..', 'node_modules'))) {
+  mainWindowConfig.resolve.modules.push(path.resolve(__dirname, '..', 'node_modules'));
+}
 mainWindowConfig.plugins?.push(
   new webpack.ProvidePlugin({
     // Make a global `process` variable that points to the `process` package,
@@ -21,6 +35,37 @@ mainWindowConfig.plugins?.push(
 );
 const preloadConfig = frontend[2];
 
+// Add alias for backend and preload configs too
+if (!backend.config.resolve) {
+  backend.config.resolve = {};
+}
+if (!backend.config.resolve.alias) {
+  backend.config.resolve.alias = {};
+}
+backend.config.resolve.alias['arduino-ide-extension'] = path.resolve(__dirname, '..', 'arduino-ide-extension');
+backend.config.resolve.symlinks = true;
+if (!backend.config.resolve.modules) {
+  backend.config.resolve.modules = ['node_modules'];
+}
+if (!backend.config.resolve.modules.includes(path.resolve(__dirname, '..', 'node_modules'))) {
+  backend.config.resolve.modules.push(path.resolve(__dirname, '..', 'node_modules'));
+}
+
+if (!preloadConfig.resolve) {
+  preloadConfig.resolve = {};
+}
+if (!preloadConfig.resolve.alias) {
+  preloadConfig.resolve.alias = {};
+}
+preloadConfig.resolve.alias['arduino-ide-extension'] = path.resolve(__dirname, '..', 'arduino-ide-extension');
+preloadConfig.resolve.symlinks = true;
+if (!preloadConfig.resolve.modules) {
+  preloadConfig.resolve.modules = ['node_modules'];
+}
+if (!preloadConfig.resolve.modules.includes(path.resolve(__dirname, '..', 'node_modules'))) {
+  preloadConfig.resolve.modules.push(path.resolve(__dirname, '..', 'node_modules'));
+}
+
 // Copy all the IDE2 binaries and the plotter web app.
 // XXX: For whatever reason it is important to use `unshift` instead of `push`, and execute the additional webpack plugins before the Theia contributed ones kick in. Otherwise ours do not work.
 backend.config.plugins.unshift(
@@ -30,10 +75,16 @@ backend.config.plugins.unshift(
 );
 
 // Override the default entry from Theia as IDE2 has a customization of the module.
+// Resolve the parcel-watcher entry point - use try/catch in case extension isn't built yet
+let parcelWatcherPath;
+try {
+  parcelWatcherPath = require.resolve('arduino-ide-extension/lib/node/theia/filesystem/parcel-watcher/index');
+} catch (e) {
+  // Fallback to direct path - this will be resolved by webpack's resolver with the alias
+  parcelWatcherPath = 'arduino-ide-extension/lib/node/theia/filesystem/parcel-watcher/index';
+}
 backend.config.entry['parcel-watcher'] = {
-  import: require.resolve(
-    'arduino-ide-extension/lib/node/theia/filesystem/parcel-watcher'
-  ),
+  import: parcelWatcherPath,
   library: {
     type: 'commonjs2',
   },

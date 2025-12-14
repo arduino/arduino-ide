@@ -54,6 +54,7 @@ import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
 import { MonitorManager } from './monitor-manager';
 import { ServiceError } from './service-error';
 import { AutoFlushingBuffer } from './utils/buffers';
+import safeLogger from './safe-logger';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
@@ -92,7 +93,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       let hasRetried = false;
 
       const handleUnexpectedError = (error: Error) => {
-        console.error(
+        safeLogger.error(
           'Unexpected error occurred while compiling the sketch.',
           error
         );
@@ -100,7 +101,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       };
 
       const handleCancellationError = () => {
-        console.log(userAbort);
+        safeLogger.log(userAbort);
         reject(UserAbortApplicationError());
       };
 
@@ -165,7 +166,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             if (isCompileSummary(compileSummary)) {
               resolve(compileSummary);
             } else {
-              console.error(
+              safeLogger.error(
                 `Have not received the full compile summary from the CLI while running the compilation. ${JSON.stringify(
                   compileSummary
                 )}`
@@ -255,14 +256,14 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     const progressHandler = this.createProgressHandler(options);
     // Track responses for port changes. No port changes are expected when uploading using a programmer.
     const updateUploadResponseFragmentHandler = (response: RESP) => {
-      if (response instanceof UploadResponse) {
+            if (response instanceof UploadResponse) {
         // TODO: this instanceof should not be here but in `upload`. the upload and upload using programmer gRPC APIs are not symmetric
         const uploadResult = response.getResult();
         if (uploadResult) {
           const port = uploadResult.getUpdatedUploadPort();
           if (port) {
             uploadResponseFragment.portAfterUpload = createApiPort(port);
-            console.info(
+            safeLogger.info(
               `Received port after upload [${
                 options.port ? Port.keyOf(options.port) : ''
               }, ${options.fqbn}, ${
@@ -297,12 +298,12 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
-              console.error(`Unexpected error occurred while ${task}.`, error);
+              safeLogger.error(`Unexpected error occurred while ${task}.`, error);
               reject(error);
               return;
             }
             if (ServiceError.isCancel(error)) {
-              console.log(userAbort);
+              safeLogger.log(userAbort);
               reject(UserAbortApplicationError());
               return;
             }
@@ -408,7 +409,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           .on('data', handler.onData)
           .on('error', (error) => {
             if (!ServiceError.is(error)) {
-              console.error(
+              safeLogger.error(
                 'Unexpected error occurred while burning the bootloader.',
                 error
               );
@@ -416,7 +417,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               return;
             }
             if (ServiceError.isCancel(error)) {
-              console.log(userAbort);
+              safeLogger.log(userAbort);
               reject(UserAbortApplicationError());
               return;
             }
@@ -621,7 +622,7 @@ function updateCompileSummary(
   }
   const result = response.getResult();
   if (!result) {
-    console.warn(
+    safeLogger.warn(
       `Build result is missing from response: ${JSON.stringify(
         response.toObject(false)
       )}`

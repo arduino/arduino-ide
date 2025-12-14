@@ -1,5 +1,7 @@
 import React from '@theia/core/shared/react';
 import classnames from 'classnames';
+import { Input } from '../../components/ui/input';
+import { cn } from '../../lib/utils';
 
 interface SettingsStepInputProps {
   initialValue: number;
@@ -103,8 +105,8 @@ const SettingsStepInput: React.FC<SettingsStepInputProps> = (
 
   return (
     <div className="settings-step-input-container" onBlur={onBlur}>
-      <input
-        className={classnames('settings-step-input-element', classNames?.input)}
+      <Input
+        className={cn('settings-step-input-element', classNames?.input)}
         value={isEmptyString ? '' : String(currentValue)}
         onChange={onUserInput}
         type="number"

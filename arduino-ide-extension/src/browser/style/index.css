@@ -1,3 +1,4 @@
+@import "./tailwind-compiled.css";
 @import "./list-widget.css";
 @import "./boards-config-dialog.css";
 @import "./main.css";
@@ -177,3 +178,4 @@ button.theia-button.message-box-dialog-button {
     justify-content: center;
     min-height: inherit;
 }
+

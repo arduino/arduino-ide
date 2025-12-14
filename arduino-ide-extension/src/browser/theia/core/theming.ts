@@ -16,7 +16,7 @@ export namespace ArduinoThemes {
   export const dark: Theme = {
     id: 'arduino-theme-dark',
     type: 'dark',
-    label: 'Dark (Arduino)',
+    label: 'Neon Night',
     editorTheme: 'arduino-theme-dark',
   };
 }

@@ -1,4 +1,5 @@
 import { UUID } from '@theia/core/shared/@phosphor/coreutils';
+import safeLogger from './safe-logger';
 import type {
   IndexType,
   IndexUpdateDidCompleteParams,
@@ -177,7 +178,7 @@ export namespace ExecuteWithProgress {
       if (DEBUG) {
         const json = toJson(response);
         if (json) {
-          console.debug(`[gRPC progress] Progress response [${uuid}]: ${json}`);
+          safeLogger.debug(`[gRPC progress] Progress response [${uuid}]: ${json}`);
         }
       }
       const unitOfWork = resolve(response);
@@ -273,7 +274,7 @@ export namespace ExecuteWithProgress {
     } else if (CoreProgressResponse.is(response)) {
       return CoreProgressResponse.workUnit(response);
     }
-    console.warn('Unhandled gRPC response', response);
+    safeLogger.warn('Unhandled gRPC response', response);
     return {};
   }
   function toJson(response: ProgressResponse): string | undefined {

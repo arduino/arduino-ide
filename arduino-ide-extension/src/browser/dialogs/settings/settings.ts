@@ -32,6 +32,7 @@ import type { FileStat } from '@theia/filesystem/lib/common/files';
 export const WINDOW_SETTING = 'window';
 export const EDITOR_SETTING = 'editor';
 export const FONT_SIZE_SETTING = `${EDITOR_SETTING}.fontSize`;
+export const FONT_FAMILY_SETTING = `${EDITOR_SETTING}.fontFamily`;
 export const AUTO_SAVE_SETTING = `files.autoSave`;
 export const QUICK_SUGGESTIONS_SETTING = `${EDITOR_SETTING}.quickSuggestions`;
 export const ARDUINO_SETTING = 'arduino';
@@ -49,6 +50,7 @@ export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
 
 export interface Settings {
   editorFontSize: number; // `editor.fontSize`
+  editorFontFamily: string; // `editor.fontFamily`
   themeId: string; // `workbench.colorTheme`
   autoSave: Settings.AutoSave; // `files.autoSave`
   quickSuggestions: Record<'other' | 'comments' | 'strings', boolean>; // `editor.quickSuggestions`
@@ -142,6 +144,7 @@ export class SettingsService {
       languages,
       currentLanguage,
       editorFontSize,
+      editorFontFamily,
       themeId,
       autoSave,
       quickSuggestions,
@@ -157,6 +160,10 @@ export class SettingsService {
       ['en', ...(await this.localizationProvider.getAvailableLanguages())],
       this.localizationProvider.getCurrentLanguage(),
       this.preferenceService.get<number>(FONT_SIZE_SETTING, 12),
+      this.preferenceService.get<string>(
+        FONT_FAMILY_SETTING,
+        "'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace"
+      ),
       this.preferenceService.get<string>(
         'workbench.colorTheme',
         DefaultTheme.defaultForOSTheme(
@@ -195,6 +202,7 @@ export class SettingsService {
     const sketchbookPath = await this.fileService.fsPath(new URI(sketchDirUri));
     return {
       editorFontSize,
+      editorFontFamily,
       themeId,
       languages,
       currentLanguage,
@@ -284,6 +292,7 @@ export class SettingsService {
     const {
       currentLanguage,
       editorFontSize,
+      editorFontFamily,
       themeId,
       autoSave,
       quickSuggestions,
@@ -318,6 +327,7 @@ export class SettingsService {
 
     await Promise.all([
       this.savePreference('editor.fontSize', editorFontSize),
+      this.savePreference('editor.fontFamily', editorFontFamily),
       this.savePreference('workbench.colorTheme', themeId),
       this.savePreference(AUTO_SAVE_SETTING, autoSave),
       this.savePreference('editor.quickSuggestions', quickSuggestions),

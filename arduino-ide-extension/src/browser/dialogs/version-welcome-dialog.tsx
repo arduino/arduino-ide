@@ -26,7 +26,7 @@ export class VersionWelcomeDialog extends ReactDialog<void> {
     super({
       title: nls.localize(
         'arduino/versionWelcome/title',
-        'Welcome to a new version of the Arduino IDE!'
+        'Welcome to a new version of Cognify IDE!'
       ),
     });
     this.node.id = 'version-welcome-dialog-container';
@@ -91,7 +91,7 @@ export class VersionWelcomeDialog extends ReactDialog<void> {
       this.titleNode.innerText = sanitize(
         nls.localize(
           'arduino/versionWelcome/titleWithVersion',
-          'Welcome to the new Arduino IDE {0}!',
+          'Welcome to the new Cognify IDE {0}!',
           appVersion
         )
       );

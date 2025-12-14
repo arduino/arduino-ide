@@ -72,96 +72,48 @@
   },
   "tokenColors": [
     {
-      "name": "",
-      "settings": {
-        "foreground": "#434f54"
-      }
+      "name": "Default text",
+      "settings": { "foreground": "#333333" }
     },
     {
       "name": "Comments",
       "scope": "comment",
-      "settings": {
-        "foreground": "#95a5a6cc"
-      }
+      "settings": { "foreground": "#6A9955", "fontStyle": "italic" }
     },
     {
-      "name": "Keywords Attributes",
-      "scope": [
-        "storage",
-        "support",
-        "string.quoted.single.c"
-      ],
-      "settings": {
-        "foreground": "#00979D"
-      }
+      "name": "Keywords",
+      "scope": ["keyword", "storage.type", "storage.modifier"],
+      "settings": { "foreground": "#0000FF", "fontStyle": "bold" }
     },
     {
-      "name": "literal",
-      "scope": [
-        "meta.function.c",
-        "entity.name.function",
-        "meta.function-call.c",
-        "variable.other"
-      ],
-      "settings": {
-        "foreground": "#D35400"
-      }
+      "name": "Functions",
+      "scope": ["entity.name.function", "meta.function-call.c", "meta.function.c"],
+      "settings": { "foreground": "#795E26" }
     },
     {
-      "name": "punctuation",
-      "scope": [
-        "punctuation.section",
-        "meta.function-call.c",
-        "meta.block.c",
-        "meta.function.c",
-        "variable",
-        "variable.name"
-      ],
-      "settings": {
-        "foreground": "#434f54"
-      }
+      "name": "Variables",
+      "scope": ["variable", "variable.name", "variable.other"],
+      "settings": { "foreground": "#001080" }
     },
     {
-      "name": "function preprocessor",
-      "scope": [
-        "entity.name.function.preprocessor.c",
-        "meta.preprocessor.macro.c"
-      ],
-      "settings": {
-        "foreground": "#9e846d"
-      }
+      "name": "Strings",
+      "scope": ["string", "string.quoted.double", "string.quoted.single"],
+      "settings": { "foreground": "#A31515" }
     },
     {
-      "name": "constants",
-      "scope": [
-        "string.quoted.double",
-        "string.quoted.other.lt-gt",
-        "constant"
-      ],
-      "settings": {
-        "foreground": "#005C5F"
-      }
+      "name": "Numbers",
+      "scope": ["constant.numeric", "constant.language"],
+      "settings": { "foreground": "#098658" }
     },
     {
-      "name": "meta keywords",
-      "scope": [
-        "keyword.control",
-        "meta.preprocessor.c"
-      ],
-      "settings": {
-        "foreground": "#728E00"
-      }
+      "name": "Types",
+      "scope": ["entity.name.type", "support.type"],
+      "settings": { "foreground": "#267f99" }
     },
     {
-      "name": "numeric preprocessor",
-      "scope": [
-        "meta.preprocessor.macro.c",
-        "constant.numeric.preprocessor.c",
-        "meta.preprocessor.c"
-      ],
-      "settings": {
-        "foreground": "#434f54"
-      }
+      "name": "Punctuation/Operators",
+      "scope": ["punctuation", "keyword.operator", "punctuation.accessor"],
+      "settings": { "foreground": "#333333" }
     }
   ]
 }

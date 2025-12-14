@@ -75,6 +75,12 @@ import { MonitorWidget } from './serial/monitor/monitor-widget';
 import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
 import { ChatWidget } from './widgets/chat/chat-widget';
 import { ChatViewContribution } from './widgets/chat/chat-view-contribution';
+import { AgentRegistry } from './widgets/chat/agent-registry';
+import { InlineEditingAgent } from './widgets/chat/agents/inline-editing-agent';
+import { MultiFileEditingAgent } from './widgets/chat/agents/multi-file-editing-agent';
+import { LibraryManagementAgent } from './widgets/chat/agents/library-management-agent';
+import { CompilationAgent } from './widgets/chat/agents/compilation-agent';
+import { CodeAnalysisAgent } from './widgets/chat/agents/code-analysis-agent';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
@@ -277,6 +283,7 @@ import { HostedPluginSupportImpl } from './theia/plugin-ext/hosted-plugin';
 import { HostedPluginSupport as TheiaHostedPluginSupport } from '@theia/plugin-ext/lib/hosted/browser/hosted-plugin';
 import { Formatter, FormatterPath } from '../common/protocol/formatter';
 import { Format } from './contributions/format';
+import { ArduinoSyntaxHighlighting } from './contributions/arduino-syntax-highlighting';
 import { MonacoFormattingConflictsContribution } from './theia/monaco/monaco-formatting-conflicts';
 import { MonacoFormattingConflictsContribution as TheiaMonacoFormattingConflictsContribution } from '@theia/monaco/lib/browser/monaco-formatting-conflicts';
 import { DefaultJsonSchemaContribution } from './theia/core/json-schema-store';
@@ -350,6 +357,8 @@ import { CreateCloudCopy } from './contributions/create-cloud-copy';
 import { FileResourceResolver } from './theia/filesystem/file-resource';
 import { FileResourceResolver as TheiaFileResourceResolver } from '@theia/filesystem/lib/browser/file-resource';
 import { StylingParticipant } from '@theia/core/lib/browser/styling-service';
+import { EditorPreferencesFrontContribution } from './contributions/editor-preferences-frontcontribution';
+import { PreferenceMonacoSyncContribution } from './contributions/preference-monaco-sync';
 import { MonacoEditorMenuContribution } from './theia/monaco/monaco-menu';
 import { MonacoEditorMenuContribution as TheiaMonacoEditorMenuContribution } from '@theia/monaco/lib/browser/monaco-menu';
 import { UpdateArduinoState } from './contributions/update-arduino-state';
@@ -390,7 +399,9 @@ import('@theia/core/lib/browser/common-frontend-contribution.js').then(
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Commands, colors, theme adjustments, and toolbar items
   bind(ArduinoFrontendContribution).toSelf().inSingletonScope();
-  bind(CommandContribution).toService(ArduinoFrontendContribution);
+  // Ensure preference -> monaco sync contribution is started
+  bind(PreferenceMonacoSyncContribution).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(PreferenceMonacoSyncContribution);
   bind(MenuContribution).toService(ArduinoFrontendContribution);
   bind(TabBarToolbarContribution).toService(ArduinoFrontendContribution);
   bind(FrontendApplicationContribution).toService(ArduinoFrontendContribution);
@@ -399,6 +410,10 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(ArduinoToolbarContribution).toSelf().inSingletonScope();
   bind(FrontendApplicationContribution).toService(ArduinoToolbarContribution);
+
+  // Apply editor prefs (font family/size) immediately to active Monaco editors
+  bind(EditorPreferencesFrontContribution).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(EditorPreferencesFrontContribution);
 
   // Renderer for both the library and the core widgets.
   bind(ListItemRenderer).toSelf().inSingletonScope();
@@ -549,7 +564,13 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
     .to(MonitorManagerProxyClientImpl)
     .inSingletonScope();
 
-  // Chat widget
+  // Chat widget and agents
+  bind(InlineEditingAgent).toSelf().inSingletonScope();
+  bind(MultiFileEditingAgent).toSelf().inSingletonScope();
+  bind(LibraryManagementAgent).toSelf().inSingletonScope();
+  bind(CompilationAgent).toSelf().inSingletonScope();
+  bind(CodeAnalysisAgent).toSelf().inSingletonScope();
+  bind(AgentRegistry).toSelf().inSingletonScope();
   bind(ChatWidget).toSelf();
   bindViewContribution(bind, ChatViewContribution);
   bind(WidgetFactory).toDynamicValue((context) => ({
@@ -746,6 +767,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, AddZipLibrary);
   Contribution.configure(bind, PlotterFrontendContribution);
   Contribution.configure(bind, Format);
+  Contribution.configure(bind, ArduinoSyntaxHighlighting);
   Contribution.configure(bind, CompilerErrors);
   Contribution.configure(bind, StartupTasksExecutor);
   Contribution.configure(bind, IndexesUpdateProgress);
