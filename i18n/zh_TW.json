@@ -140,6 +140,7 @@
       "all": "全部",
       "contributed": "已貢獻",
       "installManually": "手動安裝",
+      "installed": "安裝",
       "later": "稍後",
       "noBoardSelected": "沒有選擇開發板",
       "noSketchOpened": "未開啟 sketch",
@@ -275,9 +276,6 @@
       "checkForUpdates": "檢查 Arduino IDE 更新",
       "closeAndInstallButton": "關閉並安裝。",
       "closeToInstallNotice": "關閉本程式後安裝更新。",
-      "donateLinkIconTitle": "開啟捐款頁面",
-      "donateLinkText": "捐款來支持我們",
-      "donateText": "公開程式碼就是愛， {0}",
       "downloadButton": "下載",
       "downloadingNotice": "正在下載最新版本的Arduino IDE。",
       "errorCheckingForUpdates": "檢查Arduino IDE更新時發生錯誤。\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "自動捲動",
       "carriageReturn": "內有 CR",
       "connecting": "連接到 '{1}' 上的 '{0}'  ...",
+      "copyOutput": "Copy Output",
       "message": "訊息 (按 Enter 鍵將訊息發送到 {1} 上的 {0})",
       "newLine": "換行",
       "newLineCarriageReturn": "NL和CR字元",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "無效的 sketch 檔名",
       "renameSketchFolderMessage": "Sketch '{0}' 無法被使用。 {1} 要擺脫這則訊息，請更改 sketch 檔名。要現在更改檔名嗎？",
       "renameSketchFolderTitle": "無效的 sketch 檔名"
-    },
-    "versionWelcome": {
-      "cancelButton": "讓我考慮一下",
-      "donateButton": "現在捐",
-      "donateMessage": "Arduino 致力讓軟體保持自由並對大家開放程式碼，您的捐款可以幫助我們開發新功能、改善程式庫及對全球數百萬用戶的支持。",
-      "donateMessage2": "期盼您考慮支持我們對自由軟體 Arduino IDE 所做的努力。",
-      "title": "歡迎使用新版 Arduino IDE !",
-      "titleWithVersion": "歡迎使用新版 Arduino IDE  {0} !"
     },
     "workspace": {
       "alreadyExists": "'{0}'已存在。"

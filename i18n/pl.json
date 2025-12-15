@@ -140,6 +140,7 @@
       "all": "Wszystko",
       "contributed": "Przyczynił się",
       "installManually": "Zainstaluj ręcznie",
+      "installed": "Zainstalowane",
       "later": "Później",
       "noBoardSelected": "Nie wybrano płytki",
       "noSketchOpened": "Nie otworzono żadnego szkicu",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Sprawdź uaktualnienia dla Arduino IDE.",
       "closeAndInstallButton": "Wyjdź i instaluj",
       "closeToInstallNotice": "Zamknij aplikacje i zainstaluj aktualizacje.",
-      "donateLinkIconTitle": "Otwórz stronę pomocy dla projektu",
-      "donateLinkText": "Wesprzyj nasz projekt",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Pobierz",
       "downloadingNotice": "Pobieranie najnowszej wersji Arduino IDE.",
       "errorCheckingForUpdates": "Błąd podczas sprawdzania aktualizacji Arduino IDE.\n{0}",
@@ -342,7 +340,7 @@
     },
     "monitor": {
       "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
-      "baudRate": "1{0} baud",
+      "baudRate": "{0} baud",
       "connectionFailedError": "Could not connect to {0} {1} port.",
       "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
       "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
@@ -435,6 +433,7 @@
       "autoscroll": "Autoscroll",
       "carriageReturn": "Powrót karetki",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message(Kliknij aby wysłać wiadomość do '{0}' od '{1}')",
       "newLine": "Nowa linia",
       "newLineCarriageReturn": "Nowa linia i powrót karetki",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
-    },
-    "versionWelcome": {
-      "cancelButton": "Może później",
-      "donateButton": "Wspomóż projekt teraz",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Witaj w nowej wersji Arduino IDE!",
-      "titleWithVersion": "Witaj w Arduino IDE1{0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

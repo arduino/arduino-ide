@@ -140,6 +140,7 @@
       "all": "Tất cả",
       "contributed": "Đóng góp",
       "installManually": "Cài thủ công",
+      "installed": "Đã cài đặt",
       "later": "Để sau",
       "noBoardSelected": "Không có bo mạch được chọn",
       "noSketchOpened": "Không có dự án nào được mở",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Kiểm tra bản cập nhật phần mềm",
       "closeAndInstallButton": "Đóng và cài đặt",
       "closeToInstallNotice": "Đóng ứng dụng và cài đặt bản cập nhật mới nhất lên máy bạn.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Tải về",
       "downloadingNotice": "Đang tải về bản mới nhất của Arduino IDE.",
       "errorCheckingForUpdates": "Có lỗi xảy ra trong quá trình kiểm tra cập nhật Arduino IDE.\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "Tự động cuộn",
       "carriageReturn": "Về đầu dòng",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Dòng mới",
       "newLineCarriageReturn": "Vừa xuống dòng & về đầu dòng",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Tên tệp phác thảo không hợp lệ",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Tên bản phác thảo không hợp lệ"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'đã tồn tại."

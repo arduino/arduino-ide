@@ -6,25 +6,25 @@
     },
     "account": {
       "goToCloudEditor": "Ir a Arduino Cloud",
-      "goToIoTCloud": "Go to IoT Cloud",
+      "goToIoTCloud": "Ir a IoT Cloud",
       "goToProfile": "Ir al Perfil",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "Placa{0}",
       "boardConfigDialogTitle": "Seleccionar Otra Placa y Puerto",
-      "boardDataReloaded": "Board data reloaded.",
+      "boardDataReloaded": "Recargar datos de la Placa",
       "boardInfo": "Información de la placa",
       "boards": "Placas",
       "configDialog1": "Selecciona tanto una placa como un puerto si quieres cargar un sketch.",
       "configDialog2": "Si seleccionas solo una placa podrás compilar, pero no cargar tu sketch.",
       "couldNotFindPreviouslySelected": "No se ha podido encontrar la placa previamente seleccionada '{0}' en la plataforma instalada '{1}'. Por favor, vuelve a seleccionar manualmente la placa que quieres utilizar. ¿Quieres volver a seleccionarla ahora?",
-      "editBoardsConfig": "Edit Board and Port...",
+      "editBoardsConfig": "Editar Placa y Puerto",
       "getBoardInfo": "Obtener información de la placa",
       "inSketchbook": " (en el Sketchbook)",
       "installNow": "Hay que instalar el núcleo \"{0} {1} \" para la placa \"{2}\" actualmente seleccionada. ¿Quieres instalarlo ahora?",
       "noBoardsFound": "No se han encotrado placas para \"{0}\"",
-      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noNativeSerialPort": "Puerto serie nativo, información no obtenida",
       "noPortsDiscovered": "No se ha descubierto ningún puerto",
       "nonSerialPort": "Non-serial port, can't obtain info.",
       "openBoardsConfig": "Seleccione otra placa y puerto...",
@@ -32,19 +32,19 @@
       "port": "Puerto {0}",
       "ports": "puertos",
       "programmer": "Programador",
-      "reloadBoardData": "Reload Board Data",
+      "reloadBoardData": "Recargar datos de la Placa",
       "reselectLater": "Vuelve a seleccionar más tarde",
       "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
       "searchBoard": "Buscar placa",
       "selectBoard": "Seleccionar Placa",
-      "selectBoardToReload": "Please select a board first.",
+      "selectBoardToReload": "Por favor seleccione una Placa primero",
       "selectPortForInfo": "Por favor, seleccione un puerto para obtener información sobre la placa.",
       "showAllAvailablePorts": "Muestra todos los puertos disponibles cuando está activado",
       "showAllPorts": "Mostrar todos los puertos",
       "succesfullyInstalledPlatform": "Plataforma {0}:{1} instalada correctamente",
       "succesfullyUninstalledPlatform": "Plataforma {0}:{1} desinstalada correctamente",
       "typeOfPorts": "{0} puertos",
-      "unconfirmedBoard": "Unconfirmed board",
+      "unconfirmedBoard": "Placa no confirmada",
       "unknownBoard": "Placa desconocida"
     },
     "boardsManager": "Gestor de placas",
@@ -140,9 +140,10 @@
       "all": "Todo",
       "contributed": "Contribuido",
       "installManually": "Instalar manualmente",
+      "installed": "Instalado",
       "later": "Más tarde",
       "noBoardSelected": "Ninguna placa seleccionada.",
-      "noSketchOpened": "No sketch opened",
+      "noSketchOpened": "No se ha abierto ningún sketch ",
       "notConnected": "[no conectado]",
       "offlineIndicator": "Al parecer no estás en línea. Sin una conexión a internet, el CLI de Arduino no podrá descargar los recursos necesarios, lo cual puede ocasionar fallos. Por favor, conecte a internet y reinicie la aplicación.",
       "oldFormat": "La página '{0}' sigue utilizando el formato antiguo `.pde`. ¿Quieres cambiar a la nueva extensión `.ino`?",
@@ -150,13 +151,13 @@
       "processing": "Procesando",
       "recommended": "Recomendado",
       "retired": "Retirado",
-      "selectManually": "Select Manually",
+      "selectManually": "Selección manual",
       "selectedOn": "en {0}",
       "serialMonitor": "Monitor Serie",
       "type": "Tipo",
       "unknown": "Desconocido",
       "updateable": "Actualizable",
-      "userAbort": "User abort"
+      "userAbort": "Abortado por usuario"
     },
     "compile": {
       "error": "Error de compilación: {0}"
@@ -164,10 +165,10 @@
     "component": {
       "boardsIncluded": "Placas incluidas en este paquete:",
       "by": "de",
-      "clickToOpen": "Click to open in browser: {0}",
+      "clickToOpen": "Click para abrir en el navegadorr: {0}",
       "filterSearch": "Filtre su búsqueda...",
       "install": "Instalar",
-      "installLatest": "Install Latest",
+      "installLatest": "Instalar último",
       "installVersion": "Instalar {0}",
       "installed": "{0}instalado",
       "moreInfo": "Más información",
@@ -180,7 +181,7 @@
     },
     "configuration": {
       "cli": {
-        "inaccessibleDirectory": "Could not access the sketchbook location at '{0}': {1}"
+        "inaccessibleDirectory": "No se ha podido acceder a la ubicación del sketchbook en '{0}': {1}"
       }
     },
     "connectionStatus": {
@@ -206,23 +207,23 @@
       "copyError": "Copiar mensajes de error",
       "noBoardSelected": "Ninguna placa seleccionada. Por favor selecciona una placa Arduino en el menú Herramientas > Placas"
     },
-    "createCloudCopy": "Push Sketch to Cloud",
+    "createCloudCopy": "Enviar Sketch a la Nube",
     "daemon": {
       "restart": "Reiniciar Daemon",
       "start": "Iniciar Daemon",
       "stop": "Parar Daemon"
     },
     "debug": {
-      "debugWithMessage": "Debug - {0}",
+      "debugWithMessage": "Depurar - {0}",
       "debuggingNotSupported": "La depuración no está soportada por '{0}'",
-      "getDebugInfo": "Getting debug info...",
+      "getDebugInfo": "Obteniendo información de depuración...",
       "noPlatformInstalledFor": "La plataforma no está instalada para '{0}'",
       "optimizeForDebugging": "Optimizar para depuración",
       "sketchIsNotCompiled": "El sketch '{0}' debe ser verificado antes de iniciar una sesión de depuración. Por favor, verifique el sketch e inicia la depuración nuevamente. ¿Deseas verificar el sketch ahora?"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
-      "clearBoardsConfig": "Clear the Board and Port Selection",
+      "clearBoardList": "Borrar el Historial de la Lista de Placas",
+      "clearBoardsConfig": "Borrar la selección de Placa y Puerto",
       "dumpBoardList": "Dump the Board List"
     },
     "dialog": {
@@ -257,7 +258,7 @@
       "selectBoard": "Seleccionar Placa",
       "selectVersion": "Seleccionar la versión del firmware",
       "successfullyInstalled": "Firmware instalado correctamente.",
-      "updater": "Firmware Updater"
+      "updater": "Actualizador de firmware"
     },
     "help": {
       "environment": "Entorno de desarrollo (IDE)",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Comprobar actualizaciones para Arduino IDE",
       "closeAndInstallButton": "Cerrar e instalar",
       "closeToInstallNotice": "Cierra el programa e instala la actualización en tu máquina.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Descargar",
       "downloadingNotice": "Descargando la última versión del Arduino IDE.",
       "errorCheckingForUpdates": "Error al comprobar las actualizaciones del IDE de Arduino.\n{0}",
@@ -292,8 +290,8 @@
       "versionDownloaded": "Arduino IDE {0} se ha descargado."
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "libraryInstallFailed": "Error al instalar la biblioteca: '{0}{1} '.",
+      "platformInstallFailed": "Error al instalar la plataforma: '{0}{1} '."
     },
     "library": {
       "addZip": "Añadir biblioteca .ZIP...",
@@ -341,13 +339,13 @@
       "tools": "Herramientas"
     },
     "monitor": {
-      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
-      "baudRate": "{0} baud",
-      "connectionFailedError": "Could not connect to {0} {1} port.",
-      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "alreadyConnectedError": "No se ha podido conectar al puerto {0} {1} . Ya conectado.",
+      "baudRate": "{0} baudios",
+      "connectionFailedError": "No se ha podido conectar al puerto {0} {1} .",
+      "connectionFailedErrorWithDetails": "{0} No se ha podido conectar al puerto {1} {2} .",
       "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
       "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
-      "notConnectedError": "Not connected to {0} {1} port.",
+      "notConnectedError": "No está conectado al puerto {0} {1} .",
       "unableToCloseWebSocket": "No se puede cerrar websocket",
       "unableToConnectToWebSocket": "No se puede conectar al websocket"
     },
@@ -401,7 +399,7 @@
       },
       "network": "Red",
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
-      "noCliConfig": "Could not load the CLI configuration",
+      "noCliConfig": "No se ha podido cargar la configuración de CLI",
       "noProxy": "Sin Proxy",
       "proxySettings": {
         "hostname": "nombre del host",
@@ -434,10 +432,11 @@
     "serial": {
       "autoscroll": "Autoscroll",
       "carriageReturn": "Retorno de carro",
-      "connecting": "Connecting to '{0}' on '{1}'...",
+      "connecting": "Conectando a '{0}' en '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Mensaje (Intro para mandar el mensaje de '{0}' a '{1}')",
       "newLine": "Nueva línea",
-      "newLineCarriageReturn": "Ambos NL & CR",
+      "newLineCarriageReturn": "Ambos NL y RC",
       "noLineEndings": "Sin ajuste de línea",
       "notConnected": "No conectado. Selecciona una placa y un puerto para conectarte automáticamente.",
       "openSerialPlotter": "Plotter Serie",
@@ -457,24 +456,24 @@
       "exportBinary": "Exportar binario compilado",
       "invalidCloudSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 36.",
       "invalidSketchFolderLocationDetails": "No puedes guardar un sketch dentro de una carpeta dentro de sí misma.",
-      "invalidSketchFolderLocationMessage": "Invalid sketch folder location: '{0}'",
-      "invalidSketchFolderNameMessage": "Invalid sketch folder name: '{0}'",
+      "invalidSketchFolderLocationMessage": "Ubicación no válida de la carpeta de sketchs: '{0}'",
+      "invalidSketchFolderNameMessage": "Nombre de carpeta de sketchs no válido: '{0}'",
       "invalidSketchName": "El nombre debe comenzar con una letra, un número, o un guión bajo, seguido de letras, números, guiones, puntos y guiones bajos. El máximo número de caracteres es 63.",
       "moving": "Moviendo",
       "movingMsg": "El archivo \"{0}\" tiene que estar dentro de una carpeta de bocetos llamada \"{1}\".\n¿Crear esta carpeta, mover el archivo y continuar?",
-      "new": "New Sketch",
+      "new": "Nuevo Sketch",
       "noTrailingPeriod": "El nombre del archivo no puede terminar con un punto.",
       "openFolder": "Abrir carpeta",
       "openRecent": "Abierto recientemente",
       "openSketchInNewWindow": "Abrir Sketch en una ventana nueva",
-      "reservedFilename": "'{0}' is a reserved filename.",
+      "reservedFilename": "'{0}' es un nombre de archivo reservado.",
       "saveFolderAs": "Guardar carpeta de sketch como...",
       "saveSketch": "Guarde su sketch para abirlo más tarde.",
       "saveSketchAs": "Guardar carpeta de sketch como...",
       "showFolder": "Mostrar carpeta de Sketch",
       "sketch": "Sketch",
-      "sketchAlreadyContainsThisFileError": "The sketch already contains a file named '{0}'",
-      "sketchAlreadyContainsThisFileMessage": "Failed to save sketch \"{0}\" as \"{1}\". {2}",
+      "sketchAlreadyContainsThisFileError": "El sketch ya contiene un archivo llamado '{0}'",
+      "sketchAlreadyContainsThisFileMessage": "Error al guardar el sketch \"{0}\" como \"{1}\". {2}",
       "sketchbook": "Sketchbook",
       "titleLocalSketchbook": "Sketchbook Local",
       "titleSketchbook": "Sketchbook",
@@ -487,16 +486,16 @@
     },
     "sketchbook": {
       "newCloudSketch": "Nuevo Sketch en la Nube",
-      "newSketch": "New Sketch"
+      "newSketch": "Nuevo Sketch"
     },
     "theme": {
       "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
-      "dark": "Dark",
-      "deprecated": "{0} (deprecated)",
-      "hc": "Dark High Contrast",
-      "hcLight": "Light High Contrast",
-      "light": "Light",
-      "user": "{0} (user)"
+      "dark": "Oscuro",
+      "deprecated": "{0} (obsoleto)",
+      "hc": "Oscuro contraste alto",
+      "hcLight": "Claro contraste alto",
+      "light": "Claro",
+      "user": "{0} (usuario)"
     },
     "title": {
       "cloud": "Nube"
@@ -516,19 +515,11 @@
     },
     "validateSketch": {
       "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
-      "abortFixTitle": "Invalid sketch",
+      "abortFixTitle": "Sketch no válido",
       "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
-      "renameSketchFileTitle": "Invalid sketch filename",
+      "renameSketchFileTitle": "Nombre de archivo de sketch no válido",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
-      "renameSketchFolderTitle": "Invalid sketch name"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
+      "renameSketchFolderTitle": "Nombre de sketch no válido"
     },
     "workspace": {
       "alreadyExists": "'{0}' ya existe."

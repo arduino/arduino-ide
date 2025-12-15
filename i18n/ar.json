@@ -140,6 +140,7 @@
       "all": "الكل",
       "contributed": "مُساهَم",
       "installManually": "ثبّت يدويا",
+      "installed": "مُثبَّت",
       "later": "لاحقا",
       "noBoardSelected": "لم يتم اختيار اي لوحة",
       "noSketchOpened": "لم يتم فتح صفحة كتابة الكود",
@@ -275,9 +276,6 @@
       "checkForUpdates": "جار التحقق من التحديثات لـ Arduino IDE",
       "closeAndInstallButton": "قم بالاغلاق و التحديث",
       "closeToInstallNotice": "اغلق البرمجية و حّدث الجهاز الخاص بك ",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "حمّل",
       "downloadingNotice": "يتم تحميل اخر نسخة من Arduino IDE",
       "errorCheckingForUpdates": "حدث خطأ اثناء البحث عن تحديثات للـ Arduino IDE \n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "تمرير تلقائي",
       "carriageReturn": "اعادة الحمل",
       "connecting": "جار الاتصال ب '{0}' من خلال '{1}'",
+      "copyOutput": "Copy Output",
       "message": "الرسالة (ادخل لارسال الرسالة الى '{0}' من خلال '{1}')",
       "newLine": "سطر جديد",
       "newLineCarriageReturn": " NL & CR معاً",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "اسم المشروع غير صالح",
       "renameSketchFolderMessage": "لا يمكن استخدام المشروع '{0}' , {1} قم باعادة تسمية المشروع للتخلص من هذه الرسالة . هل تريد اعادة تسمية المشروع الان؟",
       "renameSketchFolderTitle": "اسم المشروع غير صالح"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' موجود مسبقا"
