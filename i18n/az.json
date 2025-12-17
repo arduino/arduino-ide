@@ -140,6 +140,7 @@
       "all": "All",
       "contributed": "Contributed",
       "installManually": "Əl ilə yüklə",
+      "installed": "Installed",
       "later": "Later",
       "noBoardSelected": "No board selected",
       "noSketchOpened": "No sketch opened",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Bağla Və Yüklə",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
       "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "Autoscroll",
       "carriageReturn": "Carriage Return",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "New Line",
       "newLineCarriageReturn": "Both NL & CR",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

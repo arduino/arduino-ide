@@ -140,6 +140,7 @@
       "all": "Alle",
       "contributed": "Beigetragen",
       "installManually": "Manuell installieren",
+      "installed": "Installiert",
       "later": "später",
       "noBoardSelected": "Kein Board ausgewählt",
       "noSketchOpened": "Kein Sketch geöffnet",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Arduino IDE Updates suchen",
       "closeAndInstallButton": "Schließen und Installieren",
       "closeToInstallNotice": "Software beenden und Update auf deinem Computer installieren",
-      "donateLinkIconTitle": "Öffne die Spenden Seite",
-      "donateLinkText": "Spenden um uns zu Unterstützen",
-      "donateText": "Open Source ist Liebe, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Die neueste Version der Arduino IDE wird heruntergeladen.",
       "errorCheckingForUpdates": "Fehler bei der Suche nach IDE Updates{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Zeilenumbruch (CR)",
       "connecting": "Verbindung zu '{0}' auf '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Nachicht (drücke Enter zum Senden für '{0}' auf '{1}')",
       "newLine": "Neue Zeile",
       "newLineCarriageReturn": "Beides CR/LF",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Ungültiger Sketch-Dateiname",
       "renameSketchFolderMessage": "Der Sketch '{0}' kann nicht verwendet werden. {1} Um diese Meldung loszuwerden, muss der Sketch umbenannt werden. Möchtest du den Sketch jetzt umbenennen?",
       "renameSketchFolderTitle": "Ungültiger Sketch-Name"
-    },
-    "versionWelcome": {
-      "cancelButton": "Vielleicht später",
-      "donateButton": "Spende Jetzt",
-      "donateMessage": "Arduino verpflichtet sich die Software frei und quell-offen für alle zu bewahren. Deine Spende hilft uns neue Funktionalitäten, verbesserte Bibliotheken zu entwickeln, und hilft Millionen Benutzern Welt Weit.",
-      "donateMessage2": "Bitte denke über einen Unterstützung unserer Arbeit an der freien und quell-offenen Arduino IDE nach.",
-      "title": "Willkommen zu einer neuen Version der Arduino IDE!",
-      "titleWithVersion": "Willkommen zur neuen Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' existiert bereits."

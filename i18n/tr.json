@@ -140,6 +140,7 @@
       "all": "Tümü",
       "contributed": "Eklenen",
       "installManually": "Elle Kur",
+      "installed": "Kurulu",
       "later": "Daha sonra",
       "noBoardSelected": "Kart seçili değil",
       "noSketchOpened": "Eskiz açılmadı",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Arduino IDE Güncellemelerini kontrol et",
       "closeAndInstallButton": "Kapat ve Kur",
       "closeToInstallNotice": "Yazılımı kapatın ve güncellemeyi makinanıza yükleyin.",
-      "donateLinkIconTitle": "bağış sayfasını aç",
-      "donateLinkText": "bizi desteklemek için bağış yap",
-      "donateText": "Açık kaynak aşktır, {0}",
       "downloadButton": "İndir",
       "downloadingNotice": "Arduino IDE'nin son sürümü indiriliyor.",
       "errorCheckingForUpdates": "Arduino IDE güncellemelerini kontrol ederken hata oluştu.{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "Otomatik Kaydırma",
       "carriageReturn": "Satır Başı",
       "connecting": "'{1}' üzerindeki '{0}' bağlantısı kuruluyor...",
+      "copyOutput": "Çıkışı Kopyala",
       "message": "Mesaj ('{0}' - '{1}''a mesaj göndermek için Enter'a basın)",
       "newLine": "Yeni Satır",
       "newLineCarriageReturn": "NL ve CR ile Birlikte",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Hatalı eskiz dosya adı",
       "renameSketchFolderMessage": "'{0}' eskizi kullanılamaz. {1} Bu mesajdan kurtulmak için eskizi yeniden adlandırın. Eskizi şimdi yeniden adlandırmak istiyor musunuz?",
       "renameSketchFolderTitle": "Hatalı eskiz adı"
-    },
-    "versionWelcome": {
-      "cancelButton": "Belki sonra",
-      "donateButton": "Şimdi bağış yap",
-      "donateMessage": "Arduino, yazılımı herkes için ücretsiz ve açık kaynaklı tutmaya adanmıştır. Bağışınız yeni özellikler geliştirmemize, kütüphaneleri daha iyi yapmamıza ve dünya çapındaki milyonlarca kullanıcıyı desteklememize yardım eder.",
-      "donateMessage2": "Lütfen özgür açık kaynaklı Arduino IDE üzerindeki çalışmalarımızı desteklemeyi gözden geçirin.",
-      "title": "Arduino IDE'nin yeni sürümüne hoş geldiniz!",
-      "titleWithVersion": "Yeni Arduino IDE'ye hoş geldin {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' zaten mevcut."

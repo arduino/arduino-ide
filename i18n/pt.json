@@ -140,6 +140,7 @@
       "all": "Todos",
       "contributed": "Contribuído",
       "installManually": "Instalar Manualmente",
+      "installed": "Instalados",
       "later": "Depois",
       "noBoardSelected": "Nenhuma placa selecionada.",
       "noSketchOpened": "Nenhum sketch aberto",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Checar atualizações da Arduino IDE",
       "closeAndInstallButton": "Fechar e instalar ",
       "closeToInstallNotice": "Feche o software e instale a atualização em sua máquina. ",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Baixar",
       "downloadingNotice": "Baixando a versão mais recente do IDE do Arduino.",
       "errorCheckingForUpdates": "Erro ao verificar as atualizações do IDE do Arduino. {0}",
@@ -435,6 +433,7 @@
       "autoscroll": "Avanço automático de linha",
       "carriageReturn": "Retorno de linha",
       "connecting": "Conectando a '{0}' em '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Mensagem ({0} + Enter para enviar mensagem para '{1}' em '{2}'",
       "newLine": "Nova linha",
       "newLineCarriageReturn": "Nova linha e retorno de linha",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Nome de arquivo de esboço inválido.",
       "renameSketchFolderMessage": "O esboço '{0}' não pode ser usado. {1} Para se livrar dessa mensagem, renomeie o esboço. Você quer renomear o esboço agora?",
       "renameSketchFolderTitle": "Nome de esboço inválido."
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' já existe."

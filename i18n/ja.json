@@ -140,6 +140,7 @@
       "all": "全て",
       "contributed": "提供された",
       "installManually": "手動でインストール",
+      "installed": "インストール済み",
       "later": "後で",
       "noBoardSelected": "ボード未選択",
       "noSketchOpened": "No sketch opened",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Arduino IDEのアップデートを確認",
       "closeAndInstallButton": "終了してインストール",
       "closeToInstallNotice": "ソフトウェアを終了してアップデートをインストールする。",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "ダウンロード",
       "downloadingNotice": "Arduino IDEの最新版をダウンロード中です。",
       "errorCheckingForUpdates": "Arduino IDEの更新を確認中にエラーが発生しました。\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "自動スクロール",
       "carriageReturn": "CRのみ",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "メッセージ（'{1}'の{0}にメッセージを送信するにはEnter）",
       "newLine": "LFのみ",
       "newLineCarriageReturn": "CRおよびLF",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "無効なスケッチファイル名です",
       "renameSketchFolderMessage": "スケッチ'{0}'は使用できません。{1}このメッセージをなくすには、スケッチの名前を変えてください。今すぐスケッチ名を変更しますか？",
       "renameSketchFolderTitle": "無効なスケッチ名です"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'は既に存在しています。"

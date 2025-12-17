@@ -6,7 +6,7 @@
     },
     "account": {
       "goToCloudEditor": "Aller à l'éditeur du cloud",
-      "goToIoTCloud": "Go to IoT Cloud",
+      "goToIoTCloud": "Aller à l'IoT Cloud",
       "goToProfile": "Aller au profil",
       "menuTitle": "Arduino Cloud"
     },
@@ -24,9 +24,9 @@
       "inSketchbook": "(dans le Croquis)",
       "installNow": "Le \"{0} {1}\" core doit être installé pour la carte sélectionnée \"{2}\". Souhaitez vous l'installer maintenant ?",
       "noBoardsFound": "Aucunes cartes trouvées pour \"{0}\"",
-      "noNativeSerialPort": "Native serial port, can't obtain info.",
+      "noNativeSerialPort": "Port série natif, impossible d'obtenir des informations.",
       "noPortsDiscovered": "Aucun ports découverts",
-      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "nonSerialPort": "Port non série, impossible d'obtenir des informations.",
       "openBoardsConfig": "Sélectionner une autre carte et un autre port ...",
       "pleasePickBoard": "Merci de sélectionner une carte connecté au port que vous avez sélectionné.",
       "port": "Port{0}",
@@ -128,8 +128,8 @@
     },
     "cloudSketch": {
       "alreadyExists": "Cloud sketch '{0}' already exists.",
-      "creating": "Creating cloud sketch '{0}'...",
-      "new": "New Cloud Sketch",
+      "creating": "Création d'un croquis cloud '{0}'",
+      "new": "Nouveau Croquis Cloud",
       "notFound": "Could not pull the cloud sketch '{0}'. It does not exist.",
       "pulling": "Synchronizing sketchbook, pulling '{0}'...",
       "pushing": "Synchronizing sketchbook, pushing '{0}'...",
@@ -138,8 +138,9 @@
     },
     "common": {
       "all": "Tout",
-      "contributed": "Contributed",
+      "contributed": "Contribué",
       "installManually": "Installer manuellement.",
+      "installed": "Installé",
       "later": "Plus tard",
       "noBoardSelected": "Aucune carte sélectionnée.",
       "noSketchOpened": "Aucun croquis ouvert",
@@ -190,7 +191,7 @@
       "addFile": "Ajouter un fichier",
       "fileAdded": "Un fichier a été ajouté au croquis",
       "plotter": {
-        "couldNotOpen": "Couldn't open serial plotter"
+        "couldNotOpen": "Impossible d'ouvrir le tracer série"
       },
       "replaceTitle": "Remplacer"
     },
@@ -221,7 +222,7 @@
       "sketchIsNotCompiled": "Sketch '{0}' must be verified before starting a debug session. Please verify the sketch and start debugging again. Do you want to verify the sketch now?"
     },
     "developer": {
-      "clearBoardList": "Clear the Board List History",
+      "clearBoardList": "Effacer l'historique de la carte",
       "clearBoardsConfig": "Effacer la carte et la sélection du port ",
       "dumpBoardList": "Dump the Board List"
     },
@@ -257,7 +258,7 @@
       "selectBoard": "Selectionner une carte",
       "selectVersion": "Choisir la version du firmware",
       "successfullyInstalled": "Firmware installé correctement.",
-      "updater": "Firmware Updater"
+      "updater": "Mise à jour du Firmware WiFi101 / WiFiNINA"
     },
     "help": {
       "environment": "Environnement",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Fermer et installer",
       "closeToInstallNotice": "Fermez le logiciel et installez la mise à jour sur votre machine.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "Faites un don pour nous soutenir",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Télécharger",
       "downloadingNotice": "Téléchargement de la dernière version de l'IDE Arduino.",
       "errorCheckingForUpdates": "Erreur lors de la vérification de la mise à jour de l'IDE Arduino.\n{0}",
@@ -292,8 +290,8 @@
       "versionDownloaded": "L'IDE Arduino {0} a été téléchargé."
     },
     "installable": {
-      "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
-      "platformInstallFailed": "Failed to install platform: '{0}{1}'."
+      "libraryInstallFailed": "Échec de l'installation de la bibliothèque: '{0} {1}'.",
+      "platformInstallFailed": " Échec de l'installation de la plateforme: '{0} {1}'."
     },
     "library": {
       "addZip": "Ajouter la bibliothèque .ZIP...",
@@ -341,13 +339,13 @@
       "tools": "Outils"
     },
     "monitor": {
-      "alreadyConnectedError": "Could not connect to {0} {1} port. Already connected.",
+      "alreadyConnectedError": "Impossible de se connecter au port {0} {1}. Déjà connecté.",
       "baudRate": "{0} baud",
       "connectionFailedError": "Impossible de se connecter au ports {0} {1}.",
-      "connectionFailedErrorWithDetails": "{0} Could not connect to {1} {2} port.",
+      "connectionFailedErrorWithDetails": "{0} Impossible de se connecter au port {1} {2}.",
       "connectionTimeout": "Délai d’attente dépassé. L’IDE n’a pas reçu le message de réussite du moniteur après s’être connecté avec succès",
       "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
-      "notConnectedError": "Not connected to {0} {1} port.",
+      "notConnectedError": "Non connecté au port {0} {1}.",
       "unableToCloseWebSocket": "Impossible de fermer le web socket",
       "unableToConnectToWebSocket": "Impossible de se connecter au web socket"
     },
@@ -434,7 +432,8 @@
     "serial": {
       "autoscroll": "Défilement automatique",
       "carriageReturn": "Retour chariot",
-      "connecting": "Connecting to '{0}' on '{1}'...",
+      "connecting": "Connexion à '{0}' sur '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "Nouvelle ligne",
       "newLineCarriageReturn": "Les deux, NL et CR",
@@ -486,17 +485,17 @@
       "verifyOrCompile": "Vérifier / Compiler"
     },
     "sketchbook": {
-      "newCloudSketch": "New Cloud Sketch",
+      "newCloudSketch": "Nouveau Croquis Cloud",
       "newSketch": "Nouveau croquis"
     },
     "theme": {
       "currentThemeNotFound": "Impossible de trouver le thème actuellement sélectionné : {0}. L'IDE Arduino a choisi un thème intégré compatible avec celui qui manque.",
       "dark": "Sombre",
-      "deprecated": "{0} (deprecated)",
+      "deprecated": "{0} (déprécié)",
       "hc": "Sombre avec contraste élevé",
       "hcLight": "Clair avec contraste élevé",
       "light": "Clair",
-      "user": "{0} (user)"
+      "user": "{0} (utilisateur)"
     },
     "title": {
       "cloud": "Cloud"
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Nom de fichier du croquis invalide",
       "renameSketchFolderMessage": "Le croquis '{0}' ne peut pas être utilisé. {1} Pour supprimer ce message, renommez le croquis. Voulez-vous renommer le croquis maintenant ?",
       "renameSketchFolderTitle": "Nom de croquis invalide"
-    },
-    "versionWelcome": {
-      "cancelButton": "Peut-être plus tard",
-      "donateButton": "Faire un don maintenant",
-      "donateMessage": "Arduino s’engage à garder les logiciels libres et gratuits pour tous. Votre don nous aide à développer de nouvelles fonctionnalités, à améliorer les bibliothèques et à soutenir des millions d’utilisateurs dans le monde entier.",
-      "donateMessage2": "Veuillez envisager de soutenir notre travail sur l’IDE Arduino gratuit et libre.",
-      "title": "Bienvenue dans une nouvelle version de l’IDE Arduino !",
-      "titleWithVersion": "Bienvenue dans le nouvel IDE Arduino {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' existe déjà."

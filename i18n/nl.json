@@ -140,6 +140,7 @@
       "all": "Alle",
       "contributed": "Bijgedragen",
       "installManually": "Handmatig installeren",
+      "installed": "Geïnstalleerd",
       "later": "Later",
       "noBoardSelected": "Geen bord geselecteerd",
       "noSketchOpened": "No sketch opened",
@@ -169,7 +170,7 @@
       "install": "Installeren",
       "installLatest": "Meest recente installeren",
       "installVersion": "Installeer {0}",
-      "installed": "{0}geïnstalleerd",
+      "installed": "{0} geïnstalleerd",
       "moreInfo": "Meer informatie",
       "otherVersions": "Andere versies",
       "remove": "Verwijderer",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Controleren op Arduino IDE-updates",
       "closeAndInstallButton": "Sluiten en installeren",
       "closeToInstallNotice": "Sluit de software en installeer de update op je machine.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Download de nieuwste versie van de Arduino IDE.",
       "errorCheckingForUpdates": "Fout bij het controleren op Arduino IDE updates.\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Carriage Return",
       "connecting": "Verbinding maken met '{0}' op '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Bericht (Enter om het bericht naar  '{0}' op '{1}' te zenden)",
       "newLine": "Nieuwe Regel",
       "newLineCarriageReturn": "Zowel NL & CR",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Ongeldige bestandsnaam van de schets",
       "renameSketchFolderMessage": "De schets '{0}' kan niet gebruikt worden. {1} Om van deze melding af  te komen, hernoem de schets. Wil je de schets nu hernoemen?",
       "renameSketchFolderTitle": "Ongeldige schetsnaam"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' bestaat al."

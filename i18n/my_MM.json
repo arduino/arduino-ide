@@ -140,6 +140,7 @@
       "all": "အားလုံး",
       "contributed": "ကူညီရေးသားထားသည်များ",
       "installManually": "ကိုယ်တိုင်တပ်ဆင်မည်",
+      "installed": "တပ်ဆင်ထားပြီး",
       "later": "နောက်မှ",
       "noBoardSelected": "ဘုတ် မရွေးချယ်ထားပါ",
       "noSketchOpened": "No sketch opened",
@@ -275,9 +276,6 @@
       "checkForUpdates": "အာဒီနိုအိုင်ဒီအီးအပ်ဒိတ်များစစ်မည်",
       "closeAndInstallButton": "ပိတ်ပြီးသွင်းမယ်",
       "closeToInstallNotice": "ဆော့ဖ်ဝဲလ်ပိတ်ပြီး  အသစ်ကိုသွင်းမယ်။",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "ဒေါင်းလုတ်ဆွဲမယ်",
       "downloadingNotice": "နောက်ဆုံးပေါ် Arduino IDE ဗားရှင်းကို ဒေါင်းလုတ်ဆွဲနေတယ်။",
       "errorCheckingForUpdates": "Arduino IDE အပ်ဒိတ်တွေအတွက် စစ်ဆေးနေတုန်း ပြဿနာတက်သွားတယ်။\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "အလိုအလျောက်လှိမ့်ဆွဲခြင်း",
       "carriageReturn": "လက်နှိပ်စက်အတံပြန်အက္ခရာ",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "စာတို (စာတိုကို  '{0}'သို့ '{1}'တွင် ပို့ရန် ရိုက်နှိပ်ပါ)",
       "newLine": "စာကြောင်းအသစ်အက္ခရာ",
       "newLineCarriageReturn": "စာကြောင်းအသစ်နှင့်လက်နှိပ်စက်အတံပြန်အက္ခရာနှစ်ခုလုံး",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "Invalid sketch name"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

@@ -140,6 +140,7 @@
       "all": "전체",
       "contributed": "공헌된",
       "installManually": "수동으로 설치",
+      "installed": "설치됨",
       "later": "나중에",
       "noBoardSelected": "선택된 보드 없음",
       "noSketchOpened": "No sketch opened",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Arduino IDE 업데이트 확인",
       "closeAndInstallButton": "닫고 설치하기",
       "closeToInstallNotice": "소프트웨어를 닫고 장치에 업데이트를 설치해주세요.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "다운로드",
       "downloadingNotice": "최신 버전의 Arduino IDE를 다운로드하고 있습니다.",
       "errorCheckingForUpdates": "Arduino IDE의 업데이트를 확인하던 중에 오류가 발생했어요.\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "자동스크롤",
       "carriageReturn": "캐리지 리턴",
       "connecting": "Connecting to '{0}' on '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "새 줄",
       "newLineCarriageReturn": "Both NL & CR",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "Invalid sketch filename",
       "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
       "renameSketchFolderTitle": "유효하지 않은 스케치 이름"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' already exists."

@@ -2,28 +2,28 @@
   "arduino": {
     "about": {
       "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
-      "label": "Om 1{0}"
+      "label": "About {0}"
     },
     "account": {
-      "goToCloudEditor": "Gå til Cloud Editor",
-      "goToIoTCloud": "Gå til IoT Cloud",
-      "goToProfile": "Gå til Profil",
+      "goToCloudEditor": "Go to Cloud Editor",
+      "goToIoTCloud": "Go to IoT Cloud",
+      "goToProfile": "Go to Profile",
       "menuTitle": "Arduino Cloud"
     },
     "board": {
       "board": "Board{0}",
-      "boardConfigDialogTitle": "Vælg andet Board og Port",
-      "boardDataReloaded": "Board data genhentet",
-      "boardInfo": "Board info",
-      "boards": "Boards",
-      "configDialog1": "Vælg både et Board og en Port, hvis du ønsker at oploade en skitse",
-      "configDialog2": "Hvis du kun vælger et Board, vil du kunne kompilere, men ikke uploade din skitse.",
-      "couldNotFindPreviouslySelected": "Kunne ikke finde tidligere valgte board '1 {0}' i installerede platform '2 {1}'. Vælg venligst det board du ønsker at anvende. Ønsker du at vælge det nu?",
-      "editBoardsConfig": "Ret Board og Port...",
-      "getBoardInfo": "Hent Board info",
-      "inSketchbook": "(I skitsebog)",
-      "installNow": "\" 1 {0} 2 {1} \" kerne skal installeres for det nuværende valgte \" 3 {2}\" board. Vil du installere det nu?",
-      "noBoardsFound": "Intet board fundet for  \" 1 {0} \"",
+      "boardConfigDialogTitle": "Select Other Board and Port",
+      "boardDataReloaded": "Board data reloaded.",
+      "boardInfo": "Board Info",
+      "boards": "boards",
+      "configDialog1": "Select both a Board and a Port if you want to upload a sketch.",
+      "configDialog2": "If you only select a Board you will be able to compile, but not to upload your sketch.",
+      "couldNotFindPreviouslySelected": "Could not find previously selected board '{0}' in installed platform '{1}'. Please manually reselect the board you want to use. Do you want to reselect it now?",
+      "editBoardsConfig": "Edit Board and Port...",
+      "getBoardInfo": "Get Board Info",
+      "inSketchbook": " (in Sketchbook)",
+      "installNow": "The \"{0} {1}\" core has to be installed for the currently selected \"{2}\" board. Do you want to install it now?",
+      "noBoardsFound": "No boards found for \"{0}\"",
       "noNativeSerialPort": "Native serial port, can't obtain info.",
       "noPortsDiscovered": "No ports discovered",
       "nonSerialPort": "Non-serial port, can't obtain info.",
@@ -100,15 +100,15 @@
       "emptySketchbook": "Your Sketchbook is empty",
       "goToCloud": "Go to Cloud",
       "learnMore": "Learn more",
-      "link": "Link:",
+      "link": "ბმული:",
       "notYetPulled": "Cannot push to Cloud. It is not yet pulled.",
-      "offline": "Offline",
+      "offline": "გამოთხოვა",
       "openInCloudEditor": "Open in Cloud Editor",
       "options": "Options...",
       "privateVisibility": "Private. Only you can view the Sketch.",
       "profilePicture": "Profile picture",
       "publicVisibility": "Public. Anyone with the link can view the Sketch.",
-      "pull": "Pull",
+      "pull": "გამოთხოვა",
       "pullFirst": "You have to pull first to be able to push to the Cloud.",
       "pullSketch": "Pull Sketch",
       "pullSketchMsg": "Pulling this Sketch from the Cloud will overwrite its local version. Are you sure you want to continue?",
@@ -148,7 +148,7 @@
       "offlineIndicator": "You appear to be offline. Without an Internet connection, the Arduino CLI might not be able to download the required resources and could cause malfunction. Please connect to the Internet and restart the application.",
       "oldFormat": "The '{0}' still uses the old `.pde` format. Do you want to switch to the new `.ino` extension?",
       "partner": "Partner",
-      "processing": "Processing",
+      "processing": "მიმდინარეობს დამუშავება",
       "recommended": "Recommended",
       "retired": "Retired",
       "selectManually": "Select Manually",
@@ -167,7 +167,7 @@
       "by": "by",
       "clickToOpen": "Click to open in browser: {0}",
       "filterSearch": "Filter your search...",
-      "install": "Install",
+      "install": "დაყენება",
       "installLatest": "Install Latest",
       "installVersion": "Install {0}",
       "installed": "{0} installed",
@@ -193,7 +193,7 @@
       "plotter": {
         "couldNotOpen": "Couldn't open serial plotter"
       },
-      "replaceTitle": "Replace"
+      "replaceTitle": "ჩანაცვლება"
     },
     "core": {
       "compilerWarnings": {
@@ -252,7 +252,7 @@
     "firmware": {
       "checkUpdates": "Check Updates",
       "failedInstall": "Installation failed. Please try again.",
-      "install": "Install",
+      "install": "დაყენება",
       "installingFirmware": "Installing firmware.",
       "overwriteSketch": "Installation will overwrite the Sketch on the board.",
       "selectBoard": "Select Board",
@@ -269,7 +269,7 @@
       "privacyPolicy": "Privacy Policy",
       "reference": "Reference",
       "search": "Search on Arduino.cc",
-      "troubleshooting": "Troubleshooting",
+      "troubleshooting": "პრობლემების გადაწყვეტა",
       "visit": "Visit Arduino.cc"
     },
     "ide-updater": {
@@ -313,7 +313,7 @@
       "successfullyInstalledZipLibrary": "Successfully installed library from {0} archive",
       "title": "Library Manager",
       "uninstalledSuccessfully": "Successfully uninstalled library {0}:{1}",
-      "zipLibrary": "Library"
+      "zipLibrary": "ბიბლიოთეკა"
     },
     "librarySearchProperty": {
       "topic": "Topic"
@@ -353,7 +353,7 @@
       "newSketchTitle": "Name of the new Cloud Sketch"
     },
     "portProtocol": {
-      "network": "Network",
+      "network": "ქსელი",
       "serial": "Serial"
     },
     "preferences": {
@@ -362,7 +362,7 @@
       "auth.clientID": "The OAuth2 client ID.",
       "auth.domain": "The OAuth2 domain.",
       "auth.registerUri": "The URI used to register a new user.",
-      "automatic": "Automatic",
+      "automatic": "ავტომატური",
       "board.certificates": "List of certificates that can be uploaded to boards",
       "browse": "Browse",
       "checkForUpdate": "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default.",
@@ -397,7 +397,7 @@
       "monitor": {
         "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
       },
-      "network": "Network",
+      "network": "ქსელი",
       "newSketchbookLocation": "Select new sketchbook location",
       "noCliConfig": "Could not load the CLI configuration",
       "noProxy": "No proxy",
@@ -531,15 +531,15 @@
       "cannotConnectDaemon": "Cannot connect to the CLI daemon.",
       "couldNotSave": "Could not save the sketch. Please copy your unsaved work into your favorite text editor, and restart the IDE.",
       "daemonOffline": "CLI Daemon Offline",
-      "offline": "Offline",
-      "offlineText": "Offline",
+      "offline": "ინტერნეტის გარეშე",
+      "offlineText": "ინტერნეტის გარეშე",
       "quitTitle": "Are you sure you want to quit?"
     },
     "editor": {
       "unsavedTitle": "Unsaved – {0}"
     },
     "messages": {
-      "collapse": "Collapse",
+      "collapse": "ჩამოშლა",
       "expand": "Expand"
     },
     "workspace": {

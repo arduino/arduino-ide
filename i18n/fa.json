@@ -140,6 +140,7 @@
       "all": "همه",
       "contributed": "کمک کرد",
       "installManually": "دستی نصب کن",
+      "installed": "نصب شده است",
       "later": "بعدا",
       "noBoardSelected": "بردی انتخاب نشده",
       "noSketchOpened": "هیچ طرحی باز نشده است",
@@ -275,9 +276,6 @@
       "checkForUpdates": "به روز رسانی آردوینو IDE را بررسی کنید",
       "closeAndInstallButton": "بستن و نصب",
       "closeToInstallNotice": "نرم افزار را ببندید و به روز رسانی را روی دستگاه خود نصب کنید.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "دانلود",
       "downloadingNotice": "در حال بارگیری آخرین نسخه از آردوینو",
       "errorCheckingForUpdates": "خطا در حلقه بررسی برای وجود بروزرسانی برای آردوینو رخ داد. {0}",
@@ -435,6 +433,7 @@
       "autoscroll": "پیمایش خودکار",
       "carriageReturn": "رفتن به سر سطر",
       "connecting": "برقراری ارتباط '{0}' روی '{1}'",
+      "copyOutput": "Copy Output",
       "message": "پیام (برای ارسال پیام به '' د{0}ر '' وارد شوید{1})",
       "newLine": "خط جدید",
       "newLineCarriageReturn": "هم NL و هم CR",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "نام فایل طرح نامعتبر است",
       "renameSketchFolderMessage": "طرح«{0}»  قابل استفاده نیست. «{1}» برای خلاص شدن از  این پیام، نام طرح را تغییر دهید. اکنون می خواهید نام طرح را تغییر دهید؟",
       "renameSketchFolderTitle": "نام طرح بی‌اعتبار است"
-    },
-    "versionWelcome": {
-      "cancelButton": "Maybe later",
-      "donateButton": "Donate now",
-      "donateMessage": "Arduino is committed to keeping software free and open-source for everyone. Your donation helps us develop new features, improve libraries, and support millions of users worldwide.",
-      "donateMessage2": "Please consider supporting our work on the free open source Arduino IDE.",
-      "title": "Welcome to a new version of the Arduino IDE!",
-      "titleWithVersion": "Welcome to the new Arduino IDE {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}'  از قبل وجود دارد."

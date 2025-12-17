@@ -140,6 +140,7 @@
       "all": "ทั้งหมด",
       "contributed": "มีส่วนร่วม",
       "installManually": "ติดตั้งด้วยตัวเอง",
+      "installed": "ติดตั้งอยู่",
       "later": "ภายหลัง",
       "noBoardSelected": "ไม่ได้เลือกบอร์ด :O",
       "noSketchOpened": "ไม่ได้เปิด สเก็ตช์",
@@ -275,9 +276,6 @@
       "checkForUpdates": "Check for Arduino IDE Updates",
       "closeAndInstallButton": "Close and Install",
       "closeToInstallNotice": "Close the software and install the update on your machine.",
-      "donateLinkIconTitle": "open donation page",
-      "donateLinkText": "donate to support us",
-      "donateText": "Open source is love, {0}",
       "downloadButton": "Download",
       "downloadingNotice": "Downloading the latest version of the Arduino IDE.",
       "errorCheckingForUpdates": "Error while checking for Arduino IDE updates.\n{0}",
@@ -435,6 +433,7 @@
       "autoscroll": "เลื่อนอัตโนมัติ",
       "carriageReturn": "การคืนตำแหน่งของตัวพิมพ์",
       "connecting": "เชื่อมต่อกับ '{0}' บน '{1}'...",
+      "copyOutput": "Copy Output",
       "message": "Message (Enter to send message to '{0}' on '{1}')",
       "newLine": "บรรทัดใหม่",
       "newLineCarriageReturn": "Both NL & CR",
@@ -521,14 +520,6 @@
       "renameSketchFileTitle": "ชื่อไฟล์สเก็ตช์ไม่ถูกต้อง",
       "renameSketchFolderMessage": "สเก็ตช์ '{0}' ไม่สามารถใช้ได้ {1} เนื่องจากชื่อสเก็ตซ์ของคุณโหดเกินไป เพื่อกำจัดข้อความนี้ กรุณาเปลี่ยนชื่อสเก็ตช์ คุณต้องการเปลี่ยนชื่อสเก็ตช์ตอนนี้หรือไม่?",
       "renameSketchFolderTitle": "ชื่อสเก็ตช์ไม่ถูกต้อง"
-    },
-    "versionWelcome": {
-      "cancelButton": "อาจจะในภายหลัง",
-      "donateButton": "บริจาคเลย!",
-      "donateMessage": "Arduino มุ่งมั่นที่จะรักษาซอฟต์แวร์ให้ฟรีและเป็นโอเพ่นซอร์สสำหรับทุกคน การบริจาคของคุณช่วยให้เราพัฒนาฟีเจอร์ใหม่ ปรับปรุงไลบรารี และรองรับผู้ใช้หลายล้านคนทั่วโลก!",
-      "donateMessage2": "โปรดพิจารณาสนับสนุนงานของเราบน Arduino IDE ที่เป็นโอเพนซอร์สฟรี",
-      "title": "ยินดีต้อนรับสู่เวอร์ชันใหม่ของ Arduino IDE!",
-      "titleWithVersion": "ยินดีต้อนรับสู่ Arduino IDE ใหม่ {0}!"
     },
     "workspace": {
       "alreadyExists": "'{0}' มีอยู่แล้ว"
