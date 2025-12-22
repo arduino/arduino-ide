@@ -95,10 +95,10 @@ allowed:
   # The following are based on individual license text
   - eupl-1.2
 
-  - epl-2.0 # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/EPL-2.0/AGPL-3.0-only
+  - epl-2.0   # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/EPL-2.0/AGPL-3.0-only
+  - 0bsd      # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/0bsd/AGPL-3.0-only
+  - CC-BY-4.0 # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/CC-BY-4.0/AGPL-3.0-only
   # to check
-  - 0bsd
-  - blueoak-1.0.0
-  - Python-2.0
-  - OFL-1.1
-  - CC-BY-4.0
+  #- blueoak-1.0.0
+  #- Python-2.0
+  #- OFL-1.1
