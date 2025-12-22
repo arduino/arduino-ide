@@ -1,0 +1,9 @@
+---
+name: electron-app
+version: 2.3.7
+type: npm
+summary: Arduino IDE
+homepage:
+license: other
+licenses: []
+notices: []

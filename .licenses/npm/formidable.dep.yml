@@ -1,0 +1,86 @@
+---
+name: formidable
+version: 2.1.2
+type: npm
+summary: A node.js module for parsing form data, especially file uploads.
+homepage: https://github.com/node-formidable/formidable
+license: mit
+licenses:
+- sources: LICENSE
+  text: |
+    The MIT License (MIT)
+
+    Copyright (c) 2011-present Felix Geisendörfer, and contributors.
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+- sources: README.md
+  text: |-
+    Formidable is licensed under the [MIT License][license-url].
+
+    <!-- badges -->
+    <!-- prettier-ignore-start -->
+
+    [codestyle-url]: https://github.com/airbnb/javascript
+    [codestyle-img]: https://badgen.net/badge/code%20style/airbnb%20%2B%20prettier/ff5a5f?icon=airbnb&cache=300
+    [codecov-url]: https://codecov.io/gh/node-formidable/formidable
+    [codecov-img]: https://badgen.net/codecov/c/github/node-formidable/formidable/master?icon=codecov
+    [npmv-canary-img]: https://badgen.net/npm/v/formidable/canary?icon=npm
+    [npmv-dev-img]: https://badgen.net/npm/v/formidable/dev?icon=npm
+    [npmv-img]: https://badgen.net/npm/v/formidable?icon=npm
+    [npmv-url]: https://npmjs.com/package/formidable
+    [license-img]: https://badgen.net/npm/license/formidable
+    [license-url]: https://github.com/node-formidable/formidable/blob/master/LICENSE
+    [chat-img]: https://badgen.net/badge/chat/on%20gitter/46BC99?icon=gitter
+    [chat-url]: https://gitter.im/node-formidable/Lobby
+    [libera-manifesto-url]: https://liberamanifesto.com
+    [libera-manifesto-img]: https://badgen.net/badge/libera/manifesto/grey
+    [renovateapp-url]: https://renovatebot.com
+    [renovateapp-img]: https://badgen.net/badge/renovate/enabled/green?cache=300
+    [prs-welcome-img]: https://badgen.net/badge/PRs/welcome/green?cache=300
+    [prs-welcome-url]: http://makeapullrequest.com
+    [twitter-url]: https://twitter.com/3a1fcBx0
+    [twitter-img]: https://badgen.net/twitter/follow/3a1fcBx0?icon=twitter&color=1da1f2&cache=300
+
+    [npm-weekly-img]: https://badgen.net/npm/dw/formidable?icon=npm&cache=300
+    [npm-monthly-img]: https://badgen.net/npm/dm/formidable?icon=npm&cache=300
+    [npm-yearly-img]: https://badgen.net/npm/dy/formidable?icon=npm&cache=300
+    [npm-alltime-img]: https://badgen.net/npm/dt/formidable?icon=npm&cache=300&label=total%20downloads
+
+    [nodejs-img]: https://badgen.net/badge/node/>=%2010.13/green?cache=300
+
+    [ccommits-url]: https://conventionalcommits.org/
+    [ccommits-img]: https://badgen.net/badge/conventional%20commits/v1.0.0/green?cache=300
+
+    [contributing-url]: https://github.com/node-formidable/.github/blob/master/CONTRIBUTING.md
+    [code_of_conduct-url]: https://github.com/node-formidable/.github/blob/master/CODE_OF_CONDUCT.md
+
+    [open-issue-url]: https://github.com/node-formidable/formidable/issues/new
+
+    [tidelift-url]: https://tidelift.com/subscription/pkg/npm-formidable?utm_source=npm-formidable&utm_medium=referral&utm_campaign=enterprise
+    [tidelift-img]: https://badgen.net/badge/tidelift/subscription/4B5168?labelColor=F6914D
+
+    [kofi-url]: https://ko-fi.com/tunnckoCore/commissions
+    [kofi-img]: https://badgen.net/badge/ko-fi/support/29abe0c2?cache=300&icon=https://rawcdn.githack.com/tunnckoCore/badgen-icons/f8264c6414e0bec449dd86f2241d50a9b89a1203/icons/kofi.svg
+
+    [linux-build-img]: https://badgen.net/github/checks/node-formidable/formidable/master/ubuntu?cache=300&label=linux%20build&icon=github
+    [macos-build-img]: https://badgen.net/github/checks/node-formidable/formidable/master/macos?cache=300&label=macos%20build&icon=github
+    [windows-build-img]: https://badgen.net/github/checks/node-formidable/formidable/master/windows?cache=300&label=windows%20build&icon=github
+    [build-url]: https://github.com/node-formidable/formidable/actions?query=workflow%3Anodejs
+    <!-- prettier-ignore-end -->
+notices: []

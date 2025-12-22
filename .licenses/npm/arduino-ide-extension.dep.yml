@@ -1,0 +1,9 @@
+---
+name: arduino-ide-extension
+version: 2.3.7
+type: npm
+summary: An extension for Theia building the Arduino IDE
+homepage:
+license: other
+licenses: []
+notices: []
