@@ -1,0 +1,49 @@
+---
+name: engine.io
+version: 6.6.4
+type: npm
+summary: The realtime engine behind Socket.IO. Provides the foundation of a bidirectional
+  connection between client and server
+homepage: https://github.com/socketio/socket.io/tree/main/packages/engine.io#readme
+license: mit
+licenses:
+- sources: LICENSE
+  text: "(The MIT License)\n\nCopyright (c) 2014-present Guillermo Rauch and Socket.IO
+    contributors\n\nPermission is hereby granted, free of charge, to any person obtaining
+    a copy of this software \nand associated documentation files (the 'Software'),
+    to deal in the Software without restriction, \nincluding without limitation the
+    rights to use, copy, modify, merge, publish, distribute, \nsublicense, and/or
+    sell copies of the Software, and to permit persons to whom the Software is \nfurnished
+    to do so, subject to the following conditions:\n\nThe above copyright notice and
+    this permission notice shall be included in all copies or \nsubstantial portions
+    of the Software.\n\nTHE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY
+    KIND, EXPRESS OR IMPLIED, INCLUDING \nBUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND \nNONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, \nDAMAGES OR OTHER LIABILITY,
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, \nOUT OF OR
+    IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n"
+- sources: README.md
+  text: |-
+    (The MIT License)
+
+    Copyright (c) 2014 Guillermo Rauch &lt;guillermo@learnboost.com&gt;
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    'Software'), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+notices: []

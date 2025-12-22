@@ -1,0 +1,11 @@
+---
+name: "@theia/application-package"
+version: 1.57.0
+type: npm
+summary: Theia application package API.
+homepage: https://github.com/eclipse-theia/theia
+license: other
+licenses:
+- sources: README.md
+  text: ''
+notices: []
