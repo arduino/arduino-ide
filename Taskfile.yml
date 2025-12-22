@@ -1,0 +1,47 @@
+# See: https://taskfile.dev/#/usage
+version: "3"
+
+tasks:
+  # Source: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/assets/check-dependencies-task/Taskfile.yml
+  general:cache-dep-licenses:
+    desc: Cache dependency license metadata
+    deps:
+      - task: general:check-licensed
+      - task: general:prepare-deps
+    cmds:
+      - licensed cache
+
+  # Source: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/assets/check-dependencies-task/Taskfile.yml
+  general:check-dep-licenses:
+    desc: Check for unapproved dependency licenses
+    deps:
+      - task: general:cache-dep-licenses
+    cmds:
+      - licensed status
+
+  general:check-licensed:
+    desc: Install licensed in the .licensed folder
+    status:
+      - licensed version
+    cmds:
+      - |
+        if [[ {{OS}} == "windows" ]]; then
+          echo "Licensed does not have Windows support."
+          echo "Please use Linux/macOS or download the dependencies cache from the GitHub Actions workflow artifact."
+          exit 1
+        fi
+      - |
+        echo "Run 'sudo gem install licensed' to install licensed."
+        exit 1
+
+  general:prepare-deps:
+    desc: Prepare project dependencies for license check
+    deps:
+      - task: yarn:install-deps
+
+  yarn:install-deps:
+    desc: |
+      Install dependencies managed by npm/yarn.
+    run: when_changed
+    cmds:
+      - yarn
