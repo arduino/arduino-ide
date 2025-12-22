@@ -6,7 +6,7 @@ summary: The jsbn library is a fast, portable implementation of large-number mat
   in pure JavaScript, enabling public-key crypto and other applications on desktop
   and mobile browsers.
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: "Licensing\n---------\n\nThis software is covered under the following copyright:\n\n/*\n

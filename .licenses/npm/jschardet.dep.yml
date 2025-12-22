@@ -4,7 +4,7 @@ version: 2.3.0
 type: npm
 summary: Character encoding auto-detection in JavaScript (port of python's chardet)
 homepage:
-license: other
+license: lgpl-2.1
 licenses:
 - sources: LICENSE
   text: |2

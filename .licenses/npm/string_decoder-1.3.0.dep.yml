@@ -4,7 +4,7 @@ version: 1.3.0
 type: npm
 summary: The string_decoder module from Node core
 homepage: https://github.com/nodejs/string_decoder
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |+

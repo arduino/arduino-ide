@@ -4,7 +4,7 @@ version: 0.0.11
 type: npm
 summary: a ThroughStream that strictly buffers all readable events when paused.
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: "Dual Licensed MIT and Apache 2\n\nThe MIT License\n\nCopyright (c) 2013 Dominic
