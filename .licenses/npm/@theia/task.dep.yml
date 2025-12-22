@@ -5,7 +5,7 @@ type: npm
 summary: Theia - Task extension. This extension adds support for executing raw or
   terminal processes in the backend.
 homepage: https://github.com/eclipse-theia/theia
-license: other
+license: epl-2.0 # https://github.com/eclipse-theia/theia?tab=readme-ov-file#license
 licenses:
 - sources: README.md
   text: ''

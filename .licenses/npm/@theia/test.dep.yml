@@ -4,6 +4,6 @@ version: 1.57.0
 type: npm
 summary: Theia - Test Extension
 homepage: https://github.com/eclipse-theia/theia
-license: other
+license: epl-2.0 # https://github.com/eclipse-theia/theia?tab=readme-ov-file#license
 licenses: []
 notices: []
