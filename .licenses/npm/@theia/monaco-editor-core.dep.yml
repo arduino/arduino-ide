@@ -4,7 +4,7 @@ version: 1.83.101
 type: npm
 summary: A browser based code editor
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |
