@@ -4,7 +4,7 @@ version: 0.1.4
 type: npm
 summary: Like duplexer but using streams3
 homepage:
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE.md
   text: "Copyright (c) 2013, Deoxxa Development\n======================================\nAll

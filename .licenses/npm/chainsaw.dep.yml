@@ -4,6 +4,6 @@ version: 0.1.0
 type: npm
 summary: Build chainable fluent interfaces the easy way... with a freakin' chainsaw!
 homepage:
-license: none
+license: mit # https://www.npmjs.com/package/chainsaw
 licenses: []
 notices: []

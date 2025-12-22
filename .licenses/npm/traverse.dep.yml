@@ -4,7 +4,7 @@ version: 0.3.9
 type: npm
 summary: Traverse and transform objects by visiting every node on a recursive walk
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: "Copyright 2010 James Halliday (mail@substack.net)\n\nThis project is free

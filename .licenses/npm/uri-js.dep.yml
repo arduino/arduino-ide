@@ -5,7 +5,7 @@ type: npm
 summary: An RFC 3986/3987 compliant, scheme extendable URI/IRI parsing/validating/resolving
   library for JavaScript.
 homepage: https://github.com/garycourt/uri-js
-license: other
+license: bsd-2-clause
 licenses:
 - sources: LICENSE
   text: "Copyright 2011 Gary Court. All rights reserved.\n\nRedistribution and use

@@ -4,7 +4,7 @@ version: 4.2.0
 type: npm
 summary: JavaScript library of crypto standards.
 homepage: http://github.com/brix/crypto-js
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: "# License\n\n[The MIT License (MIT)](http://opensource.org/licenses/MIT)\n\nCopyright

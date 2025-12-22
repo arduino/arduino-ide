@@ -4,7 +4,7 @@ version: 3.0.6
 type: npm
 summary: Dependency-free RFC 3986 URI toolbox
 homepage: https://github.com/fastify/fast-uri
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE
   text: |-

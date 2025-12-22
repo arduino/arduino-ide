@@ -4,7 +4,7 @@ version: 1.15.11
 type: npm
 summary: A module for using ripgrep in a Node project
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

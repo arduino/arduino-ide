@@ -4,7 +4,7 @@ version: 2.19.0
 type: npm
 summary: A collection of essential TypeScript types
 homepage:
-license: other
+license: mit
 licenses:
 - sources: readme.md
   text: "SPDX-License-Identifier: (MIT OR CC0-1.0)\n\n---\n\n<div align=\"center\">\n\t<b>\n\t\t<a

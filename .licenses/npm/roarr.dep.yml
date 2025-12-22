@@ -4,7 +4,7 @@ version: 2.15.4
 type: npm
 summary: JSON logger for Node.js and browser.
 homepage:
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE
   text: |

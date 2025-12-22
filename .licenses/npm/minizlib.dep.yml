@@ -5,7 +5,7 @@ type: npm
 summary: A small fast zlib stream built on [minipass](http://npm.im/minipass) and
   Node.js's zlib binding.
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

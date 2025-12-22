@@ -5,10 +5,14 @@ sources:
 
 ignored:
   npm:
+    - arduino-ide-extension # this is a project in this repo
+    - electron-app          # this is a project in this repo
+
     # "msgpackr-extract" and "@parcel/watcher" have some optional (architecutre native) packages.
     - "@msgpackr-extract/msgpackr-extract-**" # ignored in favor of parent package "msgpackr-extract"
     - "@parcel/watcher-**"                    # ignored in favor of parent package "@parcel-watcher"
-    # "@vscode/windows-ca-certs" is installed only windows
+
+    # "@vscode/windows-ca-certs" is installed only on windows
     - "@vscode/windows-ca-certs"
 
 # Source: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/assets/check-dependencies/AGPL-3.0/.licensed.yml
@@ -90,3 +94,11 @@ allowed:
   - zpl-2.1
   # The following are based on individual license text
   - eupl-1.2
+
+  # to check
+  - 0bsd
+  - epl-2.0
+  - blueoak-1.0.0
+  - Python-2.0
+  - OFL-1.1
+  - CC-BY-4.0

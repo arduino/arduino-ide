@@ -4,7 +4,7 @@ version: 2.0.0
 type: npm
 summary: Keep track of the overall completion of many disparate processes
 homepage: https://github.com/npm/are-we-there-yet
-license: other
+license: isc
 licenses:
 - sources: LICENSE.md
   text: |
