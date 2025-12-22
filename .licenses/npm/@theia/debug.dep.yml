@@ -1,0 +1,13 @@
+---
+name: "@theia/debug"
+version: 1.57.0
+type: npm
+summary: Theia - Debug Extension
+homepage: https://github.com/eclipse-theia/theia
+license: other
+licenses:
+- sources: README.md
+  text: |-
+    * [Eclipse Public License 2.0](http://www.eclipse.org/legal/epl-2.0/)
+    * [一 (Secondary) GNU General Public License, version 2 with the GNU Classpath Exception](https://projects.eclipse.org/license/secondary-gpl-2.0-cp)
+notices: []

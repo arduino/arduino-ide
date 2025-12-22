@@ -1,0 +1,43 @@
+---
+name: through
+version: 2.3.8
+type: npm
+summary: simplified stream construction
+homepage: https://github.com/dominictarr/through
+license: other
+licenses:
+- sources: LICENSE.APACHE2
+  text: |
+    Apache License, Version 2.0
+
+    Copyright (c) 2011 Dominic Tarr
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+- sources: LICENSE.MIT
+  text: "The MIT License\n\nCopyright (c) 2011 Dominic Tarr\n\nPermission is hereby
+    granted, free of charge, \nto any person obtaining a copy of this software and
+    \nassociated documentation files (the \"Software\"), to \ndeal in the Software
+    without restriction, including \nwithout limitation the rights to use, copy, modify,
+    \nmerge, publish, distribute, sublicense, and/or sell \ncopies of the Software,
+    and to permit persons to whom \nthe Software is furnished to do so, \nsubject
+    to the following conditions:\n\nThe above copyright notice and this permission
+    notice \nshall be included in all copies or substantial portions of the Software.\n\nTHE
+    SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, \nEXPRESS OR IMPLIED,
+    INCLUDING BUT NOT LIMITED TO THE WARRANTIES \nOF MERCHANTABILITY, FITNESS FOR
+    A PARTICULAR PURPOSE AND NONINFRINGEMENT. \nIN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    HOLDERS BE LIABLE FOR \nANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, \nTORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    \nSOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n"
+- sources: readme.markdown
+  text: MIT / Apache2
+notices: []

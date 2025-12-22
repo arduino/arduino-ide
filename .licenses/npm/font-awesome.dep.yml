@@ -1,0 +1,11 @@
+---
+name: font-awesome
+version: 4.7.0
+type: npm
+summary: The iconic font and CSS framework
+homepage: http://fontawesome.io/
+license: other
+licenses:
+- sources: README.md
+  text: "- The Font Awesome font is licensed under the SIL OFL 1.1:"
+notices: []

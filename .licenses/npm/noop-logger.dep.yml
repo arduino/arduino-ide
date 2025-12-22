@@ -1,0 +1,11 @@
+---
+name: noop-logger
+version: 0.1.1
+type: npm
+summary: A logger that does exactly nothing.
+homepage:
+license: mit
+licenses:
+- sources: Readme.md
+  text: MIT
+notices: []

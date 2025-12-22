@@ -1,0 +1,68 @@
+---
+name: micromark-util-chunked
+version: 1.1.0
+type: npm
+summary: micromark utility to splice and push with giant arrays
+homepage:
+license: mit
+licenses:
+- sources: readme.md
+  text: |-
+    [MIT][license] © [Titus Wormer][author]
+
+    <!-- Definitions -->
+
+    [build-badge]: https://github.com/micromark/micromark/workflows/main/badge.svg
+
+    [build]: https://github.com/micromark/micromark/actions
+
+    [coverage-badge]: https://img.shields.io/codecov/c/github/micromark/micromark.svg
+
+    [coverage]: https://codecov.io/github/micromark/micromark
+
+    [downloads-badge]: https://img.shields.io/npm/dm/micromark-util-chunked.svg
+
+    [downloads]: https://www.npmjs.com/package/micromark-util-chunked
+
+    [bundle-size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=micromark-util-chunked
+
+    [bundle-size]: https://bundlejs.com/?q=micromark-util-chunked
+
+    [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+    [backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+    [opencollective]: https://opencollective.com/unified
+
+    [npm]: https://docs.npmjs.com/cli/install
+
+    [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+    [esmsh]: https://esm.sh
+
+    [chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
+
+    [chat]: https://github.com/micromark/micromark/discussions
+
+    [license]: https://github.com/micromark/micromark/blob/main/license
+
+    [author]: https://wooorm.com
+
+    [health]: https://github.com/micromark/.github
+
+    [securitymd]: https://github.com/micromark/.github/blob/main/security.md
+
+    [contributing]: https://github.com/micromark/.github/blob/main/contributing.md
+
+    [support]: https://github.com/micromark/.github/blob/main/support.md
+
+    [coc]: https://github.com/micromark/.github/blob/main/code-of-conduct.md
+
+    [typescript]: https://www.typescriptlang.org
+
+    [micromark]: https://github.com/micromark/micromark
+
+    [api-push]: #pushlist-items
+
+    [api-splice]: #splicelist-start-remove-items
+notices: []

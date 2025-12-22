@@ -1,0 +1,145 @@
+---
+name: react-markdown
+version: 8.0.7
+type: npm
+summary: React component to render markdown
+homepage:
+license: mit
+licenses:
+- sources: license
+  text: |
+    The MIT License (MIT)
+
+    Copyright (c) 2015 Espen Hovlandsdal
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+- sources: readme.md
+  text: |-
+    [MIT][license] © [Espen Hovlandsdal][author]
+
+    [build-badge]: https://github.com/remarkjs/react-markdown/workflows/main/badge.svg
+
+    [build]: https://github.com/remarkjs/react-markdown/actions
+
+    [coverage-badge]: https://img.shields.io/codecov/c/github/remarkjs/react-markdown.svg
+
+    [coverage]: https://codecov.io/github/remarkjs/react-markdown
+
+    [downloads-badge]: https://img.shields.io/npm/dm/react-markdown.svg
+
+    [downloads]: https://www.npmjs.com/package/react-markdown
+
+    [size-badge]: https://img.shields.io/bundlephobia/minzip/react-markdown.svg
+
+    [size]: https://bundlephobia.com/result?p=react-markdown
+
+    [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+    [backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+    [collective]: https://opencollective.com/unified
+
+    [chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
+
+    [chat]: https://github.com/remarkjs/remark/discussions
+
+    [npm]: https://docs.npmjs.com/cli/install
+
+    [esmsh]: https://esm.sh
+
+    [health]: https://github.com/remarkjs/.github
+
+    [contributing]: https://github.com/remarkjs/.github/blob/HEAD/contributing.md
+
+    [support]: https://github.com/remarkjs/.github/blob/HEAD/support.md
+
+    [coc]: https://github.com/remarkjs/.github/blob/HEAD/code-of-conduct.md
+
+    [license]: license
+
+    [author]: https://espen.codes/
+
+    [micromark]: https://github.com/micromark/micromark
+
+    [remark]: https://github.com/remarkjs/remark
+
+    [demo]: https://remarkjs.github.io/react-markdown/
+
+    [position]: https://github.com/syntax-tree/unist#position
+
+    [gfm]: https://github.com/remarkjs/remark-gfm
+
+    [math]: https://github.com/remarkjs/remark-math
+
+    [katex]: https://github.com/remarkjs/remark-math/tree/main/packages/rehype-katex
+
+    [raw]: https://github.com/rehypejs/rehype-raw
+
+    [sanitize]: https://github.com/rehypejs/rehype-sanitize
+
+    [remark-plugins]: https://github.com/remarkjs/remark/blob/main/doc/plugins.md#list-of-plugins
+
+    [rehype-plugins]: https://github.com/rehypejs/rehype/blob/main/doc/plugins.md#list-of-plugins
+
+    [remark-rehype]: https://github.com/remarkjs/remark-rehype
+
+    [awesome-remark]: https://github.com/remarkjs/awesome-remark
+
+    [awesome-rehype]: https://github.com/rehypejs/awesome-rehype
+
+    [remark-plugin]: https://github.com/topics/remark-plugin
+
+    [rehype-plugin]: https://github.com/topics/rehype-plugin
+
+    [cm-html]: https://spec.commonmark.org/0.30/#html-blocks
+
+    [uri]: https://github.com/remarkjs/react-markdown/blob/main/lib/uri-transformer.js
+
+    [uri-transformer]: #uritransformer
+
+    [react]: http://reactjs.org
+
+    [cheat]: https://commonmark.org/help/
+
+    [unified]: https://github.com/unifiedjs/unified
+
+    [rehype]: https://github.com/rehypejs/rehype
+
+    [react-remark]: https://github.com/remarkjs/react-remark
+
+    [rehype-react]: https://github.com/rehypejs/rehype-react
+
+    [mdx]: https://github.com/mdx-js/mdx/
+
+    [typescript]: https://www.typescriptlang.org
+
+    [security]: #security
+
+    [components]: #appendix-b-components
+
+    [plugins]: #plugins
+
+    [syntax]: #syntax
+
+    [react-syntax-highlighter]: https://github.com/react-syntax-highlighter/react-syntax-highlighter
+
+    [conor]: https://github.com/conorhastings
+
+    [esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+notices: []

@@ -1,0 +1,62 @@
+---
+name: moment
+version: 2.30.1
+type: npm
+summary: Parse, validate, manipulate, and display dates
+homepage: https://momentjs.com
+license: mit
+licenses:
+- sources: LICENSE
+  text: |
+    Copyright (c) JS Foundation and other contributors
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation
+    files (the "Software"), to deal in the Software without
+    restriction, including without limitation the rights to use,
+    copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following
+    conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+    HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE.
+- sources: README.md
+  text: |-
+    Moment.js is freely distributable under the terms of the [MIT license][license-url].
+
+    [![FOSSA Status][fossa-large-image]][fossa-large-url]
+
+    [license-image]: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
+    [license-url]: LICENSE
+
+    [npm-url]: https://npmjs.org/package/moment
+    [npm-version-image]: https://img.shields.io/npm/v/moment.svg?style=flat
+
+    [npm-downloads-image]: https://img.shields.io/npm/dm/moment.svg?style=flat
+    [npm-downloads-url]: https://npmcharts.com/compare/moment?minimal=true
+
+    [travis-url]: https://travis-ci.org/moment/moment
+    [travis-image]: https://img.shields.io/travis/moment/moment/develop.svg?style=flat
+
+    [coveralls-image]: https://coveralls.io/repos/moment/moment/badge.svg?branch=develop
+    [coveralls-url]: https://coveralls.io/r/moment/moment?branch=develop
+
+    [fossa-badge-image]: https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmoment%2Fmoment.svg?type=shield
+    [fossa-badge-url]: https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmoment%2Fmoment?ref=badge_shield
+
+    [fossa-large-image]: https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmoment%2Fmoment.svg?type=large
+    [fossa-large-url]: https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmoment%2Fmoment?ref=badge_large
+
+    [semver-image]: https://api.dependabot.com/badges/compatibility_score?dependency-name=moment&package-manager=npm_and_yarn&version-scheme=semver
+    [semver-url]: https://dependabot.com/compatibility-score.html?dependency-name=moment&package-manager=npm_and_yarn&version-scheme=semver
+notices: []

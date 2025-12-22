@@ -1,0 +1,11 @@
+---
+name: is-regexp
+version: 1.0.0
+type: npm
+summary: Check whether a variable is a regular expression
+homepage:
+license: mit
+licenses:
+- sources: readme.md
+  text: MIT © [Sindre Sorhus](http://sindresorhus.com)
+notices: []
