@@ -1,0 +1,54 @@
+---
+name: express
+version: 4.21.2
+type: npm
+summary: Fast, unopinionated, minimalist web framework
+homepage: http://expressjs.com/
+license: mit
+licenses:
+- sources: LICENSE
+  text: |
+    (The MIT License)
+
+    Copyright (c) 2009-2014 TJ Holowaychuk <tj@vision-media.ca>
+    Copyright (c) 2013-2014 Roman Shtylman <shtylman+expressjs@gmail.com>
+    Copyright (c) 2014-2015 Douglas Christopher Wilson <doug@somethingdoug.com>
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    'Software'), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+- sources: Readme.md
+  text: |-
+    [MIT](LICENSE)
+
+    [appveyor-image]: https://badgen.net/appveyor/ci/dougwilson/express/master?label=windows
+    [appveyor-url]: https://ci.appveyor.com/project/dougwilson/express
+    [coveralls-image]: https://badgen.net/coveralls/c/github/expressjs/express/master
+    [coveralls-url]: https://coveralls.io/r/expressjs/express?branch=master
+    [github-actions-ci-image]: https://badgen.net/github/checks/expressjs/express/master?label=linux
+    [github-actions-ci-url]: https://github.com/expressjs/express/actions/workflows/ci.yml
+    [npm-downloads-image]: https://badgen.net/npm/dm/express
+    [npm-downloads-url]: https://npmcharts.com/compare/express?minimal=true
+    [npm-install-size-image]: https://badgen.net/packagephobia/install/express
+    [npm-install-size-url]: https://packagephobia.com/result?p=express
+    [npm-url]: https://npmjs.org/package/express
+    [npm-version-image]: https://badgen.net/npm/v/express
+    [ossf-scorecard-badge]: https://api.scorecard.dev/projects/github.com/expressjs/express/badge
+    [ossf-scorecard-visualizer]: https://ossf.github.io/scorecard-visualizer/#/projects/github.com/expressjs/express
+    [Code of Conduct]: https://github.com/expressjs/express/blob/master/Code-Of-Conduct.md
+notices: []

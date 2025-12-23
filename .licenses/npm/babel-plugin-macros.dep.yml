@@ -1,0 +1,62 @@
+---
+name: babel-plugin-macros
+version: 3.1.0
+type: npm
+summary: Allows you to build compile-time libraries
+homepage: https://github.com/kentcdodds/babel-plugin-macros#readme
+license: mit
+licenses:
+- sources: LICENSE
+  text: |
+    The MIT License (MIT)
+    Copyright (c) 2020 Kent C. Dodds
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+- sources: README.md
+  text: |-
+    MIT
+
+    <!-- prettier-ignore-start -->
+    [npm]: https://www.npmjs.com
+    [node]: https://nodejs.org
+    [build-badge]: https://img.shields.io/github/workflow/status/kentcdodds/babel-plugin-macros/validate?logo=github&style=flat-square
+    [build]: https://github.com/kentcdodds/babel-plugin-macros/actions?query=workflow%3Avalidate
+    [coverage-badge]: https://img.shields.io/codecov/c/github/kentcdodds/babel-plugin-macros.svg?style=flat-square
+    [coverage]: https://codecov.io/github/kentcdodds/babel-plugin-macros
+    [version-badge]: https://img.shields.io/npm/v/babel-plugin-macros.svg?style=flat-square
+    [package]: https://www.npmjs.com/package/babel-plugin-macros
+    [downloads-badge]: https://img.shields.io/npm/dm/babel-plugin-macros.svg?style=flat-square
+    [npmtrends]: http://www.npmtrends.com/babel-plugin-macros
+    [license-badge]: https://img.shields.io/npm/l/babel-plugin-macros.svg?style=flat-square
+    [license]: https://github.com/kentcdodds/babel-plugin-macros/blob/main/LICENSE
+    [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
+    [prs]: http://makeapullrequest.com
+    [coc-badge]: https://img.shields.io/badge/code%20of-conduct-ff69b4.svg?style=flat-square
+    [coc]: https://github.com/kentcdodds/babel-plugin-macros/blob/main/CODE_OF_CONDUCT.md
+    [emojis]: https://github.com/all-contributors/all-contributors#emoji-key
+    [all-contributors]: https://github.com/all-contributors/all-contributors
+    [all-contributors-badge]: https://img.shields.io/github/all-contributors/kentcdodds/babel-plugin-macros?color=orange&style=flat-square
+    [bugs]: https://github.com/kentcdodds/babel-plugin-macros/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Acreated-desc+label%3Abug
+    [requests]: https://github.com/kentcdodds/babel-plugin-macros/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement
+    [good-first-issue]: https://github.com/kentcdodds/babel-plugin-macros/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement+label%3A%22good+first+issue%22
+    [preval]: https://github.com/kentcdodds/babel-plugin-preval
+    [cra]: https://github.com/facebook/create-react-app
+    [cra-issue]: https://github.com/facebook/create-react-app/issues/2730
+    <!-- prettier-ignore-end -->
+notices: []

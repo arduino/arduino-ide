@@ -1,0 +1,12 @@
+---
+name: cacheable-request
+version: 10.2.14
+type: npm
+summary: Wrap native HTTP requests with RFC compliant cache support
+homepage:
+license: mit
+licenses:
+- sources: README.md
+  text: "This project is under the [MIT](LICENSE) license. \n\nMIT © Luke Childs 2017-2021
+    and Jared Wray 2022+"
+notices: []

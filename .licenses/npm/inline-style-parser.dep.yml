@@ -1,0 +1,12 @@
+---
+name: inline-style-parser
+version: 0.1.1
+type: npm
+summary: An inline style parser.
+homepage:
+license: mit
+licenses:
+- sources: README.md
+  text: MIT. See [license](https://github.com/reworkcss/css/blob/v2.2.4/LICENSE) from
+    original project.
+notices: []
