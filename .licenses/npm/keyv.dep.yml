@@ -1,0 +1,11 @@
+---
+name: keyv
+version: 4.5.4
+type: npm
+summary: Simple key-value storage with support for multiple backends
+homepage: https://github.com/jaredwray/keyv
+license: mit
+licenses:
+- sources: README.md
+  text: MIT © Jared Wray
+notices: []
