@@ -11,8 +11,6 @@ on:
       - ".licensed.json"
       - ".licensed.ya?ml"
       - ".npmrc"
-      - "go.mod"
-      - "go.sum"
       - "Taskfile.ya?ml"
       - "**/.gitmodules"
       - "**/package.json"
@@ -24,8 +22,6 @@ on:
       - ".npmrc"
       - ".licensed.json"
       - ".licensed.ya?ml"
-      - "go.mod"
-      - "go.sum"
       - "Taskfile.ya?ml"
       - "**/.gitmodules"
       - "**/package.json"
@@ -86,10 +82,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           version: 5.x
 
-      - name: Install Go
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
+      - name: Install Task
+        uses: go-task/setup-task@v1
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -97,11 +91,7 @@ jobs:
           node-version-file: package.json
 
       - name: Update dependencies license metadata cache
-        run: |
-          go tool \
-            github.com/go-task/task/v3/cmd/task \
-              --silent \
-              general:cache-dep-licenses
+        run: task --silent general:cache-dep-licenses
 
       - name: Check for outdated cache
         id: diff
@@ -153,10 +143,8 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           version: 5.x
 
-      - name: Install Go
-        uses: actions/setup-go@v6
-        with:
-          go-version-file: go.mod
+      - name: Install Task
+        uses: go-task/setup-task@v1
 
       - name: Setup Node.js
         uses: actions/setup-node@v6
@@ -164,8 +152,4 @@ jobs:
           node-version-file: package.json
 
       - name: Check for dependencies with unapproved licenses
-        run: |
-          go tool \
-            github.com/go-task/task/v3/cmd/task \
-              --silent \
-              general:check-dep-licenses
+        run: task --silent general:check-dep-licenses
