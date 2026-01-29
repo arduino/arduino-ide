@@ -4,7 +4,7 @@ version: 2.0.6
 type: npm
 summary: WHATWG spec-compliant implementations of window.atob and window.btoa.
 homepage: https://github.com/jsdom/abab#readme
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE.md
   text: |

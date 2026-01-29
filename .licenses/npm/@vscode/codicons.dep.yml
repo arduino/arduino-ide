@@ -4,7 +4,7 @@ version: 0.0.36
 type: npm
 summary: The icon font for Visual Studio Code
 homepage:
-license: other
+license: CC-BY-4.0
 licenses:
 - sources: LICENSE
   text: "\uFEFFAttribution 4.0 International\n\n=======================================================================\n\nCreative

@@ -4,7 +4,7 @@ version: 1.0.6
 type: npm
 summary: a pure-JavaScript Node.JS module for random-access decoding bzip2 data
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

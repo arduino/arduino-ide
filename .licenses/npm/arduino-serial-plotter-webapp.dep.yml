@@ -4,7 +4,7 @@ version: 0.2.0
 type: npm
 summary:
 homepage:
-license: other
+license: agpl-3.0
 licenses:
 - sources: LICENSE
   text: |2

@@ -8,7 +8,7 @@ summary: DOMPurify is a DOM-only, super-fast, uber-tolerant XSS sanitizer for HT
   else using Blink or WebKit). DOMPurify is written by security people who have vast
   background in web attacks and XSS. Fear not.
 homepage: https://github.com/cure53/DOMPurify
-license: other
+license: apache-2.0
 licenses:
 - sources: LICENSE
   text: |+

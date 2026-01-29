@@ -4,7 +4,7 @@ version: 0.11.0
 type: npm
 summary: Polyfill of future proposal for `util.parseArgs()`
 homepage: https://github.com/pkgjs/parseargs#readme
-license: other
+license: apache-2.0
 licenses:
 - sources: LICENSE
   text: |2

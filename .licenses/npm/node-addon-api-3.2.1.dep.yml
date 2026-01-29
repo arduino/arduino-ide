@@ -4,7 +4,7 @@ version: 3.2.1
 type: npm
 summary: Node.js API (Node-API)
 homepage: https://github.com/nodejs/node-addon-api
-license: other
+license: mit
 licenses:
 - sources: LICENSE.md
   text: |-

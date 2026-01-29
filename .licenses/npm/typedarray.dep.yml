@@ -4,7 +4,7 @@ version: 0.0.6
 type: npm
 summary: TypedArray polyfill for old browsers
 homepage: https://github.com/substack/typedarray
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

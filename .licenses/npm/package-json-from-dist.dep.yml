@@ -4,7 +4,7 @@ version: 1.0.1
 type: npm
 summary: Load the local package.json from either src or dist folder
 homepage:
-license: other
+license: blueoak-1.0.0
 licenses:
 - sources: LICENSE.md
   text: |

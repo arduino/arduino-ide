@@ -4,7 +4,7 @@ version: 3.0.0
 type: npm
 summary: Global HTTP/HTTPS proxy configurable using environment variables.
 homepage:
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE
   text: |

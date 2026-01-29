@@ -4,7 +4,7 @@ version: 2.0.3
 type: npm
 summary: utility box for ECMAScript language tools
 homepage: https://github.com/estools/esutils
-license: other
+license: bsd-2-clause
 licenses:
 - sources: LICENSE.BSD
   text: |

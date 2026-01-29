@@ -4,7 +4,7 @@ version: 1.2.1
 type: npm
 summary: btoa for Node.JS (it's a one-liner)
 homepage: https://git.coolaj86.com/coolaj86/btoa.js.git
-license: other
+license: apache-2.0
 licenses:
 - sources: LICENSE
   text: |

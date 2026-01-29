@@ -4,7 +4,7 @@ version: 3.3.2
 type: npm
 summary: Copies non-react specific statics from a child component to a parent component
 homepage:
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE.md
   text: |

@@ -5,7 +5,7 @@ type: npm
 summary: 'Buffer List: collect buffers and access with a standard readable Buffer
   interface, streamable too!'
 homepage: https://github.com/rvagg/bl
-license: other
+license: mit
 licenses:
 - sources: LICENSE.md
   text: |

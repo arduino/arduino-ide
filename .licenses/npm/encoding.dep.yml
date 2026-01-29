@@ -4,7 +4,7 @@ version: 0.1.13
 type: npm
 summary: Convert encodings, uses iconv-lite
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

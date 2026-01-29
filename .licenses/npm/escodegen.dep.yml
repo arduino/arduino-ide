@@ -4,7 +4,7 @@ version: 2.1.0
 type: npm
 summary: ECMAScript code generator
 homepage: http://github.com/estools/escodegen
-license: other
+license: bsd-2-clause
 licenses:
 - sources: LICENSE.BSD
   text: |

@@ -4,7 +4,7 @@ version: 3.6.2
 type: npm
 summary: Streams3, a user-land copy of the stream library from Node.js
 homepage:
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |
