@@ -1,0 +1,11 @@
+---
+name: "@theia/typehierarchy"
+version: 1.57.0
+type: npm
+summary: Theia - Type Hierarchy Extension
+homepage: https://github.com/eclipse-theia/theia
+license: epl-2.0 # https://github.com/eclipse-theia/theia?tab=readme-ov-file#license
+licenses:
+- sources: README.md
+  text: ''
+notices: []

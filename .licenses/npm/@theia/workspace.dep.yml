@@ -1,0 +1,11 @@
+---
+name: "@theia/workspace"
+version: 1.57.0
+type: npm
+summary: Theia - Workspace Extension
+homepage: https://github.com/eclipse-theia/theia
+license: epl-2.0 # https://github.com/eclipse-theia/theia?tab=readme-ov-file#license
+licenses:
+- sources: README.md
+  text: ''
+notices: []

@@ -1,0 +1,61 @@
+# See: https://github.com/licensee/licensed/blob/main/docs/configuration.md
+
+sources:
+  npm: true
+
+ignored:
+  npm:
+    - arduino-ide-extension # this is a project in this repo
+    - electron-app          # this is a project in this repo
+
+    # The following packages have some optional (architecutre native) packages.
+    - "@msgpackr-extract/msgpackr-extract-**" # ignored in favor of parent package "msgpackr-extract"
+    - "@parcel/watcher-**"                    # ignored in favor of parent package "@parcel-watcher"
+    - "@vscode/windows-ca-certs"              # BSD license (https://www.npmjs.com/package/@vscode/windows-ca-certs)
+
+    - "@theia/test" # missing license file in package, epl-2.0 license
+    - buffers       # missing license file in package, mit license (https://sources.debian.org/copyright/license/node-buffers/0.1.1-2/)
+    - chainsaw      # missing license file in package, mit license (https://www.npmjs.com/package/chainsaw)
+
+# Source: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/assets/check-dependencies/AGPL-3.0/.licensed.yml
+allowed:
+  - gpl-1.0-or-later
+  - gpl-1.0+ # Deprecated ID for `gpl-1.0-or-later`
+  - gpl-2.0-or-later
+  - gpl-2.0+ # Deprecated ID for `gpl-2.0-or-later`
+  - gpl-3.0-only
+  - gpl-3.0 # Deprecated ID for `gpl-3.0-only`
+  - gpl-3.0-or-later
+  - gpl-3.0+ # Deprecated ID for `gpl-3.0-or-later`
+  - lgpl-2.0-or-later
+  - lgpl-2.0+ # Deprecated ID for `lgpl-2.0-or-later`
+  - lgpl-2.1-only
+  - lgpl-2.1 # Deprecated ID for `lgpl-2.1-only`
+  - lgpl-2.1-or-later
+  - lgpl-2.1+ # Deprecated ID for `lgpl-2.1-or-later`
+  - lgpl-3.0-only
+  - lgpl-3.0 # Deprecated ID for `lgpl-3.0-only`
+  - lgpl-3.0-or-later
+  - lgpl-3.0+ # Deprecated ID for `lgpl-3.0-or-later`
+  - agpl-1.0-or-later
+  - agpl-3.0-only
+  - agpl-3.0 # Deprecated ID for `agpl-3.0-only`
+  - agpl-3.0-or-later
+  - apache-2.0
+  - mit
+  - bsd-2-clause # Subsumed by `bsd-2-clause-views`
+  - bsd-2-clause-netbsd # Deprecated ID for `bsd-2-clause`
+  - bsd-2-clause-views # This is the version linked from https://www.gnu.org/licenses/license-list.html#FreeBSD
+  - bsd-2-clause-freebsd # Deprecated ID for `bsd-2-clause-views`
+  - bsd-3-clause
+  - bsd-3-clause-clear
+  - isc
+  - cc0-1.0
+  - unlicense
+
+  - epl-2.0   # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/EPL-2.0/AGPL-3.0-only
+  - 0bsd      # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/0bsd/AGPL-3.0-only
+  - CC-BY-4.0 # https://interoperable-europe.ec.europa.eu/licence/compatibility-check/CC-BY-4.0/AGPL-3.0-only
+  - blueoak-1.0.0
+  - Python-2.0
+  - OFL-1.1

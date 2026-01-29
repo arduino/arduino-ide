@@ -1,0 +1,11 @@
+---
+name: slash
+version: 1.0.0
+type: npm
+summary: Convert Windows backslash paths to slash paths
+homepage:
+license: mit
+licenses:
+- sources: readme.md
+  text: MIT © [Sindre Sorhus](http://sindresorhus.com)
+notices: []

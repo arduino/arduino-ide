@@ -1,0 +1,15 @@
+---
+name: type-fest
+version: 2.19.0
+type: npm
+summary: A collection of essential TypeScript types
+homepage:
+license: mit
+licenses:
+- sources: readme.md
+  text: "SPDX-License-Identifier: (MIT OR CC0-1.0)\n\n---\n\n<div align=\"center\">\n\t<b>\n\t\t<a
+    href=\"https://tidelift.com/subscription/pkg/npm-type-fest?utm_source=npm-type-fest&utm_medium=referral&utm_campaign=readme\">Get
+    professional support for this package with a Tidelift subscription</a>\n\t</b>\n\t<br>\n\t<sub>\n\t\tTidelift
+    helps make open source sustainable for maintainers while giving companies<br>assurances
+    about security, maintenance, and licensing for their dependencies.\n\t</sub>\n</div>"
+notices: []
