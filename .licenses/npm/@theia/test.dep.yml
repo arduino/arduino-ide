@@ -1,9 +1,0 @@
----
-name: "@theia/test"
-version: 1.57.0
-type: npm
-summary: Theia - Test Extension
-homepage: https://github.com/eclipse-theia/theia
-license: other
-licenses: []
-notices: []
