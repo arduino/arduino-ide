@@ -90,6 +90,9 @@ jobs:
         with:
           node-version-file: package.json
 
+      - name: Install project dependencies
+        run: sudo apt update -y && sudo apt install -y libxkbfile-dev libsecret-1-dev
+
       - name: Update dependencies license metadata cache
         run: task --silent general:cache-dep-licenses
 
@@ -150,6 +153,9 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: package.json
+
+      - name: Install project dependencies
+        run: sudo apt update -y && sudo apt install -y libxkbfile-dev libsecret-1-dev
 
       - name: Check for dependencies with unapproved licenses
         run: task --silent general:check-dep-licenses
