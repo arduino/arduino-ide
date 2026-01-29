@@ -749,6 +749,289 @@ export namespace CleanDownloadCacheDirectoryResponse {
     }
 }
 
+export class ProfileCreateRequest extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): ProfileCreateRequest;
+    getSketchPath(): string;
+    setSketchPath(value: string): ProfileCreateRequest;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileCreateRequest;
+    getFqbn(): string;
+    setFqbn(value: string): ProfileCreateRequest;
+    getDefaultProfile(): boolean;
+    setDefaultProfile(value: boolean): ProfileCreateRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileCreateRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileCreateRequest): ProfileCreateRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileCreateRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileCreateRequest;
+    static deserializeBinaryFromReader(message: ProfileCreateRequest, reader: jspb.BinaryReader): ProfileCreateRequest;
+}
+
+export namespace ProfileCreateRequest {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        sketchPath: string,
+        profileName: string,
+        fqbn: string,
+        defaultProfile: boolean,
+    }
+}
+
+export class ProfileCreateResponse extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileCreateResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileCreateResponse): ProfileCreateResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileCreateResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileCreateResponse;
+    static deserializeBinaryFromReader(message: ProfileCreateResponse, reader: jspb.BinaryReader): ProfileCreateResponse;
+}
+
+export namespace ProfileCreateResponse {
+    export type AsObject = {
+    }
+}
+
+export class ProfileLibAddRequest extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): ProfileLibAddRequest;
+    getSketchPath(): string;
+    setSketchPath(value: string): ProfileLibAddRequest;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileLibAddRequest;
+
+    hasLibrary(): boolean;
+    clearLibrary(): void;
+    getLibrary(): cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference | undefined;
+    setLibrary(value?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference): ProfileLibAddRequest;
+
+    hasAddDependencies(): boolean;
+    clearAddDependencies(): void;
+    getAddDependencies(): boolean | undefined;
+    setAddDependencies(value: boolean): ProfileLibAddRequest;
+
+    hasNoOverwrite(): boolean;
+    clearNoOverwrite(): void;
+    getNoOverwrite(): boolean | undefined;
+    setNoOverwrite(value: boolean): ProfileLibAddRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibAddRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibAddRequest): ProfileLibAddRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibAddRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibAddRequest;
+    static deserializeBinaryFromReader(message: ProfileLibAddRequest, reader: jspb.BinaryReader): ProfileLibAddRequest;
+}
+
+export namespace ProfileLibAddRequest {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        sketchPath: string,
+        profileName: string,
+        library?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference.AsObject,
+        addDependencies?: boolean,
+        noOverwrite?: boolean,
+    }
+}
+
+export class ProfileLibAddResponse extends jspb.Message { 
+    clearAddedLibrariesList(): void;
+    getAddedLibrariesList(): Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>;
+    setAddedLibrariesList(value: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>): ProfileLibAddResponse;
+    addAddedLibraries(value?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference, index?: number): cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference;
+    clearSkippedLibrariesList(): void;
+    getSkippedLibrariesList(): Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>;
+    setSkippedLibrariesList(value: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>): ProfileLibAddResponse;
+    addSkippedLibraries(value?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference, index?: number): cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileLibAddResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibAddResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibAddResponse): ProfileLibAddResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibAddResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibAddResponse;
+    static deserializeBinaryFromReader(message: ProfileLibAddResponse, reader: jspb.BinaryReader): ProfileLibAddResponse;
+}
+
+export namespace ProfileLibAddResponse {
+    export type AsObject = {
+        addedLibrariesList: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference.AsObject>,
+        skippedLibrariesList: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference.AsObject>,
+        profileName: string,
+    }
+}
+
+export class ProfileLibRemoveRequest extends jspb.Message { 
+
+    hasInstance(): boolean;
+    clearInstance(): void;
+    getInstance(): cc_arduino_cli_commands_v1_common_pb.Instance | undefined;
+    setInstance(value?: cc_arduino_cli_commands_v1_common_pb.Instance): ProfileLibRemoveRequest;
+    getSketchPath(): string;
+    setSketchPath(value: string): ProfileLibRemoveRequest;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileLibRemoveRequest;
+
+    hasLibrary(): boolean;
+    clearLibrary(): void;
+    getLibrary(): cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference | undefined;
+    setLibrary(value?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference): ProfileLibRemoveRequest;
+
+    hasRemoveDependencies(): boolean;
+    clearRemoveDependencies(): void;
+    getRemoveDependencies(): boolean | undefined;
+    setRemoveDependencies(value: boolean): ProfileLibRemoveRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibRemoveRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibRemoveRequest): ProfileLibRemoveRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibRemoveRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibRemoveRequest;
+    static deserializeBinaryFromReader(message: ProfileLibRemoveRequest, reader: jspb.BinaryReader): ProfileLibRemoveRequest;
+}
+
+export namespace ProfileLibRemoveRequest {
+    export type AsObject = {
+        instance?: cc_arduino_cli_commands_v1_common_pb.Instance.AsObject,
+        sketchPath: string,
+        profileName: string,
+        library?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference.AsObject,
+        removeDependencies?: boolean,
+    }
+}
+
+export class ProfileLibRemoveResponse extends jspb.Message { 
+    clearRemovedLibrariesList(): void;
+    getRemovedLibrariesList(): Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>;
+    setRemovedLibrariesList(value: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>): ProfileLibRemoveResponse;
+    addRemovedLibraries(value?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference, index?: number): cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileLibRemoveResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibRemoveResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibRemoveResponse): ProfileLibRemoveResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibRemoveResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibRemoveResponse;
+    static deserializeBinaryFromReader(message: ProfileLibRemoveResponse, reader: jspb.BinaryReader): ProfileLibRemoveResponse;
+}
+
+export namespace ProfileLibRemoveResponse {
+    export type AsObject = {
+        removedLibrariesList: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference.AsObject>,
+        profileName: string,
+    }
+}
+
+export class ProfileLibListRequest extends jspb.Message { 
+    getSketchPath(): string;
+    setSketchPath(value: string): ProfileLibListRequest;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileLibListRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibListRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibListRequest): ProfileLibListRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibListRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibListRequest;
+    static deserializeBinaryFromReader(message: ProfileLibListRequest, reader: jspb.BinaryReader): ProfileLibListRequest;
+}
+
+export namespace ProfileLibListRequest {
+    export type AsObject = {
+        sketchPath: string,
+        profileName: string,
+    }
+}
+
+export class ProfileLibListResponse extends jspb.Message { 
+    clearLibrariesList(): void;
+    getLibrariesList(): Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>;
+    setLibrariesList(value: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference>): ProfileLibListResponse;
+    addLibraries(value?: cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference, index?: number): cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileLibListResponse;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibListResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibListResponse): ProfileLibListResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibListResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibListResponse;
+    static deserializeBinaryFromReader(message: ProfileLibListResponse, reader: jspb.BinaryReader): ProfileLibListResponse;
+}
+
+export namespace ProfileLibListResponse {
+    export type AsObject = {
+        librariesList: Array<cc_arduino_cli_commands_v1_common_pb.ProfileLibraryReference.AsObject>,
+        profileName: string,
+    }
+}
+
+export class ProfileSetDefaultRequest extends jspb.Message { 
+    getSketchPath(): string;
+    setSketchPath(value: string): ProfileSetDefaultRequest;
+    getProfileName(): string;
+    setProfileName(value: string): ProfileSetDefaultRequest;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileSetDefaultRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileSetDefaultRequest): ProfileSetDefaultRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileSetDefaultRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileSetDefaultRequest;
+    static deserializeBinaryFromReader(message: ProfileSetDefaultRequest, reader: jspb.BinaryReader): ProfileSetDefaultRequest;
+}
+
+export namespace ProfileSetDefaultRequest {
+    export type AsObject = {
+        sketchPath: string,
+        profileName: string,
+    }
+}
+
+export class ProfileSetDefaultResponse extends jspb.Message { 
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileSetDefaultResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileSetDefaultResponse): ProfileSetDefaultResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileSetDefaultResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileSetDefaultResponse;
+    static deserializeBinaryFromReader(message: ProfileSetDefaultResponse, reader: jspb.BinaryReader): ProfileSetDefaultResponse;
+}
+
+export namespace ProfileSetDefaultResponse {
+    export type AsObject = {
+    }
+}
+
 export enum FailedInstanceInitReason {
     FAILED_INSTANCE_INIT_REASON_UNSPECIFIED = 0,
     FAILED_INSTANCE_INIT_REASON_INVALID_INDEX_URL = 1,
