@@ -585,3 +585,89 @@ export namespace SketchProfile {
         protocol: string,
     }
 }
+
+export class ProfileLibraryReference extends jspb.Message { 
+
+    hasIndexLibrary(): boolean;
+    clearIndexLibrary(): void;
+    getIndexLibrary(): ProfileLibraryReference.IndexLibrary | undefined;
+    setIndexLibrary(value?: ProfileLibraryReference.IndexLibrary): ProfileLibraryReference;
+
+    hasLocalLibrary(): boolean;
+    clearLocalLibrary(): void;
+    getLocalLibrary(): ProfileLibraryReference.LocalLibrary | undefined;
+    setLocalLibrary(value?: ProfileLibraryReference.LocalLibrary): ProfileLibraryReference;
+
+    getLibraryCase(): ProfileLibraryReference.LibraryCase;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfileLibraryReference.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfileLibraryReference): ProfileLibraryReference.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfileLibraryReference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfileLibraryReference;
+    static deserializeBinaryFromReader(message: ProfileLibraryReference, reader: jspb.BinaryReader): ProfileLibraryReference;
+}
+
+export namespace ProfileLibraryReference {
+    export type AsObject = {
+        indexLibrary?: ProfileLibraryReference.IndexLibrary.AsObject,
+        localLibrary?: ProfileLibraryReference.LocalLibrary.AsObject,
+    }
+
+
+    export class IndexLibrary extends jspb.Message { 
+        getName(): string;
+        setName(value: string): IndexLibrary;
+        getVersion(): string;
+        setVersion(value: string): IndexLibrary;
+        getIsDependency(): boolean;
+        setIsDependency(value: boolean): IndexLibrary;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): IndexLibrary.AsObject;
+        static toObject(includeInstance: boolean, msg: IndexLibrary): IndexLibrary.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: IndexLibrary, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): IndexLibrary;
+        static deserializeBinaryFromReader(message: IndexLibrary, reader: jspb.BinaryReader): IndexLibrary;
+    }
+
+    export namespace IndexLibrary {
+        export type AsObject = {
+            name: string,
+            version: string,
+            isDependency: boolean,
+        }
+    }
+
+    export class LocalLibrary extends jspb.Message { 
+        getPath(): string;
+        setPath(value: string): LocalLibrary;
+
+        serializeBinary(): Uint8Array;
+        toObject(includeInstance?: boolean): LocalLibrary.AsObject;
+        static toObject(includeInstance: boolean, msg: LocalLibrary): LocalLibrary.AsObject;
+        static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+        static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+        static serializeBinaryToWriter(message: LocalLibrary, writer: jspb.BinaryWriter): void;
+        static deserializeBinary(bytes: Uint8Array): LocalLibrary;
+        static deserializeBinaryFromReader(message: LocalLibrary, reader: jspb.BinaryReader): LocalLibrary;
+    }
+
+    export namespace LocalLibrary {
+        export type AsObject = {
+            path: string,
+        }
+    }
+
+
+    export enum LibraryCase {
+        LIBRARY_NOT_SET = 0,
+        INDEX_LIBRARY = 1,
+        LOCAL_LIBRARY = 2,
+    }
+
+}
