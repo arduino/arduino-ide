@@ -204,6 +204,9 @@ import { DebugConfigurationManager } from './theia/debug/debug-configuration-man
 import { DebugConfigurationManager as TheiaDebugConfigurationManager } from '@theia/debug/lib/browser/debug-configuration-manager';
 import { SearchInWorkspaceFactory as TheiaSearchInWorkspaceFactory } from '@theia/search-in-workspace/lib/browser/search-in-workspace-factory';
 import { SearchInWorkspaceFactory } from './theia/search-in-workspace/search-in-workspace-factory';
+import { SearchInWorkspaceResultTreeWidget as TheiaSearchInWorkspaceResultTreeWidget } from '@theia/search-in-workspace/lib/browser/search-in-workspace-result-tree-widget';
+import { SearchInWorkspaceResultTreeWidget } from './theia/search-in-workspace/search-in-workspace-result-tree-widget';
+import { createTreeContainer } from '@theia/core/lib/browser/tree/tree-container';
 import { MonacoEditorProvider } from './theia/monaco/monaco-editor-provider';
 import {
   MonacoEditorFactory,
@@ -609,6 +612,20 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   rebind(TheiaSearchInWorkspaceFactory)
     .to(SearchInWorkspaceFactory)
     .inSingletonScope();
+
+  // Fix regex replace escape sequences (issue #2803)
+  // The widget uses a factory pattern, so we need to rebind with a custom factory
+  rebind(TheiaSearchInWorkspaceResultTreeWidget).toDynamicValue((ctx) => {
+    const child = createTreeContainer(ctx.container, {
+      widget: SearchInWorkspaceResultTreeWidget,
+      props: {
+        contextMenuPath: ['search-in-workspace-result-tree-context-menu'],
+        multiSelect: true,
+        globalSelection: true,
+      },
+    });
+    return child.get(SearchInWorkspaceResultTreeWidget);
+  });
 
   // Show a disconnected status bar, when the daemon is not available
   bind(ApplicationConnectionStatusContribution).toSelf().inSingletonScope();
