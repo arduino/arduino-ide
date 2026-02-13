@@ -433,7 +433,7 @@
       "autoscroll": "Automatisch scrollen",
       "carriageReturn": "Zeilenumbruch (CR)",
       "connecting": "Verbindung zu '{0}' auf '{1}'...",
-      "copyOutput": "Copy Output",
+      "copyOutput": "Ausgabe kopieren",
       "message": "Nachicht (drücke Enter zum Senden für '{0}' auf '{1}')",
       "newLine": "Neue Zeile",
       "newLineCarriageReturn": "Beides CR/LF",
