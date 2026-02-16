@@ -28,7 +28,7 @@
       "noPortsDiscovered": "未找到連接埠",
       "nonSerialPort": "非序列埠，無法取得資訊。",
       "openBoardsConfig": "選擇其他開發板及連接埠",
-      "pleasePickBoard": "請選擇已連接上的開發版",
+      "pleasePickBoard": "請選擇已連接上的開發板",
       "port": "連接埠: {0}",
       "ports": "連接埠",
       "programmer": "燒錄器",
@@ -36,7 +36,7 @@
       "reselectLater": "請稍後再選擇",
       "revertBoardsConfig": "使用在  '{1}' 發現的 '{0}'",
       "searchBoard": "搜尋開發板",
-      "selectBoard": "選擇開發版",
+      "selectBoard": "選擇開發板",
       "selectBoardToReload": "Please select a board first.",
       "selectPortForInfo": "請選定連接埠以便取得開發板的資訊",
       "showAllAvailablePorts": "當開啟時，顯示所有可用的埠",
@@ -45,7 +45,7 @@
       "succesfullyUninstalledPlatform": "成功卸載平台 {0}:{1}",
       "typeOfPorts": "{0}連接埠",
       "unconfirmedBoard": "未知的開發板",
-      "unknownBoard": "未知的開發版"
+      "unknownBoard": "未知的開發板"
     },
     "boardsManager": "開發板管理員",
     "boardsType": {
@@ -255,7 +255,7 @@
       "install": "安裝",
       "installingFirmware": "安裝韌體",
       "overwriteSketch": "安裝將覆寫開發板上的 Sketch",
-      "selectBoard": "選擇開發版",
+      "selectBoard": "選擇開發板",
       "selectVersion": "選擇韌體版本",
       "successfullyInstalled": "韌體安裝成功",
       "updater": "韌體更新"
@@ -357,7 +357,7 @@
       "serial": "序列"
     },
     "preferences": {
-      "additionalManagerURLs": "其他開發版管理員網址",
+      "additionalManagerURLs": "其他開發板管理員網址",
       "auth.audience": "OAuth2 受眾",
       "auth.clientID": "OAuth2 客户端 ID",
       "auth.domain": "OAuth2 網域",
@@ -413,7 +413,7 @@
       },
       "sketchbook.location": "sketchbook 位置",
       "sketchbook.showAllFiles": "顯示 sketch 內全部檔案。預設: false。",
-      "unofficialBoardSupport": "點擊來取得非官方開發版的支援網址",
+      "unofficialBoardSupport": "點擊來取得非官方開發板的支援網址",
       "upload": "上傳",
       "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
       "upload.verbose": "上傳時輸出的詳細資訊。預設: False",
@@ -480,7 +480,7 @@
       "upload": "上傳",
       "uploadUsingProgrammer": "使用燒錄器上傳",
       "uploading": "正在上傳...",
-      "userFieldsNotFoundError": "找不到已連接開發版中的用戶欄",
+      "userFieldsNotFoundError": "找不到已連接開發板中的用戶欄",
       "verify": "驗證",
       "verifyOrCompile": "驗證/編譯"
     },
