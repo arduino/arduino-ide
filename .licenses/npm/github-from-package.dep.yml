@@ -4,7 +4,7 @@ version: 0.0.0
 type: npm
 summary: return the github url from a package.json file
 homepage: https://github.com/substack/github-from-package
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

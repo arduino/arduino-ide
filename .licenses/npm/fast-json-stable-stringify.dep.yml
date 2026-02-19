@@ -5,7 +5,7 @@ type: npm
 summary: deterministic `JSON.stringify()` - a faster version of substack's json-stable-strigify
   without jsonify
 homepage: https://github.com/epoberezkin/fast-json-stable-stringify
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |

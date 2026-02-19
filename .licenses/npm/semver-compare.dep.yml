@@ -4,7 +4,7 @@ version: 1.0.0
 type: npm
 summary: compare two semver version strings, returning -1, 0, or 1
 homepage: https://github.com/substack/semver-compare
-license: other
+license: mit
 licenses:
 - sources: LICENSE
   text: |
