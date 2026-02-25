@@ -4,7 +4,7 @@ version: 3.21.4
 type: npm
 summary: Protocol Buffers for JavaScript
 homepage:
-license: other
+license: bsd-3-clause
 licenses:
 - sources: LICENSE.md
   text: |

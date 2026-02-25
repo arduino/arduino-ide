@@ -4,7 +4,7 @@ version: 1.68.0
 type: npm
 summary: Npm module with declarations for the Visual Studio Code debug protocol
 homepage:
-license: other
+license: mit
 licenses:
 - sources: License.txt
   text: "Copyright (c) Microsoft Corporation\n\nAll rights reserved. \n\nMIT License\n\nPermission

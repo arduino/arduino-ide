@@ -4,7 +4,7 @@ version: 7.0.3
 type: npm
 summary: JSONSchema TypeScript definitions.
 homepage: https://github.com/typeslick/json-schema-typed
-license: other
+license: bsd-2-clause
 licenses:
 - sources: LICENSE
   text: |+

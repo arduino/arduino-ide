@@ -4,7 +4,7 @@ version: 2.3.8
 type: npm
 summary: simplified stream construction
 homepage: https://github.com/dominictarr/through
-license: other
+license: mit
 licenses:
 - sources: LICENSE.APACHE2
   text: |

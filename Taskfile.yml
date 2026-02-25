@@ -17,6 +17,27 @@ tasks:
     deps:
       - task: general:cache-dep-licenses
     cmds:
+      - |
+        MATCHES="$(
+          find \
+            .licenses \
+            -regex '.+\.yml' \
+            -type f \
+            -print0 \
+          | \
+            xargs \
+              --null \
+              go tool \
+                github.com/mikefarah/yq/v4 \
+                  'select(.license == "other") | filename'
+        )"
+        if [[ "$MATCHES" != "" ]]; then
+          printf "%s" "$MATCHES"
+          echo
+          echo "The license cache files above have the license set to 'other'. Please manually define the license type and retry."
+          echo "See: https://github.com/arduino/tooling-project-assets/blob/main/workflow-templates/check-go-dependencies-task.md#unrecognized-licenses"
+          exit 1
+        fi
       - licensed status
 
   general:check-licensed:
