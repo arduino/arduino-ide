@@ -231,7 +231,7 @@
     },
     "editor": {
       "autoFormat": "Formattazione automatica",
-      "commentUncomment": "Commenta / togli commento",
+      "commentUncomment": "Commenta/Togli commento",
       "copyForForum": "Copia per il forum (Markdown)",
       "decreaseFontSize": "Riduci la dimensione del testo",
       "decreaseIndent": "Riduci indentazione",
