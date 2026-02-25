@@ -68,6 +68,11 @@ interface IArduinoCoreServiceService extends grpc.ServiceDefinition<grpc.Untyped
     settingsEnumerate: IArduinoCoreServiceService_ISettingsEnumerate;
     settingsGetValue: IArduinoCoreServiceService_ISettingsGetValue;
     settingsSetValue: IArduinoCoreServiceService_ISettingsSetValue;
+    profileCreate: IArduinoCoreServiceService_IProfileCreate;
+    profileLibAdd: IArduinoCoreServiceService_IProfileLibAdd;
+    profileLibRemove: IArduinoCoreServiceService_IProfileLibRemove;
+    profileLibList: IArduinoCoreServiceService_IProfileLibList;
+    profileSetDefault: IArduinoCoreServiceService_IProfileSetDefault;
 }
 
 interface IArduinoCoreServiceService_ICreate extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.CreateRequest, cc_arduino_cli_commands_v1_commands_pb.CreateResponse> {
@@ -520,6 +525,51 @@ interface IArduinoCoreServiceService_ISettingsSetValue extends grpc.MethodDefini
     responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse>;
     responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse>;
 }
+interface IArduinoCoreServiceService_IProfileCreate extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ProfileCreate";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse>;
+}
+interface IArduinoCoreServiceService_IProfileLibAdd extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ProfileLibAdd";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse>;
+}
+interface IArduinoCoreServiceService_IProfileLibRemove extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ProfileLibRemove";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse>;
+}
+interface IArduinoCoreServiceService_IProfileLibList extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ProfileLibList";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse>;
+}
+interface IArduinoCoreServiceService_IProfileSetDefault extends grpc.MethodDefinition<cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse> {
+    path: "/cc.arduino.cli.commands.v1.ArduinoCoreService/ProfileSetDefault";
+    requestStream: false;
+    responseStream: false;
+    requestSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest>;
+    requestDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest>;
+    responseSerialize: grpc.serialize<cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse>;
+    responseDeserialize: grpc.deserialize<cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse>;
+}
 
 export const ArduinoCoreServiceService: IArduinoCoreServiceService;
 
@@ -574,6 +624,11 @@ export interface IArduinoCoreServiceServer extends grpc.UntypedServiceImplementa
     settingsEnumerate: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsEnumerateResponse>;
     settingsGetValue: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsGetValueResponse>;
     settingsSetValue: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse>;
+    profileCreate: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse>;
+    profileLibAdd: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse>;
+    profileLibRemove: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse>;
+    profileLibList: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse>;
+    profileSetDefault: grpc.handleUnaryCall<cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse>;
 }
 
 export interface IArduinoCoreServiceClient {
@@ -708,6 +763,21 @@ export interface IArduinoCoreServiceClient {
     settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
     settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
     settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
+    profileCreate(request: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse) => void): grpc.ClientUnaryCall;
+    profileCreate(request: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse) => void): grpc.ClientUnaryCall;
+    profileCreate(request: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse) => void): grpc.ClientUnaryCall;
+    profileLibAdd(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse) => void): grpc.ClientUnaryCall;
+    profileLibAdd(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse) => void): grpc.ClientUnaryCall;
+    profileLibAdd(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse) => void): grpc.ClientUnaryCall;
+    profileLibRemove(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse) => void): grpc.ClientUnaryCall;
+    profileLibRemove(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse) => void): grpc.ClientUnaryCall;
+    profileLibRemove(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse) => void): grpc.ClientUnaryCall;
+    profileLibList(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse) => void): grpc.ClientUnaryCall;
+    profileLibList(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse) => void): grpc.ClientUnaryCall;
+    profileLibList(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse) => void): grpc.ClientUnaryCall;
+    profileSetDefault(request: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse) => void): grpc.ClientUnaryCall;
+    profileSetDefault(request: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse) => void): grpc.ClientUnaryCall;
+    profileSetDefault(request: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCoreServiceClient {
@@ -841,4 +911,19 @@ export class ArduinoCoreServiceClient extends grpc.Client implements IArduinoCor
     public settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
     public settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
     public settingsSetValue(request: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_settings_pb.SettingsSetValueResponse) => void): grpc.ClientUnaryCall;
+    public profileCreate(request: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse) => void): grpc.ClientUnaryCall;
+    public profileCreate(request: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse) => void): grpc.ClientUnaryCall;
+    public profileCreate(request: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileCreateResponse) => void): grpc.ClientUnaryCall;
+    public profileLibAdd(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse) => void): grpc.ClientUnaryCall;
+    public profileLibAdd(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse) => void): grpc.ClientUnaryCall;
+    public profileLibAdd(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibAddResponse) => void): grpc.ClientUnaryCall;
+    public profileLibRemove(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse) => void): grpc.ClientUnaryCall;
+    public profileLibRemove(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse) => void): grpc.ClientUnaryCall;
+    public profileLibRemove(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibRemoveResponse) => void): grpc.ClientUnaryCall;
+    public profileLibList(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse) => void): grpc.ClientUnaryCall;
+    public profileLibList(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse) => void): grpc.ClientUnaryCall;
+    public profileLibList(request: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileLibListResponse) => void): grpc.ClientUnaryCall;
+    public profileSetDefault(request: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse) => void): grpc.ClientUnaryCall;
+    public profileSetDefault(request: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse) => void): grpc.ClientUnaryCall;
+    public profileSetDefault(request: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: cc_arduino_cli_commands_v1_commands_pb.ProfileSetDefaultResponse) => void): grpc.ClientUnaryCall;
 }
