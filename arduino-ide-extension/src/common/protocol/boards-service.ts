@@ -380,12 +380,6 @@ export namespace ConfigOption {
       Object.setPrototypeOf(this, ConfigOptionError.prototype);
     }
   }
-
-  export const LABEL_COMPARATOR = (left: ConfigOption, right: ConfigOption) =>
-    naturalCompare(
-      left.label.toLocaleLowerCase(),
-      right.label.toLocaleLowerCase()
-    );
 }
 
 export interface ConfigValue {
