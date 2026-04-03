@@ -37,7 +37,7 @@ export class Help extends Contribution {
       };
     registry.registerCommand(
       Help.Commands.GETTING_STARTED,
-      createOpenHandler('https://www.arduino.cc/en/Guide')
+      createOpenHandler('https://docs.arduino.cc/learn/starting-guide/getting-started-arduino/')
     );
     registry.registerCommand(
       Help.Commands.ENVIRONMENT,
