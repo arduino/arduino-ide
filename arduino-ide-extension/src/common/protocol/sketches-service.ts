@@ -251,6 +251,7 @@ export namespace Sketch {
     return undefined;
   }
 
+
   function endsWithPeriod(candidate: string): boolean {
     return candidate.length > 1 && candidate[candidate.length - 1] === '.';
   }

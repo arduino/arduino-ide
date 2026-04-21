@@ -144,6 +144,17 @@ export class SettingsComponent extends React.Component<
             'Show files inside Sketches'
           )}
         </label>
+        <label className="flex-line">
+          <input
+            type="checkbox"
+            checked={this.state.autoSanitizeSketchName === true}
+            onChange={this.autoSanitizeSketchNameDidChange}
+          />
+          {nls.localize(
+            'arduino/preferences/sketch/autoSanitizeName',
+            'Sanitize invalid Sketch names when saving'
+          )}
+        </label>
         <div className="column-container">
           <div className="column">
             <div className="flex-line">
@@ -622,6 +633,12 @@ export class SettingsComponent extends React.Component<
     event: React.ChangeEvent<HTMLInputElement>
   ): void => {
     this.setState({ sketchbookShowAllFiles: event.target.checked });
+  };
+
+  protected autoSanitizeSketchNameDidChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    this.setState({ autoSanitizeSketchName: event.target.checked });
   };
 
   protected autoSaveDidChange = (

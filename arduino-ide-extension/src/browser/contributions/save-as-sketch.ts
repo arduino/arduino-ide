@@ -27,6 +27,7 @@ import {
   RenameCloudSketchParams,
 } from './rename-cloud-sketch';
 import { assertConnectedToBackend } from './save-sketch';
+import { ArduinoPreferences } from '../arduino-preferences';
 
 @injectable()
 export class SaveAsSketch extends CloudSketchContribution {
@@ -34,6 +35,8 @@ export class SaveAsSketch extends CloudSketchContribution {
   private readonly shell: ApplicationShell;
   @inject(WindowService)
   private readonly windowService: WindowService;
+  @inject(ArduinoPreferences)
+  private readonly arduinoPreferences: ArduinoPreferences;
 
   override registerCommands(registry: CommandRegistry): void {
     registry.registerCommand(SaveAsSketch.Commands.SAVE_AS_SKETCH, {
@@ -229,18 +232,35 @@ export class SaveAsSketch extends CloudSketchContribution {
         const sketchFolderName = new URI(destinationUri).path.base;
         const errorMessage = Sketch.validateSketchFolderName(sketchFolderName);
         if (errorMessage) {
-          dialogContent = {
-            message: nls.localize(
-              'arduino/sketch/invalidSketchFolderNameMessage',
-              "Invalid sketch folder name: '{0}'",
-              sketchFolderName
-            ),
-            details: errorMessage,
-            question: nls.localize(
-              'arduino/sketch/editInvalidSketchFolderQuestion',
-              'Do you want to try saving the sketch with a different name?'
-            ),
-          };
+          if(this.arduinoPreferences['arduino.sketch.autoSanitizeName']) {
+            let sanitizedName = Sketch.toValidSketchFolderName(sketchFolderName);
+              if (Sketch.validateSketchFolderName(sanitizedName)) {
+                sanitizedName = Sketch.defaultSketchFolderName;
+              }
+            sketchFolderDestinationUri = new URI(destinationUri).parent.resolve(sanitizedName).toString();
+            this.messageService.info(
+              nls.localize(
+                'arduino/sketch/autoRenamedSketchFolder',
+                "Sketch folder name changed from '{0}' to '{1}'.",
+                sketchFolderName,
+                sanitizedName)
+            );
+            continue;
+          }
+          else {
+            dialogContent = {
+              message: nls.localize(
+                'arduino/sketch/invalidSketchFolderNameMessage',
+                "Invalid sketch folder name: '{0}'",
+                sketchFolderName
+              ),
+              details: errorMessage,
+              question: nls.localize(
+                'arduino/sketch/editInvalidSketchFolderQuestion',
+                'Do you want to try saving the sketch with a different name?'
+              ),
+            };
+          }
         }
       }
       if (dialogContent) {
