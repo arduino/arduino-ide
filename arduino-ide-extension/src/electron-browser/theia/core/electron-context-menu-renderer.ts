@@ -8,8 +8,7 @@ import {
   ElectronContextMenuRenderer as TheiaElectronContextMenuRenderer,
 } from '@theia/core/lib/electron-browser/menu/electron-context-menu-renderer';
 import { injectable } from '@theia/core/shared/inversify';
-import { screen } from '@theia/core/electron-shared/electron';
-import type { MenuItemConstructorOptions } from '@theia/core/electron-shared/electron';
+import type { MenuDto } from '@theia/core/lib/electron-common/electron-api';
 
 @injectable()
 export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRenderer {
@@ -50,35 +49,21 @@ export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRendere
    * Clamp the menu Y position to ensure it doesn't overflow below the screen.
    * Prevents the native OS scroll arrows from creating feedback loops that hide menu items.
    */
-  private clampMenuY(y: number, menu: MenuItemConstructorOptions[]): number {
+  private clampMenuY(y: number, menu: MenuDto[]): number {
     try {
-      const displays = screen.getAllDisplays();
-      if (displays.length === 0) {
-        return y;
-      }
+      // Use browser's built-in window.screen API
+      // Safe in renderer context — no Node.js dependencies
+      const availHeight = window.screen.availHeight;
 
-      // Get the display containing the cursor
-      const cursor = screen.getCursorScreenPoint();
-      const display = displays.find(
-        (d) =>
-          cursor.x >= d.bounds.x &&
-          cursor.x < d.bounds.x + d.bounds.width &&
-          cursor.y >= d.bounds.y &&
-          cursor.y < d.bounds.y + d.bounds.height
-      ) || displays[0];
-
-      const screenHeight = display.workAreaSize.height;
-      const screenBottom = display.bounds.y + screenHeight;
-
-      // Estimate menu height: ~24px per item + padding
+      // Estimate menu height: ~24px per item + 10px padding
       const MENU_ITEM_HEIGHT = 24;
       const MENU_PADDING = 10;
-      const estimatedMenuHeight = this.countMenuItems(menu) * MENU_ITEM_HEIGHT + MENU_PADDING;
+      const estimatedMenuHeight =
+        this.countMenuItems(menu) * MENU_ITEM_HEIGHT + MENU_PADDING;
 
-      // Clamp Y position so menu doesn't extend below screen
-      const clampedY = Math.min(y, screenBottom - estimatedMenuHeight);
-      
-      return Math.max(clampedY, display.bounds.y);
+      // Clamp Y so menu doesn't extend below available screen area
+      const clampedY = Math.min(y, availHeight - estimatedMenuHeight);
+      return Math.max(clampedY, 0);
     } catch (error) {
       console.warn('Failed to clamp menu Y position:', error);
       return y;
@@ -88,14 +73,13 @@ export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRendere
   /**
    * Recursively count menu items to estimate menu height.
    */
-  private countMenuItems(items: MenuItemConstructorOptions[]): number {
+  private countMenuItems(items: MenuDto[]): number {
     return items.reduce((count, item) => {
       if (item.type === 'separator') {
-        return count + 1; // Separators are ~10px but simplified to 1 item height
+        return count + 1;
       }
       if (item.submenu && Array.isArray(item.submenu)) {
-        // Count submenu items as part of the total (they show in the same menu)
-        return count + 1 + this.countMenuItems(item.submenu);
+        return count + 1 + this.countMenuItems(item.submenu as MenuDto[]);
       }
       return count + 1;
     }, 0);
