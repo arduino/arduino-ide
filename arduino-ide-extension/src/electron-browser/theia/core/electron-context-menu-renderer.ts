@@ -8,7 +8,6 @@ import {
   ElectronContextMenuRenderer as TheiaElectronContextMenuRenderer,
 } from '@theia/core/lib/electron-browser/menu/electron-context-menu-renderer';
 import { injectable } from '@theia/core/shared/inversify';
-import type { MenuDto } from '@theia/core/lib/electron-common/electron-api';
 
 @injectable()
 export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRenderer {
@@ -49,7 +48,7 @@ export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRendere
    * Clamp the menu Y position to ensure it doesn't overflow below the screen.
    * Prevents the native OS scroll arrows from creating feedback loops that hide menu items.
    */
-  private clampMenuY(y: number, menu: MenuDto[]): number {
+  private clampMenuY(y: number, menu: unknown): number {
     try {
       // Use browser's built-in window.screen API
       // Safe in renderer context — no Node.js dependencies
@@ -73,16 +72,28 @@ export class ElectronContextMenuRenderer extends TheiaElectronContextMenuRendere
   /**
    * Recursively count menu items to estimate menu height.
    */
-  private countMenuItems(items: MenuDto[]): number {
-    return items.reduce((count, item) => {
-      if (item.type === 'separator') {
+  private countMenuItems(menu: unknown): number {
+    try {
+      // Safety check: ensure menu is an array
+      if (!Array.isArray(menu)) {
+        return 0;
+      }
+      
+      return menu.reduce((count, item) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const menuItem = item as any;
+        if (menuItem && menuItem.type === 'separator') {
+          return count + 1;
+        }
+        if (menuItem && Array.isArray(menuItem.submenu)) {
+          return count + 1 + this.countMenuItems(menuItem.submenu);
+        }
         return count + 1;
-      }
-      if (item.submenu && Array.isArray(item.submenu)) {
-        return count + 1 + this.countMenuItems(item.submenu as MenuDto[]);
-      }
-      return count + 1;
-    }, 0);
+      }, 0);
+    } catch (error) {
+      console.warn('Failed to count menu items:', error);
+      return 0;
+    }
   }
 
   /**
