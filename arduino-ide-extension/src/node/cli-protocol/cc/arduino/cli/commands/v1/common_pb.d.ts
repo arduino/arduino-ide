@@ -564,6 +564,14 @@ export class SketchProfile extends jspb.Message {
     setPortConfig(value?: MonitorPortConfiguration): SketchProfile;
     getProtocol(): string;
     setProtocol(value: string): SketchProfile;
+    clearPlatformsList(): void;
+    getPlatformsList(): Array<ProfilePlatformReference>;
+    setPlatformsList(value: Array<ProfilePlatformReference>): SketchProfile;
+    addPlatforms(value?: ProfilePlatformReference, index?: number): ProfilePlatformReference;
+    clearLibrariesList(): void;
+    getLibrariesList(): Array<ProfileLibraryReference>;
+    setLibrariesList(value: Array<ProfileLibraryReference>): SketchProfile;
+    addLibraries(value?: ProfileLibraryReference, index?: number): ProfileLibraryReference;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SketchProfile.AsObject;
@@ -583,6 +591,40 @@ export namespace SketchProfile {
         port: string,
         portConfig?: MonitorPortConfiguration.AsObject,
         protocol: string,
+        platformsList: Array<ProfilePlatformReference.AsObject>,
+        librariesList: Array<ProfileLibraryReference.AsObject>,
+    }
+}
+
+export class ProfilePlatformReference extends jspb.Message { 
+    getId(): string;
+    setId(value: string): ProfilePlatformReference;
+
+    hasVersion(): boolean;
+    clearVersion(): void;
+    getVersion(): string | undefined;
+    setVersion(value: string): ProfilePlatformReference;
+
+    hasIndexUrl(): boolean;
+    clearIndexUrl(): void;
+    getIndexUrl(): string | undefined;
+    setIndexUrl(value: string): ProfilePlatformReference;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProfilePlatformReference.AsObject;
+    static toObject(includeInstance: boolean, msg: ProfilePlatformReference): ProfilePlatformReference.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProfilePlatformReference, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProfilePlatformReference;
+    static deserializeBinaryFromReader(message: ProfilePlatformReference, reader: jspb.BinaryReader): ProfilePlatformReference;
+}
+
+export namespace ProfilePlatformReference {
+    export type AsObject = {
+        id: string,
+        version?: string,
+        indexUrl?: string,
     }
 }
 
