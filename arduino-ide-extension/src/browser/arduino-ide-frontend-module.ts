@@ -356,6 +356,7 @@ import { TerminalFrontendContribution as TheiaTerminalFrontendContribution } fro
 import { SelectionService } from '@theia/core/lib/common/selection-service';
 import { CommandService } from '@theia/core/lib/common/command';
 import { CorePreferences } from '@theia/core/lib/browser/core-preferences';
+import { ResourceResolver } from '@theia/core/lib/common/resource';
 import { AutoSelectProgrammer } from './contributions/auto-select-programmer';
 import { HostedPluginSupport } from './hosted/hosted-plugin-support';
 import { DebugSessionManager as TheiaDebugSessionManager } from '@theia/debug/lib/browser/debug-session-manager';
@@ -370,6 +371,12 @@ import { DebugToolBar } from '@theia/debug/lib/browser/view/debug-toolbar-widget
 
 import { TestViewContribution as TheiaTestViewContribution } from '@theia/test/lib/browser/view/test-view-contribution';
 import { TestViewContribution } from './theia/test/test-view-contribution';
+import { GitService, GitServicePath } from '../common/protocol/git-service';
+import { ArduinoScmProvider } from './git/arduino-scm-provider';
+import { ArduinoGitContribution } from './git/arduino-git-contribution';
+import { ArduinoGitResourceResolver } from './git/arduino-git-resource-resolver';
+import { ArduinoScmCommitWidget } from './git/arduino-scm-commit-widget';
+import { ScmCommitWidget } from '@theia/scm/lib/browser/scm-commit-widget';
 
 // Hack to fix copy/cut/paste issue after electron version update in Theia.
 // https://github.com/eclipse-theia/theia/issues/12487
@@ -1070,4 +1077,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Hides the Test Explorer from the side-bar
   bind(TestViewContribution).toSelf().inSingletonScope();
   rebind(TheiaTestViewContribution).toService(TestViewContribution);
+
+  // Git SCM integration
+  bind(GitService)
+    .toDynamicValue((context) =>
+      WebSocketConnectionProvider.createProxy(context.container, GitServicePath)
+    )
+    .inSingletonScope();
+  bind(ArduinoScmProvider).toSelf().inSingletonScope();
+  rebind(ScmCommitWidget).to(ArduinoScmCommitWidget);
+  bind(ArduinoGitResourceResolver).toSelf().inSingletonScope();
+  bind(ResourceResolver).toService(ArduinoGitResourceResolver);
+  bind(ArduinoGitContribution).toSelf().inSingletonScope();
+  bind(FrontendApplicationContribution).toService(ArduinoGitContribution);
+  bind(CommandContribution).toService(ArduinoGitContribution);
+  bind(MenuContribution).toService(ArduinoGitContribution);
 });

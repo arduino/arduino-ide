@@ -1,0 +1,49 @@
+.theia-scm .arduino-scm-commit-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32px;
+  gap: 1px;
+  margin: 8px 10px 10px;
+}
+
+.theia-scm .arduino-scm-commit-main,
+.theia-scm .arduino-scm-commit-more {
+  align-items: center;
+  background: var(--theia-button-background);
+  border: 0;
+  color: var(--theia-button-foreground);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--theia-ui-font-family, sans-serif);
+  font-size: var(--theia-ui-font-size1, 13px);
+  height: 30px;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.theia-scm .arduino-scm-commit-main {
+  gap: 6px;
+  border-radius: 3px 0 0 3px;
+  font-weight: 600;
+}
+
+.theia-scm .arduino-scm-commit-more {
+  border-radius: 0 3px 3px 0;
+}
+
+.theia-scm .arduino-scm-commit-main:hover:not(:disabled),
+.theia-scm .arduino-scm-commit-more:hover:not(:disabled) {
+  background: var(--theia-button-hoverBackground);
+}
+
+.theia-scm .arduino-scm-commit-main:focus,
+.theia-scm .arduino-scm-commit-more:focus {
+  outline: 1px solid var(--theia-focusBorder);
+  outline-offset: -1px;
+}
+
+.theia-scm .arduino-scm-commit-main:disabled,
+.theia-scm .arduino-scm-commit-more:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
