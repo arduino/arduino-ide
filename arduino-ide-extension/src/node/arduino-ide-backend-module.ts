@@ -121,6 +121,8 @@ import {
 import { SettingsReader } from './settings-reader';
 import { VsCodePluginScanner } from './theia/plugin-ext-vscode/scanner-vscode';
 import { rebindParcelFileSystemWatcher } from './theia/filesystem/parcel-bindings';
+import { GitServiceImpl } from './git-service-impl';
+import { GitService, GitServicePath } from '../common/protocol/git-service';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -399,6 +401,18 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // https://github.com/eclipse-theia/theia/issues/14309
   bind(VsCodePluginScanner).toSelf().inSingletonScope();
   rebind(PluginScanner).toService(VsCodePluginScanner);
+
+  // Git service — singleton, each connected frontend gets a JSON-RPC proxy
+  bind(GitServiceImpl).toSelf().inSingletonScope();
+  bind(GitService).toService(GitServiceImpl);
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      (context) =>
+        new JsonRpcConnectionHandler(GitServicePath, () =>
+          context.container.get(GitService)
+        )
+    )
+    .inSingletonScope();
 });
 
 function bindChildLogger(bind: interfaces.Bind, name: string): void {

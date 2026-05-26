@@ -89,6 +89,10 @@ export namespace ArduinoMenus {
   export const TOOLS = [...MAIN_MENU_BAR, '4_tools'];
   // `Auto Format`, `Archive Sketch`, `Manage Libraries...`, `Serial Monitor`, Serial Plotter
   export const TOOLS__MAIN_GROUP = [...TOOLS, '0_main'];
+  export const TOOLS__GIT_SUBMENU = [...TOOLS__MAIN_GROUP, '10_git'];
+  export const TOOLS__GIT_MAIN_GROUP = [...TOOLS__GIT_SUBMENU, '0_main'];
+  export const TOOLS__GIT_SYNC_GROUP = [...TOOLS__GIT_SUBMENU, '1_sync'];
+  export const TOOLS__GIT_BRANCH_GROUP = [...TOOLS__GIT_SUBMENU, '2_branch'];
   // `WiFi101 /  WiFiNINA Firmware Updater`
   export const TOOLS__FIRMWARE_UPLOADER_GROUP = [
     ...TOOLS,
