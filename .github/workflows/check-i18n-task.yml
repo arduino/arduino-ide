@@ -3,6 +3,8 @@ name: Check Internationalization
 env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
   GO_VERSION: '1.21'
+  # See: https://github.com/actions/setup-node/#readme
+  NODE_VERSION: '18.17'
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 on:
@@ -61,7 +63,7 @@ jobs:
       - name: Install Node.js 18.17
         uses: actions/setup-node@v4
         with:
-          node-version: '18.17'
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
 

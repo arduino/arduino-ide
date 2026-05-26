@@ -3,7 +3,7 @@ name: Check JavaScript
 
 env:
   # See: https://github.com/actions/setup-node/#readme
-  NODE_VERSION: 18.17
+  NODE_VERSION: '18.17'
 
 # See: https://docs.github.com/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
 on:
