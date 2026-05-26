@@ -25,7 +25,10 @@ export interface GitService {
   /**
    * Checkout an existing branch.
    */
+
   checkout(dirUri: string, branchName: string): Promise<void>;
+
+  checkout(dirUri: string, branchName: string, remote?: boolean): Promise<void>;
 
   /**
    * Create a branch, optionally checking it out immediately.
@@ -65,6 +68,12 @@ export interface GitService {
    * Pull from the remote.
    */
   pull(dirUri: string): Promise<GitSyncResult>;
+
+  /**
+
+   * Fetch from remotes.
+   */
+  fetch(dirUri: string, remoteName?: string): Promise<GitSyncResult>;
 
   /**
    * Push to the remote.
@@ -134,6 +143,7 @@ export interface GitStatus {
 export interface GitBranch {
   readonly name: string;
   readonly current: boolean;
+  readonly remote?: boolean;
   readonly upstream?: string;
 }
 

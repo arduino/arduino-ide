@@ -54,6 +54,12 @@ type GitCommandResource =
   | ScmResourceGroup[]
   | string[];
 
+
+interface BranchPick extends QuickPickItem {
+  branch?: GitBranch;
+  create?: boolean;
+}
+
 export namespace ArduinoGitCommands {
   export const GIT_SOURCE_CONTROL = {
     id: 'arduino-git.sourceControl',
@@ -109,6 +115,10 @@ export namespace ArduinoGitCommands {
   export const GIT_PULL = {
     id: 'arduino-git.pull',
     label: nls.localize('arduino/git/pull', 'Git: Pull'),
+  };
+  export const GIT_FETCH = {
+    id: 'arduino-git.fetch',
+    label: nls.localize('arduino/git/fetch', 'Git: Fetch'),
   };
   export const GIT_PUSH = {
     id: 'arduino-git.push',
@@ -346,6 +356,14 @@ export class ArduinoGitContribution
       onDidChangeEnabled: this.onDidChangeGitCommandState,
     });
 
+
+    registry.registerCommand(ArduinoGitCommands.GIT_FETCH, {
+      execute: () => this.handleFetch(),
+      isEnabled: () => this.canUseGitRepository(),
+      isVisible: () => this.canUseGitRepository(),
+      onDidChangeEnabled: this.onDidChangeGitCommandState,
+    });
+
     registry.registerCommand(ArduinoGitCommands.GIT_PUSH, {
       execute: () => this.handlePush(),
       isEnabled: () => this.canUseGitRepository(),
@@ -453,14 +471,20 @@ export class ArduinoGitContribution
       order: '1',
     });
     menus.registerMenuAction(ArduinoMenus.TOOLS__GIT_SYNC_GROUP, {
+
+      commandId: ArduinoGitCommands.GIT_FETCH.id,
+      label: nls.localize('arduino/git/fetchMenu', 'Git Fetch'),
+      order: '0',
+    });
+    menus.registerMenuAction(ArduinoMenus.TOOLS__GIT_SYNC_GROUP, {
       commandId: ArduinoGitCommands.GIT_PULL.id,
       label: nls.localize('arduino/git/pullMenu', 'Git Pull'),
-      order: '0',
+      order: '1',
     });
     menus.registerMenuAction(ArduinoMenus.TOOLS__GIT_SYNC_GROUP, {
       commandId: ArduinoGitCommands.GIT_PUSH.id,
       label: nls.localize('arduino/git/pushMenu', 'Git Push'),
-      order: '1',
+      order: '2',
     });
     menus.registerMenuAction(ArduinoMenus.TOOLS__GIT_SYNC_GROUP, {
       commandId: ArduinoGitCommands.GIT_PUBLISH_BRANCH.id,
@@ -468,12 +492,12 @@ export class ArduinoGitContribution
         'arduino/git/publishBranchMenu',
         'Git Publish Branch'
       ),
-      order: '2',
+      order: '3',
     });
     menus.registerMenuAction(ArduinoMenus.TOOLS__GIT_SYNC_GROUP, {
       commandId: ArduinoGitCommands.GIT_ADD_REMOTE.id,
       label: nls.localize('arduino/git/addRemoteMenu', 'Git Add Remote Origin'),
-      order: '3',
+      order: '4',
     });
     menus.registerMenuAction(ArduinoMenus.TOOLS__GIT_BRANCH_GROUP, {
       commandId: ArduinoGitCommands.GIT_CHECKOUT.id,
@@ -856,6 +880,33 @@ export class ArduinoGitContribution
     }
   }
 
+  private async handleFetch(): Promise<void> {
+    const rootUri = this.getRootUri();
+    if (!rootUri) return;
+    const result: GitSyncResult = await this.gitService.fetch(rootUri);
+    if (result.success) {
+      await this.scmProvider.refresh();
+      await this.updateGitCommandState();
+      this.messageService.info(
+        result.message
+          ? nls.localize(
+              'arduino/git/fetchSuccessWithOutput',
+              'Fetch successful: {0}',
+              result.message
+            )
+          : nls.localize('arduino/git/fetchSuccess', 'Fetch successful.')
+      );
+    } else {
+      this.messageService.error(
+        nls.localize(
+          'arduino/git/fetchError',
+          'Fetch failed: {0}',
+          result.message
+        )
+      );
+    }
+  }
+
   private async handlePush(): Promise<void> {
     const rootUri = this.getRootUri();
     if (!rootUri) return;
@@ -916,13 +967,25 @@ export class ArduinoGitContribution
     if (!rootUri) return;
     const remote = await this.addOrUpdateOriginRemote(rootUri);
     if (remote) {
+      const fetchResult = await this.gitService.fetch(rootUri, remote.name);
+      await this.scmProvider.refresh();
       await this.updateGitCommandState();
-      this.messageService.info(
-        nls.localize(
-          'arduino/git/addRemoteSuccess',
-          'Remote origin configured.'
-        )
-      );
+      if (fetchResult.success) {
+        this.messageService.info(
+          nls.localize(
+            'arduino/git/addRemoteFetchSuccess',
+            'Remote origin configured and branches fetched.'
+          )
+        );
+      } else {
+        this.messageService.error(
+          nls.localize(
+            'arduino/git/addRemoteFetchError',
+            'Remote origin configured, but fetch failed: {0}',
+            fetchResult.message
+          )
+        );
+      }
     }
   }
 
@@ -936,10 +999,6 @@ export class ArduinoGitContribution
         return;
       }
 
-      interface BranchPick extends QuickPickItem {
-        branch?: GitBranch;
-        create?: boolean;
-      }
       const picked = await this.quickInputService.showQuickPick<BranchPick>(
         [
           {
@@ -955,16 +1014,21 @@ export class ArduinoGitContribution
           },
           {
             type: 'separator',
-            label: nls.localize('arduino/git/branches', 'Branches'),
+            label: nls.localize('arduino/git/localBranches', 'Local Branches'),
           },
-          ...branches.map((branch) => ({
-            label: branch.current ? `$(check) ${branch.name}` : branch.name,
-            description: branch.upstream,
-            detail: branch.current
-              ? nls.localize('arduino/git/currentBranch', 'Current branch')
-              : undefined,
-            branch,
-          })),
+          ...branches
+            .filter((branch) => !branch.remote)
+            .map((branch) => this.toBranchPick(branch)),
+          {
+            type: 'separator',
+            label: nls.localize(
+              'arduino/git/remoteBranches',
+              'Remote Branches'
+            ),
+          },
+          ...branches
+            .filter((branch) => branch.remote)
+            .map((branch) => this.toBranchPick(branch)),
         ],
         {
           title: nls.localize('arduino/git/checkoutTitle', 'Checkout Branch'),
@@ -987,7 +1051,8 @@ export class ArduinoGitContribution
       if (!branch || branch.current) {
         return;
       }
-      await this.gitService.checkout(rootUri, branch.name);
+
+      await this.gitService.checkout(rootUri, branch.name, branch.remote);
       await this.scmProvider.refresh();
       this.updateCommitPlaceholder();
       await this.updateGitCommandState();
@@ -1007,6 +1072,25 @@ export class ArduinoGitContribution
         )
       );
     }
+  }
+
+
+  private toBranchPick(branch: GitBranch): BranchPick {
+    return {
+      label: branch.current ? `$(check) ${branch.name}` : branch.name,
+      description: branch.remote
+        ? nls.localize('arduino/git/remoteBranch', 'Remote branch')
+        : branch.upstream,
+      detail: branch.current
+        ? nls.localize('arduino/git/currentBranch', 'Current branch')
+        : branch.remote
+        ? nls.localize(
+            'arduino/git/remoteBranchCheckoutDetail',
+            'Checkout creates a local tracking branch'
+          )
+        : undefined,
+      branch,
+    };
   }
 
   private async handleCreateBranch(): Promise<void> {

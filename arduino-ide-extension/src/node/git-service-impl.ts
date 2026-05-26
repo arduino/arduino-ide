@@ -155,7 +155,8 @@ export class GitServiceImpl implements GitService {
   async branches(dirUri: string): Promise<GitBranch[]> {
     const dir = FileUri.fsPath(dirUri);
     const current = await this.currentBranch(dir);
-    const output = await this.exec(
+
+    const localOutput = await this.exec(
       dir,
       [
         'for-each-ref',
@@ -166,7 +167,18 @@ export class GitServiceImpl implements GitService {
       { trim: false }
     );
 
-    return output
+    const remoteOutput = await this.exec(
+      dir,
+      [
+        'for-each-ref',
+        '--sort=refname',
+        '--format=%(refname:short)',
+        'refs/remotes',
+      ],
+      { trim: false }
+    );
+
+    const localBranches = localOutput
       .split('\n')
       .filter((line) => line.trim())
       .map((line) => {
@@ -177,11 +189,29 @@ export class GitServiceImpl implements GitService {
           upstream: upstream || undefined,
         };
       });
+
+    const remoteBranches = remoteOutput
+      .split('\n')
+      .map((line) => line.trim())
+      .filter((name) => name && !name.endsWith('/HEAD'))
+      .map((name) => ({
+        name,
+        current: false,
+        remote: true,
+      }));
+    return [...localBranches, ...remoteBranches];
   }
 
-  async checkout(dirUri: string, branchName: string): Promise<void> {
+  async checkout(
+    dirUri: string,
+    branchName: string,
+    remote = false
+  ): Promise<void> {
     const dir = FileUri.fsPath(dirUri);
-    await this.exec(dir, ['checkout', branchName]);
+    await this.exec(
+      dir,
+      remote ? ['checkout', '--track', branchName] : ['checkout', branchName]
+    );
   }
 
   async createBranch(
@@ -273,6 +303,21 @@ export class GitServiceImpl implements GitService {
     const dir = FileUri.fsPath(dirUri);
     try {
       const output = await this.exec(dir, ['pull', '--ff-only']);
+      return { success: true, message: output };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return { success: false, message };
+    }
+  }
+
+
+  async fetch(dirUri: string, remoteName?: string): Promise<GitSyncResult> {
+    const dir = FileUri.fsPath(dirUri);
+    try {
+      const args = remoteName
+        ? ['fetch', '--prune', remoteName]
+        : ['fetch', '--all', '--prune'];
+      const output = await this.exec(dir, args);
       return { success: true, message: output };
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
