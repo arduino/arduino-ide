@@ -315,6 +315,14 @@ const properties: ArduinoPreferenceSchemaProperties = {
     ),
     default: defaultMonitorWidgetDockPanel,
   },
+  'arduino.sketch.autoSanitizeName': {
+    type: 'boolean',
+    description: nls.localize(
+      'arduino/preferences/sketch/autoSanitizeName',
+      'Default true to automatically sanitize invalid sketch names when saving. False to be prompted to choose a different name'
+    ),
+    default: true,
+  }
 };
 export const ArduinoConfigSchema: PreferenceSchema = {
   type: 'object',
@@ -351,6 +359,7 @@ export interface ArduinoConfiguration {
   'arduino.sketch.inoBlueprint': string;
   'arduino.checkForUpdates': boolean;
   'arduino.monitor.dockPanel': MonitorWidgetDockPanel;
+  'arduino.sketch.autoSanitizeName': boolean;
 }
 
 export const ArduinoPreferences = Symbol('ArduinoPreferences');

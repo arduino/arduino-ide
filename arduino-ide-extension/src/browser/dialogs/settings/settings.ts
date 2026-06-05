@@ -46,6 +46,7 @@ export const COMPILE_WARNINGS_SETTING = `${COMPILE_SETTING}.warnings`;
 export const UPLOAD_VERBOSE_SETTING = `${UPLOAD_SETTING}.verbose`;
 export const UPLOAD_VERIFY_SETTING = `${UPLOAD_SETTING}.verify`;
 export const SHOW_ALL_FILES_SETTING = `${SKETCHBOOK_SETTING}.showAllFiles`;
+export const AUTO_SANITIZE_SETTING = `${ARDUINO_SETTING}.sketch.autoSanitizeName`;
 
 export interface Settings {
   editorFontSize: number; // `editor.fontSize`
@@ -63,6 +64,7 @@ export interface Settings {
   verboseOnUpload: boolean; // `arduino.upload.verbose`
   verifyAfterUpload: boolean; // `arduino.upload.verify`
   sketchbookShowAllFiles: boolean; // `arduino.sketchbook.showAllFiles`
+  autoSanitizeSketchName: boolean; // `arduino.sketch.autoSanitizeName`
 
   sketchbookPath: string; // CLI
   additionalUrls: AdditionalUrls; // CLI
@@ -152,6 +154,7 @@ export class SettingsService {
       verboseOnUpload,
       verifyAfterUpload,
       sketchbookShowAllFiles,
+      autoSanitizeSketchName,
       cliConfig,
     ] = await Promise.all([
       ['en', ...(await this.localizationProvider.getAvailableLanguages())],
@@ -181,6 +184,7 @@ export class SettingsService {
       this.preferenceService.get<boolean>(UPLOAD_VERBOSE_SETTING, true),
       this.preferenceService.get<boolean>(UPLOAD_VERIFY_SETTING, true),
       this.preferenceService.get<boolean>(SHOW_ALL_FILES_SETTING, false),
+      this.preferenceService.get<boolean>(AUTO_SANITIZE_SETTING, true),
       this.configService.getConfiguration(),
     ]);
     const {
@@ -207,6 +211,7 @@ export class SettingsService {
       verboseOnUpload,
       verifyAfterUpload,
       sketchbookShowAllFiles,
+      autoSanitizeSketchName,
       additionalUrls,
       sketchbookPath,
       network,
@@ -297,6 +302,7 @@ export class SettingsService {
       additionalUrls,
       network,
       sketchbookShowAllFiles,
+      autoSanitizeSketchName,
     } = this._settings;
     const [cliConfig, sketchDirUri] = await Promise.all([
       this.configService.getConfiguration(),
@@ -328,6 +334,7 @@ export class SettingsService {
       this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload),
       this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload),
       this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles),
+      this.savePreference(AUTO_SANITIZE_SETTING, autoSanitizeSketchName),
       this.configService.setConfiguration(config),
     ]);
     this.onDidChangeEmitter.fire(this._settings);

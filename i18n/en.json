@@ -409,6 +409,7 @@
       },
       "showVerbose": "Show verbose output during",
       "sketch": {
+        "autoSanitizeName": "Sanitize invalid Sketch names when saving",
         "inoBlueprint": "Absolute filesystem path to the default `.ino` blueprint file. If specified, the content of the blueprint file will be used for every new sketch created by the IDE. The sketches will be generated with the default Arduino content if not specified. Unaccessible blueprint files are ignored. **A restart of the IDE is needed** for this setting to take effect."
       },
       "sketchbook.location": "Sketchbook location",
@@ -445,6 +446,7 @@
     },
     "sketch": {
       "archiveSketch": "Archive Sketch",
+      "autoRenamedSketchFolder": "Sketch folder name changed from '{0}' to '{1}'.",
       "cantOpen": "A folder named \"{0}\" already exists. Can't open sketch.",
       "compile": "Compiling sketch...",
       "configureAndUpload": "Configure and Upload",
