@@ -311,10 +311,13 @@ export class SettingsService {
       );
     }
 
-    (config as any).additionalUrls = additionalUrls;
-    (config as any).sketchDirUri = sketchDirUri;
-    (config as any).network = network;
-    (config as any).locale = currentLanguage;
+    const updatedConfig: typeof config = {
+      ...config,
+      additionalUrls,
+      sketchDirUri,
+      network,
+      locale: currentLanguage,
+    };
 
     await Promise.all([
       this.savePreference('editor.fontSize', editorFontSize),
@@ -328,7 +331,7 @@ export class SettingsService {
       this.savePreference(UPLOAD_VERBOSE_SETTING, verboseOnUpload),
       this.savePreference(UPLOAD_VERIFY_SETTING, verifyAfterUpload),
       this.savePreference(SHOW_ALL_FILES_SETTING, sketchbookShowAllFiles),
-      this.configService.setConfiguration(config),
+      this.configService.setConfiguration(updatedConfig),
     ]);
     this.onDidChangeEmitter.fire(this._settings);
 

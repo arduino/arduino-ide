@@ -16,7 +16,12 @@ import {
 } from '../common/protocol';
 import { spawnCommand } from './exec-util';
 import { ArduinoDaemonImpl } from './arduino-daemon-impl';
-import { DefaultCliConfig, CLI_CONFIG, CliConfig } from './cli-config';
+import {
+  DefaultCliConfig,
+  CLI_CONFIG,
+  CliConfig,
+  Directories,
+} from './cli-config';
 import { Deferred } from '@theia/core/lib/common/promise-util';
 import { EnvVariablesServer } from '@theia/core/lib/common/env-variables';
 import { deepClone, nls } from '@theia/core';
@@ -203,6 +208,7 @@ export class ConfigServiceImpl
           mergedModel
         )}`
       );
+
       return mergedModel;
     } catch (error) {
       if (ErrnoException.isENOENT(error)) {
@@ -224,10 +230,27 @@ export class ConfigServiceImpl
       spawnCommand(cliPath, ['config', 'get', 'directories', '--json']),
     ]);
 
-    const config = JSON.parse(configRaw);
-    const { user, data } = JSON.parse(directoriesRaw);
+    const config = JSON.parse(configRaw) as { config?: CliConfig };
+    const directories = JSON.parse(directoriesRaw) as Partial<Directories>;
+    const { user, data } = directories;
 
-    return { ...config.config, directories: { user, data } };
+    if (!user || !data) {
+      const missing = [
+        !user && 'directories.user',
+        !data && 'directories.data',
+      ].filter(Boolean);
+
+      throw new InvalidConfigError([
+        `Could not resolve required CLI configuration values: ${missing.join(
+          ', '
+        )}`,
+      ]);
+    }
+
+    return {
+      ...config.config,
+      directories: { user, data },
+    };
   }
 
   private async initCliConfigTo(fsPathToDir: string): Promise<void> {
