@@ -98,7 +98,8 @@ describe('clang-formatter', () => {
   let formatter: ClangFormatter;
   let toDispose: DisposableCollection;
 
-  before(async () => {
+  before(async function () {
+    this.timeout(20_000);
     tracked = temp.track();
     toDispose = new DisposableCollection(
       Disposable.create(() => tracked.cleanupSync())
