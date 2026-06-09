@@ -223,34 +223,38 @@ export class ConfigServiceImpl
 
   private async getFallbackCliConfig(): Promise<DefaultCliConfig> {
     const cliPath = this.daemon.getExecPath();
-    const [configRaw, directoriesRaw] = await Promise.all([
-      spawnCommand(cliPath, ['config', 'dump', '--json']),
-      // Since CLI 1.0, the command `config dump` only returns user-modified values and not default ones.
-      // directories.user and directories.data are required by IDE2 so we get the default value explicitly.
-      spawnCommand(cliPath, ['config', 'get', 'directories', '--json']),
-    ]);
+    const configRaw = await spawnCommand(cliPath, ['config', 'dump', '--json']);
 
     const config = JSON.parse(configRaw) as { config?: CliConfig };
-    const directories = JSON.parse(directoriesRaw) as Partial<Directories>;
-    const { user, data } = directories;
 
-    if (!user || !data) {
-      const missing = [
-        !user && 'directories.user',
-        !data && 'directories.data',
-      ].filter(Boolean);
-
-      throw new InvalidConfigError([
-        `Could not resolve required CLI configuration values: ${missing.join(
-          ', '
-        )}`,
-      ]);
-    }
+    // Since CLI 1.0, the command `config dump` only returns user-modified values and not default ones.
+    // directories.user and directories.data are required by IDE2 so we get the default value for each explicitly.
+    const user = await this.getDirectoryValue(cliPath, 'user');
+    const data = await this.getDirectoryValue(cliPath, 'data');
 
     return {
       ...config.config,
       directories: { user, data },
     };
+  }
+
+  private async getDirectoryValue(
+    cliPath: string,
+    key: keyof Directories
+  ): Promise<string> {
+    const raw = await spawnCommand(cliPath, [
+      'config',
+      'get',
+      `directories.${key}`,
+      '--json',
+    ]);
+    const value = JSON.parse(raw) as string;
+    if (!value) {
+      throw new InvalidConfigError([
+        `Could not resolve required CLI configuration value: directories.${key}`,
+      ]);
+    }
+    return value;
   }
 
   private async initCliConfigTo(fsPathToDir: string): Promise<void> {
