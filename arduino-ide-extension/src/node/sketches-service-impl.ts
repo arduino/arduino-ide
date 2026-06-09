@@ -784,7 +784,11 @@ export async function isAccessibleSketchPath(
   try {
     stats = await fs.stat(path);
   } catch (err) {
-    if (ErrnoException.isENOENT(err) || ErrnoException.isUNKNOWN(err)) {
+    if (
+      ErrnoException.isENOENT(err) ||
+      ErrnoException.isUNKNOWN(err) ||
+      ErrnoException.isECONNRESET(err)
+    ) {
       return undefined;
     }
     throw err;

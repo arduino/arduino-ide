@@ -51,4 +51,14 @@ export namespace ErrnoException {
   ): arg is ErrnoException & { code: 'UNKNOWN' } {
     return is(arg) && arg.code === 'UNKNOWN';
   }
+
+  /**
+   * _(Connection reset by peer):_ A connection was forcibly closed by a peer. Commonly observed on Windows
+   * when an unreachable UNC path (e.g. `\\host\share`) is stat'd and the SMB negotiation is aborted.
+   */
+  export function isECONNRESET(
+    arg: unknown
+  ): arg is ErrnoException & { code: 'ECONNRESET' } {
+    return is(arg) && arg.code === 'ECONNRESET';
+  }
 }
