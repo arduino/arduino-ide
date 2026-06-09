@@ -236,6 +236,7 @@ export namespace CoreService {
       readonly sourceOverride: Record<string, string>; // TODO: (API) make this optional
       readonly exportBinaries?: boolean;
       readonly compilerWarnings?: CompilerWarnings;
+      readonly clean?: boolean;
     }
     export interface Upload extends Base, SketchBased, BoardBased {
       readonly userFields: BoardUserField[];

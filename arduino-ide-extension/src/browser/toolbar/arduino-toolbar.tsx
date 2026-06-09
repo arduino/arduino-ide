@@ -12,6 +12,10 @@ import { LabelParser, LabelIcon } from '@theia/core/lib/browser/label-parser';
 
 export const ARDUINO_TOOLBAR_ITEM_CLASS = 'arduino-tool-item';
 
+export interface ArduinoToolbarItemExtras {
+  readonly tooltipWhenShiftPressed?: string;
+}
+
 export namespace ArduinoToolbarComponent {
   export interface Props {
     side: 'left' | 'right';
@@ -23,7 +27,8 @@ export namespace ArduinoToolbarComponent {
     executeCommand: (e: React.MouseEvent<HTMLElement>) => void;
   }
   export interface State {
-    tooltip: string;
+    hoveredItemId?: string;
+    shiftPressed: boolean;
   }
 }
 export class ArduinoToolbarComponent extends React.Component<
@@ -32,7 +37,29 @@ export class ArduinoToolbarComponent extends React.Component<
 > {
   constructor(props: ArduinoToolbarComponent.Props) {
     super(props);
-    this.state = { tooltip: '' };
+    this.state = { shiftPressed: false };
+  }
+
+  override componentDidMount(): void {
+    document.addEventListener('keydown', this.onShiftChange, true);
+    document.addEventListener('keyup', this.onShiftChange, true);
+  }
+
+  override componentWillUnmount(): void {
+    document.removeEventListener('keydown', this.onShiftChange, true);
+    document.removeEventListener('keyup', this.onShiftChange, true);
+  }
+
+  private readonly onShiftChange = (e: KeyboardEvent) => {
+    if (e.key === 'Shift' && this.state.shiftPressed !== e.shiftKey) {
+      this.setState({ shiftPressed: e.shiftKey });
+    }
+  };
+
+  private resolveTooltip(item: RenderedToolbarItem): string {
+    const alt = (item as RenderedToolbarItem & ArduinoToolbarItemExtras)
+      .tooltipWhenShiftPressed;
+    return (this.state.shiftPressed && alt) || item.tooltip || '';
   }
 
   protected renderItem = (item: RenderedToolbarItem) => {
@@ -54,6 +81,8 @@ export class ArduinoToolbarComponent extends React.Component<
     } ${command && this.props.commandIsEnabled(command.id) ? 'enabled' : ''} ${
       command && this.props.commandIsToggled(command.id) ? 'toggled' : ''
     }`;
+    const isHovered = this.state.hoveredItemId === item.id;
+    const resolvedTooltip = this.resolveTooltip(item);
     return (
       <div key={item.id} className={cls}>
         <div className={item.id}>
@@ -62,9 +91,14 @@ export class ArduinoToolbarComponent extends React.Component<
             id={item.id}
             className={className}
             onClick={this.props.executeCommand}
-            onMouseOver={() => this.setState({ tooltip: item.tooltip || '' })}
-            onMouseOut={() => this.setState({ tooltip: '' })}
-            title={item.tooltip}
+            onMouseOver={(e) =>
+              this.setState({
+                hoveredItemId: item.id,
+                shiftPressed: e.shiftKey,
+              })
+            }
+            onMouseOut={() => this.setState({ hoveredItemId: undefined })}
+            title={isHovered ? resolvedTooltip : item.tooltip}
           >
             {innerText}
           </div>
@@ -74,9 +108,16 @@ export class ArduinoToolbarComponent extends React.Component<
   };
 
   override render(): React.ReactNode {
+    const hoveredItem = this.state.hoveredItemId
+      ? this.props.items.find(
+          (it): it is RenderedToolbarItem =>
+            (it as RenderedToolbarItem).id === this.state.hoveredItemId
+        )
+      : undefined;
+    const tooltipText = hoveredItem ? this.resolveTooltip(hoveredItem) : '';
     const tooltip = (
       <div key="arduino-toolbar-tooltip" className={'arduino-toolbar-tooltip'}>
-        {this.state.tooltip}
+        {tooltipText}
       </div>
     );
     const items = [
@@ -163,7 +204,9 @@ export class ArduinoToolbar extends ReactWidget {
   protected executeCommand = (e: React.MouseEvent<HTMLElement>) => {
     const item = this.items.get(e.currentTarget.id);
     if (item && item.command) {
-      this.commands.executeCommand(item.command, this, e.target);
+      this.commands.executeCommand(item.command, this, e.target, {
+        shiftKey: e.shiftKey,
+      });
     }
   };
 }

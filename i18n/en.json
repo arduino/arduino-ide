@@ -482,7 +482,9 @@
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verify",
-      "verifyOrCompile": "Verify/Compile"
+      "verifyClean": "Verify (Clean)",
+      "verifyOrCompile": "Verify/Compile",
+      "verifyOrCompileClean": "Verify/Compile (Clean)"
     },
     "sketchbook": {
       "newCloudSketch": "New Cloud Sketch",

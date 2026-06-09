@@ -4,7 +4,10 @@ import { inject, injectable } from '@theia/core/shared/inversify';
 import type { CompileSummary, CoreService } from '../../common/protocol';
 import { ArduinoMenus } from '../menu/arduino-menus';
 import { CurrentSketch } from '../sketches-service-client-impl';
-import { ArduinoToolbar } from '../toolbar/arduino-toolbar';
+import {
+  ArduinoToolbar,
+  type ArduinoToolbarItemExtras,
+} from '../toolbar/arduino-toolbar';
 import {
   Command,
   CommandRegistry,
@@ -44,6 +47,10 @@ export interface VerifySketchParams {
    * The mode specifying how verify should run. It's `'explicit'` by default.
    */
   readonly mode?: VerifySketchMode;
+  /**
+   * Same as `CoreService.Options.Compile#clean`. Forces a full recompile.
+   */
+  readonly clean?: boolean;
 }
 
 /**
@@ -72,6 +79,10 @@ export class VerifySketch
       execute: (params?: VerifySketchParams) => this.verifySketch(params),
       isEnabled: () => this.verifyProgress === 'idle',
     });
+    registry.registerCommand(VerifySketch.Commands.VERIFY_SKETCH_CLEAN, {
+      execute: () => this.verifySketch({ clean: true }),
+      isEnabled: () => this.verifyProgress === 'idle',
+    });
     registry.registerCommand(VerifySketch.Commands.EXPORT_BINARIES, {
       execute: () => this.verifySketch({ exportBinaries: true }),
       isEnabled: () => this.verifyProgress === 'idle',
@@ -83,8 +94,16 @@ export class VerifySketch
       // toggled only when verify is running, but not toggled when automatic verify is running before the upload
       // https://github.com/arduino/arduino-ide/pull/1750#pullrequestreview-1214762975
       isToggled: () => this.verifyProgress === 'explicit',
-      execute: () =>
-        registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id),
+      execute: (
+        _widget: unknown,
+        _target: unknown,
+        args?: { shiftKey?: boolean }
+      ) =>
+        registry.executeCommand(VerifySketch.Commands.VERIFY_SKETCH.id, <
+          VerifySketchParams
+        >{
+          clean: args?.shiftKey === true,
+        }),
     });
   }
 
@@ -93,6 +112,14 @@ export class VerifySketch
       commandId: VerifySketch.Commands.VERIFY_SKETCH.id,
       label: nls.localize('arduino/sketch/verifyOrCompile', 'Verify/Compile'),
       order: '0',
+    });
+    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
+      commandId: VerifySketch.Commands.VERIFY_SKETCH_CLEAN.id,
+      label: nls.localize(
+        'arduino/sketch/verifyOrCompileClean',
+        'Verify/Compile (Clean)'
+      ),
+      order: '0_1',
     });
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: VerifySketch.Commands.EXPORT_BINARIES.id,
@@ -110,6 +137,10 @@ export class VerifySketch
       keybinding: 'CtrlCmd+R',
     });
     registry.registerKeybinding({
+      command: VerifySketch.Commands.VERIFY_SKETCH_CLEAN.id,
+      keybinding: 'CtrlCmd+Shift+R',
+    });
+    registry.registerKeybinding({
       command: VerifySketch.Commands.EXPORT_BINARIES.id,
       keybinding: 'CtrlCmd+Alt+S',
     });
@@ -120,9 +151,13 @@ export class VerifySketch
       id: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
       command: VerifySketch.Commands.VERIFY_SKETCH_TOOLBAR.id,
       tooltip: nls.localize('arduino/sketch/verify', 'Verify'),
+      tooltipWhenShiftPressed: nls.localize(
+        'arduino/sketch/verifyClean',
+        'Verify (Clean)'
+      ),
       priority: 0,
       onDidChange: this.onDidChange,
-    });
+    } as Parameters<TabBarToolbarRegistry['registerItem']>[0] & ArduinoToolbarItemExtras);
   }
 
   protected override handleError(error: unknown): void {
@@ -160,7 +195,7 @@ export class VerifySketch
       this.coreErrorHandler.reset();
       const dryRun = this.verifyProgress === 'dry-run';
 
-      const options = await this.options(params?.exportBinaries);
+      const options = await this.options(params?.exportBinaries, params?.clean);
       if (!options) {
         return undefined;
       }
@@ -206,7 +241,8 @@ export class VerifySketch
   }
 
   private async options(
-    exportBinaries?: boolean
+    exportBinaries?: boolean,
+    clean?: boolean
   ): Promise<CoreService.Options.Compile | undefined> {
     const sketch = await this.sketchServiceClient.currentSketch();
     if (!CurrentSketch.isValid(sketch)) {
@@ -230,6 +266,7 @@ export class VerifySketch
       exportBinaries,
       sourceOverride,
       compilerWarnings,
+      clean,
     };
   }
 }
@@ -238,6 +275,9 @@ export namespace VerifySketch {
   export namespace Commands {
     export const VERIFY_SKETCH: Command = {
       id: 'arduino-verify-sketch',
+    };
+    export const VERIFY_SKETCH_CLEAN: Command = {
+      id: 'arduino-verify-sketch-clean',
     };
     export const EXPORT_BINARIES: Command = {
       id: 'arduino-export-binaries',

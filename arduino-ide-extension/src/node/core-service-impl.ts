@@ -207,6 +207,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     if (typeof options.exportBinaries === 'boolean') {
       request.setExportBinaries(options.exportBinaries);
     }
+    if (options.clean) {
+      request.setClean(true);
+    }
     this.mergeSourceOverrides(request, options);
     return request;
   }
@@ -224,7 +227,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       (client) =>
         (usingProgrammer ? client.uploadUsingProgrammer : client.upload).bind(
           client
-        ),
+        ) as unknown as (
+          request: Uploadable.Request
+        ) => ClientReadableStream<Uploadable.Response>,
       usingProgrammer
         ? CoreError.UploadUsingProgrammerFailed
         : CoreError.UploadFailed,
