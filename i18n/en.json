@@ -483,8 +483,7 @@
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verify",
       "verifyClean": "Verify (Clean)",
-      "verifyOrCompile": "Verify/Compile",
-      "verifyOrCompileClean": "Verify/Compile (Clean)"
+      "verifyOrCompile": "Verify/Compile"
     },
     "sketchbook": {
       "newCloudSketch": "New Cloud Sketch",

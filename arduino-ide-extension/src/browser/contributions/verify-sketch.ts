@@ -114,14 +114,6 @@ export class VerifySketch
       order: '0',
     });
     registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
-      commandId: VerifySketch.Commands.VERIFY_SKETCH_CLEAN.id,
-      label: nls.localize(
-        'arduino/sketch/verifyOrCompileClean',
-        'Verify/Compile (Clean)'
-      ),
-      order: '0_1',
-    });
-    registry.registerMenuAction(ArduinoMenus.SKETCH__MAIN_GROUP, {
       commandId: VerifySketch.Commands.EXPORT_BINARIES.id,
       label: nls.localize(
         'arduino/sketch/exportBinary',
