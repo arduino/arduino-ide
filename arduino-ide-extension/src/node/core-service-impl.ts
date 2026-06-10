@@ -54,6 +54,7 @@ import { ExecuteWithProgress, ProgressResponse } from './grpc-progressible';
 import { MonitorManager } from './monitor-manager';
 import { ServiceError } from './service-error';
 import { AutoFlushingBuffer } from './utils/buffers';
+import { BuildStateService } from '../common/protocol/build-state-service';
 
 namespace Uploadable {
   export type Request = UploadRequest | UploadUsingProgrammerRequest;
@@ -70,6 +71,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private readonly monitorManager: MonitorManager;
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
+  @inject(BuildStateService)
+  private readonly buildStateService: BuildStateService;
 
   async compile(
     options: CoreService.Options.Compile,
@@ -130,6 +133,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
             .filter(notEmpty)
             .shift() ?? error.details
         );
+        this.recordBuildState(
+          handler.content,
+          error.details + '\n\n' + message,
+          false
+        );
         this.sendResponse(
           error.details + '\n\n' + message,
           OutputMessage.Severity.Error
@@ -163,6 +171,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           .on('error', handleError)
           .on('end', () => {
             if (isCompileSummary(compileSummary)) {
+              this.recordBuildState(handler.content, '', true);
               resolve(compileSummary);
             } else {
               console.error(
@@ -329,6 +338,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
               error.details
             );
 
+            this.recordBuildState(handler.content, error.details, false);
             this.sendResponse(error.details, OutputMessage.Severity.Error);
             reject(
               errorCtor(
@@ -342,6 +352,7 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           })
           .on('end', () => {
             if (isUploadResponse(uploadResponseFragment)) {
+              this.recordBuildState(handler.content, '', true);
               resolve(uploadResponseFragment);
             } else {
               reject(
@@ -512,6 +523,39 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
     severity: OutputMessage.Severity = OutputMessage.Severity.Info
   ): void {
     this.responseService.appendToOutput({ chunk, severity });
+  }
+
+  /**
+   * Snapshot the latest compile/upload outcome into `BuildStateService` so
+   * plugins (e.g. an AI assistant, a "rerun last build" UI, CI integrations)
+   * can read it without having to re-run the build themselves.
+   *
+   * Failures here are swallowed: `BuildStateService` is observational and
+   * must never break a real build.
+   */
+  private recordBuildState(
+    content: Uint8Array[],
+    errors: string,
+    success: boolean
+  ): void {
+    let output = '';
+    try {
+      output = Buffer.concat(
+        content.map((c) => (c instanceof Buffer ? c : Buffer.from(c)))
+      ).toString('utf-8');
+    } catch {
+      /* leave output empty */
+    }
+    this.buildStateService
+      .setLastBuild({
+        output,
+        errors,
+        timestamp: new Date().toISOString(),
+        success,
+      })
+      .catch((err) =>
+        console.warn('Failed to record build state:', err)
+      );
   }
 
   private async notifyUploadWillStart({
