@@ -74,7 +74,9 @@ export class UserFields extends Contribution {
   async checkUserFieldsDialog(forceOpen = false): Promise<boolean> {
     const key = this.selectedFqbnAddress();
     if (!key) {
-      return false;
+      // Let the upload continue without an FQBN and the CLI fail instead of disabling the upload from IDE.
+      // https://github.com/arduino/arduino-ide/issues/1714
+      return true;
     }
     /*
       If the board requires to be configured with user fields, we want
