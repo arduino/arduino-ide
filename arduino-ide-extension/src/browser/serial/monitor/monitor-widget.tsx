@@ -120,6 +120,14 @@ export class MonitorWidget extends ReactWidget {
     return this.outputRef.current?.getPlainText() ?? '';
   }
 
+  /**
+   * The current output as CSV rows, one row per line, with a leading
+   * timestamp column when timestamps are enabled.
+   */
+  outputCsvText(): string {
+    return this.outputRef.current?.getCsvText() ?? '';
+  }
+
   override dispose(): void {
     this.toDisposeOnReset.dispose();
     super.dispose();

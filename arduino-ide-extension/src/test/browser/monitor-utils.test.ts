@@ -1,9 +1,11 @@
 import { expect } from 'chai';
+import dateFormat from 'dateformat';
 import {
   messagesToLines,
   truncateLines,
   joinLines,
   linesToPlainText,
+  linesToCsvText,
 } from '../../browser/serial/monitor/monitor-utils';
 import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
@@ -195,6 +197,44 @@ describe('Monitor Utils', () => {
         { message: '\u0000llo!', lineLen: 5 },
       ];
       expect(linesToPlainText(lines)).to.equal('He\u25A1llo!');
+    });
+  });
+
+  context('when converting lines to CSV', () => {
+    it('should write one row per line and keep the raw message', () => {
+      const lines: Line[] = [
+        { message: '1,2,3\n', lineLen: 6 },
+        { message: '4,5,6', lineLen: 5 },
+        { message: '', lineLen: 0 },
+      ];
+      expect(linesToCsvText(lines, false)).to.equal('1,2,3\n4,5,6\n');
+    });
+
+    it('should prepend a timestamp column when timestamps are enabled', () => {
+      const lines: Line[] = [
+        { message: 'a;b\r\n', lineLen: 5, timestamp: date },
+        { message: 'c;\u0000d', lineLen: 4, timestamp: date },
+      ];
+      const timestamp = dateFormat(date, 'HH:MM:ss.l');
+      expect(linesToCsvText(lines, true)).to.equal(
+        `${timestamp},a;b\n${timestamp},c;\u25A1d\n`
+      );
+    });
+
+    it('should keep blank lines and handle lines without a timestamp', () => {
+      const lines: Line[] = [
+        { message: 'a\n', lineLen: 2, timestamp: date },
+        { message: '\n', lineLen: 1, timestamp: date },
+        { message: 'b', lineLen: 1 },
+      ];
+      const timestamp = dateFormat(date, 'HH:MM:ss.l');
+      expect(linesToCsvText(lines, true)).to.equal(
+        `${timestamp},a\n${timestamp},\n,b\n`
+      );
+    });
+
+    it('should return an empty string for empty output', () => {
+      expect(linesToCsvText([], true)).to.equal('');
     });
   });
 });

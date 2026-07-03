@@ -252,7 +252,10 @@ export class MonitorViewContribution
   }
 
   protected async saveOutput(widget: MonitorWidget): Promise<void> {
-    const text = widget.outputText();
+    // Capture the output before showing the dialog; the buffer keeps
+    // changing while the dialog is open.
+    const plainText = widget.outputText();
+    const csvText = widget.outputCsvText();
     const homeDirUri = new URI(await this.envVariablesServer.getHomeDirUri());
     const defaultUri = homeDirUri.resolve(
       `serial-monitor-${dateFormat(new Date(), 'yyyymmdd-HHMMss')}.txt`
@@ -270,6 +273,10 @@ export class MonitorViewContribution
           extensions: ['txt', 'log'],
         },
         {
+          name: nls.localize('arduino/serial/csvFiles', 'CSV Files'),
+          extensions: ['csv'],
+        },
+        {
           name: nls.localize('arduino/serial/allFiles', 'All Files'),
           extensions: ['*'],
         },
@@ -278,6 +285,7 @@ export class MonitorViewContribution
     if (canceled || !filePath) {
       return;
     }
+    const text = filePath.toLowerCase().endsWith('.csv') ? csvText : plainText;
     const destinationUri = await this.fileSystemExt.getUri(filePath);
     if (!destinationUri) {
       return;

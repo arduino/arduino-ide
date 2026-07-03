@@ -1,4 +1,10 @@
+import dateFormat from 'dateformat';
 import { Line, SerialMonitorOutput } from './serial-monitor-send-output';
+
+/**
+ * The format of the timestamps rendered in the Serial Monitor output.
+ */
+export const LINE_TIMESTAMP_FORMAT = 'HH:MM:ss.l';
 
 export function messagesToLines(
   messages: string[],
@@ -76,4 +82,28 @@ export function linesToPlainText(lines: Line[]): string {
   // Replace null characters with a visible symbol. Otherwise, the
   // clipboard content would be truncated at the first null character.
   return joinLines(lines).replace(/\u0000/g, '\u25A1');
+}
+
+export function linesToCsvText(
+  lines: Line[],
+  includeTimestamps: boolean
+): string {
+  const rows = lines
+    .filter((line) => line.lineLen > 0)
+    .map((line) => {
+      // The message is written as-is: Serial Monitor output is typically
+      // already delimiter-separated data, and quoting it would merge the
+      // payload into a single spreadsheet column.
+      const message = line.message
+        .replace(/[\r\n]+$/, '')
+        .replace(/\u0000/g, '\u25A1');
+      if (!includeTimestamps) {
+        return message;
+      }
+      const timestamp = line.timestamp
+        ? dateFormat(line.timestamp, LINE_TIMESTAMP_FORMAT)
+        : '';
+      return `${timestamp},${message}`;
+    });
+  return rows.length ? rows.join('\n') + '\n' : '';
 }
