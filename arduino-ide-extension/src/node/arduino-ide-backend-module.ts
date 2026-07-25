@@ -371,7 +371,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
 
   bind(PlotterBackendContribution).toSelf().inSingletonScope();
   bind(BackendApplicationContribution).toService(PlotterBackendContribution);
-  bind(ArduinoLocalizationContribution).toSelf().inSingletonScope();
+
   bind(LocalizationContribution).toService(ArduinoLocalizationContribution);
   bind(HostedPluginLocalizationService).toSelf().inSingletonScope();
   rebind(TheiaHostedPluginLocalizationService).toService(

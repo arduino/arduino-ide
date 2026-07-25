@@ -4,10 +4,13 @@
 
 .firmware-uploader-dialog .theia-select {
     border: none !important;
+    border-radius: var(--arduino-radius-md);
 }
+
 .firmware-uploader-dialog .arduino-select__control {
     height: 31px;
     background: var(--theia-input-background) !important;
+    border-radius: var(--arduino-radius-md) !important;
 }
 
 .firmware-uploader-dialog .dialogRow > button {
@@ -19,11 +22,11 @@
 }
 
 .firmware-uploader-dialog .success {
-    color: #1da086;
+    color: #16a34a;
 }
 
 .firmware-uploader-dialog .warn {
-    color: #c11f09;
+    color: #dc3545;
 }
 
 .firmware-uploader-dialog .status-icon {

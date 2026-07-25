@@ -3,7 +3,7 @@
 }
 
 .ide-updater-dialog .bold {
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .ide-updater-dialog--pre-download {
@@ -22,6 +22,7 @@
     background: url("./ide-logo.png") round;
     width: 52px;
     height: 52px;
+    border-radius: var(--arduino-radius-md);
 }
 
 .dialogContent.ide-updater-dialog
@@ -60,7 +61,7 @@
     .dialogRow.changelog-container {
     align-items: flex-start;
     border: 1px solid var(--theia-editorWidget-border);
-    border-radius: 2px;
+    border-radius: var(--arduino-radius-md);
     overflow: auto;
     max-height: 180px;
 }
@@ -76,7 +77,7 @@
 
 .ide-updater-dialog .changelog code {
     background: var(--theia-textBlockQuote-background);
-    border-radius: 2px;
+    border-radius: var(--arduino-radius-sm);
     padding: 0 2px;
 }
 
@@ -116,9 +117,6 @@
     margin-right: auto;
 }
 
-/* https://github.com/arduino/arduino-ide/pull/2027#issuecomment-1533174638 */
-/* https://github.com/eclipse-theia/theia/commit/1b5ff9ee459df14cedc0e8266dd02dae93fcd1bf#diff-d8d45a890507a01141c010ad4a6891edf2ae727cfa6dfe604cebbd667812cccbR68 */
-/* Use normal whitespace handling for the changelog content in the update dialog. */
 .p-Widget.dialogOverlay .dialogContent.ide-updater-dialog {
     white-space: normal;
 }

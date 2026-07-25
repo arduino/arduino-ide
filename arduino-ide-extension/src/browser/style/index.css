@@ -22,11 +22,16 @@
 
 :root {
     --arduino-button-height: 28px;
+    --arduino-radius-sm: 6px;
+    --arduino-radius-md: 10px;
+    --arduino-radius-lg: 16px;
+    --arduino-radius-xl: 24px;
+    --arduino-transition: 150ms ease;
+    --arduino-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --arduino-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --arduino-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
-/* Revive of the `--theia-icon-loading`. The variable has been removed from Theia while IDE2 still uses is. */
-/* The SVG icons are still part of Theia (1.31.1) */
-/* https://github.com/arduino/arduino-ide/pull/1662#issuecomment-1324997134 */
 body {
     --theia-icon-loading: url(../icons/loading-light.svg);
     --theia-icon-loading-warning: url(../icons/loading-dark.svg);
@@ -72,36 +77,35 @@ body.theia-dark {
     background-color: var(--theia-errorBackground);
 }
 
-/* Makes the sidepanel a bit wider when opening the widget */
 .p-DockPanel-widget {
     min-width: 220px;
     min-height: 20px;
     height: 220px;
 }
 
-/* Overrule the default Theia CSS button styles. */
 button.theia-button,
 .theia-button {
     align-items: center;
     display: flex;
-    font-family: "Open Sans Bold", sans-serif;
+    font-family: "Inter", "Open Sans", -apple-system, BlinkMacSystemFont, sans-serif;
     font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 12px;
     justify-content: center;
     cursor: pointer;
-    letter-spacing: 0.01em;
-    line-height: 24px;
+    letter-spacing: 0.02em;
+    line-height: 20px;
     outline: none;
-    padding: 0 16px;
+    padding: 0 14px;
     position: relative;
     text-align: center;
     text-decoration: none;
-    border-width: 2px;
-    border-radius: 32px;
+    border-width: 1px;
+    border-radius: var(--arduino-radius-lg);
     text-transform: uppercase;
-    transition: none;
+    transition: background var(--arduino-transition), border-color var(--arduino-transition), opacity var(--arduino-transition);
     box-shadow: none;
+    gap: 6px;
 }
 
 button.theia-button {
@@ -115,7 +119,7 @@ button.theia-button {
 }
 
 button.theia-button.secondary {
-    border: 2px solid var(--theia-secondaryButton-foreground);
+    border: 1px solid var(--theia-secondaryButton-foreground);
 }
 
 button.theia-button[disabled],
@@ -138,21 +142,22 @@ button.theia-button.message-box-dialog-button {
     display: inline-block;
 }
 
-/* To make the progress-bar slightly thicker, and use the color from the status bar */
 .theia-progress-bar-container {
     width: 100%;
-    height: 4px;
+    height: 3px;
+    border-radius: 100px;
+    overflow: hidden;
 }
 
 .theia-progress-bar {
-    height: 4px;
+    height: 3px;
     width: 3%;
-    animation: progress-animation 1.3s 0s infinite
-        cubic-bezier(0.645, 0.045, 0.355, 1);
+    border-radius: 100px;
+    animation: progress-animation 1.3s 0s infinite cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 .theia-notification-item-progressbar {
-    height: 4px;
+    height: 3px;
     width: 66%;
 }
 
