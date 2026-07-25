@@ -4,17 +4,18 @@
 
 .progress-bar--outer {
     background: var(--theia-editorWidget-background);
-    border-radius: 11px;
+    border-radius: 100px;
     height: 6px;
     position: relative;
     overflow: hidden;
+    border: 1px solid var(--theia-panel-border);
 }
 
 .progress-bar--inner {
-    transition: width 1s;
+    transition: width 1s ease;
     height: 100%;
     background: var(--theia-progressBar-background);
-    border-radius: 11px;
+    border-radius: 100px;
 }
 
 .progress-bar--percentage {
@@ -27,6 +28,7 @@
 }
 
 .progress-bar--percentage-text {
-    font-size: 14px;
-    line-height: 24px;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 500;
 }

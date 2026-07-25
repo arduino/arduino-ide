@@ -1,5 +1,3 @@
-/* Show the dirty indicator on unclosable widgets. On hover, it should still show the dot instead of the X. */
-/* https://github.com/arduino/arduino-pro-ide/issues/380 */
 .p-TabBar.theia-app-centers
     .p-TabBar-tab.p-mod-closable.a-mod-uncloseable.theia-mod-dirty
     > .p-TabBar-tabCloseIcon:before {

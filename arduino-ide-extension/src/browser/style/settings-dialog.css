@@ -30,6 +30,7 @@
 
 .arduino-settings-dialog .theia-select {
     background: var(--theia-input-background) !important;
+    border-radius: var(--arduino-radius-md);
 }
 
 .arduino-settings-dialog .column > div {
@@ -71,7 +72,7 @@
     background: var(--theia-editorWidget-background);
     border-color: var(--theia-tab-activeBorder);
     color: var(--theia-tab-activeForeground);
-    border-radius: 5px 5px 0 0;
+    border-radius: var(--arduino-radius-md) var(--arduino-radius-md) 0 0;
 }
 
 .arduino-settings-dialog .react-tabs__tab-list {

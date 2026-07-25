@@ -41,11 +41,16 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    height: 100%; /* This has top be 100% down to the `scrollContainer`. */
+    height: 100%;
 }
 
 .component-list-item {
-    padding: 20px 15px 25px;
+    padding: 16px 15px 20px;
+    border-bottom: 1px solid var(--theia-panel-border);
+}
+
+.component-list-item:last-child {
+    border-bottom: none;
 }
 
 .component-list-item .header {
@@ -82,9 +87,9 @@
 }
 
 .component-list-item .header .title .name {
-    font-family: "Open Sans Bold";
+    font-family: "Inter", "Open Sans", -apple-system, sans-serif;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 14px;
 }
 
@@ -96,15 +101,17 @@
 
 .component-list-item .header .author {
     color: var(--theia-panelTitle-inactiveForeground);
+    font-size: 12px;
 }
 
 .component-list-item .header .version {
     color: var(--theia-panelTitle-inactiveForeground);
     padding-top: 4px;
+    font-size: 12px;
 }
 
 .component-list-item .footer .theia-button.install {
-    height: auto; /* resets the default Theia button height in the filterable list widget */
+    height: auto;
 }
 
 .component-list-item .header .installed-version:before {
@@ -112,16 +119,14 @@
     display: inline-block;
     justify-self: end;
     text-align: center;
-    background-color: var(
-        --theia-arduino-toolbar-dropdown-option-backgroundHover
-    );
-    padding: 2px 4px 2px 4px;
-    font-size: 12px;
+    background-color: var(--theia-arduino-toolbar-dropdown-option-backgroundHover);
+    padding: 2px 6px;
+    font-size: 11px;
     max-height: calc(1em + 4px);
     color: var(--theia-button-background);
     content: attr(version);
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: var(--arduino-radius-sm);
 }
 
 .component-list-item .header .installed-version:hover:before {
@@ -133,16 +138,17 @@
     display: flex;
     flex-direction: column;
     padding-top: 4px;
-    font-family: "Open Sans";
+    font-family: "Inter", "Open Sans", -apple-system, sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
+    line-height: 1.5;
+    color: var(--theia-descriptionForeground);
 }
 
 .component-list-item .content > p {
     margin-block-start: unset;
     margin-block-end: unset;
-
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
@@ -216,11 +222,11 @@ div.filterable-list-container
 }
 
 .component-list-item .theia-button.secondary.no-border {
-    border: 2px solid var(--theia-button-foreground);
+    border: 1px solid var(--theia-button-foreground);
 }
 
 .component-list-item .theia-button.secondary.no-border:hover {
-    border: 2px solid var(--theia-secondaryButton-foreground);
+    border: 1px solid var(--theia-secondaryButton-foreground);
 }
 
 .component-list-item .theia-button {

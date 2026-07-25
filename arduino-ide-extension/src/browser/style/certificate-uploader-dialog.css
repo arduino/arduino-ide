@@ -4,10 +4,13 @@
 
 .certificate-uploader-dialog .theia-select {
     border: none !important;
+    border-radius: var(--arduino-radius-md);
 }
+
 .certificate-uploader-dialog .arduino-select__control {
     height: 31px;
     background: var(--theia-dropdown-background) !important;
+    border-radius: var(--arduino-radius-md) !important;
 }
 
 .certificate-uploader-dialog .dialogRow > button {
@@ -16,17 +19,19 @@
 
 .certificate-uploader-dialog .certificate-list {
     border: 1px solid var(--theia-editorWidget-border);
-    border-radius: 2px;
+    border-radius: var(--arduino-radius-md);
     color: var(--theia-editor-foreground);
     background-color: var(--theia-editor-background);
     overflow: auto;
     height: 120px;
     flex: 1;
 }
+
 .certificate-uploader-dialog .certificate-list .certificate-row {
     display: flex;
     padding: 6px 10px 5px 10px;
 }
+
 .certificate-uploader-dialog .certificate-list .certificate-row:hover {
     background-color: var(--theia-list-activeSelectionBackground);
 }
@@ -36,14 +41,15 @@
     align-items: center;
     flex: 1;
 }
+
 .certificate-uploader-dialog .success {
     display: flex;
     align-items: center;
-    color: #1da086;
+    color: #16a34a;
 }
 
 .certificate-uploader-dialog .warn {
-    color: #c11f09;
+    color: #dc3545;
 }
 
 .certificate-uploader-dialog .status-icon {
@@ -55,13 +61,14 @@
     align-items: center;
     justify-content: space-between;
 }
+
 .certificate-uploader-dialog .add-cert-btn .caret {
     margin-left: 6px;
 }
 
 .certificate-add {
     padding: 16px;
-    border-radius: 3px;
+    border-radius: var(--arduino-radius-md);
     border: 1px solid var(--theia-editorWidget-border);
     color: var(--theia-editorWidget-foreground);
     background-color: var(--theia-editorWidget-background);

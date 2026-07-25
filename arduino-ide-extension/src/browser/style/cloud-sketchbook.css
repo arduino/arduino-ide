@@ -1,14 +1,19 @@
 .sign-in-title {
     margin: 20px 0;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 16px;
 }
+
 .sign-in-desc {
     margin: 20px;
-    line-height: 150%;
+    line-height: 160%;
+    color: var(--theia-descriptionForeground);
 }
+
 .sign-in-cta {
     margin-left: 0 !important;
 }
+
 .sign-in-learnmore {
     margin-bottom: 20px;
 }
@@ -125,13 +130,10 @@ img.arduino-account-picture {
 }
 
 @keyframes rotating {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
+
 .rotating {
     animation: rotating 1s ease-in-out infinite;
 }

@@ -757,7 +757,6 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   Contribution.configure(bind, UpdateArduinoState);
   Contribution.configure(bind, BoardsDataMenuUpdater);
   Contribution.configure(bind, AutoSelectProgrammer);
-
   bind(CompileSummaryProvider).toService(VerifySketch);
 
   bindContributionProvider(bind, StartupTaskProvider);
@@ -1070,4 +1069,5 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   // Hides the Test Explorer from the side-bar
   bind(TestViewContribution).toSelf().inSingletonScope();
   rebind(TheiaTestViewContribution).toService(TestViewContribution);
+
 });

@@ -3,8 +3,6 @@
     background: var(--theia-editorGroupHeader-tabsBackground);
 }
 
-/* Avoid the Intellisense widget may be cover by the bottom panel partially.
-   TODO: This issue may be resolved after monaco-editor upgrade */
 #theia-main-content-panel {
     z-index: auto;
 }
@@ -21,7 +19,7 @@
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-save-sketch--toolbar,
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-open-sketch--toolbar,
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-new-sketch--toolbar {
-    border-radius: 1px;
+    border-radius: var(--arduino-radius-lg);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item > div {
@@ -30,12 +28,15 @@
     align-items: center;
     height: var(--arduino-button-height);
     width: var(--arduino-button-height);
+    border-radius: var(--arduino-radius-xl);
+    transition: background var(--arduino-transition);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-upload-sketch--toolbar,
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-verify-sketch--toolbar,
 .p-TabBar-toolbar .item.arduino-tool-item .arduino-start-debug {
     background: var(--theia-arduino-toolbar-button-background);
+    border-radius: var(--arduino-radius-xl);
 }
 
 .p-TabBar-toolbar .item.arduino-tool-item.enabled:hover > div {
@@ -48,16 +49,14 @@
 .p-TabBar-toolbar
     .item.arduino-tool-item.enabled:hover
     > div.toggle-serial-plotter {
-    background-color: var(
-        --theia-arduino-toolbar-button-secondary-hoverBackground
-    );
-    border-radius: 14px;
+    background-color: var(--theia-arduino-toolbar-button-secondary-hoverBackground);
+    border-radius: var(--arduino-radius-xl);
 }
 
 .arduino-verify-sketch--toolbar,
 .arduino-upload-sketch--toolbar,
 .arduino-start-debug {
-    border-radius: 14px;
+    border-radius: var(--arduino-radius-xl);
 }
 
 .item.arduino-tool-item.toggled {
@@ -114,7 +113,7 @@
 
 .p-TabBar-toolbar.theia-arduino-toolbar {
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     margin: 0 12px;
     padding: 0;
     z-index: 0;
@@ -125,7 +124,7 @@
 }
 
 :root {
-    --theia-private-menubar-height: 40px; /* set the topbar height */
+    --theia-private-menubar-height: 40px;
 }
 
 #theia-top-panel .p-TabBar-toolbar.theia-arduino-toolbar.right {
@@ -152,6 +151,7 @@
     align-items: center;
     color: var(--theia-titleBar-activeBackground);
 }
+
 .p-TabBar.theia-app-sides .p-TabBar-tabIcon.fa-arduino-folder,
 .p-TabBar.theia-app-sides .p-TabBar-tabIcon.fa-arduino-boards {
     font-size: 21px;
@@ -172,7 +172,6 @@
     margin-left: 10px;
 }
 
-/* Output */
 .theia-output .editor-container {
     background-color: var(--theia-terminal-background);
 }

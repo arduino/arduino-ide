@@ -25,7 +25,7 @@ div#select-board-dialog .selectBoardContainer {
 }
 
 div.dialogContent.select-board-dialog > div.head .title {
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.02em;
     font-size: 1.2em;
     color: var(--theia-editorWidget-foreground);
@@ -49,6 +49,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 
 #select-board-dialog .selectBoardContainer .search input {
     border: none;
+    border-radius: var(--arduino-radius-md);
     width: 100%;
     height: auto;
     max-height: 37px;
@@ -61,6 +62,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 
 #select-board-dialog .selectBoardContainer .search input:focus {
     box-shadow: none;
+    outline: 1px solid var(--theia-focusBorder);
 }
 
 #select-board-dialog .selectBoardContainer .container {
@@ -88,6 +90,9 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     color: var(--theia-editorWidget-foreground);
     padding: 0px 0px 10px 0px;
     text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
 }
 
 #select-board-dialog .selectBoardContainer .container .content .footer {
@@ -99,7 +104,6 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     color: var(--theia-editorWidget-foreground);
     padding: 10px 5px 10px 10px;
     text-transform: uppercase;
-    /* The max, min-height comes from `.list` 200px + 47px top padding - 2 * 10px top padding */
     max-height: 227px;
     min-height: 227px;
 }
@@ -110,6 +114,8 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     white-space: nowrap;
     overflow-x: hidden;
     flex: 1 0;
+    border-radius: var(--arduino-radius-sm);
+    transition: background var(--arduino-transition);
 }
 
 #select-board-dialog .selectBoardContainer .list .item .selected-icon {
@@ -119,7 +125,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 #select-board-dialog .selectBoardContainer .list .item .details {
     font-size: var(--theia-ui-font-size1);
     opacity: var(--theia-mod-disabled-opacity);
-    width: 155px; /* used heuristics for the calculation */
+    width: 155px;
     white-space: pre;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -146,7 +152,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 }
 
 #select-board-dialog .selectBoardContainer .ports.list {
-    margin: 47px 0px 0px 0px; /* 47 is 37 as input height for the `Boards`, plus 10 margin bottom. */
+    margin: 47px 0px 0px 0px;
 }
 
 #select-board-dialog .selectBoardContainer .search {
@@ -159,7 +165,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 .arduino-boards-toolbar-item-container {
     align-items: center;
     background: var(--theia-arduino-toolbar-dropdown-background);
-    border-radius: 1px;
+    border-radius: var(--arduino-radius-md);
     color: var(--theia-arduino-toolbar-dropdown-label);
     border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
     display: flex;
@@ -169,6 +175,11 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     overflow: hidden;
     padding: 0 10px;
     width: 210px;
+    transition: border-color var(--arduino-transition);
+}
+
+.arduino-boards-toolbar-item-container:hover {
+    border-color: var(--theia-arduino-toolbar-dropdown-borderActive);
 }
 
 .arduino-boards-toolbar-item--protocol,
@@ -191,13 +202,16 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 
 .arduino-boards-toolbar-item--label {
     width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .arduino-boards-toolbar-item--label-connected {
-    font-family: "Open Sans Bold";
+    font-family: "Inter", "Open Sans", -apple-system, sans-serif;
     font-style: normal;
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: 600;
+    font-size: 13px;
 }
 
 .arduino-boards-toolbar-item-container .caret {
@@ -209,10 +223,12 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     margin: -1px;
     z-index: 1;
     border: 1px solid var(--theia-arduino-toolbar-dropdown-border);
-    font-family: "Open Sans";
+    border-radius: var(--arduino-radius-md);
+    font-family: "Inter", "Open Sans", -apple-system, sans-serif;
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
+    box-shadow: var(--arduino-shadow-md);
 }
 
 .arduino-boards-dropdown-list:focus {
@@ -223,6 +239,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     overflow: auto;
     max-height: 404px;
     background: var(--theia-arduino-toolbar-dropdown-background);
+    border-radius: var(--arduino-radius-md);
 }
 
 .arduino-boards-dropdown-list--items-container::-webkit-scrollbar {
@@ -237,6 +254,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     font-size: var(--theia-ui-font-size1);
     justify-content: space-between;
     padding: 10px;
+    transition: background var(--arduino-transition);
 }
 
 .arduino-boards-dropdown-item--board-header {
@@ -249,7 +267,6 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
     flex: 1;
 }
 
-/* Redefine default codicon size https://github.com/microsoft/vscode/commit/38cd0a377b7abef34fb07fe770fc633e68819ba6 */
 .arduino-boards-dropdown-item .codicon[class*="codicon-"] {
     font-size: 14px;
 }
@@ -287,8 +304,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 .arduino-boards-dropdown-item--selected,
 .arduino-boards-dropdown-item--selected:hover {
     background: var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
-    border: 1px solid
-        var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
+    border: 1px solid var(--theia-arduino-toolbar-dropdown-option-backgroundSelected);
 }
 
 .arduino-boards-dropdown-item--selected
@@ -303,6 +319,7 @@ div#select-board-dialog .selectBoardContainer .list .item.selected i {
 .arduino-board-dropdown-footer {
     color: var(--theia-secondaryButton-foreground);
     border-top: 1px solid var(--theia-dropdown-border);
+    border-radius: 0 0 var(--arduino-radius-md) var(--arduino-radius-md);
 }
 
 @media only screen and (max-height: 400px) {
