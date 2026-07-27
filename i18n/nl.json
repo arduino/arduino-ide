@@ -482,6 +482,7 @@
       "uploading": "Uploaden...",
       "userFieldsNotFoundError": "Kan gebruiker velden van verbonden bord niet vinden",
       "verify": "Verifiëren",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Verifiëren/Compileren"
     },
     "sketchbook": {

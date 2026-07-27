@@ -482,6 +482,7 @@
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Nem találhatók felhasználói adatok a csatlakoztatott kártyához",
       "verify": "Ellenőrzés",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Ellenőrzés/fordítás"
     },
     "sketchbook": {

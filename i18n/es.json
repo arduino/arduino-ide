@@ -482,6 +482,7 @@
       "uploading": "Actualizando...",
       "userFieldsNotFoundError": "No se pueden encontrar campos de usuario para la placa conectada",
       "verify": "Verificar",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Verificar/Compilar"
     },
     "sketchbook": {

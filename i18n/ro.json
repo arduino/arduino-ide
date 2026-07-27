@@ -482,6 +482,7 @@
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Can't find user fields for connected board",
       "verify": "Verifică",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Verify/Compile"
     },
     "sketchbook": {

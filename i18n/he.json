@@ -482,6 +482,7 @@
       "uploading": "עולה...",
       "userFieldsNotFoundError": "לא נמצאו שדות משתמש ללוח המחובר",
       "verify": "בדיקה",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "בדיקה\\קומפילציה"
     },
     "sketchbook": {
