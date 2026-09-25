@@ -71,3 +71,9 @@ export function truncateLines(
 export function joinLines(lines: Line[]): string {
   return lines.map((line: Line) => line.message).join('');
 }
+
+export function linesToPlainText(lines: Line[]): string {
+  // Replace null characters with a visible symbol. Otherwise, the
+  // clipboard content would be truncated at the first null character.
+  return joinLines(lines).replace(/\u0000/g, '\u25A1');
+}
