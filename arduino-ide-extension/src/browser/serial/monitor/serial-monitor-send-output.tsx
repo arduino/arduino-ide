@@ -3,7 +3,13 @@ import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
 import dateFormat from 'dateformat';
-import { messagesToLines, truncateLines, joinLines } from './monitor-utils';
+import {
+  messagesToLines,
+  truncateLines,
+  linesToPlainText,
+  linesToCsvText,
+  LINE_TIMESTAMP_FORMAT,
+} from './monitor-utils';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
@@ -28,6 +34,22 @@ export class SerialMonitorOutput extends React.Component<
       timestamp: this.props.monitorModel.timestamp,
       charCount: 0,
     };
+  }
+
+  /**
+   * The current output as plain text, in the same form as the
+   * `Copy Output` toolbar action puts it on the clipboard.
+   */
+  getPlainText(): string {
+    return linesToPlainText(this.state.lines);
+  }
+
+  /**
+   * The current output as CSV rows, one row per line, with a leading
+   * timestamp column when timestamps are enabled.
+   */
+  getCsvText(): string {
+    return linesToCsvText(this.state.lines, this.state.timestamp);
   }
 
   override render(): React.ReactNode {
@@ -75,12 +97,11 @@ export class SerialMonitorOutput extends React.Component<
       this.props.clearConsoleEvent(() =>
         this.setState({ lines: [], charCount: 0 })
       ),
-      this.props.copyOutputEvent(() => {
-        const text = joinLines(this.state.lines);
-        // Replace null characters with a visible symbol
-        const safe = text.replace(/\u0000/g, '\u25A1');
-        this.props.clipboardService.writeText(safe);
-      }),
+      this.props.copyOutputEvent(() =>
+        this.props.clipboardService.writeText(
+          linesToPlainText(this.state.lines)
+        )
+      ),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
           const { timestamp } = this.props.monitorModel;
@@ -116,7 +137,10 @@ const _Row = ({
 }) => {
   const timestamp =
     (data.timestamp &&
-      `${dateFormat(data.lines[index].timestamp, 'HH:MM:ss.l')} -> `) ||
+      `${dateFormat(
+        data.lines[index].timestamp,
+        LINE_TIMESTAMP_FORMAT
+      )} -> `) ||
     '';
   return (
     (data.lines[index].lineLen && (
