@@ -482,6 +482,7 @@
       "uploading": "Téléversement...",
       "userFieldsNotFoundError": "Impossible de trouver un champ utilisateur pour les cartes connectés",
       "verify": "Vérifier",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Vérifier / Compiler"
     },
     "sketchbook": {

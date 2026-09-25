@@ -482,6 +482,7 @@
       "uploading": "अपलोड हुँदैछ...",
       "userFieldsNotFoundError": "जडान गरिएको बोर्डको लागि प्रयोगकर्ता क्षेत्रहरू फेला पार्न सकिदैन ",
       "verify": "प्रमाणित गर्नुहोस्",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "प्रमाणित/कम्पाइल गर्नुहोस्"
     },
     "sketchbook": {

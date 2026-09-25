@@ -482,6 +482,7 @@
       "uploading": "Завантаження..",
       "userFieldsNotFoundError": "Не вдається знайти поля користувача для підключеної плати",
       "verify": "Перевірити ",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Перевірка/Компіляція"
     },
     "sketchbook": {

@@ -482,6 +482,7 @@
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Није могуће пронаћи корисничка поља за повезану плочу.",
       "verify": "Провјери",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Провјери/Преведи"
     },
     "sketchbook": {
