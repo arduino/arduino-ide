@@ -79,6 +79,7 @@ jobs:
           - macos-latest
           - ubuntu-latest
           - windows-latest
+          - ubuntu-22.04-arm
 
     steps:
       - name: Checkout
