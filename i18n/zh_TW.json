@@ -482,6 +482,7 @@
       "uploading": "上傳...",
       "userFieldsNotFoundError": "找不到已連接開發板中的用戶欄",
       "verify": "驗證",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "驗證/編譯"
     },
     "sketchbook": {
