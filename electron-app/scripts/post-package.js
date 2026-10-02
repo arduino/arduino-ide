@@ -131,7 +131,7 @@ async function copyFilesToBuildArtifacts() {
     case 'linux': {
       filesToCopy.push(
         ...glob
-          .sync('**/arduino-ide*.{zip,AppImage}', { cwd })
+          .sync('**/arduino-ide*.{zip,AppImage,rpm}', { cwd })
           .map((p) => path.join(cwd, p))
       );
       break;
