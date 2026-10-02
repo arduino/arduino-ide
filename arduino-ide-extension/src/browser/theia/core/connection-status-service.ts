@@ -231,7 +231,7 @@ export class ApplicationConnectionStatusContribution extends TheiaApplicationCon
       this.noInternetConnectionNotificationId = this.notificationManager[
         'getMessageId'
       ]({ text, type: MessageType.Warning });
-      if (this.createFeatures.enabled) {
+      if (this.createFeatures.enabled && this.createFeatures.session != undefined) {
         this.messageService.warn(text);
       }
       this.toDisposeOnOnline.push(
