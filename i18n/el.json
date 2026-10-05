@@ -482,6 +482,7 @@
       "uploading": "Φότρωση....",
       "userFieldsNotFoundError": "Δεν είναι δυνατή η εύρεση των πεδίων χρήστη για την συνδεδεμένη πλακέτα",
       "verify": "Επαλήθευση",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Επικύρωση"
     },
     "sketchbook": {

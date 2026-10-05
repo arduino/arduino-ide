@@ -482,6 +482,7 @@
       "uploading": "Hochladen ...",
       "userFieldsNotFoundError": "Nutzerfelder für das angeschlossene Board nicht gefunden",
       "verify": "Überprüfen",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Überprüfen/Kompilieren"
     },
     "sketchbook": {

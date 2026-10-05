@@ -26,7 +26,7 @@
       "noBoardsFound": "No se han encotrado placas para \"{0}\"",
       "noNativeSerialPort": "Puerto serie nativo, información no obtenida",
       "noPortsDiscovered": "No se ha descubierto ningún puerto",
-      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "nonSerialPort": "Puerto no serial, no se puede obtener información.",
       "openBoardsConfig": "Seleccione otra placa y puerto...",
       "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
       "port": "Puerto {0}",
@@ -421,7 +421,7 @@
       "verifyAfterUpload": "Verificar el código después de cargarlo",
       "window.autoScale": "Verdadero si la interfaz de usuario se escala automáticamente con el tamaño de la fuente.",
       "window.zoomLevel": {
-        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+        "deprecationMessage": "Obsoleto. Utilizar 'window.zoomLevel' en su lugar."
       }
     },
     "renameCloudSketch": {
@@ -482,6 +482,7 @@
       "uploading": "Actualizando...",
       "userFieldsNotFoundError": "No se pueden encontrar campos de usuario para la placa conectada",
       "verify": "Verificar",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Verificar/Compilar"
     },
     "sketchbook": {
@@ -489,7 +490,7 @@
       "newSketch": "Nuevo Sketch"
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "currentThemeNotFound": "No se pudo encontrar el tema seleccionado actualmente: {0}. Arduino IDE ha elegido un tema integrado compatible con el que falta.",
       "dark": "Oscuro",
       "deprecated": "{0} (obsoleto)",
       "hc": "Oscuro contraste alto",

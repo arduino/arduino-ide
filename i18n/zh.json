@@ -482,6 +482,7 @@
       "uploading": "正在上传…",
       "userFieldsNotFoundError": "找不到已连接开发板的用户字段",
       "verify": "验证",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "验证/编译"
     },
     "sketchbook": {

@@ -482,6 +482,7 @@
       "uploading": "กำลังอัปโหลด",
       "userFieldsNotFoundError": "ไม่สามารถค้นหาฟิลด์ผู้ใช้สำหรับบอร์ดที่เชื่อมต่ออยู่",
       "verify": "ยืนยัน",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "ยืนยัน/คอมไพล์"
     },
     "sketchbook": {
