@@ -2,7 +2,7 @@ name: Check Yarn
 
 env:
   # See: https://github.com/actions/setup-node/#readme
-  NODE_VERSION: '18.17'
+  NODE_VERSION: '22.23'
 
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows

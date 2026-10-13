@@ -136,6 +136,9 @@
       "reflect-metadata/Reflect",
       "ignore-styles"
     ],
+    "node-option": [
+      "no-experimental-global-navigator"
+    ],
     "reporter": "spec",
     "colors": true,
     "watch-extensions": "js",

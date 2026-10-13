@@ -47,7 +47,7 @@ env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
   GO_VERSION: '1.24'
   # See: https://github.com/actions/setup-node/#readme
-  NODE_VERSION: '18.17'
+  NODE_VERSION: '22.23'
   YARN_VERSION: '1.22'
   JOB_TRANSFER_ARTIFACT_PREFIX: build-artifacts-
   CHANGELOG_ARTIFACTS: changelog

@@ -7,7 +7,7 @@
   "license": "AGPL-3.0-or-later",
   "private": true,
   "engines": {
-    "node": ">=18.17.0 <21"
+    "node": ">=22.23.0 <23"
   },
   "resolutions": {
     "@theia/cli/@babel/traverse": "^7.23.2",

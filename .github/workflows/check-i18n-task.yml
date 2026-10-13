@@ -4,7 +4,7 @@ env:
   # See vars.GO_VERSION field of https://github.com/arduino/arduino-cli/blob/master/DistTasks.yml
   GO_VERSION: '1.24'
   # See: https://github.com/actions/setup-node/#readme
-  NODE_VERSION: '18.17'
+  NODE_VERSION: '22.23'
 
 # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows
 on:
@@ -60,7 +60,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Install Node.js 18.17
+      - name: Install Node.js 22.23
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
