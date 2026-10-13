@@ -78,7 +78,7 @@ jobs:
         operating-system:
           - macos-latest
           - ubuntu-latest
-          - windows-latest
+          - windows-2022
 
     steps:
       - name: Checkout
