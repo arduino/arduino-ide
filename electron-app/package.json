@@ -42,7 +42,7 @@
     "yaml": "^1.10.2"
   },
   "scripts": {
-    "prepare": "theia download:plugins",
+    "prepare": "node ./scripts/download-plugins.js",
     "prebuild": "rimraf lib",
     "build": "theia build",
     "prebuild:dev": "yarn prebuild",

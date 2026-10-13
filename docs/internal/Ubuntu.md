@@ -21,9 +21,9 @@ sudo apt update \
   libsecret-1-dev \
 && wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash \
 && source ~/.bashrc \
-&& nvm install 18.17 \
-&& nvm use 18.17 \
-&& nvm alias default 18.17 \
+&& nvm install 22.23 \
+&& nvm use 22.23 \
+&& nvm alias default 22.23 \
 && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
 && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
 && sudo apt update && sudo apt install --no-install-recommends yarn \
