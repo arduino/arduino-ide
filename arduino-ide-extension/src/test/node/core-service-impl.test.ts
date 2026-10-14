@@ -172,6 +172,9 @@ describe('core-service-impl', () => {
             /* NOOP */
           },
         },
+        notificationService: {
+          notifyDidReinitialize: () => events.push('notifyDidReinitialize'),
+        },
       });
       return { coreService, events };
     }
@@ -203,6 +206,7 @@ describe('core-service-impl', () => {
         'refresh',
         'refreshed',
         'compile',
+        'notifyDidReinitialize',
         'compiled',
       ]);
     });
@@ -221,6 +225,7 @@ describe('core-service-impl', () => {
         'refresh',
         'refreshed',
         'compile',
+        'notifyDidReinitialize',
       ]);
     });
 
@@ -234,7 +239,12 @@ describe('core-service-impl', () => {
       const err = await compileError(coreService, source.token);
 
       expect(UserAbortApplicationError.is(err)).to.be.true;
-      expect(events).to.be.deep.equal(['compile', 'refresh', 'refreshed']);
+      expect(events).to.be.deep.equal([
+        'compile',
+        'refresh',
+        'refreshed',
+        'notifyDidReinitialize',
+      ]);
     });
 
     it('should reject when the reinitialization fails', async () => {
