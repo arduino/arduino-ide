@@ -114,6 +114,9 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
         hasRetried = true;
         await this.refresh();
+        if (cancellationToken?.isCancellationRequested) {
+          return handleCancellationError();
+        }
         return startCompileStream();
       };
 
@@ -158,10 +161,19 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           );
         }
 
+        let hasError = false;
         call
           .on('data', handler.onData)
-          .on('error', handleError)
+          .on('error', (error) => {
+            hasError = true;
+            handleError(error).catch(handleUnexpectedError);
+          })
           .on('end', () => {
+            // grpc-js also emits 'end' when the call fails. Let the error handler
+            // settle the promise, it may retry the compilation.
+            if (hasError) {
+              return;
+            }
             if (isCompileSummary(compileSummary)) {
               resolve(compileSummary);
             } else {
