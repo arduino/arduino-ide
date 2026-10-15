@@ -22,8 +22,17 @@ exports.default = async function (configuration) {
       { stdio: 'inherit' }
     );
   } else {
+    const missing = Object.entries({
+      SIGNTOOL_PATH,
+      INSTALLER_CERT_WINDOWS_CER,
+      WIN_CERT_PASSWORD: CERT_PASSWORD,
+      WIN_CERT_CONTAINER_NAME: CONTAINER_NAME,
+    })
+      .filter(([, value]) => !value)
+      .map(([name]) => name)
+      .join(', ');
     console.warn(
-      `Custom windows signing was no performed one of the following variables was not provided: SIGNTOOL_PATH (${SIGNTOOL_PATH}), INSTALLER_CERT_WINDOWS_CERT (${INSTALLER_CERT_WINDOWS_CER}), CERT_PASSWORD (${CERT_PASSWORD}), CONTAINER_NAME (${CONTAINER_NAME})`
+      `Custom windows signing was not performed, missing variables: ${missing}`
     );
     process.exit(1);
   }
