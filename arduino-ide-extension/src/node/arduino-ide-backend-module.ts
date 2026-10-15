@@ -121,6 +121,11 @@ import {
 import { SettingsReader } from './settings-reader';
 import { VsCodePluginScanner } from './theia/plugin-ext-vscode/scanner-vscode';
 import { rebindParcelFileSystemWatcher } from './theia/filesystem/parcel-bindings';
+import {
+  BuildStateService,
+  BuildStateServicePath,
+} from '../common/protocol/build-state-service';
+import { BuildStateServiceImpl } from './build-state-service-impl';
 
 export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(BackendApplication).toSelf().inSingletonScope();
@@ -149,6 +154,19 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
       (context) =>
         new JsonRpcConnectionHandler(ArduinoDaemonPath, () =>
           context.container.get(ArduinoDaemon)
+        )
+    )
+    .inSingletonScope();
+
+  // Shared build-state service: captures the latest compile/upload result
+  // so plugins can react without re-running the build.
+  bind(BuildStateServiceImpl).toSelf().inSingletonScope();
+  bind(BuildStateService).toService(BuildStateServiceImpl);
+  bind(ConnectionHandler)
+    .toDynamicValue(
+      ({ container }) =>
+        new JsonRpcConnectionHandler(BuildStateServicePath, () =>
+          container.get(BuildStateService)
         )
     )
     .inSingletonScope();
