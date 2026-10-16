@@ -110,7 +110,7 @@ export class ElectronArduino implements ElectronMainApplicationContribution {
       CHANNEL_SET_MENU_WITH_NODE_ID,
       (event, internalMenu: InternalMenuDto[] | undefined) => {
         const electronMenu = internalMenu
-          ? Menu.buildFromTemplate(fromMenuDto(event.sender, internalMenu))
+          ? Menu.buildFromTemplate(fromMenuDto(app, event.sender, internalMenu))
           : null;
         if (isOSX) {
           Menu.setApplicationMenu(electronMenu);
@@ -129,7 +129,29 @@ export class ElectronArduino implements ElectronMainApplicationContribution {
   }
 }
 
+// On macOS the application menu outlives the window that built it. If that window is gone,
+// run the item in a live IDE window instead of throwing `Object has been destroyed`.
+// https://github.com/arduino/arduino-ide/issues/2881
+function resolveMenuTarget(
+  app: ElectronMainApplication,
+  sender: WebContents
+): WebContents | undefined {
+  if (!sender.isDestroyed()) {
+    return sender;
+  }
+  const window = app.lastFocusedBrowserWindow;
+  if (!window) {
+    return undefined;
+  }
+  if (window.isMinimized()) {
+    window.restore();
+  }
+  window.focus();
+  return window.webContents;
+}
+
 function fromMenuDto(
+  app: ElectronMainApplication,
   sender: WebContents,
   menuDto: InternalMenuDto[]
 ): MenuItemConstructorOptions[] {
@@ -145,11 +167,14 @@ function fromMenuDto(
       accelerator: dto.accelerator,
     };
     if (dto.submenu) {
-      result.submenu = fromMenuDto(sender, dto.submenu);
+      result.submenu = fromMenuDto(app, sender, dto.submenu);
     }
     if (dto.nodeId) {
       result.click = () => {
-        sender.send(CHANNEL_MAIN_MENU_ITEM_DID_CLICK, dto.nodeId);
+        resolveMenuTarget(app, sender)?.send(
+          CHANNEL_MAIN_MENU_ITEM_DID_CLICK,
+          dto.nodeId
+        );
       };
     }
     return result;
