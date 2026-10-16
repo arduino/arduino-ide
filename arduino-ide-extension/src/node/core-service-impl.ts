@@ -14,6 +14,7 @@ import path from 'node:path';
 import { userAbort } from '../common/nls';
 import {
   UploadResponse as ApiUploadResponse,
+  NotificationServiceServer,
   OutputMessage,
   Port,
   PortIdentifier,
@@ -70,6 +71,8 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
   private readonly monitorManager: MonitorManager;
   @inject(BoardDiscovery)
   private readonly boardDiscovery: BoardDiscovery;
+  @inject(NotificationServiceServer)
+  private readonly notificationService: NotificationServiceServer;
 
   async compile(
     options: CoreService.Options.Compile,
@@ -87,10 +90,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       compileSummaryHandler
     );
     const toDisposeOnFinally = new DisposableCollection(handler);
+    let hasRetried = false;
+    let didReinitialize = false;
 
     return new Promise<CompileSummary | undefined>((resolve, reject) => {
-      let hasRetried = false;
-
       const handleUnexpectedError = (error: Error) => {
         console.error(
           'Unexpected error occurred while compiling the sketch.',
@@ -114,6 +117,10 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
 
         hasRetried = true;
         await this.refresh();
+        didReinitialize = true;
+        if (cancellationToken?.isCancellationRequested) {
+          return handleCancellationError();
+        }
         return startCompileStream();
       };
 
@@ -158,10 +165,19 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
           );
         }
 
+        let hasError = false;
         call
           .on('data', handler.onData)
-          .on('error', handleError)
+          .on('error', (error) => {
+            hasError = true;
+            handleError(error).catch(handleUnexpectedError);
+          })
           .on('end', () => {
+            // grpc-js also emits 'end' when the call fails. Let the error handler
+            // settle the promise, it may retry the compilation.
+            if (hasError) {
+              return;
+            }
             if (isCompileSummary(compileSummary)) {
               resolve(compileSummary);
             } else {
@@ -178,6 +194,11 @@ export class CoreServiceImpl extends CoreClientAware implements CoreService {
       startCompileStream();
     }).finally(() => {
       toDisposeOnFinally.dispose();
+      if (didReinitialize) {
+        // The retry reinitialized the CLI instance. Notify the frontend after the
+        // compilation, so the language server restart doesn't slow it down.
+        this.notificationService.notifyDidReinitialize();
+      }
     });
   }
 
