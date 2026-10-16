@@ -1,8 +1,6 @@
 import React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
-import { areEqual, FixedSizeList as List } from 'react-window';
-import dateFormat from 'dateformat';
 import { messagesToLines, truncateLines, joinLines } from './monitor-utils';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
@@ -18,11 +16,11 @@ export class SerialMonitorOutput extends React.Component<
    * Do not touch it. It is used to be able to "follow" the serial monitor log.
    */
   protected toDisposeBeforeUnmount = new DisposableCollection();
-  private listRef: React.RefObject<List>;
+  private serialTextAreaRef = React.createRef<HTMLTextAreaElement>();
+
 
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
-    this.listRef = React.createRef();
     this.state = {
       lines: [],
       timestamp: this.props.monitorModel.timestamp,
@@ -31,24 +29,32 @@ export class SerialMonitorOutput extends React.Component<
   }
 
   override render(): React.ReactNode {
-    return (
-      <List
-        className="serial-monitor-messages"
-        height={this.props.height}
-        itemData={{
-          lines: this.state.lines,
-          timestamp: this.state.timestamp,
-        }}
-        itemCount={this.state.lines.length}
-        itemSize={18}
-        width={'100%'}
-        style={{ whiteSpace: 'nowrap' }}
-        ref={this.listRef}
-      >
-        {Row}
-      </List>
-    );
-  }
+  const text = joinLines(this.state.lines).replace(/\u0000/g, '\u25A1');
+  return (
+    <textarea
+      ref={this.serialTextAreaRef}
+      readOnly
+      value={text}
+      style={{
+        width: '100%',
+        height: this.props.height,
+        resize: 'none',
+        fontFamily: 'var(--monospace-font-family, "Menlo", "Ubuntu Mono", "Courier New", monospace)',
+        fontSize: 'var(--monospace-font-size, 12px)',
+        lineHeight: '18px',
+        whiteSpace: 'pre',
+        overflowY: 'scroll',
+        background: 'var(--theia-editor-background)',
+        color: 'var(--theia-editor-foreground)',
+        border: 'none',
+        outline: 'none',
+        cursor: 'text',
+        boxSizing: 'border-box',
+        padding: '4px 8px',
+      }}
+    />
+  );
+}
 
   override shouldComponentUpdate(): boolean {
     return true;
@@ -99,38 +105,12 @@ export class SerialMonitorOutput extends React.Component<
   }
 
   private readonly scrollToBottom = () => {
-    if (this.listRef.current && this.props.monitorModel.autoscroll) {
-      this.listRef.current.scrollToItem(this.state.lines.length, 'end');
+    const ta = this.serialTextAreaRef.current;
+    if (ta && this.props.monitorModel.autoscroll) {
+      ta.scrollTop = ta.scrollHeight;
     }
   };
 }
-
-const _Row = ({
-  index,
-  style,
-  data,
-}: {
-  index: number;
-  style: any;
-  data: { lines: Line[]; timestamp: boolean };
-}) => {
-  const timestamp =
-    (data.timestamp &&
-      `${dateFormat(data.lines[index].timestamp, 'HH:MM:ss.l')} -> `) ||
-    '';
-  return (
-    (data.lines[index].lineLen && (
-      <div style={style}>
-        <pre>
-          {timestamp}
-          {data.lines[index].message}
-        </pre>
-      </div>
-    )) ||
-    null
-  );
-};
-const Row = React.memo(_Row, areEqual);
 
 export namespace SerialMonitorOutput {
   export interface Props {
