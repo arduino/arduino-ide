@@ -482,6 +482,7 @@
       "uploading": "Carregant...",
       "userFieldsNotFoundError": "No s'han trobat camps d'usuari per a la placa connectada",
       "verify": "Verifica",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {
