@@ -81,6 +81,8 @@ The platform failed to initialize. Exiting.
 
 Or segmentation faults immediately after launching.
 
+When `ELECTRON_OZONE_PLATFORM_HINT` is set to `wayland` or `auto` (as some Wayland desktop environments do by default), Arduino IDE automatically relaunches itself with the X11/XWayland backend to avoid these crashes. To use native Wayland anyway, launch Arduino IDE with `--ozone-platform=wayland`.
+
 #### Workaround: Force X11/XWayland Backend
 
 If you encounter Wayland-related crashes, you can force Arduino IDE to use the X11/XWayland backend instead of native Wayland rendering:
