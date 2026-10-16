@@ -740,6 +740,16 @@ export class ElectronMainApplication extends TheiaElectronMainApplication {
     return Array.from(this.windows.values()).map(({ window }) => window);
   }
 
+  get lastFocusedBrowserWindow(): BrowserWindow | undefined {
+    for (const id of this.activeWindowStack) {
+      const window = this.windows.get(id)?.window;
+      if (window && !window.isDestroyed()) {
+        return window;
+      }
+    }
+    return undefined;
+  }
+
   get firstWindowId(): number | undefined {
     return this._firstWindowId;
   }
