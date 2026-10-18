@@ -56,7 +56,7 @@ jobs:
           yarn run compose-changelog "${{ github.workspace }}/${{ env.CHANGELOG_ARTIFACTS }}/$CHANGELOG_FILE_NAME"
 
       - name: Configure AWS Credentials for Changelog [S3]
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }} 
           aws-region: us-east-1 
