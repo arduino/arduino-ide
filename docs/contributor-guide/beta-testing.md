@@ -43,13 +43,13 @@ The tester build for a PR can be downloaded by following these instructions:
 
 ![tester build artifacts](assets/tester-build-artifacts.png)
 
-#### Notes for macOS
+#### Notes for macOS and Windows
 
 Beginning in macOS 10.14.5, the software [must be notarized to run](https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution).
 
-For security reasons, signing and notarization are disabled when creating tester builds for pull requests from forks of this repository. This means that macOS will block you from running the tester builds for those PRs.
+For security reasons, signing and notarization are disabled when creating tester builds for pull requests from forks of this repository, and Windows tester builds for pull requests are never signed. This means that macOS will block you from running the tester builds for those PRs, and Windows may warn you before running them.
 
-Due to this limitation, Mac users have two options for testing PRs from forks:
+Due to this limitation, you have two options for testing those PRs:
 
 ##### The Safe Approach
 
@@ -65,11 +65,20 @@ Build the version of the Arduino IDE you want to test from source instead of usi
 
 ---
 
+On macOS:
+
 1. Start the tester build.<br />
    A warning will appear:
    > "Arduino IDE" cannot be opened because the developer cannot be verified.
 1. Follow the instructions from the "**If you want to open an app that hasn't been notarized or is from an unidentified developer**" section of this page to bypass the security restriction:<br />
    [https://support.apple.com/en-us/HT202491](https://support.apple.com/en-us/HT202491#:~:text=If%20you%20want%20to%20open%20an%20app%20that%20hasn%E2%80%99t%20been%20notarized%20or%20is%20from%20an%20unidentified%20developer)
+
+On Windows:
+
+1. Start the tester build.<br />
+   A warning may appear:
+   > Windows protected your PC
+1. Click "**More info**", then "**Run anyway**".
 
 ### Feedback
 
