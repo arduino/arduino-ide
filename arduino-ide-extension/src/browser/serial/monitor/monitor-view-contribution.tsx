@@ -9,7 +9,12 @@ import {
   ApplicationShell,
   codicon,
 } from '@theia/core/lib/browser';
+import {
+  KeybindingContext,
+  KeybindingRegistry,
+} from '@theia/core/lib/browser/keybinding';
 import { MonitorWidget } from './monitor-widget';
+import { SerialMonitorOutput } from './serial-monitor-send-output';
 import { MenuModelRegistry, Command, CommandRegistry } from '@theia/core';
 import {
   TabBarToolbarContribution,
@@ -55,8 +60,23 @@ export namespace SerialMonitor {
     export const COPY_OUTPUT = {
       id: 'serial-monitor-copy-output',
     };
+    export const SELECT_ALL_OUTPUT = {
+      id: 'serial-monitor-select-all-output',
+    };
   }
 }
+
+/**
+ * Enables serial-monitor-specific keybindings when the monitor output area
+ * has the focus.
+ */
+export const SerialMonitorOutputFocusContext: KeybindingContext = {
+  id: 'serialMonitorOutputFocus',
+  isEnabled: () =>
+    !!document.activeElement?.closest(
+      `.${SerialMonitorOutput.CONTAINER_CLASS}`
+    ),
+};
 
 @injectable()
 export class MonitorViewContribution
@@ -179,6 +199,9 @@ export class MonitorViewContribution
         }
       },
     });
+    commands.registerCommand(SerialMonitor.Commands.SELECT_ALL_OUTPUT, {
+      execute: () => this.tryGetWidget()?.selectAllOutput(),
+    });
     if (this.toggleCommand) {
       commands.registerCommand(this.toggleCommand, {
         execute: () => this.toggle(),
@@ -196,6 +219,15 @@ export class MonitorViewContribution
       { id: MonitorViewContribution.RESET_SERIAL_MONITOR },
       { execute: () => this.reset() }
     );
+  }
+
+  override registerKeybindings(keybindings: KeybindingRegistry): void {
+    super.registerKeybindings(keybindings);
+    keybindings.registerKeybinding({
+      command: SerialMonitor.Commands.SELECT_ALL_OUTPUT.id,
+      keybinding: 'CtrlCmd+A',
+      context: SerialMonitorOutputFocusContext.id,
+    });
   }
 
   protected async toggle(): Promise<void> {

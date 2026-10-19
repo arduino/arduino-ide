@@ -78,6 +78,11 @@
     padding: 5px;
 }
 
+.serial-monitor-messages-container:focus {
+    outline: 1px solid var(--theia-focusBorder);
+    outline-offset: -1px;
+}
+
 .p-TabBar-toolbar .item.arduino-monitor {
     width: 24px;
     justify-content: center;
