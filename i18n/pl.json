@@ -482,6 +482,7 @@
       "uploading": "Przesyłanie...",
       "userFieldsNotFoundError": "Nie można znaleźć pól użytkownika dla podłączonej płytki",
       "verify": "Weryfikuj",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Weryfikuj/Kompiluj"
     },
     "sketchbook": {
