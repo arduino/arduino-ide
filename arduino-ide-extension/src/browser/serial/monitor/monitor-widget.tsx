@@ -49,6 +49,7 @@ export class MonitorWidget extends ReactWidget {
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
   protected readonly copyOutputEmitter = new Emitter<void>();
+  protected readonly outputRef = React.createRef<SerialMonitorOutput>();
 
   @inject(MonitorModel)
   private readonly monitorModel: MonitorModel;
@@ -109,6 +110,14 @@ export class MonitorWidget extends ReactWidget {
   
   copyOutput(): void {
     this.copyOutputEmitter.fire();
+  }
+
+  /**
+   * The current output as plain text, in the same form as the
+   * `Copy Output` toolbar action puts it on the clipboard.
+   */
+  outputText(): string {
+    return this.outputRef.current?.getPlainText() ?? '';
   }
 
   override dispose(): void {
@@ -252,6 +261,7 @@ export class MonitorWidget extends ReactWidget {
         </div>
         <div className="body">
           <SerialMonitorOutput
+            ref={this.outputRef}
             monitorModel={this.monitorModel}
             monitorManagerProxy={this.monitorManagerProxy}
             clearConsoleEvent={this.clearOutputEmitter.event}
