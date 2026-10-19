@@ -1,7 +1,9 @@
 name: Sign Windows
 
-# Builds and signs the Windows release on the self-hosted signing runner.
-# build.yml calls it as `sign-windows.yml@main`, only for main and release tags.
+# Builds and signs Windows on a self-hosted runner. build.yml calls it for main and release tags, when the
+# INSTALLER_CERT_WINDOWS_CER secret is set.
+# There are no setup steps: the runner must have Node.js, Yarn, Python, Go and Task installed, in the versions
+# used by build.yml.
 # See: https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows
 on:
   workflow_call:
@@ -39,14 +41,11 @@ jobs:
     steps:
       - name: Allow only main and release tags
         run: |
-          EVENT_REGEX="^(push|schedule|workflow_dispatch|workflow_run)$"
-          TAG_REGEX="^refs/tags/[0-9]+\.[0-9]+\.[0-9]+"
           if [[
-            "$GITHUB_REPOSITORY" != "arduino/arduino-ide" ||
-            ! "$GITHUB_EVENT_NAME" =~ $EVENT_REGEX ||
-            ! ( "$GITHUB_REF" == "refs/heads/main" || "$GITHUB_REF" =~ $TAG_REGEX )
+            "$GITHUB_EVENT_NAME" == pull_request* ||
+            ( "$GITHUB_REF" != "refs/heads/main" && "$GITHUB_REF" != refs/tags/* )
           ]]; then
-            echo "::error::Windows signing runs only for main and release tags of arduino/arduino-ide."
+            echo "::error::Windows signing runs only for main and release tags."
             exit 1
           fi
 
@@ -63,7 +62,7 @@ jobs:
       - name: Symlink custom working directory
         shell: cmd
         run: |
-          if not exist "${{ env.WORKING_DIRECTORY }}" mklink /d "${{ env.WORKING_DIRECTORY }}" "C:\actions-runner\_work\arduino-ide\arduino-ide"
+          if not exist "${{ env.WORKING_DIRECTORY }}" mklink /d "${{ env.WORKING_DIRECTORY }}" "${{ github.workspace }}"
 
       - name: Checkout
         uses: actions/checkout@v5
