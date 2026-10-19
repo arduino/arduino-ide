@@ -28,7 +28,6 @@ on:
     paths-ignore:
       - '.github/**'
       - '!.github/workflows/build.yml'
-      - '!.github/workflows/sign-windows.yml'
       - '.vscode/**'
       - 'docs/**'
       - 'scripts/**'
@@ -58,7 +57,7 @@ env:
     - config:
         # Human identifier for the job.
         name: Windows
-        # Unsigned builds only. Signed builds run in sign-windows.yml, see the build-windows-signed job.
+        # Unsigned builds only. Signed builds run in sign-windows.yml, see the build-windows-signed-* jobs.
         # windows-latest ships Visual Studio 2026, which node-gyp can't find.
         runs-on: windows-2022
         # The value is a string representing a JSON document.
@@ -257,15 +256,16 @@ jobs:
             merge_channel_files="false"
           fi
 
-          # Signed Windows builds run in sign-windows.yml. Keep these rules in sync with its guard job.
-          EVENT_REGEX="^(push|schedule|workflow_dispatch|workflow_run)$"
-          TAG_REGEX="^refs/tags/[0-9]+\.[0-9]+\.[0-9]+"
+          # Signed Windows builds run in sign-windows.yml. Keep the event and ref rules in sync with its guard job.
           if [[
-            "$GITHUB_REPOSITORY" == "arduino/arduino-ide" &&
-            "$GITHUB_EVENT_NAME" =~ $EVENT_REGEX &&
-            ( "$GITHUB_REF" == "refs/heads/main" || "$GITHUB_REF" =~ $TAG_REGEX )
+            "${{ secrets.INSTALLER_CERT_WINDOWS_CER != '' }}" == "true" &&
+            "$GITHUB_EVENT_NAME" != pull_request* &&
+            ( "$GITHUB_REF" == "refs/heads/main" || "$GITHUB_REF" == refs/tags/* )
           ]]; then
-            sign_windows="true"
+            # A called workflow only gets the self-hosted runners of its own owner, so forks call their own copy. This
+            # repository calls the one on main, also for release tags, which the signing runner is restricted to.
+            sign_windows="fork"
+            [[ "$GITHUB_REPOSITORY" == "arduino/arduino-ide" ]] && sign_windows="main"
             build_matrix="$(
               echo "$build_matrix" | \
               yq \
@@ -411,23 +411,31 @@ jobs:
           name: ${{ env.JOB_TRANSFER_ARTIFACT_PREFIX }}${{ matrix.config.job-transfer-artifact-suffix }}
           path: ${{ env.BUILD_ARTIFACTS_PATH }}
 
-  build-windows-signed:
+  build-windows-signed-main:
     name: build (Windows, signed)
-    needs:
+    needs: &build-windows-signed-needs
       - build-type-determination
       - select-targets
-    if: needs.select-targets.outputs.sign-windows == 'true'
-    permissions:
+    if: needs.select-targets.outputs.sign-windows == 'main'
+    permissions: &build-windows-signed-permissions
       contents: read
-    # Always the workflow from main, also for release tags.
     uses: arduino/arduino-ide/.github/workflows/sign-windows.yml@main
-    with:
+    with: &build-windows-signed-with
       is-nightly: ${{ needs.build-type-determination.outputs.is-nightly }}
       is-release: ${{ needs.build-type-determination.outputs.is-release }}
-    secrets:
+    secrets: &build-windows-signed-secrets
       INSTALLER_CERT_WINDOWS_CER: ${{ secrets.INSTALLER_CERT_WINDOWS_CER }}
       INSTALLER_CERT_WINDOWS_PASSWORD: ${{ secrets.INSTALLER_CERT_WINDOWS_PASSWORD }}
       INSTALLER_CERT_WINDOWS_CONTAINER: ${{ secrets.INSTALLER_CERT_WINDOWS_CONTAINER }}
+
+  build-windows-signed-fork:
+    name: build (Windows, signed, fork)
+    needs: *build-windows-signed-needs
+    if: needs.select-targets.outputs.sign-windows == 'fork'
+    permissions: *build-windows-signed-permissions
+    uses: ./.github/workflows/sign-windows.yml
+    with: *build-windows-signed-with
+    secrets: *build-windows-signed-secrets
 
   merge-channel-files:
     needs:
@@ -504,7 +512,8 @@ jobs:
     needs:
       - select-targets
       - build
-      - build-windows-signed
+      - build-windows-signed-main
+      - build-windows-signed-fork
     if: always() && needs.build.result != 'skipped'
     runs-on: ubuntu-latest
 
@@ -532,7 +541,15 @@ jobs:
     needs:
       - build-type-determination
       - build
-      - build-windows-signed
+      - build-windows-signed-main
+      - build-windows-signed-fork
+    # Only one of the build-windows-signed-* jobs runs, so a skipped job must not skip this one. A job that times out
+    # ends as cancelled, which failure() does not cover.
+    if: >
+      !cancelled() &&
+      !failure() &&
+      needs.build.result == 'success' &&
+      !contains(needs.*.result, 'cancelled')
     runs-on: ubuntu-latest
     outputs:
       BODY: ${{ steps.changelog.outputs.BODY }}
@@ -685,7 +702,8 @@ jobs:
     # This job must run after all jobs that use the transfer artifact.
     needs:
       - build
-      - build-windows-signed
+      - build-windows-signed-main
+      - build-windows-signed-fork
       - merge-channel-files
       - publish
       - release
