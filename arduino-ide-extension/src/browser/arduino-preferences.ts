@@ -275,7 +275,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
     type: 'string',
     description: nls.localize(
       'arduino/preferences/auth.domain',
-      'The OAuth2 domain.'
+      'The OAuth2 domain. Only Arduino login hosts are accepted.'
     ),
     default: 'login.arduino.cc',
     scope: PreferenceScope.User,
@@ -293,7 +293,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
     type: 'string',
     description: nls.localize(
       'arduino/preferences/auth.registerUri',
-      'The URI used to register a new user.'
+      'The URI used to register a new user. Only https URIs are accepted.'
     ),
     default: 'https://auth.arduino.cc/login#/register',
     scope: PreferenceScope.User,
