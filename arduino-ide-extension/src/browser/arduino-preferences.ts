@@ -248,7 +248,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
     type: 'string',
     description: nls.localize(
       'arduino/preferences/cloud.sketchSyncEndpoint',
-      'The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.'
+      'The Arduino Cloud API endpoint used to push and pull sketches. Only Arduino Cloud hosts are accepted.'
     ),
     default: 'https://api2.arduino.cc/create',
     scope: PreferenceScope.User,

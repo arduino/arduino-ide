@@ -22,6 +22,14 @@ namespace ResponseResultProvider {
 
 type ResourceType = 'f' | 'd';
 
+const trustedCloudOrigins = ['https://api2.arduino.cc'];
+
+export function isTrustedCloudUrl(url: URL): boolean {
+  return (
+    trustedCloudOrigins.includes(url.origin) && !url.username && !url.password
+  );
+}
+
 @injectable()
 export class CreateApi {
   @inject(SketchCache)
@@ -492,7 +500,15 @@ export class CreateApi {
     init: RequestInit | undefined,
     resultProvider: ResponseResultProvider = ResponseResultProvider.JSON
   ): Promise<T> {
-    const response = await fetch(requestInfo.toString(), init);
+    if (!this.isTrustedUrl(requestInfo)) {
+      throw new Error(
+        `Refusing to send an Arduino Cloud request to ${requestInfo.origin}`
+      );
+    }
+    const response = await fetch(requestInfo.toString(), {
+      ...init,
+      redirect: 'error',
+    });
     if (!response.ok) {
       let details: string | undefined = undefined;
       try {
@@ -505,6 +521,10 @@ export class CreateApi {
     }
     const result = await resultProvider(response);
     return result;
+  }
+
+  protected isTrustedUrl(url: URL): boolean {
+    return isTrustedCloudUrl(url);
   }
 
   private async headers(): Promise<Record<string, string>> {
