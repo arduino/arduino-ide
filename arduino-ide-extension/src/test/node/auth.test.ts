@@ -1,4 +1,6 @@
 import { expect } from 'chai';
+import { AuthOptions } from '../../common/protocol/authentication-service';
+import { ArduinoAuthenticationProvider } from '../../node/auth/arduino-auth-provider';
 import { isTrustedAuthDomain, isValidRegisterUri } from '../../node/auth/utils';
 
 describe('auth', () => {
@@ -46,4 +48,32 @@ describe('auth', () => {
         expect(isValidRegisterUri(uri)).to.be.false)
     );
   });
+
+  describe('ArduinoAuthenticationProvider', () => {
+    it('should not use an untrusted OAuth2 domain', async () => {
+      const provider = new TestArduinoAuthenticationProvider();
+      await provider.setOptions(<AuthOptions>{
+        domain: 'example.com',
+        registerUri: 'https://auth.arduino.cc/login#/register',
+      });
+      expect(provider.options.domain).to.be.equal('login.arduino.cc');
+    });
+
+    it('should not open a sign-up URI that is not a web page', async () => {
+      const provider = new TestArduinoAuthenticationProvider();
+      await provider.setOptions(<AuthOptions>{
+        domain: 'login.arduino.cc',
+        registerUri: 'file:///Applications/Calculator.app',
+      });
+      expect(provider.options.registerUri).to.be.equal(
+        'https://auth.arduino.cc/login#/register'
+      );
+    });
+  });
 });
+
+class TestArduinoAuthenticationProvider extends ArduinoAuthenticationProvider {
+  get options(): AuthOptions {
+    return this.authOptions;
+  }
+}
