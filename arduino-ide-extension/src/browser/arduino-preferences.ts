@@ -185,6 +185,10 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'arduino/preferences/ide.updateBaseUrl',
       "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'"
     ),
+    deprecationMessage: nls.localize(
+      'arduino/preferences/ide.updateBaseUrl.deprecationMessage',
+      "Deprecated. The IDE always downloads updates from 'https://downloads.arduino.cc/arduino-ide'."
+    ),
     scope: PreferenceScope.User,
   },
   'arduino.board.certificates': {

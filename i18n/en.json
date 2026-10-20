@@ -385,6 +385,7 @@
       "enterAdditionalURLs": "Enter additional URLs, one for each row",
       "files.inside.sketches": "Show files inside Sketches",
       "ide.updateBaseUrl": "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'",
+      "ide.updateBaseUrl.deprecationMessage": "Deprecated. The IDE always downloads updates from 'https://downloads.arduino.cc/arduino-ide'.",
       "ide.updateChannel": "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build.",
       "interfaceScale": "Interface scale",
       "invalid.editorFontSize": "Invalid editor font size. It must be a positive integer.",
