@@ -482,6 +482,7 @@
       "uploading": "업로딩...",
       "userFieldsNotFoundError": "연결된 보드에서 사용자 영역을 찾을 수 없습니다",
       "verify": "확인",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "확인/컴파일"
     },
     "sketchbook": {

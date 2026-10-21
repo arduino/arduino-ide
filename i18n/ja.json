@@ -482,6 +482,7 @@
       "uploading": "書き込み中…",
       "userFieldsNotFoundError": "接続されたボードのユーザーフィールドが見つかりません。",
       "verify": "検証",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "検証・コンパイル"
     },
     "sketchbook": {
