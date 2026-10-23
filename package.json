@@ -19,6 +19,7 @@
     "**/inversify": "6.0.2",
     "**/ip": "^2.0.1",
     "**/perfect-scrollbar": "1.5.5",
+    "app-builder-bin": "4.2.0",
     "nx/axios": "^1.6.7"
   },
   "devDependencies": {
