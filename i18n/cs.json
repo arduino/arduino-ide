@@ -482,6 +482,7 @@
       "uploading": "Nahrávám...",
       "userFieldsNotFoundError": "Nemohu nalézt uživatelská pole pro připojenou desku",
       "verify": "Ověřit",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Ověřit/Kompilovat"
     },
     "sketchbook": {

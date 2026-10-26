@@ -482,6 +482,7 @@
       "uploading": "درحال بارگذاری...",
       "userFieldsNotFoundError": "عدم یافت شدن فیلد های کاربر برای برد متصل",
       "verify": "تائید",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "تائید / کامپایل"
     },
     "sketchbook": {
