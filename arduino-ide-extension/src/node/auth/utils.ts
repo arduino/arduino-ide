@@ -5,6 +5,24 @@ import btoa from 'btoa';
 import { AuthenticationSession } from './types';
 import { Unknown } from '../../common/nls';
 
+export const defaultAuthDomain = 'login.arduino.cc';
+const trustedAuthDomains = [defaultAuthDomain];
+
+export function isTrustedAuthDomain(domain: string): boolean {
+  return trustedAuthDomains.includes(domain);
+}
+
+export const defaultRegisterUri = 'https://auth.arduino.cc/login#/register';
+
+export function isValidRegisterUri(uri: string): boolean {
+  try {
+    const url = new URL(uri);
+    return url.protocol === 'https:' && !url.username && !url.password;
+  } catch {
+    return false;
+  }
+}
+
 export interface IToken {
   accessToken: string; // When unable to refresh due to network problems, the access token becomes undefined
   idToken?: string; // depending on the scopes can be either supplied or empty

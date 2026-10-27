@@ -31,10 +31,8 @@ export class CheckForIDEUpdates extends Contribution {
         if (newValue !== oldValue) {
           switch (preferenceName) {
             case 'arduino.ide.updateChannel':
-            case 'arduino.ide.updateBaseUrl':
               this.updater.init(
-                this.preferences.get('arduino.ide.updateChannel'),
-                this.preferences.get('arduino.ide.updateBaseUrl')
+                this.preferences.get('arduino.ide.updateChannel')
               );
           }
         }
@@ -44,10 +42,7 @@ export class CheckForIDEUpdates extends Contribution {
 
   override async onReady(): Promise<void> {
     this.updater
-      .init(
-        this.preferences.get('arduino.ide.updateChannel'),
-        this.preferences.get('arduino.ide.updateBaseUrl')
-      )
+      .init(this.preferences.get('arduino.ide.updateChannel'))
       .then(() => {
         if (!this.preferences['arduino.checkForUpdates']) {
           return;
