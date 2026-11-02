@@ -92,7 +92,7 @@ jobs:
 
       # See: https://github.com/eclipse-theia/theia/blob/master/doc/Developing.md#prerequisites
       - name: Install Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11.x'
 
