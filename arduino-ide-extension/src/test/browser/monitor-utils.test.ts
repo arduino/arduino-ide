@@ -196,5 +196,17 @@ describe('Monitor Utils', () => {
       ];
       expect(linesToPlainText(lines)).to.equal('He\u25A1llo!');
     });
+
+    it('should prefix the lines with the timestamp when enabled', () => {
+      const timestamp = new Date(2026, 9, 16, 14, 16, 22, 101);
+      const lines: Line[] = [
+        { message: 'Hello\n', lineLen: 6, timestamp },
+        { message: 'Dog!', lineLen: 4, timestamp },
+      ];
+      expect(linesToPlainText(lines, true)).to.equal(
+        '14:16:22.101 -> Hello\n14:16:22.101 -> Dog!'
+      );
+      expect(linesToPlainText(lines, false)).to.equal('Hello\nDog!');
+    });
   });
 });

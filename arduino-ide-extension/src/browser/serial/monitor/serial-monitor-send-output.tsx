@@ -2,11 +2,11 @@ import React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
-import dateFormat from 'dateformat';
 import {
   messagesToLines,
   truncateLines,
   linesToPlainText,
+  formatTimestamp,
 } from './monitor-utils';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
@@ -24,11 +24,6 @@ export class SerialMonitorOutput extends React.Component<
   protected toDisposeBeforeUnmount = new DisposableCollection();
   private listRef: React.RefObject<List>;
   private containerRef: React.RefObject<HTMLDivElement>;
-  /**
-   * Tracks whether the user has "selected all" output. The DOM selection
-   * alone cannot represent it because only the visible rows are rendered.
-   */
-  private allSelected = false;
 
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
@@ -48,8 +43,6 @@ export class SerialMonitorOutput extends React.Component<
         tabIndex={0}
         ref={this.containerRef}
         onCopy={this.onCopy}
-        onMouseDown={this.onMouseDown}
-        onBlur={this.onBlur}
       >
         <List
           className="serial-monitor-messages"
@@ -97,7 +90,7 @@ export class SerialMonitorOutput extends React.Component<
       ),
       this.props.copyOutputEvent(() =>
         this.props.clipboardService.writeText(
-          linesToPlainText(this.state.lines)
+          linesToPlainText(this.state.lines, this.state.timestamp)
         )
       ),
       this.props.selectAllEvent(() => this.selectAll()),
@@ -111,17 +104,6 @@ export class SerialMonitorOutput extends React.Component<
         }
       }),
     ]);
-  }
-
-  override componentDidUpdate(): void {
-    if (this.allSelected) {
-      // The selection is lost when `react-window` re-renders the visible
-      // rows. Reselect the container to keep the "select all" state alive.
-      const node = this.containerRef.current;
-      if (node) {
-        document.getSelection()?.selectAllChildren(node);
-      }
-    }
   }
 
   override componentWillUnmount(): void {
@@ -140,29 +122,35 @@ export class SerialMonitorOutput extends React.Component<
     if (node) {
       node.focus();
       document.getSelection()?.selectAllChildren(node);
-      this.allSelected = true;
     }
   };
 
+  /**
+   * Only the visible rows are rendered, so a "select all" is a selection of
+   * the container itself. A mouse selection starts and ends in the rows.
+   */
+  private isAllSelected(): boolean {
+    const node = this.containerRef.current;
+    const selection = document.getSelection();
+    return (
+      !!node &&
+      !!selection &&
+      selection.anchorNode === node &&
+      selection.focusNode === node &&
+      selection.anchorOffset === 0 &&
+      selection.focusOffset === node.childNodes.length
+    );
+  }
+
   private readonly onCopy = (event: React.ClipboardEvent): void => {
-    const text = this.allSelected
-      ? linesToPlainText(this.state.lines)
+    const text = this.isAllSelected()
+      ? linesToPlainText(this.state.lines, this.state.timestamp)
       : document.getSelection()?.toString();
     if (text) {
       // Write the monitor output as plain text to the clipboard. The
       // default behavior would copy the formatted HTML of the visible rows.
       event.preventDefault();
       event.clipboardData.setData('text/plain', text);
-    }
-  };
-
-  private readonly onMouseDown = (): void => {
-    this.allSelected = false;
-  };
-
-  private readonly onBlur = (event: React.FocusEvent<HTMLDivElement>): void => {
-    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      this.allSelected = false;
     }
   };
 }
@@ -176,10 +164,9 @@ const _Row = ({
   style: any;
   data: { lines: Line[]; timestamp: boolean };
 }) => {
+  const lineTimestamp = data.lines[index].timestamp;
   const timestamp =
-    (data.timestamp &&
-      `${dateFormat(data.lines[index].timestamp, 'HH:MM:ss.l')} -> `) ||
-    '';
+    (data.timestamp && lineTimestamp && formatTimestamp(lineTimestamp)) || '';
   return (
     (data.lines[index].lineLen && (
       <div style={style}>
