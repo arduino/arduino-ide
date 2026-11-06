@@ -39,6 +39,7 @@
     "lint-staged": "^11.0.0",
     "node-fetch": "^2.6.1",
     "node-gyp": "^9.3.0",
+    "patch-package": "^8.0.0",
     "prettier": "^2.3.1",
     "reflect-metadata": "^0.1.10",
     "rimraf": "^5.0.0",
@@ -49,6 +50,7 @@
   },
   "scripts": {
     "prepare": "lerna run prepare",
+    "postinstall": "patch-package",
     "cleanup": "rimraf ./**/node_modules && rm -rf ./node_modules ./.browser_modules ./arduino-ide-extension/build ./arduino-ide-extension/downloads ./arduino-ide-extension/Examples ./arduino-ide-extension/lib ./electron-app/lib ./electron-app/src-gen ./electron-app/gen-webpack.config.js",
     "rebuild:browser": "theia rebuild:browser",
     "rebuild:electron": "theia rebuild:electron",
