@@ -482,6 +482,7 @@
       "uploading": "Caricamento in corso...",
       "userFieldsNotFoundError": "Non è possibile trovare i campi utente per connettere la scheda",
       "verify": "Verifica",
+      "verifyClean": "Verifica (Pulisci)",
       "verifyOrCompile": "Verifica/Compila"
     },
     "sketchbook": {

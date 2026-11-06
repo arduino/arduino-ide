@@ -1,7 +1,7 @@
 {
   "arduino": {
     "about": {
-      "detail": "Version: {0}\nDate: {1}{2}\nCLI Version: {3}\n\n{4}",
+      "detail": "Versión: {0}\nFecha: {1}{2}\nVersión del CLI: {3}{4} [{5}]\n\n{6}",
       "label": "Acerca de {0}"
     },
     "account": {
@@ -26,7 +26,7 @@
       "noBoardsFound": "No se han encotrado placas para \"{0}\"",
       "noNativeSerialPort": "Puerto serie nativo, información no obtenida",
       "noPortsDiscovered": "No se ha descubierto ningún puerto",
-      "nonSerialPort": "Non-serial port, can't obtain info.",
+      "nonSerialPort": "Puerto no serial, no se puede obtener información.",
       "openBoardsConfig": "Seleccione otra placa y puerto...",
       "pleasePickBoard": "Por favor, elija una placa conectada al puerto que haya seleccionado.",
       "port": "Puerto {0}",
@@ -34,7 +34,7 @@
       "programmer": "Programador",
       "reloadBoardData": "Recargar datos de la Placa",
       "reselectLater": "Vuelve a seleccionar más tarde",
-      "revertBoardsConfig": "Use '{0}' discovered on '{1}'",
+      "revertBoardsConfig": "Utilizar '{0}' descubierto en '{1}'",
       "searchBoard": "Buscar placa",
       "selectBoard": "Seleccionar Placa",
       "selectBoardToReload": "Por favor seleccione una Placa primero",
@@ -94,8 +94,8 @@
       "cloudSketchbook": "Libro de bocetos en la nube",
       "connected": "Conectado",
       "continue": "Continuar",
-      "donePulling": "Done pulling '{0}'.",
-      "donePushing": "Done pushing '{0}'.",
+      "donePulling": "Extracción de '{0}' finalizada.",
+      "donePushing": "Envío de '{0}' finalizado.",
       "embed": "Incrustado:",
       "emptySketchbook": "Tu Sketchbook está vacío",
       "goToCloud": "Ir al Cloud",
@@ -132,7 +132,7 @@
       "new": "Nuevo Sketch en la Nube",
       "notFound": "No se pudieron obtener los cambios del sketch remoto '{0}'. No existe.",
       "pulling": "Sincronizando sketchbook, extrayendo '{0}'...",
-      "pushing": "Synchronizing sketchbook, pushing '{0}'...",
+      "pushing": "Sincronizando el sketchbook, enviando '{0}'...",
       "renaming": "Renombrando el sketch remoto de '{0}' a '{1}'...",
       "synchronizingSketchbook": "Sincronizando carpeta..."
     },
@@ -174,7 +174,7 @@
       "moreInfo": "Más información",
       "otherVersions": "Otras versiones",
       "remove": "Eliminar",
-      "title": "{0} by {1}",
+      "title": "{0} por {1}",
       "uninstall": "Desinstalar",
       "uninstallMsg": "¿Quieres desinstalar {0}?",
       "update": "Actualizar"
@@ -224,7 +224,7 @@
     "developer": {
       "clearBoardList": "Borrar el Historial de la Lista de Placas",
       "clearBoardsConfig": "Borrar la selección de Placa y Puerto",
-      "dumpBoardList": "Dump the Board List"
+      "dumpBoardList": "Mostrar la lista de placas"
     },
     "dialog": {
       "dontAskAgain": "No volver a preguntar"
@@ -343,8 +343,8 @@
       "baudRate": "{0} baudios",
       "connectionFailedError": "No se ha podido conectar al puerto {0} {1} .",
       "connectionFailedErrorWithDetails": "{0} No se ha podido conectar al puerto {1} {2} .",
-      "connectionTimeout": "Timeout. The IDE has not received the 'success' message from the monitor after successfully connecting to it",
-      "missingConfigurationError": "Could not connect to {0} {1} port. The monitor configuration is missing.",
+      "connectionTimeout": "El tiempo ha expirado. El IDE no ha recibido el mensaje de 'éxito' del monitor después de haberse conectado a él correctamente",
+      "missingConfigurationError": "No se pudo conectar al puerto {0} {1}. Falta la configuración del monitor.",
       "notConnectedError": "No está conectado al puerto {0} {1} .",
       "unableToCloseWebSocket": "No se puede cerrar websocket",
       "unableToConnectToWebSocket": "No se puede conectar al websocket"
@@ -372,7 +372,7 @@
       "cloud.pull.warn": "Verdadero si se debe advertir a los usuarios antes de sacar un boceto de la nube. El valor predeterminado es verdadero.",
       "cloud.push.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto a la nube. El valor predeterminado es verdadero.",
       "cloud.pushpublic.warn": "Verdadero si se debe advertir a los usuarios antes de enviar un boceto público a la nube. El valor predeterminado es verdadero.",
-      "cloud.sharedSpaceId": "The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.",
+      "cloud.sharedSpaceId": "El ID de Arduino Cloud que compartió espacio para desde ahí cargar el sketchbook. Si está vacío, tu espacio privado fue seleccionado.",
       "cloud.sketchSyncEndpoint": "El punto final utilizado para empujar y extraer bocetos de un backend. Por defecto, apunta a la API de Arduino Cloud.",
       "compile": "Compliar",
       "compile.experimental": "True si el IDE debe manejar multiples errores del compilador. False por defecto",
@@ -390,12 +390,12 @@
       "invalid.editorFontSize": "Tamaño de fuente del editor no válido. Debe ser un número entero positivo.",
       "invalid.sketchbook.location": "Ruta del sketchbook no válida: {0}",
       "invalid.theme": "Tema no válido.",
-      "language.asyncWorkers": "Number of async workers used by the Arduino Language Server (clangd). Background index also uses this many workers. The minimum value is 0, and the maximum is 8. When it is 0, the language server uses all available cores. The default value is 0.",
+      "language.asyncWorkers": "Número de trabajadores asíncronos utilizados por el Servidor de Lenguaje Arduino (clangd). El índice de segundo plano, también usa este número de trabajadores. El valor mínimo es 0, y el máximo es 8. Cuando el valor es 0, el servidor de lenguaje utiliza todos los núcleos disponibles. Por defecto, el valor es 0.",
       "language.log": "Verdadero si el Servidor de Lenguaje Arduino debe generar archivos de registro en la carpeta del sketch. En caso contrario, falso. Por defecto es falso.",
       "language.realTimeDiagnostics": "Si está habilitado, el lenguaje proveerá diagnoticos en tiepo real meintras se teclea en el editor. Deshabilitado por defecto.",
       "manualProxy": "Configuración manual del proxy",
       "monitor": {
-        "dockPanel": "The area of the application shell where the _{0}_ widget will reside. It is either \"bottom\" or \"right\". It defaults to \"{1}\"."
+        "dockPanel": "El área de interfaz de la aplicación donde el widget _{0}_ se ubicará. Será o \"abajo\" o a la \"derecha\". Por defecto es \"{1}\"."
       },
       "network": "Red",
       "newSketchbookLocation": "Selecciona la nueva ruta del sketchbook",
@@ -415,13 +415,13 @@
       "sketchbook.showAllFiles": "Verdadero para mostrar todos los archivos de bocetos dentro del boceto. Por defecto es falso.",
       "unofficialBoardSupport": "Pulsa para listar las URLs de las tarjetas no oficiales",
       "upload": "Carga",
-      "upload.autoVerify": "True if the IDE should automatically verify the code before the upload. True by default. When this value is false, IDE does not recompile the code before uploading the binary to the board. It's highly advised to only set this value to false if you know what you are doing.",
+      "upload.autoVerify": "Si el IDE debe verificar el código automáticamente antes de cargarlo, el valor es true. Por defecto es true. Cuando este valor es false, el IDE no recompila el código antes de cargar el archivo binario a la placa. Es altamente recomendable que sólo se ponga este valor como false si se sabe lo que se está haciendo.",
       "upload.verbose": "Verdadero para una salida verbosa de la carga. Falso por defecto.",
-      "upload.verify": "After upload, verify that the contents of the memory on the board match the uploaded binary.",
+      "upload.verify": "Después de la carga, verifique que los contenidos de la memoria en la placa coincidan con el binario cargado.",
       "verifyAfterUpload": "Verificar el código después de cargarlo",
       "window.autoScale": "Verdadero si la interfaz de usuario se escala automáticamente con el tamaño de la fuente.",
       "window.zoomLevel": {
-        "deprecationMessage": "Deprecated. Use 'window.zoomLevel' instead."
+        "deprecationMessage": "Obsoleto. Utilizar 'window.zoomLevel' en su lugar."
       }
     },
     "renameCloudSketch": {
@@ -433,7 +433,7 @@
       "autoscroll": "Autoscroll",
       "carriageReturn": "Retorno de carro",
       "connecting": "Conectando a '{0}' en '{1}'...",
-      "copyOutput": "Copy Output",
+      "copyOutput": "Copiar Salida",
       "message": "Mensaje (Intro para mandar el mensaje de '{0}' a '{1}')",
       "newLine": "Nueva línea",
       "newLineCarriageReturn": "Ambos NL y RC",
@@ -482,6 +482,7 @@
       "uploading": "Actualizando...",
       "userFieldsNotFoundError": "No se pueden encontrar campos de usuario para la placa conectada",
       "verify": "Verificar",
+      "verifyClean": "Verificar (Limpiar)",
       "verifyOrCompile": "Verificar/Compilar"
     },
     "sketchbook": {
@@ -489,7 +490,7 @@
       "newSketch": "Nuevo Sketch"
     },
     "theme": {
-      "currentThemeNotFound": "Could not find the currently selected theme: {0}. Arduino IDE has picked a built-in theme compatible with the missing one.",
+      "currentThemeNotFound": "No se pudo encontrar el tema seleccionado actualmente: {0}. Arduino IDE ha elegido un tema integrado compatible con el que falta.",
       "dark": "Oscuro",
       "deprecated": "{0} (obsoleto)",
       "hc": "Oscuro contraste alto",
@@ -514,11 +515,11 @@
       "upload": "Cargar"
     },
     "validateSketch": {
-      "abortFixMessage": "The sketch is still invalid. Do you want to fix the remaining problems? By clicking '{0}', a new sketch will open.",
+      "abortFixMessage": "El sketch todavía es inválido. ¿Desea arreglar los problemas restantes? Al hacer clic en '{0}', se abrirá un nuevo sketch.",
       "abortFixTitle": "Sketch no válido",
-      "renameSketchFileMessage": "The sketch file '{0}' cannot be used. {1} Do you want to rename the sketch file now?",
+      "renameSketchFileMessage": "El archivo sketch '{0}' no se puede utilizar. {1} ¿Desea renombrar el archivo sketch ahora?",
       "renameSketchFileTitle": "Nombre de archivo de sketch no válido",
-      "renameSketchFolderMessage": "The sketch '{0}' cannot be used. {1} To get rid of this message, rename the sketch. Do you want to rename the sketch now?",
+      "renameSketchFolderMessage": "El sketch '{0}' no puede ser utilizado. {1} Para desaparecer este mensaje, cambie el nombre del sketch. ¿Desea renombrar el sketch ahora?",
       "renameSketchFolderTitle": "Nombre de sketch no válido"
     },
     "workspace": {
@@ -543,7 +544,7 @@
       "expand": "Expandir"
     },
     "workspace": {
-      "deleteCloudSketch": "The cloud sketch '{0}' will be permanently deleted from the Arduino servers and the local caches. This action is irreversible. Do you want to delete the current sketch?",
+      "deleteCloudSketch": "El sketch de la nube '{0}' será permanentemente borrado de los servidores de Arduino y de los cachés locales. Esta acción es irreversible. ¿Desea eliminar el sketch actual?",
       "deleteCurrentSketch": "El código '{0}' será permanentemente eliminado. Esta acción es irreversible. ¿Quieres eliminar el código actual?",
       "fileNewName": "Nombre del nuevo archivo",
       "invalidExtension": "\".{0}\" no es una extensión válida",

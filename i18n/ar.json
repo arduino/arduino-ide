@@ -482,6 +482,7 @@
       "uploading": "جار التحديث ....",
       "userFieldsNotFoundError": "تعذر ايجاد حقول المستخدم للوحة المتصلة",
       "verify": "تحقق",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "تحقق/ترجم"
     },
     "sketchbook": {

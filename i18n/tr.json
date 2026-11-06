@@ -482,6 +482,7 @@
       "uploading": "Yükleniyor...",
       "userFieldsNotFoundError": "Bağlı kart için kullanıcı alanları bulunamadı",
       "verify": "Doğrula",
+      "verifyClean": "Doğrula (Sıfırdan)",
       "verifyOrCompile": "Doğrula/Derle"
     },
     "sketchbook": {

@@ -482,6 +482,7 @@
       "uploading": "Загрузка...",
       "userFieldsNotFoundError": "Не могу найти пользовательские поля для подключенной платы",
       "verify": "Проверить",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Проверить/Скомпилировать"
     },
     "sketchbook": {

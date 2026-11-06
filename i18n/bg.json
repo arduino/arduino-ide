@@ -482,6 +482,7 @@
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Не мога да намеря потребителски полета за свързаната платка",
       "verify": "Потвърдете",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Проверете/компилирайте"
     },
     "sketchbook": {

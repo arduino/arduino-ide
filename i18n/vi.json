@@ -482,6 +482,7 @@
       "uploading": "Đang tải lên...",
       "userFieldsNotFoundError": "Không thể tìm thấy các trường người dùng cho bo mạch đã kết nối",
       "verify": "Xác thực",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Xác thực/Biên dịch"
     },
     "sketchbook": {

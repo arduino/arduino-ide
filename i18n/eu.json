@@ -482,6 +482,7 @@
       "uploading": "Uploading...",
       "userFieldsNotFoundError": "Ezin dira erabiltzaile eremuak aurkitu konektatutako plakarentzat",
       "verify": "Egiaztatu",
+      "verifyClean": "Verify (Clean)",
       "verifyOrCompile": "Egiaztatu/Konpilatu"
     },
     "sketchbook": {
