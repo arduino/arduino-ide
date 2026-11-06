@@ -143,6 +143,10 @@ If you want to bundle the application, execute the following:
    yarn --cwd electron-app package
    ```
 
+### Test the IDE updater
+
+A packaged IDE checks for updates at `https://downloads.arduino.cc/arduino-ide`. To test the updater with another server, start the IDE with the `ARDUINO_IDE_UPDATE_BASE_URL` environment variable set to the server's base URL, for example `http://localhost:8000` when serving the update files locally. The URL must use `https:`, or `http:` on `localhost`, `127.0.0.1` or `[::1]`. Quit any running IDE first, since a second instance hands off to the running one.
+
 ### Notes for Windows contributors
 
 Windows requires the Microsoft Visual C++ (MSVC) compiler toolset to be installed on your development machine.

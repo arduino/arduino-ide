@@ -2,6 +2,7 @@ import {
   PreferenceContribution,
   PreferenceProxy,
   PreferenceSchema,
+  PreferenceScope,
   PreferenceService,
   createPreferenceProxy,
 } from '@theia/core/lib/browser/preferences';
@@ -175,6 +176,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'arduino/preferences/ide.updateChannel',
       "Release channel to get updated from. 'stable' is the stable release, 'nightly' is the latest development build."
     ),
+    scope: PreferenceScope.User,
   },
   'arduino.ide.updateBaseUrl': {
     type: 'string',
@@ -183,6 +185,11 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'arduino/preferences/ide.updateBaseUrl',
       "The base URL where to download updates from. Defaults to 'https://downloads.arduino.cc/arduino-ide'"
     ),
+    deprecationMessage: nls.localize(
+      'arduino/preferences/ide.updateBaseUrl.deprecationMessage',
+      "Deprecated. The IDE always downloads updates from 'https://downloads.arduino.cc/arduino-ide'."
+    ),
+    scope: PreferenceScope.User,
   },
   'arduino.board.certificates': {
     type: 'string',
@@ -191,6 +198,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'List of certificates that can be uploaded to boards'
     ),
     default: '',
+    scope: PreferenceScope.User,
   },
   'arduino.sketchbook.showAllFiles': {
     type: 'boolean',
@@ -207,6 +215,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'True if the sketch sync functions are enabled. Defaults to true.'
     ),
     default: true,
+    scope: PreferenceScope.User,
   },
   'arduino.cloud.pull.warn': {
     type: 'boolean',
@@ -215,6 +224,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'True if users should be warned before pulling a cloud sketch. Defaults to true.'
     ),
     default: true,
+    scope: PreferenceScope.User,
   },
   'arduino.cloud.push.warn': {
     type: 'boolean',
@@ -223,6 +233,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'True if users should be warned before pushing a cloud sketch. Defaults to true.'
     ),
     default: true,
+    scope: PreferenceScope.User,
   },
   'arduino.cloud.pushpublic.warn': {
     type: 'boolean',
@@ -231,14 +242,16 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'True if users should be warned before pushing a public sketch to the cloud. Defaults to true.'
     ),
     default: true,
+    scope: PreferenceScope.User,
   },
   'arduino.cloud.sketchSyncEndpoint': {
     type: 'string',
     description: nls.localize(
       'arduino/preferences/cloud.sketchSyncEndpoint',
-      'The endpoint used to push and pull sketches from a backend. By default it points to Arduino Cloud API.'
+      'The Arduino Cloud API endpoint used to push and pull sketches. Only Arduino Cloud hosts are accepted.'
     ),
     default: 'https://api2.arduino.cc/create',
+    scope: PreferenceScope.User,
   },
   'arduino.cloud.sharedSpaceID': {
     type: 'string',
@@ -247,6 +260,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'The ID of the Arduino Cloud shared space to load the sketchbook from. If empty, your private space is selected.'
     ),
     default: '',
+    scope: PreferenceScope.User,
   },
   'arduino.auth.clientID': {
     type: 'string',
@@ -255,14 +269,16 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'The OAuth2 client ID.'
     ),
     default: 'C34Ya6ex77jTNxyKWj01lCe1vAHIaPIo',
+    scope: PreferenceScope.User,
   },
   'arduino.auth.domain': {
     type: 'string',
     description: nls.localize(
       'arduino/preferences/auth.domain',
-      'The OAuth2 domain.'
+      'The OAuth2 domain. Only Arduino login hosts are accepted.'
     ),
     default: 'login.arduino.cc',
+    scope: PreferenceScope.User,
   },
   'arduino.auth.audience': {
     type: 'string',
@@ -271,14 +287,16 @@ const properties: ArduinoPreferenceSchemaProperties = {
       'The OAuth2 audience.'
     ),
     default: 'https://api.arduino.cc',
+    scope: PreferenceScope.User,
   },
   'arduino.auth.registerUri': {
     type: 'string',
     description: nls.localize(
       'arduino/preferences/auth.registerUri',
-      'The URI used to register a new user.'
+      'The URI used to register a new user. Only https URIs are accepted.'
     ),
     default: 'https://auth.arduino.cc/login#/register',
+    scope: PreferenceScope.User,
   },
   'arduino.cli.daemon.debug': {
     type: 'boolean',
@@ -295,6 +313,7 @@ const properties: ArduinoPreferenceSchemaProperties = {
       "Receive notifications of available updates for the IDE, boards, and libraries. Requires an IDE restart after change. It's true by default."
     ),
     default: true,
+    scope: PreferenceScope.User,
   },
   'arduino.sketch.inoBlueprint': {
     type: 'string',

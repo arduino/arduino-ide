@@ -3,7 +3,11 @@ import { injectable } from '@theia/core/shared/inversify';
 import { createServer, startServer } from './authentication-server';
 import { Keychain } from './keychain';
 import {
+  defaultAuthDomain,
+  defaultRegisterUri,
   generateProofKeyPair,
+  isTrustedAuthDomain,
+  isValidRegisterUri,
   Token,
   IToken,
   IToken2Session,
@@ -89,6 +93,18 @@ export class ArduinoAuthenticationProvider implements AuthenticationProvider {
   }
 
   public async setOptions(authOptions: AuthOptions): Promise<void> {
+    if (!isTrustedAuthDomain(authOptions.domain)) {
+      console.error(
+        `Invalid OAuth2 domain: ${authOptions.domain}. Using ${defaultAuthDomain}.`
+      );
+      authOptions = { ...authOptions, domain: defaultAuthDomain };
+    }
+    if (!isValidRegisterUri(authOptions.registerUri)) {
+      console.error(
+        `Invalid sign-up URI: ${authOptions.registerUri}. Using ${defaultRegisterUri}.`
+      );
+      authOptions = { ...authOptions, registerUri: defaultRegisterUri };
+    }
     this.authOptions = authOptions;
   }
 

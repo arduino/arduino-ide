@@ -455,6 +455,10 @@ class TestCreateApi extends CreateApi {
     };
   }
 
+  protected override isTrustedUrl(url: URL): boolean {
+    return url.origin === 'https://api-dev.arduino.cc';
+  }
+
   resetRequestRecording(): void {
     this._recording = [];
   }
