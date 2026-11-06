@@ -430,6 +430,7 @@
     "replaceMsg": "Replace the existing version of {0}?",
     "selectZip": "Select a zip file containing the library you'd like to add",
     "serial": {
+      "allFiles": "All Files",
       "autoscroll": "Autoscroll",
       "carriageReturn": "Carriage Return",
       "connecting": "Connecting to '{0}' on '{1}'...",
@@ -440,6 +441,10 @@
       "noLineEndings": "No Line Ending",
       "notConnected": "Not connected. Select a board and a port to connect automatically.",
       "openSerialPlotter": "Serial Plotter",
+      "saveOutput": "Save Output",
+      "saveOutputAs": "Save Serial Monitor output as...",
+      "savedOutput": "Saved Serial Monitor output to '{0}'.",
+      "textFiles": "Text Files",
       "timestamp": "Timestamp",
       "toggleTimestamp": "Toggle Timestamp"
     },
