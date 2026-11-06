@@ -3,8 +3,6 @@
 (async () => {
   const os = require('node:os');
   const path = require('node:path');
-  const decompress = require('decompress');
-  const unzip = require('decompress-unzip');
   const { mkdirSync, promises: fs, rmSync, existsSync } = require('node:fs');
   const { exec } = require('./utils');
   const { glob } = require('glob');
@@ -194,8 +192,8 @@
     // @ts-ignore
     const data = await download(url);
 
+    const { default: decompress } = await import('@xhmikosr/decompress');
     await decompress(data, protos, {
-      plugins: [unzip()],
       filter: (file) => file.path.endsWith('.proto'),
     });
 
