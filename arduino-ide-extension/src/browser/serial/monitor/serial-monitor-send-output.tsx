@@ -2,8 +2,12 @@ import React from '@theia/core/shared/react';
 import { Event } from '@theia/core/lib/common/event';
 import { DisposableCollection } from '@theia/core/lib/common/disposable';
 import { areEqual, FixedSizeList as List } from 'react-window';
-import dateFormat from 'dateformat';
-import { messagesToLines, truncateLines, joinLines } from './monitor-utils';
+import {
+  messagesToLines,
+  truncateLines,
+  linesToPlainText,
+  formatTimestamp,
+} from './monitor-utils';
 import { MonitorManagerProxyClient } from '../../../common/protocol';
 import { MonitorModel } from '../../monitor-model';
 import { ClipboardService } from '@theia/core/lib/browser/clipboard-service';
@@ -19,10 +23,12 @@ export class SerialMonitorOutput extends React.Component<
    */
   protected toDisposeBeforeUnmount = new DisposableCollection();
   private listRef: React.RefObject<List>;
+  private containerRef: React.RefObject<HTMLDivElement>;
 
   constructor(props: Readonly<SerialMonitorOutput.Props>) {
     super(props);
     this.listRef = React.createRef();
+    this.containerRef = React.createRef();
     this.state = {
       lines: [],
       timestamp: this.props.monitorModel.timestamp,
@@ -32,21 +38,28 @@ export class SerialMonitorOutput extends React.Component<
 
   override render(): React.ReactNode {
     return (
-      <List
-        className="serial-monitor-messages"
-        height={this.props.height}
-        itemData={{
-          lines: this.state.lines,
-          timestamp: this.state.timestamp,
-        }}
-        itemCount={this.state.lines.length}
-        itemSize={18}
-        width={'100%'}
-        style={{ whiteSpace: 'nowrap' }}
-        ref={this.listRef}
+      <div
+        className={SerialMonitorOutput.CONTAINER_CLASS}
+        tabIndex={0}
+        ref={this.containerRef}
+        onCopy={this.onCopy}
       >
-        {Row}
-      </List>
+        <List
+          className="serial-monitor-messages"
+          height={this.props.height}
+          itemData={{
+            lines: this.state.lines,
+            timestamp: this.state.timestamp,
+          }}
+          itemCount={this.state.lines.length}
+          itemSize={18}
+          width={'100%'}
+          style={{ whiteSpace: 'nowrap' }}
+          ref={this.listRef}
+        >
+          {Row}
+        </List>
+      </div>
     );
   }
 
@@ -75,12 +88,12 @@ export class SerialMonitorOutput extends React.Component<
       this.props.clearConsoleEvent(() =>
         this.setState({ lines: [], charCount: 0 })
       ),
-      this.props.copyOutputEvent(() => {
-        const text = joinLines(this.state.lines);
-        // Replace null characters with a visible symbol
-        const safe = text.replace(/\u0000/g, '\u25A1');
-        this.props.clipboardService.writeText(safe);
-      }),
+      this.props.copyOutputEvent(() =>
+        this.props.clipboardService.writeText(
+          linesToPlainText(this.state.lines, this.state.timestamp)
+        )
+      ),
+      this.props.selectAllEvent(() => this.selectAll()),
       this.props.monitorModel.onChange(({ property }) => {
         if (property === 'timestamp') {
           const { timestamp } = this.props.monitorModel;
@@ -103,6 +116,43 @@ export class SerialMonitorOutput extends React.Component<
       this.listRef.current.scrollToItem(this.state.lines.length, 'end');
     }
   };
+
+  private readonly selectAll = (): void => {
+    const node = this.containerRef.current;
+    if (node) {
+      node.focus();
+      document.getSelection()?.selectAllChildren(node);
+    }
+  };
+
+  /**
+   * Only the visible rows are rendered, so a "select all" is a selection of
+   * the container itself. A mouse selection starts and ends in the rows.
+   */
+  private isAllSelected(): boolean {
+    const node = this.containerRef.current;
+    const selection = document.getSelection();
+    return (
+      !!node &&
+      !!selection &&
+      selection.anchorNode === node &&
+      selection.focusNode === node &&
+      selection.anchorOffset === 0 &&
+      selection.focusOffset === node.childNodes.length
+    );
+  }
+
+  private readonly onCopy = (event: React.ClipboardEvent): void => {
+    const text = this.isAllSelected()
+      ? linesToPlainText(this.state.lines, this.state.timestamp)
+      : document.getSelection()?.toString();
+    if (text) {
+      // Write the monitor output as plain text to the clipboard. The
+      // default behavior would copy the formatted HTML of the visible rows.
+      event.preventDefault();
+      event.clipboardData.setData('text/plain', text);
+    }
+  };
 }
 
 const _Row = ({
@@ -114,10 +164,9 @@ const _Row = ({
   style: any;
   data: { lines: Line[]; timestamp: boolean };
 }) => {
+  const lineTimestamp = data.lines[index].timestamp;
   const timestamp =
-    (data.timestamp &&
-      `${dateFormat(data.lines[index].timestamp, 'HH:MM:ss.l')} -> `) ||
-    '';
+    (data.timestamp && lineTimestamp && formatTimestamp(lineTimestamp)) || '';
   return (
     (data.lines[index].lineLen && (
       <div style={style}>
@@ -133,11 +182,18 @@ const _Row = ({
 const Row = React.memo(_Row, areEqual);
 
 export namespace SerialMonitorOutput {
+  /**
+   * CSS class of the focusable output container. Keybindings that must only
+   * be active inside the output area check the current focus against it.
+   */
+  export const CONTAINER_CLASS = 'serial-monitor-messages-container';
+
   export interface Props {
     readonly monitorModel: MonitorModel;
     readonly monitorManagerProxy: MonitorManagerProxyClient;
     readonly clearConsoleEvent: Event<void>;
     readonly copyOutputEvent: Event<void>;
+    readonly selectAllEvent: Event<void>;
     readonly clipboardService: ClipboardService;
     readonly height: number;
   }

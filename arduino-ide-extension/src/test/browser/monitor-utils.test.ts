@@ -3,6 +3,7 @@ import {
   messagesToLines,
   truncateLines,
   joinLines,
+  linesToPlainText,
 } from '../../browser/serial/monitor/monitor-utils';
 import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
@@ -176,6 +177,36 @@ describe('Monitor Utils', () => {
           expect(joined_str).to.equal(testLine.expectedJoined);
         }
       });
+    });
+  });
+
+  context('when converting lines to plain text', () => {
+    it('should join the lines', () => {
+      const lines: Line[] = [
+        { message: 'Hello\n', lineLen: 6 },
+        { message: 'Dog!', lineLen: 4 },
+      ];
+      expect(linesToPlainText(lines)).to.equal('Hello\nDog!');
+    });
+
+    it('should replace null characters with a visible symbol', () => {
+      const lines: Line[] = [
+        { message: 'He', lineLen: 2 },
+        { message: '\u0000llo!', lineLen: 5 },
+      ];
+      expect(linesToPlainText(lines)).to.equal('He\u25A1llo!');
+    });
+
+    it('should prefix the lines with the timestamp when enabled', () => {
+      const timestamp = new Date(2026, 9, 16, 14, 16, 22, 101);
+      const lines: Line[] = [
+        { message: 'Hello\n', lineLen: 6, timestamp },
+        { message: 'Dog!', lineLen: 4, timestamp },
+      ];
+      expect(linesToPlainText(lines, true)).to.equal(
+        '14:16:22.101 -> Hello\n14:16:22.101 -> Dog!'
+      );
+      expect(linesToPlainText(lines, false)).to.equal('Hello\nDog!');
     });
   });
 });

@@ -72,7 +72,11 @@ import {
   ConfigServicePath,
 } from '../common/protocol/config-service';
 import { MonitorWidget } from './serial/monitor/monitor-widget';
-import { MonitorViewContribution } from './serial/monitor/monitor-view-contribution';
+import {
+  MonitorViewContribution,
+  SerialMonitorOutputFocusContext,
+} from './serial/monitor/monitor-view-contribution';
+import { KeybindingContext } from '@theia/core/lib/browser/keybinding';
 import { TabBarDecoratorService as TheiaTabBarDecoratorService } from '@theia/core/lib/browser/shell/tab-bar-decorator';
 import { TabBarDecoratorService } from './theia/core/tab-bar-decorator';
 import { ProblemManager as TheiaProblemManager } from '@theia/markers/lib/browser';
@@ -517,6 +521,7 @@ export default new ContainerModule((bind, unbind, isBound, rebind) => {
   bind(MonitorModel).toSelf().inSingletonScope();
   bindViewContribution(bind, MonitorViewContribution);
   bind(TabBarToolbarContribution).toService(MonitorViewContribution);
+  bind(KeybindingContext).toConstantValue(SerialMonitorOutputFocusContext);
   bind(WidgetFactory).toDynamicValue((context) => ({
     id: MonitorWidget.ID,
     createWidget: () => context.container.get(MonitorWidget),
