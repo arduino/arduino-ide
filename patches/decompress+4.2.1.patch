@@ -1,3 +1,6 @@
+Remove this patch when updating to a Theia version that no longer uses
+decompress: https://github.com/eclipse-theia/theia/pull/18207
+
 diff --git a/node_modules/decompress/index.js b/node_modules/decompress/index.js
 index 6aa67ca..45e66fe 100644
 --- a/node_modules/decompress/index.js
