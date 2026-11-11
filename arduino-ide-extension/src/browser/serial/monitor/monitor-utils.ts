@@ -1,3 +1,4 @@
+import dateFormat from 'dateformat';
 import { Line, SerialMonitorOutput } from './serial-monitor-send-output';
 
 export function messagesToLines(
@@ -70,4 +71,21 @@ export function truncateLines(
 
 export function joinLines(lines: Line[]): string {
   return lines.map((line: Line) => line.message).join('');
+}
+
+export function formatTimestamp(date: Date): string {
+  return `${dateFormat(date, 'HH:MM:ss.l')} -> `;
+}
+
+export function linesToPlainText(lines: Line[], timestamp = false): string {
+  const text = lines
+    .map((line) =>
+      timestamp && line.timestamp
+        ? formatTimestamp(line.timestamp) + line.message
+        : line.message
+    )
+    .join('');
+  // Replace null characters with a visible symbol. Otherwise, the
+  // clipboard content would be truncated at the first null character.
+  return text.replace(/\u0000/g, '\u25A1');
 }

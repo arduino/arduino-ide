@@ -49,6 +49,7 @@ export class MonitorWidget extends ReactWidget {
   protected closing = false;
   protected readonly clearOutputEmitter = new Emitter<void>();
   protected readonly copyOutputEmitter = new Emitter<void>();
+  protected readonly selectAllOutputEmitter = new Emitter<void>();
 
   @inject(MonitorModel)
   private readonly monitorModel: MonitorModel;
@@ -71,7 +72,11 @@ export class MonitorWidget extends ReactWidget {
     this.title.closable = true;
     this.scrollOptions = undefined;
     this.toDisposeOnReset = new DisposableCollection();
-    this.toDispose.push(this.clearOutputEmitter);
+    this.toDispose.pushAll([
+      this.clearOutputEmitter,
+      this.copyOutputEmitter,
+      this.selectAllOutputEmitter,
+    ]);
   }
 
   @postConstruct()
@@ -109,6 +114,10 @@ export class MonitorWidget extends ReactWidget {
   
   copyOutput(): void {
     this.copyOutputEmitter.fire();
+  }
+
+  selectAllOutput(): void {
+    this.selectAllOutputEmitter.fire();
   }
 
   override dispose(): void {
@@ -256,6 +265,7 @@ export class MonitorWidget extends ReactWidget {
             monitorManagerProxy={this.monitorManagerProxy}
             clearConsoleEvent={this.clearOutputEmitter.event}
             copyOutputEvent={this.copyOutputEmitter.event}
+            selectAllEvent={this.selectAllOutputEmitter.event}
             clipboardService={this.clipboardService}
             height={Math.floor(this.widgetHeight - 50)}
           />
