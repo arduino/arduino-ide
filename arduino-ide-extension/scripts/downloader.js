@@ -2,10 +2,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const decompress = require('decompress');
-const unzip = require('decompress-unzip');
-const untargz = require('decompress-targz');
-const untarbz2 = require('decompress-tarbz2');
 
 process.on('unhandledRejection', (reason) => {
   console.log(String(reason));
@@ -43,9 +39,7 @@ exports.downloadUnzipFile = async (
   console.log(`<<< Download succeeded.`);
 
   console.log('>>> Decompressing...');
-  const files = await decompress(data, downloads, {
-    plugins: [unzip(), untargz(), untarbz2()],
-  });
+  const files = await decompress(data, downloads);
   if (files.length === 0) {
     console.log('Error ocurred while decompressing the archive.');
     process.exit(1);
@@ -72,7 +66,7 @@ exports.downloadUnzipFile = async (
  * @param targetDir {string}  Directory into which to decompress the archive
  * @param targetFile {string} Path to the main file expected after decompressing
  * @param force {boolean}     Whether to download even if the target file exists
- * @param decompressOptions {import('decompress').DecompressOptions|undefined} [decompressOptions]
+ * @param decompressOptions {{ strip?: number }|undefined} [decompressOptions]
  */
 exports.downloadUnzipAll = async (
   url,
@@ -92,13 +86,7 @@ exports.downloadUnzipAll = async (
   console.log(`<<< Download succeeded.`);
 
   console.log('>>> Decompressing...');
-  let options = {
-    plugins: [unzip(), untargz(), untarbz2()],
-  };
-  if (decompressOptions) {
-    options = Object.assign(options, decompressOptions);
-  }
-  const files = await decompress(data, targetDir, options);
+  const files = await decompress(data, targetDir, decompressOptions);
   if (files.length === 0) {
     console.log('Error ocurred while decompressing the archive.');
     process.exit(1);
@@ -123,4 +111,15 @@ async function download(url) {
   // @ts-ignore
   const data = await download(url);
   return data;
+}
+
+/**
+ * @param {import('node:buffer').Buffer} input
+ * @param {string} output
+ * @param {{ strip?: number }} [options]
+ * @returns {Promise<{ path: string }[]>}
+ */
+async function decompress(input, output, options) {
+  const { default: decompress } = await import('@xhmikosr/decompress');
+  return decompress(input, output, options);
 }

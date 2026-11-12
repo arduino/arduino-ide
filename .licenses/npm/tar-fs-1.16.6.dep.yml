@@ -1,6 +1,6 @@
 ---
 name: tar-fs
-version: 2.1.2
+version: 1.16.6
 type: npm
 summary: filesystem bindings for tar-stream
 homepage: https://github.com/mafintosh/tar-fs

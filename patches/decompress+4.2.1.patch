@@ -1,0 +1,44 @@
+Remove this patch when updating to a Theia version that no longer uses
+decompress: https://github.com/eclipse-theia/theia/pull/18207
+
+diff --git a/node_modules/decompress/index.js b/node_modules/decompress/index.js
+index 6aa67ca..45e66fe 100644
+--- a/node_modules/decompress/index.js
++++ b/node_modules/decompress/index.js
+@@ -11,6 +11,8 @@ const stripDirs = require('strip-dirs');
+ 
+ const fsP = pify(fs);
+ 
++const isInside = (child, parent) => child === parent || child.startsWith(parent + path.sep);
++
+ const runPlugins = (input, opts) => {
+ 	if (opts.plugins.length === 0) {
+ 		return Promise.resolve([]);
+@@ -26,7 +28,7 @@ const safeMakeDir = (dir, realOutputPath) => {
+ 			return safeMakeDir(parent, realOutputPath);
+ 		})
+ 		.then(realParentPath => {
+-			if (realParentPath.indexOf(realOutputPath) !== 0) {
++			if (!isInside(realParentPath, realOutputPath)) {
+ 				throw (new Error('Refusing to create a directory outside the output path.'));
+ 			}
+ 
+@@ -73,6 +75,9 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files
+ 		return files;
+ 	}
+ 
++	// Skip links: they can point outside the output directory.
++	files = files.filter(x => x.type !== 'link' && x.type !== 'symlink');
++
+ 	return Promise.all(files.map(x => {
+ 		const dest = path.join(output, x.path);
+ 		const mode = x.mode & ~process.umask();
+@@ -103,7 +108,7 @@ const extractFile = (input, output, opts) => runPlugins(input, opts).then(files
+ 			.then(realOutputPath => {
+ 				return fsP.realpath(path.dirname(dest))
+ 					.then(realDestinationDir => {
+-						if (realDestinationDir.indexOf(realOutputPath) !== 0) {
++						if (!isInside(realDestinationDir, realOutputPath)) {
+ 							throw (new Error('Refusing to write outside output directory: ' + realDestinationDir));
+ 						}
+ 					});
