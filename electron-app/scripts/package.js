@@ -1,6 +1,8 @@
 // @ts-check
 'use strict';
 
+const fs = require('fs');
+const path = require('path');
 const semver = require('semver');
 const { isNightly, isRelease } = require('./utils');
 
@@ -42,6 +44,13 @@ async function run() {
     '-c.extraMetadata.main',
     './arduino-ide-electron-main.js',
   ];
+  const env = { ...process.env };
+  if (process.platform === 'linux') {
+    prepareLinuxPackagingTools(env);
+    // app-builder-bin 4.2.0 defaults to zstd, but its ARM64 mksquashfs payload
+    // supports gzip and xz only.
+    args.push('-c.compression', 'maximum');
+  }
   const updateChannel = getChannel();
   if (updateChannel) {
     // TODO: fix the default nightly update channel preference value if required.
@@ -51,8 +60,144 @@ async function run() {
     //   updateChannel
     // );
   }
-  const cp = exec('electron-builder', args, { stdio: 'inherit' });
+  ensureWorkspaceDependencyLink('arduino-ide-extension');
+  ensureHoistedDependencyLinks();
+  const cp = exec('electron-builder', args, { stdio: 'inherit', env });
   await cp;
+}
+
+/**
+ * @param {NodeJS.ProcessEnv} env
+ */
+function prepareLinuxPackagingTools(env) {
+  const { appBuilderPath } = require('app-builder-bin');
+  fs.chmodSync(appBuilderPath, 0o755);
+
+  const { path7za } = require('7zip-bin');
+  env.PATH = `${path.dirname(path7za)}${path.delimiter}${env.PATH ?? ''}`;
+}
+
+/**
+ * electron-builder validates dependencies from the application directory, but
+ * Yarn workspaces link local packages from the repository root.
+ *
+ * @param {string} dependency
+ */
+function ensureWorkspaceDependencyLink(dependency) {
+  const appNodeModules = path.join(__dirname, '..', 'node_modules');
+  const dependencyPath = path.join(appNodeModules, dependency);
+
+  const workspacePath = path.join(__dirname, '..', '..', dependency);
+  if (!fs.existsSync(workspacePath)) {
+    throw new Error(
+      `Could not find workspace dependency '${dependency}' at '${workspacePath}'.`
+    );
+  }
+
+  fs.mkdirSync(appNodeModules, { recursive: true });
+  ensureSymlink(dependencyPath, workspacePath);
+}
+
+/**
+ * electron-builder scans each production dependency's declared dependencies from
+ * the package-local node_modules folder. Yarn workspaces can hoist those
+ * dependencies to the repository root instead, so create package-local links for
+ * any missing hoisted dependencies before packaging.
+ */
+function ensureHoistedDependencyLinks() {
+  const { appBuilderPath } = require('app-builder-bin');
+  const dependencyTree = JSON.parse(
+    require('child_process').execFileSync(
+      appBuilderPath,
+      ['node-dep-tree', '--dir', path.join(__dirname, '..')],
+      { encoding: 'utf8' }
+    )
+  );
+  const root = path.join(__dirname, '..', '..');
+  for (const info of dependencyTree) {
+    const nodeModulesPath = path.isAbsolute(info.dir)
+      ? info.dir
+      : path.join(root, info.dir);
+    const packagePath = path.dirname(nodeModulesPath);
+    for (const dependency of info.deps ?? []) {
+      ensureHoistedDependencyLink(packagePath, dependency.name);
+    }
+  }
+}
+
+/**
+ * @param {string} packagePath
+ * @param {string} dependency
+ */
+function ensureHoistedDependencyLink(packagePath, dependency) {
+  const localNodeModules = path.join(packagePath, 'node_modules');
+  const localDependencyPath = path.join(localNodeModules, dependency);
+  const dependencyPath = resolvePackagePath(dependency, packagePath);
+  if (dependencyPath === localDependencyPath) {
+    return;
+  }
+  if (path.dirname(dependencyPath) === localNodeModules) {
+    return;
+  }
+
+  fs.mkdirSync(path.dirname(localDependencyPath), { recursive: true });
+  ensureSymlink(localDependencyPath, dependencyPath);
+}
+
+/**
+ * @param {string} linkPath
+ * @param {string} targetPath
+ */
+function ensureSymlink(linkPath, targetPath) {
+  if (linkPath === targetPath) {
+    return;
+  }
+  const stat = fs.lstatSync(linkPath, { throwIfNoEntry: false });
+  if (stat) {
+    if (!stat.isSymbolicLink()) {
+      return;
+    }
+    const currentTarget = path.resolve(
+      path.dirname(linkPath),
+      fs.readlinkSync(linkPath)
+    );
+    if (currentTarget === targetPath) {
+      return;
+    }
+    fs.unlinkSync(linkPath);
+  }
+  fs.symlinkSync(path.relative(path.dirname(linkPath), targetPath), linkPath);
+}
+
+/**
+ * @param {string} packageName
+ * @param {string} basedir
+ * @returns {string}
+ */
+function resolvePackagePath(packageName, basedir) {
+  for (const nodeModulesPath of nodeModuleSearchPaths(basedir)) {
+    const packagePath = path.join(nodeModulesPath, packageName);
+    const packageJsonPath = path.join(packagePath, 'package.json');
+    if (fs.existsSync(packageJsonPath)) {
+      return packagePath;
+    }
+  }
+  throw new Error(`Could not resolve package '${packageName}' from '${basedir}'.`);
+}
+
+/**
+ * @param {string} basedir
+ * @returns {string[]}
+ */
+function nodeModuleSearchPaths(basedir) {
+  const result = [];
+  let current = path.resolve(basedir);
+  while (current !== path.dirname(current)) {
+    result.push(path.join(current, 'node_modules'));
+    current = path.dirname(current);
+  }
+  result.push(path.join(current, 'node_modules'));
+  return result;
 }
 
 function electronPlatform() {

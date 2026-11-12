@@ -43,7 +43,7 @@
   },
   "scripts": {
     "prepare": "theia download:plugins",
-    "prebuild": "rimraf lib",
+    "prebuild": "node ./scripts/ensure-extension-build.js && rimraf lib",
     "build": "theia build",
     "prebuild:dev": "yarn prebuild",
     "build:dev": "theia build --config webpack.dev.js --mode development",
