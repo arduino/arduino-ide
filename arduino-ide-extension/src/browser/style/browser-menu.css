@@ -13,3 +13,12 @@
 .p-MenuBar-item.p-mod-active {
     color: var(--theia-menubar-selectionForeground);
 }
+
+/* Fix: Tools menu items unreachable when menu overflows screen height
+ * Affects boards with many Tools entries e.g. RP2040 Pico core
+ * https://github.com/arduino/arduino-ide/issues/[ISSUE_NUMBER]
+ */
+.p-Menu {
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
+}
