@@ -339,6 +339,10 @@ export class PlatformRelease extends jspb.Message {
     setDeprecated(value: boolean): PlatformRelease;
     getCompatible(): boolean;
     setCompatible(value: boolean): PlatformRelease;
+    clearLibraryDependenciesList(): void;
+    getLibraryDependenciesList(): Array<PlatformLibraryDependency>;
+    setLibraryDependenciesList(value: Array<PlatformLibraryDependency>): PlatformRelease;
+    addLibraryDependencies(value?: PlatformLibraryDependency, index?: number): PlatformLibraryDependency;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): PlatformRelease.AsObject;
@@ -361,6 +365,30 @@ export namespace PlatformRelease {
         missingMetadata: boolean,
         deprecated: boolean,
         compatible: boolean,
+        libraryDependenciesList: Array<PlatformLibraryDependency.AsObject>,
+    }
+}
+
+export class PlatformLibraryDependency extends jspb.Message { 
+    getName(): string;
+    setName(value: string): PlatformLibraryDependency;
+    getVersion(): string;
+    setVersion(value: string): PlatformLibraryDependency;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): PlatformLibraryDependency.AsObject;
+    static toObject(includeInstance: boolean, msg: PlatformLibraryDependency): PlatformLibraryDependency.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: PlatformLibraryDependency, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): PlatformLibraryDependency;
+    static deserializeBinaryFromReader(message: PlatformLibraryDependency, reader: jspb.BinaryReader): PlatformLibraryDependency;
+}
+
+export namespace PlatformLibraryDependency {
+    export type AsObject = {
+        name: string,
+        version: string,
     }
 }
 
