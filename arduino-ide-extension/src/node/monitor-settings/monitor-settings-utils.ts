@@ -19,9 +19,10 @@ export function longestPrefixMatch(
     const prefix = idTokens.slice(0, i + 1).join(separator);
 
     for (let k = 0; k < monitorSettingsKeys.length; k++) {
-      if (monitorSettingsKeys[k].startsWith(prefix)) {
+      const key = monitorSettingsKeys[k];
+      if (key === prefix || key.startsWith(prefix + separator)) {
         matchingPrefix = prefix;
-        matchingSettings = monitorSettings[monitorSettingsKeys[k]];
+        matchingSettings = monitorSettings[key];
         break;
       }
     }

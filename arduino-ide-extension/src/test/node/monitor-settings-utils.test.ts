@@ -84,6 +84,99 @@ describe('longestPrefixMatch', () => {
   });
 });
 
+describe('longestPrefixMatch token boundaries', () => {
+  const board = 'arduino:avr:uno';
+  const settingsWithBaudrate = (
+    selectedValue: string
+  ): PluggableMonitorSettings => ({
+    baudrate: {
+      id: 'baudrate',
+      label: 'Baud rate',
+      type: 'enum',
+      values: ['9600', '115200'],
+      selectedValue,
+    },
+  });
+  const firstSettings = settingsWithBaudrate('115200');
+  const secondSettings = settingsWithBaudrate('9600');
+
+  for (const port of ['COM1', '/dev/ttyACM1']) {
+    for (const reversed of [false, true]) {
+      it(`should prefer the complete ${port} port match regardless of insertion order (${reversed})`, () => {
+        const entries: [string, PluggableMonitorSettings][] = [
+          [`${board}-${port}0-serial`, firstSettings],
+          [`${board}-${port}-network`, secondSettings],
+        ];
+        if (reversed) {
+          entries.reverse();
+        }
+
+        const { matchingPrefix, matchingSettings } = longestPrefixMatch(
+          `${board}-${port}-serial`,
+          Object.fromEntries(entries)
+        );
+
+        expect(matchingPrefix).to.equal(`${board}-${port}`);
+        expect(matchingSettings).to.equal(secondSettings);
+      });
+    }
+  }
+
+  it('should retain an exact identifier match when a longer port name appears first', () => {
+    const id = `${board}-COM1-serial`;
+    const { matchingPrefix, matchingSettings } = longestPrefixMatch(id, {
+      [`${board}-COM10-serial`]: firstSettings,
+      [id]: secondSettings,
+    });
+
+    expect(matchingPrefix).to.equal(id);
+    expect(matchingSettings).to.equal(secondSettings);
+  });
+
+  it('should use board-level fallback instead of treating COM10 as a COM1 match', () => {
+    const { matchingPrefix, matchingSettings } = longestPrefixMatch(
+      `${board}-COM1-serial`,
+      { [`${board}-COM10-serial`]: firstSettings }
+    );
+
+    expect(matchingPrefix).to.equal(board);
+    expect(matchingSettings).to.equal(firstSettings);
+  });
+
+  it('should not match a different board whose name starts with the requested name', () => {
+    const { matchingPrefix, matchingSettings } = longestPrefixMatch(
+      `${board}-COM1-serial`,
+      { 'arduino:avr:unowifi-COM1-serial': firstSettings }
+    );
+
+    expect(matchingPrefix).to.equal('');
+    expect(matchingSettings).to.be.empty;
+  });
+
+  it('should use port-level fallback instead of matching only part of a protocol name', () => {
+    const { matchingPrefix, matchingSettings } = longestPrefixMatch(
+      `${board}-COM1-serial`,
+      { [`${board}-COM1-serial2`]: firstSettings }
+    );
+
+    expect(matchingPrefix).to.equal(`${board}-COM1`);
+    expect(matchingSettings).to.equal(firstSettings);
+  });
+
+  it('should preserve the first matching entry when falling back to board settings', () => {
+    const { matchingPrefix, matchingSettings } = longestPrefixMatch(
+      `${board}-COM1-serial`,
+      {
+        [`${board}-COM2-serial`]: firstSettings,
+        [`${board}-COM3-serial`]: secondSettings,
+      }
+    );
+
+    expect(matchingPrefix).to.equal(board);
+    expect(matchingSettings).to.equal(firstSettings);
+  });
+});
+
 describe('reconcileSettings', () => {
   const defaultSettings = {
     setting1: {
