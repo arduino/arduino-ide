@@ -126,7 +126,7 @@ function tryParse(content: string): ParseResult[] {
       }
       let column: number | undefined = undefined;
       if (rawColumn) {
-        const normalizedRawColumn = rawColumn.slice(-1); // trims the leading colon => `:3` will be `3`
+        const normalizedRawColumn = rawColumn.slice(1); // trims the leading colon => `:3` will be `3`
         column = Number.parseInt(normalizedRawColumn, 10);
         if (!Number.isInteger(column)) {
           console.warn(
