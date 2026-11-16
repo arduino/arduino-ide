@@ -136,7 +136,8 @@
       "scope": [
         "string.quoted.double",
         "string.quoted.other.lt-gt",
-        "constant"
+        "constant",
+        "keyword.other.unit.hexadecimal.cpp"
       ],
       "settings": {
         "foreground": "#7fcbcd"
