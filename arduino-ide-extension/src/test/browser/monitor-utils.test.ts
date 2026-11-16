@@ -5,7 +5,10 @@ import {
   joinLines,
   linesToPlainText,
 } from '../../browser/serial/monitor/monitor-utils';
-import { Line } from '../../browser/serial/monitor/serial-monitor-send-output';
+import {
+  Line,
+  SerialMonitorOutput,
+} from '../../browser/serial/monitor/serial-monitor-send-output';
 import { set, reset } from 'mockdate';
 
 type TestLine = {
@@ -40,7 +43,7 @@ const testLines: TestLine[] = [
       ],
       charCount: 10,
     },
-    expectedJoined: 'Hello\nDog!'
+    expectedJoined: 'Hello\nDog!',
   },
   {
     messages: ['Dog!'],
@@ -60,7 +63,7 @@ const testLines: TestLine[] = [
       lines: [
         { message: 'Hello Dog!\n', lineLen: 11 },
         { message: " Who's a good boy?\n", lineLen: 19 },
-        { message: "You're a good boy!", lineLen: 8 },
+        { message: "You're a good boy!", lineLen: 18 },
       ],
       charCount: 48,
     },
@@ -69,7 +72,7 @@ const testLines: TestLine[] = [
       charCount: 20,
       lines: [
         { message: '?\n', lineLen: 2 },
-        { message: "You're a good boy!", lineLen: 8 },
+        { message: "You're a good boy!", lineLen: 18 },
       ],
     },
     expectedJoined: "Hello Dog!\n Who's a good boy?\nYou're a good boy!",
@@ -87,7 +90,7 @@ const testLines: TestLine[] = [
       lines: [
         { message: 'Hello Dog!\n', lineLen: 11 },
         { message: " Who's a good boy?\n", lineLen: 19 },
-        { message: "You're a good boy!", lineLen: 8 },
+        { message: "You're a good boy!", lineLen: 18 },
       ],
       charCount: 48,
     },
@@ -96,7 +99,7 @@ const testLines: TestLine[] = [
       charCount: 20,
       lines: [
         { message: '?\n', lineLen: 2 },
-        { message: "You're a good boy!", lineLen: 8 },
+        { message: "You're a good boy!", lineLen: 18 },
       ],
     },
   },
@@ -151,6 +154,7 @@ describe('Monitor Utils', () => {
         );
         newLines.forEach((line, index) => {
           expect(line.message).to.equal(testLine.expected.lines[index].message);
+          expect(line.lineLen).to.equal(testLine.expected.lines[index].lineLen);
           expect(line.timestamp).to.deep.equal(
             testLine.expected.lines[index].timestamp
           );
@@ -168,6 +172,9 @@ describe('Monitor Utils', () => {
             expect(line.message).to.equal(
               testLine.expectedTruncated?.lines[index].message
             );
+            expect(line.lineLen).to.equal(
+              testLine.expectedTruncated?.lines[index].lineLen
+            );
             charCount += line.message.length;
           });
           expect(totalCharCount).to.equal(charCount);
@@ -177,6 +184,96 @@ describe('Monitor Utils', () => {
           expect(joined_str).to.equal(testLine.expectedJoined);
         }
       });
+    });
+  });
+
+  context('when truncating lines', () => {
+    it('should update the retained line length and preserve its timestamp', () => {
+      const [lines, charCount] = truncateLines(
+        [{ message: 'abcdefghij', lineLen: 10, timestamp: date }],
+        10,
+        5
+      );
+
+      expect(lines).to.deep.equal([
+        { message: 'fghij', lineLen: 5, timestamp: date },
+      ]);
+      expect(charCount).to.equal(5);
+    });
+
+    for (const { chunks, maxCharacters } of [
+      {
+        chunks: ['abcdefghij', 'k', 'lm', 'nopqrst', 'uvwxyz'],
+        maxCharacters: 5,
+      },
+      {
+        chunks: ['abc\n', 'def\n', 'ghi\n', 'jkl\n', 'mnop\n', 'q\n'],
+        maxCharacters: 6,
+      },
+    ]) {
+      it(`should retain the latest ${maxCharacters} characters across repeated updates`, () => {
+        let lines: Line[] = [];
+        let charCount = 0;
+        let expected = '';
+
+        for (const chunk of chunks) {
+          expected = (expected + chunk).slice(-maxCharacters);
+          [lines, charCount] = messagesToLines([chunk], lines, charCount);
+          [lines, charCount] = truncateLines(lines, charCount, maxCharacters);
+
+          expect(joinLines(lines)).to.equal(expected);
+          expect(charCount).to.equal(expected.length);
+        }
+        lines.forEach((line) =>
+          expect(line.lineLen).to.equal(line.message.length)
+        );
+      });
+    }
+
+    it('should remove complete lines without shortening the retained lines', () => {
+      const [lines, charCount] = truncateLines(
+        [
+          { message: 'ab\n', lineLen: 3, timestamp: date },
+          { message: 'c\n', lineLen: 2, timestamp: date },
+          { message: 'de', lineLen: 2, timestamp: date },
+        ],
+        7,
+        4
+      );
+
+      expect(lines).to.deep.equal([
+        { message: 'c\n', lineLen: 2, timestamp: date },
+        { message: 'de', lineLen: 2, timestamp: date },
+      ]);
+      expect(charCount).to.equal(4);
+    });
+
+    it('should leave lines at the character limit unchanged', () => {
+      const original: Line[] = [
+        { message: 'abc\n', lineLen: 4, timestamp: date },
+        { message: 'de', lineLen: 2, timestamp: date },
+      ];
+      const [lines, charCount] = truncateLines(original, 6, 6);
+
+      expect(lines).to.equal(original);
+      expect(lines).to.deep.equal([
+        { message: 'abc\n', lineLen: 4, timestamp: date },
+        { message: 'de', lineLen: 2, timestamp: date },
+      ]);
+      expect(charCount).to.equal(6);
+    });
+
+    it('should keep the default character limit after appending to a truncated line', () => {
+      const limit = SerialMonitorOutput.MAX_CHARACTERS;
+      let [lines, charCount] = messagesToLines(['a'.repeat(limit + 10)]);
+      [lines, charCount] = truncateLines(lines, charCount);
+      [lines, charCount] = messagesToLines(['b'], lines, charCount);
+      [lines, charCount] = truncateLines(lines, charCount);
+
+      expect(joinLines(lines)).to.equal('a'.repeat(limit - 1) + 'b');
+      expect(charCount).to.equal(limit);
+      expect(lines).to.have.lengthOf(1);
+      expect(lines[0].lineLen).to.equal(limit);
     });
   });
 

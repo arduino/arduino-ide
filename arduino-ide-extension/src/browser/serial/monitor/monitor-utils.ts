@@ -65,6 +65,7 @@ export function truncateLines(
     charCount -= deletedCharsCount;
     charsToDelete -= deletedCharsCount;
     lines[0].message = newFirstLine;
+    lines[0].lineLen = newFirstLine.length;
   }
   return [lines, charCount];
 }
