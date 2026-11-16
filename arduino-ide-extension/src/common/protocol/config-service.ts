@@ -103,6 +103,7 @@ export namespace Network {
     }
     return (
       left.hostname === right.hostname &&
+      left.port === right.port &&
       left.password === right.password &&
       left.protocol === right.protocol &&
       left.username === right.username
