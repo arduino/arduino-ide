@@ -8,7 +8,7 @@ export interface CreateClientOptions {
    */
   readonly port: number;
   /**
-   * Defaults to `'localhost'`.
+   * Defaults to the IPv4 loopback address used by the Arduino CLI daemon.
    */
   readonly host?: string;
 
@@ -33,7 +33,7 @@ export function createArduinoCoreServiceClient(
 ): ArduinoCoreServiceClient {
   const {
     port,
-    host = 'localhost',
+    host = '127.0.0.1',
     channelOptions = createDefaultChannelOptions(),
   } = options;
   const address = `${host}:${port}`;
