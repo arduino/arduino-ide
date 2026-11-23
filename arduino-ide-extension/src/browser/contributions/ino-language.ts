@@ -1,3 +1,4 @@
+import { nls } from '@theia/core';
 import {
   Disposable,
   DisposableCollection,
@@ -23,7 +24,12 @@ import { BoardsServiceProvider } from '../boards/boards-service-provider';
 import { HostedPluginEvents } from '../hosted/hosted-plugin-events';
 import { NotificationCenter } from '../notification-center';
 import { CurrentSketch } from '../sketches-service-client-impl';
-import { SketchContribution, URI } from './contribution';
+import {
+  Command,
+  CommandRegistry,
+  SketchContribution,
+  URI,
+} from './contribution';
 import { CompileSummaryProvider } from './verify-sketch';
 
 interface DaemonAddress {
@@ -116,6 +122,60 @@ export class InoLanguage extends SketchContribution {
   private readonly languageServerStartMutex = new Mutex();
   private languageServerFqbn?: string;
 
+  override registerCommands(registry: CommandRegistry): void {
+    registry.registerCommand(InoLanguage.Commands.RESTART_LANGUAGE_SERVER, {
+      execute: () => this.restartLanguageServer(),
+      isEnabled: () =>
+        !!this.boardsServiceProvider.boardsConfig.selectedBoard?.fqbn,
+    });
+  }
+
+  async restartLanguageServer(notifyUser = true): Promise<void> {
+    const selectedBoard = this.boardsServiceProvider.boardsConfig.selectedBoard;
+    if (!selectedBoard || !selectedBoard.fqbn) {
+      if (notifyUser) {
+        this.messageService.warn(
+          nls.localize(
+            'arduino/languageserver/noBoardSelected',
+            'Cannot restart Language Server: No board is selected.'
+          )
+        );
+      }
+      return;
+    }
+
+    if (notifyUser) {
+      this.messageService.info(
+        nls.localize(
+          'arduino/languageserver/restarting',
+          'Restarting Language Server...'
+        ),
+        { timeout: 2000 }
+      );
+    }
+
+    await this.startLanguageServer(selectedBoard.fqbn, selectedBoard.name, true);
+
+    if (notifyUser) {
+      if (this.languageServerFqbn) {
+        this.messageService.info(
+          nls.localize(
+            'arduino/languageserver/restarted',
+            'Language Server restarted.'
+          ),
+          { timeout: 2000 }
+        );
+      } else {
+        this.messageService.error(
+          nls.localize(
+            'arduino/languageserver/restartFailed',
+            'Failed to restart Language Server.'
+          )
+        );
+      }
+    }
+  }
+
   override onReady(): void {
     const start = (
       selectedBoard: BoardIdentifier | undefined,
@@ -129,7 +189,7 @@ export class InoLanguage extends SketchContribution {
       }
     };
     const forceRestart = () => {
-      start(this.boardsServiceProvider.boardsConfig.selectedBoard, true);
+      this.restartLanguageServer(false);
     };
     this.toDispose.pushAll([
       this.boardsServiceProvider.onBoardsConfigDidChange((event) => {
@@ -143,6 +203,11 @@ export class InoLanguage extends SketchContribution {
       this.hostedPluginEvents.onPluginsWillUnload(
         () => (this.languageServerFqbn = undefined)
       ),
+      this.commandService.onDidExecuteCommand((event) => {
+        if (event.commandId === 'arduino.languageserver.restart') {
+          this.restartLanguageServer(false);
+        }
+      }),
       this.preferences.onPreferenceChanged(
         ({ preferenceName, oldValue, newValue }) => {
           if (oldValue !== newValue) {
@@ -245,6 +310,21 @@ export class InoLanguage extends SketchContribution {
         // NOOP
         return;
       }
+      if (forceStart && this.languageServerFqbn) {
+        try {
+          await this.commandService.executeCommand(
+            'arduino.languageserver.stop'
+          );
+          console.info(
+            `Stopped language server process for ${this.languageServerFqbn}.`
+          );
+        } catch (e) {
+          console.warn(
+            `Failed to stop language server process for ${this.languageServerFqbn}`,
+            e
+          );
+        }
+      }
       const log = this.preferences.get('arduino.language.log');
       const realTimeDiagnostics = this.preferences.get(
         'arduino.language.realTimeDiagnostics'
@@ -290,6 +370,12 @@ export class InoLanguage extends SketchContribution {
           board: {
             fqbn: fqbnWithConfig,
             name,
+          },
+          env: {
+            ...process.env,
+            ...(forceStart
+              ? { ARDUINO_LS_RESTART_TIMESTAMP: String(Date.now()) }
+              : {}),
           },
           realTimeDiagnostics,
           silentOutput: true,
@@ -357,3 +443,17 @@ export class InoLanguage extends SketchContribution {
     }
   }
 }
+
+export namespace InoLanguage {
+  export namespace Commands {
+    export const RESTART_LANGUAGE_SERVER: Command = {
+      id: 'arduino-restart-language-server',
+      label: nls.localize(
+        'arduino/languageserver/restart',
+        'Restart Language Server'
+      ),
+      category: 'Arduino',
+    };
+  }
+}
+
