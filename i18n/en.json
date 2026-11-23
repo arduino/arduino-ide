@@ -293,6 +293,13 @@
       "libraryInstallFailed": "Failed to install library: '{0}{1}'.",
       "platformInstallFailed": "Failed to install platform: '{0}{1}'."
     },
+    "languageserver": {
+      "noBoardSelected": "Cannot restart Language Server: No board is selected.",
+      "restart": "Restart Language Server",
+      "restartFailed": "Failed to restart Language Server.",
+      "restarted": "Language Server restarted.",
+      "restarting": "Restarting Language Server..."
+    },
     "library": {
       "addZip": "Add .ZIP Library...",
       "arduinoLibraries": "Arduino libraries",
