@@ -14,6 +14,7 @@ import { wait } from '@theia/core/lib/common/promise-util';
 import URI from '@theia/core/lib/common/uri';
 import { Container, ContainerModule } from '@theia/core/shared/inversify';
 import { expect } from 'chai';
+import { FQBN } from 'fqbn';
 import type {
   BoardDetails as ApiBoardDetails,
   CompileSummary as ApiCompileSummary,
@@ -583,6 +584,90 @@ describe('update-arduino-state', function () {
     ]);
   });
 
+  it('should update the board details when the selected partition scheme changes', async () => {
+    const fqbn = 'a:b:c';
+    const partitionOptions = (selected: string) => [
+      {
+        label: 'Partition Scheme',
+        option: 'PartitionScheme',
+        values: [
+          {
+            label: 'Default',
+            value: 'default',
+            selected: selected === 'default',
+          },
+          {
+            label: 'Minimal SPIFFS',
+            value: 'min_spiffs',
+            selected: selected === 'min_spiffs',
+          },
+        ],
+      },
+    ];
+    const defaultDetails: BoardDetails = {
+      buildProperties: ['build.partitions=default'],
+      configOptions: partitionOptions('default'),
+      defaultProgrammerId: undefined,
+      fqbn,
+      PID: '0',
+      VID: '0',
+      programmers: [],
+      requiredTools: [],
+    };
+    boardDetailsMocks = {
+      [fqbn]: defaultDetails,
+      [`${fqbn}:PartitionScheme=default`]: defaultDetails,
+      [`${fqbn}:PartitionScheme=min_spiffs`]: {
+        ...defaultDetails,
+        buildProperties: ['build.partitions=min_spiffs'],
+        configOptions: partitionOptions('min_spiffs'),
+      },
+    };
+    boardsServiceProvider['_boardsConfig'] = {
+      selectedBoard: { fqbn, name: 'ABC' },
+      selectedPort: undefined,
+    };
+
+    for (const partition of ['default', 'min_spiffs', 'default']) {
+      stateUpdateParams = [];
+      const configOptions = partitionOptions(partition);
+      const data = {
+        ...BoardsDataStore.Data.EMPTY,
+        configOptions,
+      };
+      // Store the same selection that listeners receive in the change event.
+      dataStoreMocks[fqbn] = data;
+      onDataStoreDidChangeEmitter.fire({ changes: [{ fqbn, data }] });
+      await wait(50);
+
+      const params = stateUpdateParams.filter(
+        (param) =>
+          param.key === 'fqbn' ||
+          param.key === 'boardDetails' ||
+          param.key === 'port'
+      );
+      expect(params, partition).to.be.deep.equal([
+        {
+          key: 'boardDetails',
+          value: {
+            buildProperties: { 'build.partitions': partition },
+            configOptions: configOptions.map(({ label, option, values }) => ({
+              optionLabel: label,
+              option,
+              values: values.map(({ label, ...value }) => ({
+                ...value,
+                valueLabel: label,
+              })),
+            })),
+            fqbn,
+            programmers: [],
+            toolsDependencies: [],
+          } as ApiBoardDetails,
+        },
+      ]);
+    }
+  });
+
   function createContainer(): Container {
     const container = new Container({ defaultScope: 'Singleton' });
     container.load(
@@ -600,10 +685,20 @@ describe('update-arduino-state', function () {
             return {};
           },
           async getBoardDetails({ fqbn }) {
-            return boardDetailsMocks[fqbn];
+            const details = boardDetailsMocks[fqbn];
+            return details && { ...details, fqbn };
           },
         });
         rebind(BoardsDataStore).toConstantValue(<BoardsDataStore>{
+          async appendConfigToFqbn(fqbn: string | undefined) {
+            if (!fqbn) {
+              return undefined;
+            }
+            const configOptions = dataStoreMocks[fqbn]?.configOptions ?? [];
+            return new FQBN(fqbn)
+              .withConfigOptions(...configOptions)
+              .toString();
+          },
           async getData(fqbn) {
             if (!fqbn) {
               return BoardsDataStore.Data.EMPTY;

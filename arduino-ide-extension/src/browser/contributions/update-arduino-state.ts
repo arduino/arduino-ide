@@ -136,8 +136,10 @@ export class UpdateArduinoState extends SketchContribution {
     if (!fqbn) {
       return unset();
     }
+    const configuredFqbn =
+      (await this.boardsDataStore.appendConfigToFqbn(fqbn)) ?? fqbn;
     const [details, persistedData] = await Promise.all([
-      this.boardsService.getBoardDetails({ fqbn }),
+      this.boardsService.getBoardDetails({ fqbn: configuredFqbn }),
       this.boardsDataStore.getData(fqbn),
     ]);
     if (!details) {
@@ -145,6 +147,7 @@ export class UpdateArduinoState extends SketchContribution {
     }
     const apiBoardDetails = toApiBoardDetails({
       ...details,
+      fqbn,
       configOptions:
         BoardsDataStore.Data.EMPTY === persistedData
           ? details.configOptions
