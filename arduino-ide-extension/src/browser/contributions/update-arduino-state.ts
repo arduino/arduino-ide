@@ -147,6 +147,7 @@ export class UpdateArduinoState extends SketchContribution {
     }
     const apiBoardDetails = toApiBoardDetails({
       ...details,
+      fqbn,
       configOptions:
         BoardsDataStore.Data.EMPTY === persistedData
           ? details.configOptions
