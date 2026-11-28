@@ -58,6 +58,7 @@ describe('update-arduino-state', function () {
   let stateUpdateParams: UpdateStateParams[];
 
   let boardDetailsMocks: Record<string, BoardDetails>;
+  let configuredFqbnMock: string | undefined;
   let dataStoreMocks: Record<string, BoardsDataStore.Data>;
   let currentSketchMock: CurrentSketch | undefined;
   let sketchDirUriMock: URI | undefined;
@@ -75,6 +76,7 @@ describe('update-arduino-state', function () {
 
     // reset mocks
     boardDetailsMocks = {};
+    configuredFqbnMock = undefined;
     dataStoreMocks = {};
     currentSketchMock = undefined;
     sketchDirUriMock = undefined;
@@ -529,9 +531,10 @@ describe('update-arduino-state', function () {
 
   it('should update the board details when the data store did change and the selected board matches', async () => {
     const fqbn = 'a:b:c';
+    configuredFqbnMock = 'a:b:c:PartitionScheme=min_spiffs';
     const board = { fqbn, name: 'ABC' };
     const boardDetails = {
-      buildProperties: [],
+      buildProperties: ['build.partitions=min_spiffs'],
       configOptions: [],
       defaultProgrammerId: undefined,
       fqbn,
@@ -541,7 +544,7 @@ describe('update-arduino-state', function () {
       requiredTools: [],
     };
     boardDetailsMocks = {
-      'a:b:c': boardDetails,
+      [configuredFqbnMock]: boardDetails,
     };
     boardsServiceProvider['_boardsConfig'] = {
       selectedBoard: board,
@@ -573,7 +576,7 @@ describe('update-arduino-state', function () {
       {
         key: 'boardDetails',
         value: {
-          buildProperties: {},
+          buildProperties: { 'build.partitions': 'min_spiffs' },
           configOptions: [],
           fqbn: 'a:b:c',
           programmers: [],
@@ -604,6 +607,9 @@ describe('update-arduino-state', function () {
           },
         });
         rebind(BoardsDataStore).toConstantValue(<BoardsDataStore>{
+          async appendConfigToFqbn(fqbn: string | undefined) {
+            return fqbn && (configuredFqbnMock ?? fqbn);
+          },
           async getData(fqbn) {
             if (!fqbn) {
               return BoardsDataStore.Data.EMPTY;
