@@ -528,6 +528,62 @@ describe('update-arduino-state', function () {
     expect(stateUpdateParams).to.be.empty;
   });
 
+  it('should update the board details when the data store did change and the selected board matches', async () => {
+    const fqbn = 'a:b:c';
+    const board = { fqbn, name: 'ABC' };
+    const boardDetails = {
+      buildProperties: [],
+      configOptions: [],
+      defaultProgrammerId: undefined,
+      fqbn,
+      PID: '0',
+      VID: '0',
+      programmers: [],
+      requiredTools: [],
+    };
+    boardDetailsMocks = {
+      'a:b:c': boardDetails,
+    };
+    boardsServiceProvider['_boardsConfig'] = {
+      selectedBoard: board,
+      selectedPort: undefined,
+    };
+
+    onDataStoreDidChangeEmitter.fire({
+      changes: [
+        {
+          fqbn: 'a:b:c',
+          // the data does not matter
+          data: {
+            configOptions: [],
+            programmers: [{ id: 'p1', name: 'P1', platform: 'The platform' }],
+            defaultProgrammerId: 'p1',
+          },
+        },
+      ],
+    });
+    await wait(50);
+
+    const params = stateUpdateParams.filter(
+      (param) =>
+        param.key === 'fqbn' ||
+        param.key === 'boardDetails' ||
+        param.key === 'port'
+    );
+    expect(params).to.be.deep.equal([
+      {
+        key: 'boardDetails',
+        value: {
+          buildProperties: {},
+          configOptions: [],
+          fqbn: 'a:b:c',
+          programmers: [],
+          toolsDependencies: [],
+        } as ApiBoardDetails,
+      },
+    ]);
+  });
+
   it('should update the board details when the selected partition scheme changes', async () => {
     const fqbn = 'a:b:c';
     const partitionOptions = (selected: string) => [
